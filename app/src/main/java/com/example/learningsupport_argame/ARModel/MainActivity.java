@@ -10,6 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.learningsupport_argame.R;
@@ -19,6 +22,7 @@ import com.google.ar.core.Plane;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.HitTestResult;
 import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
@@ -27,10 +31,12 @@ import com.google.ar.sceneform.ux.TransformableNode;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private ArFragment mArFragment;
+    private boolean hasSetToPanel = false;
     private static final double MIN_OPENGL_VERSION = 3.0;
     private ViewRenderable mViewRenderable;
     private ModelRenderable mModelRenderable;
-
+    private TextView mNodeMessageTextView;
+    private Button mSetToZeroBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +45,14 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        setContentView(R.layout.activity_ux);
+        setContentView(R.layout.armodel_activity_ux);
         mArFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+        mNodeMessageTextView = findViewById(R.id.node_message);
+        mSetToZeroBtn = findViewById(R.id.set_to_zero);
+
 
         ViewRenderable.builder()
-                .setView(this, R.layout.view_renderable_text)
+                .setView(this, R.layout.armodel_view_renderable_text)
                 .build()
                 .thenAccept(renderable -> mViewRenderable = renderable)
                 .exceptionally(
@@ -70,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         mArFragment.setOnTapArPlaneListener(
                 (HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
-                    if (mModelRenderable == null) {
+                    if (mModelRenderable == null || hasSetToPanel == true) {
                         return;
                     }
                     Log.d(TAG, "model renderable");
@@ -84,9 +93,24 @@ public class MainActivity extends AppCompatActivity {
                     andy.setParent(anchorNode);
                     andy.setRenderable(mModelRenderable);
                     andy.select();
+                    mSetToZeroBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            andy.setWorldPosition(Vector3.zero());
+                        }
+                    });
+                    // 假设在放置第一个模型的时候确定手机位置为世界坐标 (0 0 0)
+                    // 放置节点
+                    // 放置时记录当前手机当前经纬度作为原点, 当前手机朝向为初始朝向
+                    // 记录模型所放置模型的参数
+                    // 根据当前经纬度，和原点经纬度，当前及初始手机朝向，以及模型参数算出模型距当前位置参数
                     andy.setOnTouchListener(new Node.OnTouchListener() {
                         @Override
                         public boolean onTouch(HitTestResult hitTestResult, MotionEvent motionEvent) {
+                            mNodeMessageTextView.setText(
+                                    "Rotation:" + andy.getWorldRotation() + "\n" +
+                                            "MaxScale:" + andy.getWorldScale() + "\n" +
+                                            "Position:" + andy.getWorldPosition());
                             Log.d(TAG, "Rotation:" + andy.getWorldRotation() + "\n" +
                                     "MaxScale:" + andy.getWorldScale() + "\n" +
                                     "Position:" + andy.getWorldPosition());
