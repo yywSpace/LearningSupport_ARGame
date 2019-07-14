@@ -1,55 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <fragment
-        android:id="@+id/ux_fragment"
+        android:id="@+id/armodel_ux_fragment"
         android:name="com.google.ar.sceneform.ux.ArFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <TextView
-        android:id="@+id/node_message"
+        android:id="@+id/armodel_node_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/set_to_zero"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/armodel_model_show_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:text="zero" />
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="50dp"
+        android:backgroundTint="@android:color/white"
+        android:src="@drawable/armodel_model_icon"
+        app:borderWidth="0dp" />
+
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal">
+        android:layout_gravity="center|right"
+        android:layout_marginRight="30dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <ToggleButton
-            android:id="@+id/switch_pos_neg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff="negative"
-            android:textOn="positive" />
+            android:id="@+id/armodel_switch_pos_neg"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:textOff="N"
+            android:textOn="P" />
 
         <Button
-            android:id="@+id/change_x_button"
+            android:id="@+id/armodel_change_x_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:text="X" />
 
         <Button
-            android:id="@+id/change_y_button"
+            android:id="@+id/armodel_change_y_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:text="Y" />
 
         <Button
-            android:id="@+id/change_z_button"
+            android:id="@+id/armodel_change_z_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:text="Z" />
     </LinearLayout>
-
 </FrameLayout>

@@ -23,7 +23,7 @@
         <meta-data android:name="com.google.ar.core" android:value="required" />
 
 
-        <activity android:name=".ARModel.ModelSet">
+        <activity android:name=".ARModel.PutModel">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
