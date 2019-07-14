@@ -14,6 +14,8 @@
            模块名或者包名: ARModel  
            资源名: activity_main.xml  
            应改为: armodel_activity_main.xml
+   - 布局中ID  
+      同上增加模块或包前缀
          
 # 资料  
 
