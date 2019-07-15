@@ -14,7 +14,7 @@ import java.util.List;
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
     private List<Item> mItems;
     private Context mContext;
-    private OnMyItemClickListener mOnMyItemClickListener;
+    private OnModelItemClickListener mOnModelItemClickListener;
 
     public ItemsAdapter(Context context,List<Item> items) {
         mContext = context;
@@ -30,7 +30,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ItemsViewHolder viewHolder, int i) {
-        viewHolder.setOnMyItemClickListener(mOnMyItemClickListener);
+        viewHolder.setOnModelItemClickListener(mOnModelItemClickListener);
         viewHolder.bind(mItems.get(i));
     }
 
@@ -39,7 +39,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
         return mItems.size();
     }
 
-    public void setOnMyItemClickListener(OnMyItemClickListener itemClickListener){
-        mOnMyItemClickListener =itemClickListener;
+    public void setOnModelItemClickListener(OnModelItemClickListener itemClickListener){
+        mOnModelItemClickListener =itemClickListener;
     }
 }

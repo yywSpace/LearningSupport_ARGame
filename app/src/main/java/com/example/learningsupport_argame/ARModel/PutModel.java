@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.ARModel;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,14 +22,18 @@ import com.example.learningsupport_argame.ARModel.Items.Item;
 import com.example.learningsupport_argame.ARModel.Items.ItemType;
 import com.example.learningsupport_argame.ARModel.Items.ItemsAdapter;
 import com.example.learningsupport_argame.ARModel.Items.ItemsLab;
+import com.example.learningsupport_argame.ARModel.Items.ModelInfo;
+import com.example.learningsupport_argame.ARModel.Items.ModelInfoLab;
+import com.example.learningsupport_argame.ARModel.Utils.LocationSensor;
 import com.example.learningsupport_argame.ARModel.Utils.Utils;
 import com.example.learningsupport_argame.R;
 import com.google.ar.core.Anchor;
+import com.google.ar.core.Frame;
+import com.google.ar.core.Plane;
 import com.google.ar.core.Pose;
 import com.google.ar.core.TrackingState;
 import com.google.ar.sceneform.AnchorNode;
-import com.google.ar.sceneform.HitTestResult;
-import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.Camera;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
@@ -44,7 +48,7 @@ import java.util.List;
 // 假设在放置第一个模型的时候确定手机位置为世界坐标 (0 0 0)
 // 放置节点
 // 放置时记录当前手机当前经纬度作为原点, 当前手机朝向为初始朝向
-// 记录模型所放置模型的参数
+// 记录模型所放置模型的参数,记录当前相机位置参数
 // 根据当前经纬度，和原点经纬度，当前及初始手机朝向，以及模型参数算出模型距当前位置参数
 // TODO: 19-7-14 如何在放置模型时组合模型
 // 放置不同模型到屏幕上
@@ -57,7 +61,7 @@ import java.util.List;
 // 点击后弹出模型界面，可对模型进行放大缩小，旋转等操作
 
 /**
- * <p>有两种方法放置</p>
+ * <p>两种放置方法</p>
  * <ol>
  * <li>点击模型，用XYZ按钮确定位置（可放置任意位置）</li>
  * <li>手机扫描出平面后，直接将模型拖动至平面（只能在检测出的平面上）</li>
@@ -70,17 +74,24 @@ import java.util.List;
  * <li>模型世界坐标</li>
  * <li>模型世界旋转角度</li>
  * <li>模型世界缩放大小</li>
+ * <li>相机世界坐标</li>
+ * <li>相机世界旋转角度</li>
+ * <li>相机世界缩放大小</li>
  * </ol>
  */
 public class PutModel extends AppCompatActivity {
     private static String TAG = PutModel.class.getSimpleName();
     private PopupWindow mItemsPopupWindow;
-    private FloatingActionButton mFloatingActionButton;
+    private FloatingActionButton mShowModelItemButton;
+    private FloatingActionButton mSubmitModelButton;
+    private FloatingActionButton mScanModelButton;
     private RecyclerView mItemsRecyclerView;
     private ItemsAdapter mItemsAdapter;
     private boolean hasShowItemsPopupWindow = false;// 是否显示了 PopupWindow
     private List<Item> mItems;
+    private List<ModelInfo> mModelInfos;
     private ItemsLab mItemsLab;
+    private ModelInfoLab mModelInfoLab;
 
     private ArFragment mArFragment;
     private TextView mNodeMessageTextView;
@@ -95,6 +106,8 @@ public class PutModel extends AppCompatActivity {
     private Button mChangeZBtn;
     private float increment = .1f;
 
+    LocationSensor mLocationSensor;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,12 +115,35 @@ public class PutModel extends AppCompatActivity {
         if (!Utils.checkIsSupportedDeviceOrFinish(this)) {
             return;
         }
+        mLocationSensor = LocationSensor.get(this);
 
         setContentView(R.layout.armodel_activity_put_model);
-        mArFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.armodel_ux_fragment);
+        mArFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.armodel_put_fragment);
+
         mNodeMessageTextView = findViewById(R.id.armodel_node_message);
         mItemsLab = ItemsLab.get();
         mItems = mItemsLab.getItemList();
+        // 提交放置的模型
+        mModelInfoLab = ModelInfoLab.get();
+        mModelInfos = mModelInfoLab.getModelInfoList();
+        mSubmitModelButton = findViewById(R.id.armodel_model_submit_button);
+        mSubmitModelButton.setOnClickListener(v -> {
+            if (mSelectModel == null)
+                return;
+            Toast.makeText(this, "放置模型成功", Toast.LENGTH_SHORT).show();
+            ModelInfo modelInfo = new ModelInfo(
+                    mSelectModel.getWorldRotation(),
+                    mSelectModel.getWorldScale(),
+                    mSelectModel.getWorldPosition(),
+                    mLocationSensor.getCurrentDegree());
+            modelInfo.setCameraPosition(mArFragment.getArSceneView().getScene().getCamera().getWorldPosition());
+            mModelInfos.add(modelInfo);
+        });
+        mScanModelButton= findViewById(R.id.armodel_model_scan_button);
+        mScanModelButton.setOnClickListener(v -> {
+            Intent intent = new Intent(PutModel.this,ScanModel.class);
+            startActivity(intent);
+        });
 
         // 初始化布局
         mToggleButton = findViewById(R.id.armodel_switch_pos_neg);
@@ -136,18 +172,23 @@ public class PutModel extends AppCompatActivity {
 
         // 道具相关
         // TODO: 19-7-14  item之间增加间距，采用瀑布流形式（每行数量固定，可上下滑动），长按item显示提示信息，酌情美化
-        mFloatingActionButton = findViewById(R.id.armodel_model_show_button);
+        mShowModelItemButton = findViewById(R.id.armodel_model_show_button);
         View contentView = LayoutInflater.from(this).inflate(R.layout.armodel_popwindow_items, null, false);
         mItemsRecyclerView = contentView.findViewById(R.id.armodel_popwindow_items_recycler_view);
         mItemsAdapter = new ItemsAdapter(this, mItems);
         mItemsRecyclerView.setAdapter(mItemsAdapter);
-        mItemsAdapter.setOnMyItemClickListener(item -> {
+        mItemsAdapter.setOnModelItemClickListener(item -> {
+
             mItemsPopupWindow.dismiss();
             hasShowItemsPopupWindow = false;
+//            if (!hasSetToPanel)
+//                return;
+//            hasSetToPanel = true;
+
             // TODO: 19-7-14 找到方法，让Viewrenderable可以从item中读取View ID
             if (item.getItemType() == ItemType.VIEW) {
                 ViewRenderable.builder()
-                        .setView(this, R.layout.armodel_view_renderable_text)
+                        .setView(this, item.getViewId())
                         .build()
                         .thenAccept(renderable -> {
                             mViewRenderable = renderable;
@@ -185,13 +226,13 @@ public class PutModel extends AppCompatActivity {
                 getResources().getDisplayMetrics().widthPixels - (Utils.dp2px(this, 50) + 147 + 20),
                 ViewGroup.LayoutParams.WRAP_CONTENT, false);
 
-        mFloatingActionButton.setOnClickListener(v -> {
+        mShowModelItemButton.setOnClickListener(v -> {
             // 如果已经显示PopupWindow则销毁，否则创建
             if (!hasShowItemsPopupWindow) {
                 mItemsPopupWindow.showAsDropDown(
-                        mFloatingActionButton,
+                        mShowModelItemButton,
                         -(getResources().getDisplayMetrics().widthPixels - (Utils.dp2px(this, 50) + 147)),
-                        -(mFloatingActionButton.getHeight() / 2 + Utils.dp2px(PutModel.this, 50) / 2));
+                        -(mShowModelItemButton.getHeight() / 2 + Utils.dp2px(PutModel.this, 50) / 2));
                 hasShowItemsPopupWindow = true;
             } else {
                 mItemsPopupWindow.dismiss();
@@ -200,6 +241,17 @@ public class PutModel extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mLocationSensor.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mLocationSensor.onPause();
+    }
 
     void createAnchorNode(ArFragment arFragment, Renderable renderable) {
 
@@ -229,11 +281,17 @@ public class PutModel extends AppCompatActivity {
         model.select();
         Toast.makeText(PutModel.this, anchor.getPose() + "", Toast.LENGTH_SHORT).show();
         model.setOnTapListener((hitTestResult, motionEvent) -> {
+            Camera camera = mArFragment.getArSceneView().getScene().getCamera();
             model.select();
             mSelectModel = model;
             mNodeMessageTextView.setText(
-                    "Name:" + model.getName() + "\n" +
-                            "Rotation:" + model.getWorldRotation() + "\n" +
+                    "Camera\n" +
+                            "Position:" + camera.getWorldPosition() + "\n" +
+                            "Rotation:" + camera.getWorldRotation() + "n" +
+                            "MaxScale:" + camera.getWorldScale() + "\n" +
+                            "Position:" + camera.getWorldPosition() + "\n" +
+                            "Model\n" +
+                            "Rotation:" + model.getWorldRotation() + "n" +
                             "MaxScale:" + model.getWorldScale() + "\n" +
                             "Position:" + model.getWorldPosition());
             Log.d(TAG, "Rotation:" + model.getWorldRotation() + "\n" +
@@ -241,7 +299,5 @@ public class PutModel extends AppCompatActivity {
                     "Position:" + model.getWorldPosition());
         });
     }
-
-
 }
 

@@ -1,5 +1,5 @@
 package com.example.learningsupport_argame.ARModel.Items;
 
-public interface OnMyItemClickListener {
+public interface OnModelItemClickListener {
      void onMyItemClick(Item item);
 }

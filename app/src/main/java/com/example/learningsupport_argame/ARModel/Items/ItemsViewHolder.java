@@ -9,7 +9,7 @@ import com.example.learningsupport_argame.R;
 
 public class ItemsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private TextView mTextView;
-    private OnMyItemClickListener mOnMyItemClickListener;
+    private OnModelItemClickListener mOnModelItemClickListener;
     private Item mItem;
 
     public ItemsViewHolder(@NonNull View itemView) {
@@ -26,11 +26,11 @@ public class ItemsViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     @Override
     public void onClick(View v) {
-        if (mOnMyItemClickListener != null && mItem != null)
-            mOnMyItemClickListener.onMyItemClick(mItem);
+        if (mOnModelItemClickListener != null && mItem != null)
+            mOnModelItemClickListener.onMyItemClick(mItem);
     }
 
-    public void setOnMyItemClickListener(OnMyItemClickListener itemClickListener) {
-        mOnMyItemClickListener = itemClickListener;
+    public void setOnModelItemClickListener(OnModelItemClickListener itemClickListener) {
+        mOnModelItemClickListener = itemClickListener;
     }
 }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LearningSupport_ARGame</string>
+    <string name="armodel_plane_finding">Searching for surfaces&#8230;</string>
 </resources>
