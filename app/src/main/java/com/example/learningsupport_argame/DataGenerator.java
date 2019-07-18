@@ -15,7 +15,7 @@ import com.example.learningsupport_argame.Fragment.ShetuanFragment;
 public class DataGenerator {
     public static final int []mTabRes = new int[]{R.drawable.aixin,R.drawable.shetuan,R.drawable.fujin,R.drawable.haoyouall};//图标
     public static final int []mTabResPressed = new int[]{R.drawable.aixinselected,R.drawable.shetuanselected,R.drawable.fujinselected,R.drawable.haoyouallselected};
-    public static final String []mTabTitle = new String[]{"我的好友","社团","附件","所有人"};//title
+    public static final String []mTabTitle = new String[]{"我的好友","社团","附近","所有人"};//title
 
     public static Fragment[] getFragments(String from){//
         Fragment fragments[] = new Fragment[4];
@@ -34,10 +34,13 @@ public class DataGenerator {
      */
     public static View getTabView(Context context, int position){
         View view = LayoutInflater.from(context).inflate(R.layout.friendlist_tab_layout,null);
-        ImageView tabIcon = (ImageView) view.findViewById(R.id.tab_content_image);
-        tabIcon.setImageResource(DataGenerator.mTabRes[position]);
         TextView tabText = (TextView) view.findViewById(R.id.tab_content_text);
         tabText.setText(mTabTitle[position]);
+        ImageView tabIcon = (ImageView) view.findViewById(R.id.tab_content_image);
+        tabIcon.setImageResource(DataGenerator.mTabRes[position]);
+        tabIcon.getLayoutParams().height = 80;
+        tabIcon.getLayoutParams().width = 80;
+
         return view;
     }
 }

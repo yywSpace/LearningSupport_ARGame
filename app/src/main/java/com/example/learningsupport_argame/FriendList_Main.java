@@ -37,15 +37,19 @@ public class FriendList_Main extends AppCompatActivity {
                     TextView text = (TextView) view.findViewById(R.id.tab_content_text);
                     if(i == tab.getPosition()){ // 选中状态
                         icon.setImageResource(DataGenerator.mTabResPressed[i]);
+
+                        text.setText(DataGenerator.mTabTitle[i]);
                         text.setTextColor(getResources().getColor(android.R.color.black));
                     }else{// 未选中状态
                         icon.setImageResource(DataGenerator.mTabRes[i]);
+                        text.setText(DataGenerator.mTabTitle[i]);
                         text.setTextColor(getResources().getColor(android.R.color.darker_gray));
                     }
                 }
 
 
             }
+
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
@@ -59,8 +63,15 @@ public class FriendList_Main extends AppCompatActivity {
         });
         // 提供自定义的布局添加Tab
         for(int i=0;i<4;i++){
-            mTabLayout.addTab(mTabLayout.newTab().setCustomView(DataGenerator.getTabView(this,i)));
+            mTabLayout.addTab(mTabLayout.newTab().setText(DataGenerator.mTabTitle[i]).setCustomView(DataGenerator.getTabView(this,i)));
         }
+//        for(int i=0;i<4;i++){
+//            mTabLayout.getTabAt(i).setText(DataGenerator.mTabTitle[i]);
+//        }
+//        for(int i=0;i<4;i++){
+//            mTabLayout.getTabAt(i).setCustomView(DataGenerator.getTabView(this,i));
+//        }
+
 
     }
 
