@@ -18,7 +18,7 @@
         android:alpha="0.6"
         android:background="@android:color/darker_gray"
         />
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/bottom_tab_layout"
         android:layout_width="match_parent"
         app:tabIndicatorHeight="0dp"
@@ -26,6 +26,6 @@
         app:tabTextColor="@android:color/darker_gray"
         android:layout_height="wrap_content">
 
-    </android.support.design.widget.TabLayout>
+    </com.google.android.material.tabs.TabLayout>
 
 </LinearLayout>

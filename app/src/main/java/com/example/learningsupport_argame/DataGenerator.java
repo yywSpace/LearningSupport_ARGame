@@ -1,16 +1,16 @@
 package com.example.learningsupport_argame;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.learningsupport_argame.Fragment.FujinFragment;
-import com.example.learningsupport_argame.Fragment.HaoyouAllFragment;
-import com.example.learningsupport_argame.Fragment.HaoyouFragment;
-import com.example.learningsupport_argame.Fragment.ShetuanFragment;
+import com.example.learningsupport_argame.fragmentPak.FujinFragment;
+import com.example.learningsupport_argame.fragmentPak.HaoyouAllFragment;
+import com.example.learningsupport_argame.fragmentPak.HaoyouFragment;
+import com.example.learningsupport_argame.fragmentPak.ShetuanFragment;
 
 public class DataGenerator {
     public static final int []mTabRes = new int[]{R.drawable.aixin,R.drawable.shetuan,R.drawable.fujin,R.drawable.haoyouall};//图标
