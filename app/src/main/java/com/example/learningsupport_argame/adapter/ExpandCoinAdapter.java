@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.learningsupport_argame.bean.PairInfoBean;
@@ -65,6 +66,7 @@ public class ExpandCoinAdapter extends BaseExpandableListAdapter {
        convertView= LayoutInflater.from(context).inflate(R.layout.item_coin_sel_parent,null);
         TextView textView=convertView.findViewById(R.id.tv_parent);
         textView.setText(parentList.get(groupPosition));
+        textView.setTextSize(30);
         return convertView;
     }
 
@@ -73,6 +75,13 @@ public class ExpandCoinAdapter extends BaseExpandableListAdapter {
         convertView= LayoutInflater.from(context).inflate(R.layout.item_coin_sel_child,null);
         TextView textView=convertView.findViewById(R.id.tv_coin_name);
         textView.setText(childList.get(groupPosition).get(childPosition).pairName);
+        TextView textView1=convertView.findViewById(R.id.tv_coin_signature);
+        textView1.setText("这里放TA的个性签名。");
+        ImageView  imageView=convertView.findViewById(R.id.tv_coin_image);
+        imageView.setImageResource(R.drawable.ic_launcher_foreground);
+        imageView.getLayoutParams().width=200;
+        imageView.getLayoutParams().height=200;
+
         return convertView;
     }
 

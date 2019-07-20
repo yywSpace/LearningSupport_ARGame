@@ -1,5 +1,7 @@
 package com.example.learningsupport_argame.bean;
 
+import android.graphics.Bitmap;
+
 /**
  * 币对信息
  *
@@ -12,5 +14,6 @@ public class PairInfoBean  {
     public String pairName;
     public String pairUnit;
     public String pairUnitId;
+    public Bitmap image;
 
 }

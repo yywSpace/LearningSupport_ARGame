@@ -104,6 +104,7 @@ public class HaoyouAllFragment extends Fragment {
             for (int j=0;j<10;j++){
                 PairInfoBean pairInfoBean=new PairInfoBean();
                 pairInfoBean.pairName=a+"/"+j;
+
                 pairInfoBeanList.add(pairInfoBean);
             }
             childList.add(pairInfoBeanList);

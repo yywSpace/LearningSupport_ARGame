@@ -36,6 +36,7 @@ public class DataGenerator {
         View view = LayoutInflater.from(context).inflate(R.layout.friendlist_tab_layout,null);
         TextView tabText = (TextView) view.findViewById(R.id.tab_content_text);
         tabText.setText(mTabTitle[position]);
+
         ImageView tabIcon = (ImageView) view.findViewById(R.id.tab_content_image);
         tabIcon.setImageResource(DataGenerator.mTabRes[position]);
         tabIcon.getLayoutParams().height = 80;
