@@ -8,4 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <declare-styleable name="RoundImageView">
+
+        <attr name="radius" format="reference|dimension" />
+
+    </declare-styleable>
+
+
 </resources>
+
