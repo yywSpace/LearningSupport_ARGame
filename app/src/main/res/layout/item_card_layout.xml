@@ -34,7 +34,7 @@
 
             android:src="@drawable/img_avatar_01"
 
-            app:radius="7.5dp" />
+            app:radius="9dp" />
 
 
         <ImageView
@@ -53,7 +53,7 @@
 
             android:alpha="0"
 
-            android:src="@drawable/fujin" />
+            android:src="@drawable/zuojiantou" />
 
 
         <ImageView
@@ -70,7 +70,7 @@
 
             android:alpha="0"
 
-            android:src="@drawable/fujin" />
+            android:src="@drawable/next" />
 
 
     </RelativeLayout>
