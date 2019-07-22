@@ -4,6 +4,7 @@ package com.example.learningsupport_argame.other;
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -19,6 +20,7 @@ public class CardItemTouchHelperCallBack<T> extends ItemTouchHelper.Callback {
     private List<T> dataList;
 
     private OnSwipeListener<T> mListener;
+
 
 
     public CardItemTouchHelperCallBack(@NonNull RecyclerView.Adapter adapter, @NonNull List<T> dataList) {
@@ -124,6 +126,7 @@ public class CardItemTouchHelperCallBack<T> extends ItemTouchHelper.Callback {
         // 移除 onTouchListener,否则触摸滑动会乱了
 
         viewHolder.itemView.setOnTouchListener(null);
+
 
         int layoutPosition = viewHolder.getLayoutPosition();
 

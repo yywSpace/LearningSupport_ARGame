@@ -9,9 +9,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -28,11 +32,30 @@ import java.util.List;
 public class FujinFragment extends Fragment {
     private List<Integer> list = new ArrayList<>();
     private Context con;
+    private Integer lastcard;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fujin_fragment_layout, container, false);
+
+
+//       talkbutton.setOnClickListener(new View.OnClickListener() {
+//           @Override
+//           public void onClick(View view) {
+//               Toast.makeText(con,"这里处理事件",Toast.LENGTH_SHORT).show();
+//               talkbutton.getBackground().setAlpha(50);
+//               try {
+//                   Thread.sleep(50);
+//               } catch (InterruptedException e) {
+//                   e.printStackTrace();
+//               }
+//               talkbutton.getBackground().setAlpha(0);
+//               Log.d("inlog", "进入事件处理 " );
+//
+//           }
+//       });
 
         return view;
     }
@@ -42,12 +65,31 @@ public class FujinFragment extends Fragment {
         super.onStart();
         initView();
         initData();
+
+//        talkbutton.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                if (motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+//                    talkbutton.getBackground().setAlpha(50);
+//                }
+//                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+//                    talkbutton.getBackground().setAlpha(0);
+//                    //这里处理事件。
+//                    Toast.makeText(con,"这里处理事件",Toast.LENGTH_SHORT).show();
+//                }
+//                Toast.makeText(con,"这里处理事  件",Toast.LENGTH_SHORT).show();
+//                return true;
+//            }
+//        });
+
+
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         con=this.getContext();
+
     }
 
     private void initView() {
@@ -86,6 +128,7 @@ public class FujinFragment extends Fragment {
 
                     myHolder.likeImageView.setAlpha(0f);
 
+
                 }
 
             }
@@ -103,6 +146,7 @@ public class FujinFragment extends Fragment {
                 myHolder.dislikeImageView.setAlpha(0f);
 
                 myHolder.likeImageView.setAlpha(0f);
+                lastcard=myHolder.avatarImageView.getId();
 
                 Toast.makeText(con, direction == CardConfig.SWIPED_LEFT ? "swiped left" : "swiped right", Toast.LENGTH_SHORT).show();
 
@@ -144,6 +188,11 @@ public class FujinFragment extends Fragment {
 
         touchHelper.attachToRecyclerView(recyclerView);
 
+    }
+
+    private void getLastCard(){
+
+//获得当前长度，总长-当前长既是位置，add到那个位置，在notify
     }
 
 
@@ -216,6 +265,9 @@ public class FujinFragment extends Fragment {
 
             ImageView dislikeImageView;
 
+            ImageButton talkbutton;
+            ImageButton infobutton;
+
 
 
             MyViewHolder(View itemView) {
@@ -228,15 +280,56 @@ public class FujinFragment extends Fragment {
 
                 dislikeImageView = (ImageView) itemView.findViewById(R.id.iv_dislike);
 
-            }
+                talkbutton=(ImageButton) itemView.findViewById(R.id.btn_talk);
+                infobutton=(ImageButton) itemView.findViewById(R.id.btn_info);
+                talkbutton.getBackground().setAlpha(0);
+                infobutton.getBackground().setAlpha(0);
+                talkbutton.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                        if (motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                           talkbutton.getBackground().setAlpha(70);
+                         }
+                        if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                         talkbutton.getBackground().setAlpha(0);
+                         //这里处理事件。
+                            Toast.makeText(con,"这里处理事件",Toast.LENGTH_SHORT).show();
+
+                }
+               // Toast.makeText(con,"这里处理事  件",Toast.LENGTH_SHORT).show();
+                return false;
+
+            }});
+
+
+
+                infobutton.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                            if (motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                                infobutton.getBackground().setAlpha(70);
+                            }
+                            if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                                infobutton.getBackground().setAlpha(0);
+                                //这里处理事件。
+                                Toast.makeText(con,"这里处理事件",Toast.LENGTH_SHORT).show();
+                                return false;
+                            }
+                        return false;
+                    }
+                });
+
+
 
 
 
         }
 
-    }
+    }}}
 
-}
+
 
 
 
