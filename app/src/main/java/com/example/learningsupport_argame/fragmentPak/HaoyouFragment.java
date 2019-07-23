@@ -7,11 +7,22 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.adapter.MsgAdapter;
+import com.example.learningsupport_argame.bean.Msg;
+import com.example.learningsupport_argame.util.MsgUtil;
+
+import java.util.List;
 
 public class HaoyouFragment extends Fragment {
 
+    private ListView listView;
+
+    private List<Msg> msgList;
+
+    private MsgAdapter adapter;
 
     @Nullable
     @Override
@@ -20,4 +31,21 @@ public class HaoyouFragment extends Fragment {
         View view = inflater.inflate(R.layout.haoyou_fragment_layout, container, false);
         return view;
     }
-}
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+                listView = getActivity().findViewById(R.id.listview);
+
+                msgList = MsgUtil.getMsgList();
+
+                adapter = new MsgAdapter(msgList,getContext());
+
+                listView.setAdapter(adapter);
+
+            }
+
+        }
+
