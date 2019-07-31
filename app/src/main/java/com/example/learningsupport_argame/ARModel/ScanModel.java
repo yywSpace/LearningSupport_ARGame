@@ -11,9 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.learningsupport_argame.ARModel.Items.ModelInfo;
+import com.example.learningsupport_argame.ARModel.Items.ModelInfoLab;
 import com.example.learningsupport_argame.ARModel.Utils.DemoUtils;
+import com.example.learningsupport_argame.ARModel.Utils.LocationSensor;
+import com.example.learningsupport_argame.ARModel.Utils.Vector3Utils;
 import com.example.learningsupport_argame.R;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
@@ -25,12 +30,12 @@ import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.TransformableNode;
 import com.google.ar.sceneform.ux.TransformationSystem;
 
-// 以放置时所记录，camera位置高度，当作当前所在高度
 public class ScanModel extends AppCompatActivity {
     private static final String TAG = ScanModel.class.getSimpleName();
     private ArSceneView mArSceneView;
@@ -38,6 +43,10 @@ public class ScanModel extends AppCompatActivity {
     private FloatingActionButton mPutModelButton;
     private boolean installRequested;
     private ModelRenderable mModelRenderable;
+    private ModelInfoLab mModelInfoLab;
+
+    TextView mMessageTextView;
+    LocationSensor mLocationSensor;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,11 +54,16 @@ public class ScanModel extends AppCompatActivity {
         setContentView(R.layout.armodel_activity_scan_model);
         mArSceneView = findViewById(R.id.aomodel_ar_scene_view);
         mPutModelButton = findViewById(R.id.armodel_model_put_test);
+        mMessageTextView = findViewById(R.id.armodel_node_message);
+        mModelInfoLab = ModelInfoLab.get();
+        mLocationSensor = LocationSensor.get(this);
         mPutModelButton.setOnClickListener(v -> {
             if (mArSceneView == null)
                 return;
-            Vector3 transform = new Vector3(0, -.5f, -1);
-            Pose pose = Pose.makeTranslation(transform.x, transform.y, transform.z);
+            //Vector3 transform = displayModel(mModelInfoLab.getModelInfoList().get(0));
+            //Vector3 transform = new Vector3(0, -.5f, -1);
+
+            Pose pose = displayModel(mModelInfoLab.getModelInfoList().get(0));
             //当Frame处于跟踪状态再继续
             if (mArSceneView.getArFrame().getCamera().getTrackingState() != TrackingState.TRACKING) {
                 Toast.makeText(ScanModel.this, "NO_TRACKING", Toast.LENGTH_SHORT).show();
@@ -104,6 +118,7 @@ public class ScanModel extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mLocationSensor.onResume();
         if (mArSceneView == null) {
             return;
         }
@@ -139,6 +154,7 @@ public class ScanModel extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
+        mLocationSensor.onPause();
         if (mArSceneView != null) {
             mArSceneView.pause();
         }
@@ -207,5 +223,31 @@ public class ScanModel extends AppCompatActivity {
 
         loadingMessageSnackbar.dismiss();
         loadingMessageSnackbar = null;
+    }
+
+    Pose displayModel(ModelInfo modelInfo) {
+        //算出当前相机位置到模型位置的向量（向量间减法）
+        Vector3 transform = Vector3.forward();//Vector3Utils.sub(modelInfo.getModelPosition(), modelInfo.getCameraPosition());
+        float currentDegree = mLocationSensor.getCurrentDegree();
+        float originalDegree = modelInfo.getCurrentDegree();
+        float rotation = (currentDegree - originalDegree);
+        mMessageTextView.setText("CurrentDegree: " + currentDegree +
+                "\nOriginalDegree:" + originalDegree +
+                "\nrotation:" + rotation);
+        Toast.makeText(this, transform + "", Toast.LENGTH_SHORT).show();
+        float zRotated = (float) (transform.z * Math.cos(rotation) - transform.x * Math.sin(rotation));
+        // 根据深度和方向角计算xz平面上的x的大小
+        float xRotated = (float) -(transform.z * Math.sin(rotation) + transform.x * Math.cos(rotation));
+        //Pose pose = Pose.makeTranslation(new float[]{xRotated, transform.y, zRotated});
+        // 第二个参数指的是，模型的旋转
+        Pose pose = new Pose(
+                new float[]{xRotated, transform.y, zRotated},
+                new float[]{
+                        modelInfo.getModelRotation().x,
+                        modelInfo.getModelRotation().y,
+                        modelInfo.getModelRotation().z,
+                        modelInfo.getModelRotation().w
+                });
+        return pose;
     }
 }

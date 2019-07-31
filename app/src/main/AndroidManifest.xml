@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.learningsupport_argame">
+    <!--前台服务权限-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+
     <!-- Both "AR Optional" and "AR Required" apps require CAMERA permission. -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- Indicates that app requires ARCore ("AR Required"). Ensures app is only
@@ -23,7 +27,7 @@
         <meta-data android:name="com.google.ar.core" android:value="required" />
 
 
-        <activity android:name=".ARModel.PutModel">
+        <activity android:name=".MonitorModel.MonitorActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,6 +35,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ARModel.ScanModel"/>
+        <activity android:name=".ARModel.PutModel"/>
+        <service android:name=".MonitorModel.MonitorService"/>
     </application>
 
 </manifest>

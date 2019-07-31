@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="20dp"
+    android:paddingTop="10dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="10dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/monitor_notification_task_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12345"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开始时间：" />
+
+            <TextView
+                android:id="@+id/monitor_notification_task_begin_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开始时间" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="剩余时间：" />
+
+            <TextView
+                android:id="@+id/monitor_notification_task_remaining_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="剩余时间" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="手机使用时间：" />
+
+            <TextView
+                android:id="@+id/monitor_notification_task_phone_use_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="手机使用时间" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="结束时间：" />
+
+
+            <TextView
+                android:id="@+id/monitor_notification_task_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="结束时间" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="手机使用次数：" />
+
+            <TextView
+                android:id="@+id/monitor_notification_task_phone_use_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="手机使用次数" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="专注时间：" />
+
+            <TextView
+                android:id="@+id/monitor_notification_task_attention_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="专注时间" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

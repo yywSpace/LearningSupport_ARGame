@@ -11,9 +11,8 @@ public class ModelInfo {
     private float mCurrentDegree;     // 手机当前朝向
     private Vector3 mCameraPosition; // 相机世界坐标
 
-    public ModelInfo(Quaternion rotation, Vector3 scale, Vector3 position, float currentDegree) {
+    public ModelInfo(Quaternion rotation, Vector3 scale, Vector3 position) {
         setModelRotation(rotation);
-        setCurrentDegree(currentDegree);
         setModelPosition(position);
         setModelScale(scale);
     }

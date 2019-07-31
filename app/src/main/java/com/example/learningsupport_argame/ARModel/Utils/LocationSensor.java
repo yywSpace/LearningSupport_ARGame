@@ -40,11 +40,8 @@ public class LocationSensor implements SensorEventListener {
             magneticFieldValues = event.values;
         }
         float[] values = calculateOrientation();
-        if (degreeQueue.size() == 5) {
-            degreeQueue.poll();
-        }
-        degreeQueue.offer(values[0]);
-        mCurrentDegree = (float) Math.round(Math.toDegrees(calculateDegree(degreeQueue)) * 100) / 100;
+
+        mCurrentDegree = (float) Math.round(Math.toDegrees(values[0]) * 100) / 100;
     }
 
     @Override
@@ -67,13 +64,13 @@ public class LocationSensor implements SensorEventListener {
                 Sensor.TYPE_MAGNETIC_FIELD);
     }
 
-    private float calculateDegree(Queue<Float> degreeQueue) {
-        return (float) degreeQueue
-                .stream()
-                .mapToDouble(Float::floatValue)
-                .average()
-                .getAsDouble();
-    }
+//    private float calculateDegree(Queue<Float> degreeQueue) {
+//        return (float) degreeQueue
+//                .stream()
+//                .mapToDouble(Float::floatValue)
+//                .average()
+//                .getAsDouble();
+//    }
 
     public static LocationSensor get(Context context) {
         if (sLocationSensor == null) {
@@ -90,7 +87,15 @@ public class LocationSensor implements SensorEventListener {
      * @return 返回手机当前的方向角
      */
     public float getCurrentDegree() {
-        return mCurrentDegree;
+        if (mCurrentDegree > -45 && mCurrentDegree < 45)
+            return 0;// 北
+        else if (mCurrentDegree < -45 && mCurrentDegree > -135)
+            return -90;//西
+        else if (mCurrentDegree < -135 || mCurrentDegree > 135)
+            return -180;//南
+        else if (mCurrentDegree < 135 && mCurrentDegree > 45)
+            return 90;//东
+        else return 0;
     }
 
 }

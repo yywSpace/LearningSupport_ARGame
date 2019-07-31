@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO: 19-7-14 模型放置，扫描流程
+//由于方向传感器的误差过大，在放置模型及检测模型时，强行调整模型的方向为正北，正南，正东，正西
 // 假设在放置第一个模型的时候确定手机位置为世界坐标 (0 0 0)
 // 放置节点
 // 放置时记录当前手机当前经纬度作为原点, 当前手机朝向为初始朝向
@@ -66,6 +67,7 @@ import java.util.List;
  * <li>点击模型，用XYZ按钮确定位置（可放置任意位置）</li>
  * <li>手机扫描出平面后，直接将模型拖动至平面（只能在检测出的平面上）</li>
  * </ol>
+ * <p>
  *
  * <p>此类用于放置模型，放置模型时要记录模型的各项信息包括:</p>
  * <ol>
@@ -104,9 +106,10 @@ public class PutModel extends AppCompatActivity {
     private Button mChangeXBtn;
     private Button mChangeYBtn;
     private Button mChangeZBtn;
-    private float increment = .1f;
+    private float increment = -.1f;
 
     LocationSensor mLocationSensor;
+    ModelInfo modelInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,6 +122,46 @@ public class PutModel extends AppCompatActivity {
 
         setContentView(R.layout.armodel_activity_put_model);
         mArFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.armodel_put_fragment);
+        mArFragment.getArSceneView()
+                .getScene()
+                .addOnUpdateListener(
+                        frameTime -> {
+
+
+                            Frame frame = mArFragment.getArSceneView().getArFrame();
+                            if (frame == null) {
+                                return;
+                            }
+
+                            if (frame.getCamera().getTrackingState() != TrackingState.TRACKING) {
+                                return;
+                            }
+                            Camera camera = mArFragment.getArSceneView().getScene().getCamera();
+
+
+
+                            mNodeMessageTextView.setText(
+                                    "Camera\n" +
+                                            "Rotation:" + camera.getWorldRotation() + "/n" +
+                                            "MaxScale:" + camera.getWorldScale() + "\n" +
+                                            "Position:" + camera.getWorldPosition() + "\n");
+
+                            //mNodeMessageTextView.setText(mModelInfos.get(0).getCurrentDegree() + "");
+//                            mNodeMessageTextView.setText(
+//                                    "Camera\n" +
+//                                            "Rotation:" + camera.getWorldRotation() + "/n" +
+//                                            "MaxScale:" + camera.getWorldScale() + "\n" +
+//                                            "Position:" + camera.getWorldPosition() + "\n" +
+//                                            "Model\n" +
+//                                            "Rotation:" + mSelectModel.getWorldRotation() + "/n" +
+//                                            "MaxScale:" + mSelectModel.getWorldScale() + "\n" +
+//                                            "Position:" + mSelectModel.getWorldPosition());
+//                            Log.d(TAG, "Rotation:" + mSelectModel.getWorldRotation() + "\n" +
+//                                    "MaxScale:" + mSelectModel.getWorldScale() + "\n" +
+//                                    "Position:" + mSelectModel.getWorldPosition());
+
+                        });
+
 
         mNodeMessageTextView = findViewById(R.id.armodel_node_message);
         mItemsLab = ItemsLab.get();
@@ -131,17 +174,17 @@ public class PutModel extends AppCompatActivity {
             if (mSelectModel == null)
                 return;
             Toast.makeText(this, "放置模型成功", Toast.LENGTH_SHORT).show();
-            ModelInfo modelInfo = new ModelInfo(
+            modelInfo = new ModelInfo(
                     mSelectModel.getWorldRotation(),
                     mSelectModel.getWorldScale(),
-                    mSelectModel.getWorldPosition(),
-                    mLocationSensor.getCurrentDegree());
+                    mSelectModel.getWorldPosition());
+            modelInfo.setCurrentDegree(mLocationSensor.getCurrentDegree());
             modelInfo.setCameraPosition(mArFragment.getArSceneView().getScene().getCamera().getWorldPosition());
             mModelInfos.add(modelInfo);
         });
-        mScanModelButton= findViewById(R.id.armodel_model_scan_button);
+        mScanModelButton = findViewById(R.id.armodel_model_scan_button);
         mScanModelButton.setOnClickListener(v -> {
-            Intent intent = new Intent(PutModel.this,ScanModel.class);
+            Intent intent = new Intent(PutModel.this, ScanModel.class);
             startActivity(intent);
         });
 
@@ -178,7 +221,6 @@ public class PutModel extends AppCompatActivity {
         mItemsAdapter = new ItemsAdapter(this, mItems);
         mItemsRecyclerView.setAdapter(mItemsAdapter);
         mItemsAdapter.setOnModelItemClickListener(item -> {
-
             mItemsPopupWindow.dismiss();
             hasShowItemsPopupWindow = false;
 //            if (!hasSetToPanel)
@@ -215,6 +257,13 @@ public class PutModel extends AppCompatActivity {
                                     return null;
                                 });
             }
+            Camera camera = mArFragment.getArSceneView().getScene().getCamera();
+
+            mNodeMessageTextView.setText(
+                    "Camera\n" +
+                            "Rotation:" + camera.getWorldRotation() + "/n" +
+                            "MaxScale:" + camera.getWorldScale() + "\n" +
+                            "Position:" + camera.getWorldPosition() + "\n");
             Toast.makeText(PutModel.this, item.getItemName(), Toast.LENGTH_SHORT).show();
         });
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -257,6 +306,7 @@ public class PutModel extends AppCompatActivity {
 
         Toast.makeText(this, "createAnchorNode", Toast.LENGTH_SHORT).show();
         Vector3 transform = new Vector3(0, 0, -1);
+        transform = Vector3.add(arFragment.getArSceneView().getScene().getCamera().getWorldPosition(),transform);
         // Pose可理解为带有Rotation和Transform的一个描述对象
         // TODO: 19-7-14 在显示模型时可同时设置 Rotation和Transform, 测试Transform和Rotation, 了解Point和Pose的区别
         Pose pose = Pose.makeTranslation(transform.x, transform.y, transform.z);
@@ -286,12 +336,11 @@ public class PutModel extends AppCompatActivity {
             mSelectModel = model;
             mNodeMessageTextView.setText(
                     "Camera\n" +
-                            "Position:" + camera.getWorldPosition() + "\n" +
-                            "Rotation:" + camera.getWorldRotation() + "n" +
+                            "Rotation:" + camera.getWorldRotation() + "/n" +
                             "MaxScale:" + camera.getWorldScale() + "\n" +
                             "Position:" + camera.getWorldPosition() + "\n" +
                             "Model\n" +
-                            "Rotation:" + model.getWorldRotation() + "n" +
+                            "Rotation:" + model.getWorldRotation() + "/n" +
                             "MaxScale:" + model.getWorldScale() + "\n" +
                             "Position:" + model.getWorldPosition());
             Log.d(TAG, "Rotation:" + model.getWorldRotation() + "\n" +
