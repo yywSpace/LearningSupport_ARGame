@@ -3,7 +3,9 @@ package com.example.learningsupport_argame.MonitorModel;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
@@ -102,6 +104,18 @@ public class MonitorService extends Service {
                             .setCustomContentView(mRemoteViews)
                             .setOnlyAlertOnce(true)
                             .build();
+
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.setAction(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    intent.setComponent(new ComponentName(MonitorService.this.getPackageName(),MonitorService.this.getPackageName()+".MonitorModel.MonitorActivity"));
+
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    // 点击跳转到主界面
+                    PendingIntent intent_go = PendingIntent.getActivity(getApplicationContext(), 5, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+                    mRemoteViews.setOnClickPendingIntent(R.id.monitor_notification, intent_go);
+
 
                     mRemoteViews.setTextViewText(R.id.monitor_notification_task_name, mTask.getTaskName());
                     mRemoteViews.setTextViewText(R.id.monitor_notification_task_remaining_time, second2Time(mRemainingTime));
