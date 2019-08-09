@@ -8,43 +8,42 @@ public class MonitorInfo {
     public static final String TASK_REMANDING_TIME = "mRemainingTime";
 
 
-    private int mMonitorLevel; // 监督等级
+   // private int mMonitorLevel; // 监督等级
 
-    private int mMonitorTaskScreenOnTime; //任务过程中手机亮屏时间
+    private float mTaskTotalTime;
+    private float mMonitorTaskScreenOnTime; //任务过程中手机亮屏时间
 
-    private int mMonitorTaskScreenOffTime; //任务过程中手机非亮屏时间
+    private float mMonitorTaskScreenOffTime; //任务过程中手机非亮屏时间
 
-    private int mMonitorScreenOnAttentionSpan; //亮屏过程中专注时间
+    private float mMonitorScreenOnAttentionSpan; //亮屏过程中专注时间
 
-    private int mMonitorScreenOnInattentionSpan; //亮屏过程中不专注时间
+    private float mMonitorPhoneUseCount;//任务过程手机使用次数
 
-    private int mMonitorPhoneUseCount;//任务过程手机使用次数
-
-    public int getMonitorLevel() {
-        return mMonitorLevel;
-    }
-
-    public void setMonitorLevel(int monitorLevel) {
-        mMonitorLevel = monitorLevel;
-    }
-
-    public int getMonitorTaskScreenOnTime() {
+    public float getMonitorTaskScreenOnTime() {
         return mMonitorTaskScreenOnTime;
     }
 
-    public void setMonitorTaskScreenOnTime(int monitorTaskScreenOnTime) {
+    public void setMonitorTaskScreenOnTime(float monitorTaskScreenOnTime) {
         mMonitorTaskScreenOnTime = monitorTaskScreenOnTime;
     }
 
-    public int getMonitorTaskScreenOffTime() {
-        return mMonitorTaskScreenOffTime;
+    public float getTaskTotalTime() {
+        return mTaskTotalTime;
     }
 
-    public void setMonitorTaskScreenOffTime(int monitorTaskScreenOffTime) {
+    public void setTaskTotalTime(float taskTotalTime) {
+        mTaskTotalTime = taskTotalTime;
+    }
+
+    public float getMonitorTaskScreenOffTime() {
+        return mTaskTotalTime - mMonitorTaskScreenOnTime;
+    }
+
+    public void setMonitorTaskScreenOffTime(float monitorTaskScreenOffTime) {
         mMonitorTaskScreenOffTime = monitorTaskScreenOffTime;
     }
 
-    public int getMonitorScreenOnAttentionSpan() {
+    public float getMonitorScreenOnAttentionSpan() {
         return mMonitorScreenOnAttentionSpan;
     }
 
@@ -52,15 +51,12 @@ public class MonitorInfo {
         mMonitorScreenOnAttentionSpan = monitorScreenOnAttentionSpan;
     }
 
-    public int getMonitorScreenOnInattentionSpan() {
+    public float getMonitorScreenOnInattentionSpan() {
         return mMonitorTaskScreenOnTime - mMonitorScreenOnAttentionSpan;
     }
 
-    public void setMonitorScreenOnInattentionSpan(int monitorScreenOnInattentionSpan) {
-        mMonitorScreenOnInattentionSpan = monitorScreenOnInattentionSpan;
-    }
 
-    public int getMonitorPhoneUseCount() {
+    public float getMonitorPhoneUseCount() {
         return mMonitorPhoneUseCount;
     }
 
