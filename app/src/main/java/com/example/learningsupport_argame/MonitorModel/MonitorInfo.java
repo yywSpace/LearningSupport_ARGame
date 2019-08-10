@@ -30,9 +30,8 @@ public class MonitorInfo {
     }
 
     public float getTaskTotalTime() {
-        return MonitorService.remainingTime(getTaskBeginTime(),getTaskEndTime());
+        return MonitorService.remainingTime(getTaskBeginTime(), getTaskEndTime());
     }
-
 
 
     public float getMonitorTaskScreenOffTime() {

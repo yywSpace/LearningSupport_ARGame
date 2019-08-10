@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:text="下图为用户的手机使用情况雷达图"
+        android:text="用户手机使用情况雷达图"
         android:textAlignment="center" />
     <com.github.mikephil.charting.charts.RadarChart
         android:id="@+id/radar_chart"

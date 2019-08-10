@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MonitorInfoLab {
     private static String TAG = MonitorInfoLab.class.getSimpleName();
@@ -21,7 +20,7 @@ public class MonitorInfoLab {
         monitorInfo.setTaskBeginTime("2019/08/01/12:00");
         monitorInfo.setTaskEndTime("2019/08/01/12:50");
         monitorInfo.setMonitorPhoneUseCount(10);
-        monitorInfo.setMonitorScreenOnAttentionSpan(100);
+        monitorInfo.setMonitorScreenOnAttentionSpan(70);
         monitorInfo.setMonitorTaskScreenOnTime(100);
         mMonitorInfoList.add(monitorInfo);
         monitorInfo = new MonitorInfo();
@@ -35,7 +34,7 @@ public class MonitorInfoLab {
         monitorInfo.setTaskBeginTime("2019/08/07/4:00");
         monitorInfo.setTaskEndTime("2019/08/07/5:30");
         monitorInfo.setMonitorPhoneUseCount(30);
-        monitorInfo.setMonitorScreenOnAttentionSpan(100);
+        monitorInfo.setMonitorScreenOnAttentionSpan(50);
         monitorInfo.setMonitorTaskScreenOnTime(100);
         mMonitorInfoList.add(monitorInfo);
 
@@ -43,7 +42,7 @@ public class MonitorInfoLab {
         monitorInfo.setTaskBeginTime("2019/07/02/1:00");
         monitorInfo.setTaskEndTime("2019/07/02/2:50");
         monitorInfo.setMonitorPhoneUseCount(20);
-        monitorInfo.setMonitorScreenOnAttentionSpan(100);
+        monitorInfo.setMonitorScreenOnAttentionSpan(50);
         monitorInfo.setMonitorTaskScreenOnTime(100);
         mMonitorInfoList.add(monitorInfo);
         monitorInfo = new MonitorInfo();
@@ -124,11 +123,15 @@ public class MonitorInfoLab {
         List<MonitorInfo> infoList = new ArrayList<>();
         String monthRange = getFirstAndLastOfMonth(dataStr);
         String[] range = monthRange.split("-");
+        Log.d(TAG, "monthRange: " + monthRange);
         for (int i = 0; i < mMonitorInfoList.size(); i++) {
             String currentTime = mMonitorInfoList.get(i).getTaskBeginTime().substring(0, 10);
+            Log.d(TAG, "currentTime: "+currentTime);
             if (inTheTwoDate(currentTime, range[0], range[1]))
                 infoList.add(mMonitorInfoList.get(i));
         }
+        Log.d(TAG, infoList.size()+"");
+
         return infoList;
     }
     /**
@@ -151,6 +154,11 @@ public class MonitorInfoLab {
 
         //获取当前月最后一天
         Calendar ca = Calendar.getInstance();
+        try {
+            ca.setTime(new SimpleDateFormat("yyyy/MM/dd").parse(dataStr));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
         String last = new SimpleDateFormat("yyyy/MM/dd").format(ca.getTime());
         return first+"-"+last;

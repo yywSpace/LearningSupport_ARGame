@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:text="LineChart"
+        android:text="用户手机使用情况折线图"
         android:textAlignment="center" />
 
 
@@ -19,6 +19,28 @@
         android:layout_height="0dp"
         android:layout_weight="10" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_weight=".5">
+
+        <TextView
+            android:id="@+id/feedback_line_chart_p"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="60dp"
+            android:text="上一星期" />
+
+
+        <TextView
+            android:id="@+id/feedback_line_chart_n"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="下一星期" />
+    </LinearLayout>
+
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -26,20 +48,19 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <RadioButton
-            android:checked="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Today" />
 
         <RadioButton
+            android:id="@+id/feedback_line_chart_week"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="Week" />
 
         <RadioButton
+            android:id="@+id/feedback_line_chart_month"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Year" />
+            android:text="Month" />
     </RadioGroup>
 </LinearLayout>
