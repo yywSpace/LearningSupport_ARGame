@@ -27,12 +27,13 @@ import com.github.mikephil.charting.data.RadarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class RadarChartFragment extends Fragment {
     private MonitorInfoLab mMonitorInfoLab;
-    List<MonitorInfo> mMonitorInfosToday;
     List<MonitorInfo> mMonitorInfosWeek;
     List<MonitorInfo> mMonitorInfosMonth;
     RadarData mRadarData;
@@ -42,14 +43,18 @@ public class RadarChartFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMonitorInfoLab = MonitorInfoLab.get();
-        mMonitorInfosToday = mMonitorInfoLab.getMonitorInfoListToday();
-        mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek();
-        mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth();
-        RadarDataSet dataSetToday = getRadarEntries(mMonitorInfosToday, "Today", Color.BLUE);
+
+        //mMonitorInfosToday = mMonitorInfoLab.getMonitorInfoListToday();
+        Calendar c  = Calendar.getInstance();
+        String today = new SimpleDateFormat("yyyy/MM/dd").format(c.getTime());
+
+        mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(today);
+        mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(today);
+        //RadarDataSet dataSetToday = getRadarEntries(mMonitorInfosToday, "Today", Color.BLUE);
         RadarDataSet dataSetWeek = getRadarEntries(mMonitorInfosWeek, "This Week", Color.DKGRAY);
         RadarDataSet dataSetMonth = getRadarEntries(mMonitorInfosMonth, "This Month", Color.MAGENTA);
         ArrayList<IRadarDataSet> sets = new ArrayList<>();
-        sets.add(dataSetToday);
+        //sets.add(dataSetToday);
         sets.add(dataSetWeek);
         sets.add(dataSetMonth);
         mRadarData = new RadarData(sets);

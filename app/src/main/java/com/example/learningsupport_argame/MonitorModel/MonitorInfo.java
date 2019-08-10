@@ -8,12 +8,14 @@ public class MonitorInfo {
     public static final String TASK_REMANDING_TIME = "mRemainingTime";
 
 
-   // private int mMonitorLevel; // 监督等级
+    // private int mMonitorLevel; // 监督等级
+    private String mTaskBeginTime;
 
-    private float mTaskTotalTime;
+    private String mTaskEndTime;
+
     private float mMonitorTaskScreenOnTime; //任务过程中手机亮屏时间
 
-    private float mMonitorTaskScreenOffTime; //任务过程中手机非亮屏时间
+    //private float mMonitorTaskScreenOffTime; //任务过程中手机非亮屏时间
 
     private float mMonitorScreenOnAttentionSpan; //亮屏过程中专注时间
 
@@ -28,20 +30,15 @@ public class MonitorInfo {
     }
 
     public float getTaskTotalTime() {
-        return mTaskTotalTime;
+        return MonitorService.remainingTime(getTaskBeginTime(),getTaskEndTime());
     }
 
-    public void setTaskTotalTime(float taskTotalTime) {
-        mTaskTotalTime = taskTotalTime;
-    }
+
 
     public float getMonitorTaskScreenOffTime() {
-        return mTaskTotalTime - mMonitorTaskScreenOnTime;
+        return getTaskTotalTime() - mMonitorTaskScreenOnTime;
     }
 
-    public void setMonitorTaskScreenOffTime(float monitorTaskScreenOffTime) {
-        mMonitorTaskScreenOffTime = monitorTaskScreenOffTime;
-    }
 
     public float getMonitorScreenOnAttentionSpan() {
         return mMonitorScreenOnAttentionSpan;
@@ -62,5 +59,21 @@ public class MonitorInfo {
 
     public void setMonitorPhoneUseCount(int monitorPhoneUseCount) {
         mMonitorPhoneUseCount = monitorPhoneUseCount;
+    }
+
+    public String getTaskBeginTime() {
+        return mTaskBeginTime;
+    }
+
+    public void setTaskBeginTime(String taskBeginTime) {
+        mTaskBeginTime = taskBeginTime;
+    }
+
+    public String getTaskEndTime() {
+        return mTaskEndTime;
+    }
+
+    public void setTaskEndTime(String taskEndTime) {
+        mTaskEndTime = taskEndTime;
     }
 }

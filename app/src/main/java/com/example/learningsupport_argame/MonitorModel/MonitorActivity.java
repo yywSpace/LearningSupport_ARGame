@@ -119,10 +119,12 @@ public class MonitorActivity extends AppCompatActivity {
                     stopService(mMonitorIntent);
                     unbindService(mServiceConnection);
                     MonitorInfo monitorInfo = new MonitorInfo();
-                    monitorInfo.setTaskTotalTime(mInitialRemainingTime);
+                    monitorInfo.setTaskBeginTime(mTask.getTaskStartAt());
+                    monitorInfo.setTaskEndTime(mTask.getTaskEndIn());
                     monitorInfo.setMonitorTaskScreenOnTime(Integer.parseInt(mTaskScreenOnTime.getText().toString()));
                     monitorInfo.setMonitorScreenOnAttentionSpan(Integer.parseInt(mAttentionTime.getText().toString()));
                     monitorInfo.setMonitorPhoneUseCount(Integer.parseInt(mPhoneUseCount.getText().toString()));
+
                     // 处理代码
                     break;
                 case 4: // 脱离任务地点，或不在

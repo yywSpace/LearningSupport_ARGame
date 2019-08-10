@@ -21,6 +21,7 @@ import com.example.learningsupport_argame.R;
 /**
  * 任务开始时创建，完成或失败后销毁
  * 用于向MonitorActivity传递各项信息
+ * 手机使用时间为任务时间
  */
 
 // todo 定位代码最后在实现（没有地图环境）
@@ -177,7 +178,7 @@ public class MonitorService extends Service {
     }
 
     // 2019/2/12/20:30
-    long remainingTime(String begin, String end) {
+    public static long remainingTime(String begin, String end) {
         String beginTime = begin.split("/")[3];
         String endTime = end.split("/")[3];
         int beginHour = Integer.parseInt(beginTime.split(":")[0]);
