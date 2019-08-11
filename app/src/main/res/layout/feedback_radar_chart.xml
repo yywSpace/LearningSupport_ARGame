@@ -11,17 +11,29 @@
         android:layout_marginBottom="10dp"
         android:text="用户手机使用情况雷达图"
         android:textAlignment="center" />
+
     <com.github.mikephil.charting.charts.RadarChart
         android:id="@+id/radar_chart"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2">
-    </com.github.mikephil.charting.charts.RadarChart>
+        android:layout_weight="2" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="
+            参数说明：\n
+            使用时间：在任务进行中所使用的手机时间\n
+            专注时间：任务过程中停留在锁屏界面及息屏时间之和\n
+            使用次数：任务过程中手机亮屏灭屏次数\n
+            失神时间：手机使用时不在锁屏界面的时间"
+            android:textSize="15dp" />
 
     </LinearLayout>
 

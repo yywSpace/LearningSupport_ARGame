@@ -79,7 +79,7 @@ public class RadarChartFragment extends Fragment {
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         XAxis xAxis = radarChart.getXAxis();
         xAxis.setValueFormatter(new IAxisValueFormatter() {
-            private final String[] mActivities = new String[]{"使用时间", "未使用时间", "专注时间", "失神时间", "使用次数"};
+            private final String[] mActivities = new String[]{"使用时间", "息屏时间", "专注时间", "失神时间", "使用次数"};
 
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
@@ -111,7 +111,7 @@ public class RadarChartFragment extends Fragment {
 
         for (MonitorInfo mi : monitorInfos) {
             usePhoneTime += mi.getMonitorTaskScreenOnTime();
-            attentionTime += mi.getMonitorScreenOnAttentionSpan();
+            attentionTime += mi.getMonitorAttentionTime();
             useCount += mi.getMonitorPhoneUseCount();
             totalTime += mi.getTaskTotalTime();
             unUsePhoneTime += mi.getMonitorTaskScreenOffTime();
@@ -120,7 +120,7 @@ public class RadarChartFragment extends Fragment {
         // 使用时间 专注时间 使用次数
         radarEntries.add(new RadarEntry(usePhoneTime / totalTime));
         radarEntries.add(new RadarEntry(unUsePhoneTime / totalTime));
-        radarEntries.add(new RadarEntry(attentionTime / usePhoneTime));
+        radarEntries.add(new RadarEntry(attentionTime / totalTime));
         radarEntries.add(new RadarEntry(inAttentionTime / usePhoneTime));
         radarEntries.add(new RadarEntry(useCount / 100));
 

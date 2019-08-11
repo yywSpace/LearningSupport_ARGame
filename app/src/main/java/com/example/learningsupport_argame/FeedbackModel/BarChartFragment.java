@@ -1,54 +1,95 @@
 package com.example.learningsupport_argame.FeedbackModel;
 
 
+import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
+import android.widget.TextView;
 
+import com.example.learningsupport_argame.MonitorModel.MonitorInfo;
+import com.example.learningsupport_argame.MonitorModel.MonitorInfoLab;
 import com.example.learningsupport_argame.R;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class BarChartFragment extends Fragment {
     private static String TAG = BarChartFragment.class.getSimpleName();
-    List<BarEntry> mBarEntries;
-    BarDataSet mBarDataSet;
-    BarData mBarData;
+    private BarChart mBarChart;
+    private MonitorInfoLab mMonitorInfoLab;
+    private List<MonitorInfo> mMonitorInfosDay;
+    private List<MonitorInfo> mMonitorInfosWeek;
+    private List<MonitorInfo> mMonitorInfosMonth;
+    private TextView mTimeSelector;
+    String time;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        float start = 1f;
-        float count = 5;
-        float range = 10;
-
-        mBarEntries = new ArrayList<>();
-
-        for (int i = (int) start; i < start + count; i++) {
-            float val = (float) (Math.random() * (range + 1));
-            mBarEntries.add(new BarEntry(i, val));
-        }
-
-        mBarDataSet = new BarDataSet(mBarEntries, "Label");
-        mBarData = new BarData(mBarDataSet);
+        mMonitorInfoLab = MonitorInfoLab.get();
+        Calendar c = Calendar.getInstance();
+        String today = new SimpleDateFormat("yyyy/MM/dd").format(c.getTime());
+        mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(today);
+        mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(today);
+        mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(today);
+        Log.d(TAG, "mMonitorInfosDay: " + mMonitorInfosDay.size());
+        Log.d(TAG, "mMonitorInfosWeek: " + mMonitorInfosWeek.size());
+        Log.d(TAG, "mMonitorInfosMonth: " + mMonitorInfosMonth.size());
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.feedback_bar_chart, container, false);
-        BarChart barChart  = view.findViewById(R.id.bar_chart);
-        barChart.setData(mBarData);
-        barChart.invalidate();
+        mTimeSelector = view.findViewById(R.id.feedback_bar_chart_time_selector);
+        // 设置时间选择器
+        Calendar calendar = Calendar.getInstance();
+        time = calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
+        mTimeSelector.setText(new SimpleDateFormat("当前时间：yyyy年MM月dd日").format(calendar.getTime()));
+        mTimeSelector.setOnClickListener(v -> {
+            new DatePickerDialog(getActivity(),
+                    (view1, year, monthOfYear, dayOfMonth) -> {
+                        time = String.format("%d/%02d/%02d", year, (monthOfYear + 1), dayOfMonth);
+
+                        mTimeSelector.setText("您选择了：" + year + "年" + (monthOfYear + 1)
+                                + "月" + dayOfMonth + "日");
+                        mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(time);
+                        mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(time);
+                        mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(time);
+                        setData();
+                    },
+                    Integer.parseInt(time.split("/")[0]) + 0,
+                    Integer.parseInt(time.split("/")[1]) - 1,
+                    Integer.parseInt(time.split("/")[2]) + 0)
+                    .show();
+        });
+        mBarChart = view.findViewById(R.id.bar_chart);
+        mBarChart.getDescription().setEnabled(false);
+        setData();
         return view;
     }
 
@@ -59,4 +100,131 @@ public class BarChartFragment extends Fragment {
         return fragment;
     }
 
+    // 总时间（task） 专注 , 次数
+    void setData() {
+        int groupCount = 3;
+        float groupSpace = 0.1f;
+        float barSpace = 0.05f; // x4 DataSet
+        float barWidth = 0.25f; // x4 DataSet
+        //关键： (0.25 + 0.05) * 3 + 0.1 = 1.00 -> interval per "group" 一定要等于1,乘以2是表示每组有两个数据
+
+        ArrayList<BarEntry> valuesTotalTime = new ArrayList<>();
+        ArrayList<BarEntry> valuesAttentionTime = new ArrayList<>();
+        ArrayList<BarEntry> valuesUseCount = new ArrayList<>();
+
+        getBarEntry(valuesTotalTime, valuesAttentionTime, valuesUseCount);
+
+        BarDataSet setTotalTime, setAttentionTime, setUseCount;
+
+        if (mBarChart.getData() != null && mBarChart.getData().getDataSetCount() > 0) {
+
+            setTotalTime = (BarDataSet) mBarChart.getData().getDataSetByIndex(0);
+            setAttentionTime = (BarDataSet) mBarChart.getData().getDataSetByIndex(1);
+            setUseCount = (BarDataSet) mBarChart.getData().getDataSetByIndex(2);
+            setTotalTime.setValues(valuesTotalTime);
+            setAttentionTime.setValues(valuesAttentionTime);
+            setUseCount.setValues(valuesUseCount);
+            mBarChart.getData().notifyDataChanged();
+            mBarChart.notifyDataSetChanged();
+
+        } else {
+            // create 4 DataSets
+            setTotalTime = new BarDataSet(valuesTotalTime, "任务持续时间");
+            setTotalTime.setColor(Color.rgb(104, 241, 175));
+            setAttentionTime = new BarDataSet(valuesAttentionTime, "专注时间");
+            setAttentionTime.setColor(Color.rgb(164, 228, 251));
+            setUseCount = new BarDataSet(valuesUseCount, "手机使用次数");
+            setUseCount.setColor(Color.rgb(242, 247, 158));
+
+            BarData data = new BarData(setTotalTime, setAttentionTime, setUseCount);
+            data.setBarWidth(barWidth);
+            data.setValueFormatter(new IValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                    if (dataSetIndex == 0 || dataSetIndex == 1)
+                        return (int) value + "分钟";
+                    else
+                        return (int) value + "次";
+                }
+            });
+            mBarChart.setData(data);
+        }
+
+        barChartSetting(groupCount, groupSpace, barSpace);
+        mBarChart.invalidate();
+    }
+
+    void getBarEntry(ArrayList<BarEntry> valuesTotalTime, ArrayList<BarEntry> valuesAttentionTime, ArrayList<BarEntry> valuesUseCount) {
+        float taskTotalTime, attentionTime, useCount;
+        // mMonitorInfosDay mMonitorInfosWeek mMonitorInfosMonth
+        taskTotalTime = 0;
+        attentionTime = 0;
+        useCount = 0;
+        for (MonitorInfo mi : mMonitorInfosDay) {
+            taskTotalTime += mi.getTaskTotalTime();
+            attentionTime += mi.getMonitorAttentionTime();
+            useCount += mi.getMonitorPhoneUseCount();
+        }
+        valuesTotalTime.add(new BarEntry(0, taskTotalTime / 60));
+        valuesAttentionTime.add(new BarEntry(1, attentionTime / 60));
+        valuesUseCount.add(new BarEntry(2, useCount));
+        taskTotalTime = 0;
+        attentionTime = 0;
+        useCount = 0;
+        for (MonitorInfo mi : mMonitorInfosWeek) {
+            taskTotalTime += mi.getTaskTotalTime();
+            attentionTime += mi.getMonitorAttentionTime();
+            useCount += mi.getMonitorPhoneUseCount();
+        }
+        valuesTotalTime.add(new BarEntry(0, taskTotalTime / 60));
+        valuesAttentionTime.add(new BarEntry(1, attentionTime / 60));
+        valuesUseCount.add(new BarEntry(2, useCount));
+        taskTotalTime = 0;
+        attentionTime = 0;
+        useCount = 0;
+        for (MonitorInfo mi : mMonitorInfosMonth) {
+            taskTotalTime += mi.getTaskTotalTime();
+            attentionTime += mi.getMonitorAttentionTime();
+            useCount += mi.getMonitorPhoneUseCount();
+        }
+        valuesTotalTime.add(new BarEntry(0, taskTotalTime / 60));
+        valuesAttentionTime.add(new BarEntry(1, attentionTime / 60));
+        valuesUseCount.add(new BarEntry(2, useCount));
+
+
+    }
+
+    void barChartSetting(int groupCount, float groupSpace, float barSpace) {
+
+        XAxis xAxis = mBarChart.getXAxis();
+        xAxis.setAxisMinimum(0);
+        xAxis.setAxisMaximum(groupCount);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            String[] xLabel = "Day Week Month".split(" ");
+
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                if (value == .5f)
+                    return xLabel[0];
+                if (value == 1.5f)
+                    return xLabel[1];
+                if (value == 2.5f)
+                    return xLabel[2];
+                return " ";
+
+            }
+        });
+        xAxis.setDrawGridLines(false);
+        xAxis.addLimitLine(new LimitLine(0));
+        xAxis.addLimitLine(new LimitLine(1));
+        xAxis.addLimitLine(new LimitLine(2));
+        xAxis.addLimitLine(new LimitLine(3));
+        YAxis yAxis = mBarChart.getAxisLeft();
+        yAxis.setDrawGridLines(false);//不设置Y轴网格
+        yAxis.setAxisMinimum(0);
+        mBarChart.getAxisRight().setEnabled(false);//右侧不显示Y轴
+
+        mBarChart.groupBars(0, groupSpace, barSpace);
+    }
 }

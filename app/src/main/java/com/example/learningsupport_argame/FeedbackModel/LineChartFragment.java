@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.FeedbackModel;
 
+import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.os.Bundle;
@@ -39,30 +40,27 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * todo 通过获取到的一周，或一月的数据适配折线图
+ * todo 适配一天内的数据
  */
 public class LineChartFragment extends Fragment {
     private static String TAG = LineChartFragment.class.getSimpleName();
     private LineChart mLineChart;
     private MonitorInfoLab mMonitorInfoLab;
+    private List<MonitorInfo> mMonitorInfosDay;
     private List<MonitorInfo> mMonitorInfosWeek;
     private List<MonitorInfo> mMonitorInfosMonth;
 
+    private RadioButton mDayButton;
     private RadioButton mWeekButton;
     private RadioButton mMonthButton;
-    private TextView mPTextView;
-    private TextView mNTextView;
-    Calendar weekCalendar;
-    Calendar monthCalendar;
+    private TextView mTimeSelector;
+
+    String time;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMonitorInfoLab = MonitorInfoLab.get();
-        weekCalendar = Calendar.getInstance();
-        monthCalendar = Calendar.getInstance();
-
-
     }
 
     @Nullable
@@ -70,6 +68,7 @@ public class LineChartFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Calendar c = Calendar.getInstance();
         String today = new SimpleDateFormat("yyyy/MM/dd").format(c.getTime());
+        mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(today);
         mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(today);
         mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(today);
 
@@ -77,55 +76,49 @@ public class LineChartFragment extends Fragment {
 
         mLineChart = view.findViewById(R.id.line_chart);
 
-        Description description =  mLineChart.getDescription();
-        description.setTextSize(15);
-        description.setText(today);
+        Description description = mLineChart.getDescription();
+        description.setEnabled(false);
         setData(mMonitorInfosWeek, 7);
         weekSetting();
 
-        mPTextView = view.findViewById(R.id.feedback_line_chart_p);
-        mPTextView.setOnClickListener(v -> {
-            if (mWeekButton.isChecked()) {
-                weekCalendar.add(Calendar.DAY_OF_MONTH, -7);
-                String time = new SimpleDateFormat("yyyy/MM/dd").format(weekCalendar.getTime());
-                Log.d(TAG, time);
-                description.setText(time);
-                mLineChart.animateX(500);
-                mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(time);
-                setData(mMonitorInfosWeek, 7);
-                weekSetting();
-            } else if (mMonthButton.isChecked()) {
-                monthCalendar.add(Calendar.MONDAY, -1);
-                String time = new SimpleDateFormat("yyyy/MM/dd").format(monthCalendar.getTime());
-                Log.d(TAG, time);
-                description.setText(time);
-                mLineChart.animateX(1000);
-                mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(time);
-                monthSetting();
-                setData(mMonitorInfosMonth, 31);
-            }
-
+        // 设置时间选择器
+        Calendar calendar = Calendar.getInstance();
+        time = calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
+        mTimeSelector = view.findViewById(R.id.feedback_line_chart_time_selector);
+        mTimeSelector.setText(new SimpleDateFormat("yyyy年MM月dd日").format(calendar.getTime()));
+        mTimeSelector.setOnClickListener(v -> {
+            new DatePickerDialog(getActivity(),
+                    (view1, year, monthOfYear, dayOfMonth) -> {
+                        mTimeSelector.setText(year + "年" + (monthOfYear + 1) + "月" + dayOfMonth + "日");
+                        time = year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
+                        if (mDayButton.isChecked()) {
+                            mLineChart.animateX(1000);
+                            mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(time);
+                            setData(mMonitorInfosDay, 1);
+                            daySetting();
+                        } else if (mWeekButton.isChecked()) {
+                            mLineChart.animateX(500);
+                            mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(time);
+                            setData(mMonitorInfosWeek, 7);
+                            weekSetting();
+                        } else if (mMonthButton.isChecked()) {
+                            mLineChart.animateX(1000);
+                            mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(time);
+                            setData(mMonitorInfosMonth, 31);
+                            monthSetting();
+                        }
+                    },
+                    Integer.parseInt(time.split("/")[0]),//year
+                    Integer.parseInt(time.split("/")[1]) - 1,//month
+                    Integer.parseInt(time.split("/")[2]))//day
+                    .show();
         });
-        mNTextView = view.findViewById(R.id.feedback_line_chart_n);
-        mNTextView.setOnClickListener(v -> {
-            if (mWeekButton.isChecked()) {
-                weekCalendar.add(Calendar.DAY_OF_MONTH, 7);
-                String time = new SimpleDateFormat("yyyy/MM/dd").format(weekCalendar.getTime());
-                Log.d(TAG, time);
-                description.setText(time);
-                mLineChart.animateX(500);
-                mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(time);
-                setData(mMonitorInfosWeek, 7);
-                weekSetting();
-            } else if (mMonthButton.isChecked()) {
-                monthCalendar.add(Calendar.MONDAY, 1);
-                String time = new SimpleDateFormat("yyyy/MM/dd").format(monthCalendar.getTime());
-                Log.d(TAG, time);
-                description.setText(time);
-                mLineChart.animateX(1000);
-                mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(time);
-                monthSetting();
-                setData(mMonitorInfosMonth, 31);
+
+        mDayButton = view.findViewById(R.id.feedback_line_chart_day);
+        mDayButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                setData(mMonitorInfosDay, 24);
+                daySetting();
             }
         });
         mWeekButton = view.findViewById(R.id.feedback_line_chart_week);
@@ -133,8 +126,6 @@ public class LineChartFragment extends Fragment {
             if (isChecked) {
                 setData(mMonitorInfosWeek, 7);
                 weekSetting();
-                mPTextView.setText("上一星期");
-                mNTextView.setText("下一星期");
             }
         });
         mMonthButton = view.findViewById(R.id.feedback_line_chart_month);
@@ -142,13 +133,11 @@ public class LineChartFragment extends Fragment {
             if (isChecked) {
                 monthSetting();
                 setData(mMonitorInfosWeek, 31);
-
-                mPTextView.setText("上一月");
-                mNTextView.setText("下一月");
             }
         });
         return view;
     }
+
 
     private int getWeekNumber(String dataStr) {
         Calendar c = Calendar.getInstance();
@@ -165,7 +154,7 @@ public class LineChartFragment extends Fragment {
     }
 
     /**
-     * 通过cnt来区分week(cnt = 7)和month(cnt = 31),
+     * 通过cnt来区分day(cnt = 24),week(cnt = 7),month(cnt = 31)
      *
      * @param monitorInfos
      * @param cnt
@@ -178,16 +167,18 @@ public class LineChartFragment extends Fragment {
         for (int i = 1; i <= cnt; i++) {
             float usePhoneTime = 0, attentionTime = 0, useCount = 0;
             for (int j = 0; j < monitorInfos.size(); j++) {
-                if (cnt <= 7) { //星期的数据
+                if (cnt == 24) {
+
+                } else if (cnt == 7) { //星期的数据
                     if (getWeekNumber(monitorInfos.get(j).getTaskBeginTime()) == i) {
                         usePhoneTime += monitorInfos.get(j).getMonitorTaskScreenOnTime();
-                        attentionTime += monitorInfos.get(j).getMonitorScreenOnAttentionSpan();
+                        attentionTime += monitorInfos.get(j).getMonitorAttentionTime();
                         useCount += monitorInfos.get(j).getMonitorPhoneUseCount();
                     }
-                } else {         // 月的数据
+                } else if (cnt >= 28) {// 月的数据
                     if (Integer.parseInt(monitorInfos.get(j).getTaskBeginTime().substring(8, 10)) == i) {
                         usePhoneTime += monitorInfos.get(j).getMonitorTaskScreenOnTime();
-                        attentionTime += monitorInfos.get(j).getMonitorScreenOnAttentionSpan();
+                        attentionTime += monitorInfos.get(j).getMonitorAttentionTime();
                         useCount += monitorInfos.get(j).getMonitorPhoneUseCount();
                     }
                 }
@@ -202,7 +193,7 @@ public class LineChartFragment extends Fragment {
         LineDataSet dataSet1 = new LineDataSet(entries1, "手机使用次数");
         dataSet1.setColor(Color.RED);
 
-        LineDataSet dataSet2 = new LineDataSet(entries2, "手机使用时间");
+        LineDataSet dataSet2 = new LineDataSet(entries2, "任务持续时间");
         dataSet2.setColor(Color.BLUE);
         LineDataSet dataSet3 = new LineDataSet(entries3, "专注时间");
         dataSet3.setColor(Color.BLACK);
@@ -223,6 +214,13 @@ public class LineChartFragment extends Fragment {
         return fragment;
     }
 
+    private void daySetting() {
+        XAxis xAxis = mLineChart.getXAxis();
+        xAxis.setAxisMaximum(24);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter((value, axis) -> (int) (value) + "");
+
+    }
 
     void weekSetting() {
         XAxis xAxis = mLineChart.getXAxis();

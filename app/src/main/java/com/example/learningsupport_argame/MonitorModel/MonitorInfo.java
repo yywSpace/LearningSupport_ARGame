@@ -17,7 +17,8 @@ public class MonitorInfo {
 
     //private float mMonitorTaskScreenOffTime; //任务过程中手机非亮屏时间
 
-    private float mMonitorScreenOnAttentionSpan; //亮屏过程中专注时间
+    private float mMonitorScreenOnAttentionSpan;
+
 
     private float mMonitorPhoneUseCount;//任务过程手机使用次数
 
@@ -75,4 +76,10 @@ public class MonitorInfo {
     public void setTaskEndTime(String taskEndTime) {
         mTaskEndTime = taskEndTime;
     }
+
+    //亮屏过程中专注时间+灭屏时间
+    public float getMonitorAttentionTime() {
+        return getMonitorTaskScreenOffTime() + getMonitorScreenOnAttentionSpan();
+    }
+
 }

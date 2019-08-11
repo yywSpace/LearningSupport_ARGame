@@ -73,6 +73,23 @@ public class MonitorInfoLab {
         return mMonitorInfoList.get(id);
     }
 
+    public List<MonitorInfo> getMonitorInfoListDay(String dataStr) {
+        Log.d(TAG, "dataStr: " + dataStr);
+        List<MonitorInfo> infoList = new ArrayList<>();
+        int dayGiven = Integer.parseInt(dataStr.substring(8, 10));
+        Log.d(TAG, "dayGiven: " + dayGiven);
+        for (int i = 0; i < mMonitorInfoList.size(); i++) {
+            String day = mMonitorInfoList.get(i).getTaskBeginTime().substring(8, 10);
+            Log.d(TAG, "day: " + day);
+
+            if (Integer.parseInt(day) == dayGiven)
+                infoList.add(mMonitorInfoList.get(i));
+        }
+        Log.d(TAG, infoList.size() + "");
+
+        return infoList;
+    }
+
     public List<MonitorInfo> getMonitorInfoListWeek(String dataStr) {
         Log.d(TAG, dataStr);
         List<MonitorInfo> infoList = new ArrayList<>();
@@ -84,7 +101,7 @@ public class MonitorInfoLab {
             if (inTheTwoDate(currentTime, range[0], range[1]))
                 infoList.add(mMonitorInfoList.get(i));
         }
-        Log.d(TAG, infoList.size()+"");
+        Log.d(TAG, infoList.size() + "");
 
         return infoList;
     }
@@ -126,21 +143,24 @@ public class MonitorInfoLab {
         Log.d(TAG, "monthRange: " + monthRange);
         for (int i = 0; i < mMonitorInfoList.size(); i++) {
             String currentTime = mMonitorInfoList.get(i).getTaskBeginTime().substring(0, 10);
-            Log.d(TAG, "currentTime: "+currentTime);
+            Log.d(TAG, "currentTime: " + currentTime);
             if (inTheTwoDate(currentTime, range[0], range[1]))
                 infoList.add(mMonitorInfoList.get(i));
         }
-        Log.d(TAG, infoList.size()+"");
+        Log.d(TAG, infoList.size() + "");
 
         return infoList;
     }
+
     /**
      * 获取指定日期所在周的第一天和最后一天,用-连接
+     *
      * @param dataStr
      * @return
      * @throws ParseException
      */
-    public static String getFirstAndLastOfMonth(String dataStr){
+    public static String getFirstAndLastOfMonth(String dataStr) {
+        Log.d(TAG, "getFirstAndLastOfMonth: "+dataStr);
         //获取当前月第一天：
         Calendar c = Calendar.getInstance();
         try {
@@ -149,7 +169,7 @@ public class MonitorInfoLab {
             e.printStackTrace();
         }
         c.add(Calendar.MONTH, 0);
-        c.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
+        c.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
         String first = new SimpleDateFormat("yyyy/MM/dd").format(c.getTime());
 
         //获取当前月最后一天
@@ -161,7 +181,7 @@ public class MonitorInfoLab {
         }
         ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
         String last = new SimpleDateFormat("yyyy/MM/dd").format(ca.getTime());
-        return first+"-"+last;
+        return first + "-" + last;
     }
 
     public static String getFirstAndLastOfWeek(String dataStr) {
