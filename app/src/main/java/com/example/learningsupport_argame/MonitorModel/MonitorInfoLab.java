@@ -24,42 +24,57 @@ public class MonitorInfoLab {
         monitorInfo.setMonitorTaskScreenOnTime(100);
         mMonitorInfoList.add(monitorInfo);
         monitorInfo = new MonitorInfo();
-        monitorInfo.setTaskBeginTime("2019/08/06/1:00");
-        monitorInfo.setTaskEndTime("2019/08/06/2:50");
+        monitorInfo.setTaskBeginTime("2019/08/06/13:00");
+        monitorInfo.setTaskEndTime("2019/08/06/14:50");
         monitorInfo.setMonitorPhoneUseCount(20);
         monitorInfo.setMonitorScreenOnAttentionSpan(20);
         monitorInfo.setMonitorTaskScreenOnTime(100);
         mMonitorInfoList.add(monitorInfo);
         monitorInfo = new MonitorInfo();
-        monitorInfo.setTaskBeginTime("2019/08/07/4:00");
-        monitorInfo.setTaskEndTime("2019/08/07/5:30");
+        monitorInfo.setTaskBeginTime("2019/08/07/16:00");
+        monitorInfo.setTaskEndTime("2019/08/07/17:30");
         monitorInfo.setMonitorPhoneUseCount(30);
         monitorInfo.setMonitorScreenOnAttentionSpan(50);
         monitorInfo.setMonitorTaskScreenOnTime(100);
         mMonitorInfoList.add(monitorInfo);
 
         monitorInfo = new MonitorInfo();
-        monitorInfo.setTaskBeginTime("2019/07/02/1:00");
-        monitorInfo.setTaskEndTime("2019/07/02/2:50");
+        monitorInfo.setTaskBeginTime("2019/07/02/13:00");
+        monitorInfo.setTaskEndTime("2019/07/02/14:50");
         monitorInfo.setMonitorPhoneUseCount(20);
         monitorInfo.setMonitorScreenOnAttentionSpan(50);
         monitorInfo.setMonitorTaskScreenOnTime(100);
         mMonitorInfoList.add(monitorInfo);
         monitorInfo = new MonitorInfo();
-        monitorInfo.setTaskBeginTime("2019/07/03/4:00");
-        monitorInfo.setTaskEndTime("2019/07/03/5:30");
+        monitorInfo.setTaskBeginTime("2019/07/03/16:00");
+        monitorInfo.setTaskEndTime("2019/07/03/17:30");
         monitorInfo.setMonitorPhoneUseCount(30);
         monitorInfo.setMonitorScreenOnAttentionSpan(30);
         monitorInfo.setMonitorTaskScreenOnTime(100);
         mMonitorInfoList.add(monitorInfo);
         monitorInfo = new MonitorInfo();
-        monitorInfo.setTaskBeginTime("2019/07/05/6:00");
-        monitorInfo.setTaskEndTime("2019/07/05/7:30");
+        monitorInfo.setTaskBeginTime("2019/07/05/18:00");
+        monitorInfo.setTaskEndTime("2019/07/05/19:30");
         monitorInfo.setMonitorPhoneUseCount(30);
         monitorInfo.setMonitorScreenOnAttentionSpan(30);
         monitorInfo.setMonitorTaskScreenOnTime(100);
         mMonitorInfoList.add(monitorInfo);
-    }
+        monitorInfo = new MonitorInfo();
+        monitorInfo.setTaskBeginTime("2019/08/11/18:00");
+        monitorInfo.setTaskEndTime("2019/08/11/19:30");
+        monitorInfo.setMonitorPhoneUseCount(20);
+        monitorInfo.setMonitorScreenOnAttentionSpan(40);
+        monitorInfo.setMonitorTaskScreenOnTime(500);
+        mMonitorInfoList.add(monitorInfo);
+        monitorInfo = new MonitorInfo();
+        monitorInfo.setTaskBeginTime("2019/08/11/14:00");
+        monitorInfo.setTaskEndTime("2019/08/11/15:30");
+        monitorInfo.setMonitorPhoneUseCount(10);
+        monitorInfo.setMonitorScreenOnAttentionSpan(70);
+        monitorInfo.setMonitorTaskScreenOnTime(400);
+        mMonitorInfoList.add(monitorInfo);
+
+     }
 
 
     public static MonitorInfoLab get() {
@@ -160,7 +175,7 @@ public class MonitorInfoLab {
      * @throws ParseException
      */
     public static String getFirstAndLastOfMonth(String dataStr) {
-        Log.d(TAG, "getFirstAndLastOfMonth: "+dataStr);
+        Log.d(TAG, "getFirstAndLastOfMonth: " + dataStr);
         //获取当前月第一天：
         Calendar c = Calendar.getInstance();
         try {

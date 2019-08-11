@@ -78,8 +78,8 @@ public class LineChartFragment extends Fragment {
 
         Description description = mLineChart.getDescription();
         description.setEnabled(false);
-        setData(mMonitorInfosWeek, 7);
-        weekSetting();
+        setDayData(mMonitorInfosDay);
+        daySetting();
 
         // 设置时间选择器
         Calendar calendar = Calendar.getInstance();
@@ -90,11 +90,11 @@ public class LineChartFragment extends Fragment {
             new DatePickerDialog(getActivity(),
                     (view1, year, monthOfYear, dayOfMonth) -> {
                         mTimeSelector.setText(year + "年" + (monthOfYear + 1) + "月" + dayOfMonth + "日");
-                        time = year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
+                        time = String.format("%d/%02d/%02d", year, (monthOfYear + 1), dayOfMonth);
                         if (mDayButton.isChecked()) {
                             mLineChart.animateX(1000);
                             mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(time);
-                            setData(mMonitorInfosDay, 1);
+                            setDayData(mMonitorInfosDay);
                             daySetting();
                         } else if (mWeekButton.isChecked()) {
                             mLineChart.animateX(500);
@@ -117,7 +117,7 @@ public class LineChartFragment extends Fragment {
         mDayButton = view.findViewById(R.id.feedback_line_chart_day);
         mDayButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                setData(mMonitorInfosDay, 24);
+                setDayData(mMonitorInfosDay);
                 daySetting();
             }
         });
@@ -153,39 +153,93 @@ public class LineChartFragment extends Fragment {
 
     }
 
+    void setDayData(List<MonitorInfo> monitorInfos) {
+        List<Entry> entries1 = new ArrayList<>();
+        List<Entry> entries2 = new ArrayList<>();
+        List<Entry> entries3 = new ArrayList<>();
+        for (int i = 0; i < 24; i++) {
+            entries1.add(new Entry(i, 0));
+            entries2.add(new Entry(i, 0));
+            entries3.add(new Entry(i, 0));
+        }
+        for (int j = 0; j < monitorInfos.size(); j++) {
+            MonitorInfo monitorInfo = monitorInfos.get(j);
+            String beginTime = monitorInfo.getTaskBeginTime().substring(11);
+            String endTime = monitorInfo.getTaskEndTime().substring(11);
+            int hourBegin = Integer.parseInt(beginTime.split(":")[0]);
+            int hourEnd = Integer.parseInt(endTime.split(":")[0]);
+            for (int i = hourBegin; i <= hourEnd; i++) {
+                entries1.set(i, new Entry(i, monitorInfo.getMonitorPhoneUseCount()));
+                entries2.set(i, new Entry(i, monitorInfo.getTaskTotalTime() / 60));
+                entries3.set(i, new Entry(i, monitorInfo.getMonitorAttentionTime() / 60));
+            }
+        }
+        LineDataSet dataSet1 = new LineDataSet(entries1, "手机使用次数");
+        dataSet1.setColor(Color.RED);
+
+        LineDataSet dataSet2 = new LineDataSet(entries2, "任务持续时间");
+        dataSet2.setColor(Color.BLUE);
+        LineDataSet dataSet3 = new LineDataSet(entries3, "专注时间");
+        dataSet3.setColor(Color.BLACK);
+
+        ArrayList<ILineDataSet> sets = new ArrayList<>();
+        sets.add(dataSet1);
+        sets.add(dataSet2);
+        sets.add(dataSet3);
+        LineData lineData = new LineData(sets);
+        mLineChart.setData(lineData);
+        mLineChart.invalidate();
+    }
+
     /**
-     * 通过cnt来区分day(cnt = 24),week(cnt = 7),month(cnt = 31)
+     * 通过cnt来区分week(cnt = 7),month(cnt = 31)
      *
      * @param monitorInfos
      * @param cnt
      */
     private void setData(List<MonitorInfo> monitorInfos, int cnt) {
-
+        long[] hours = new long[25];
         List<Entry> entries1 = new ArrayList<>();
         List<Entry> entries2 = new ArrayList<>();
         List<Entry> entries3 = new ArrayList<>();
         for (int i = 1; i <= cnt; i++) {
-            float usePhoneTime = 0, attentionTime = 0, useCount = 0;
+            float totalTaskTime = 0, attentionTime = 0, useCount = 0;
             for (int j = 0; j < monitorInfos.size(); j++) {
+                MonitorInfo monitorInfo = monitorInfos.get(j);
                 if (cnt == 24) {
-
+//                    String beginTime = monitorInfo.getTaskBeginTime().substring(11);
+//                    int hourBegin = Integer.parseInt(beginTime.split(":")[0]);
+//                    int minuteBegin = Integer.parseInt(beginTime.split(":")[1]);
+//                    String endTime = monitorInfo.getTaskEndTime().substring(11);
+//                    int hourEnd = Integer.parseInt(endTime.split(":")[0]);
+//                    int minuteEnd = Integer.parseInt(endTime.split(":")[1]);
+//
+//                    if (hourEnd > hourBegin) { // 如果不在同一小时
+//                        // 第一小时时间等于60-其开始分钟数
+//                        hours[hourBegin] = (60 - minuteBegin) * 60;
+//                        for (int t = hourBegin + 1; t <= hourEnd; t++) {
+//                            hours[t] = 3600;
+//                        }
+//                        hours[hourEnd] = minuteEnd * 60;
+//                    }
+//
+//                    Log.d(TAG, "beginTime-endTime: " + beginTime + "-" + endTime);
                 } else if (cnt == 7) { //星期的数据
-                    if (getWeekNumber(monitorInfos.get(j).getTaskBeginTime()) == i) {
-                        usePhoneTime += monitorInfos.get(j).getMonitorTaskScreenOnTime();
-                        attentionTime += monitorInfos.get(j).getMonitorAttentionTime();
-                        useCount += monitorInfos.get(j).getMonitorPhoneUseCount();
+                    if (getWeekNumber(monitorInfo.getTaskBeginTime()) == i) {
+                        totalTaskTime += monitorInfo.getTaskTotalTime();
+                        attentionTime += monitorInfo.getMonitorAttentionTime();
+                        useCount += monitorInfo.getMonitorPhoneUseCount();
                     }
                 } else if (cnt >= 28) {// 月的数据
-                    if (Integer.parseInt(monitorInfos.get(j).getTaskBeginTime().substring(8, 10)) == i) {
-                        usePhoneTime += monitorInfos.get(j).getMonitorTaskScreenOnTime();
-                        attentionTime += monitorInfos.get(j).getMonitorAttentionTime();
-                        useCount += monitorInfos.get(j).getMonitorPhoneUseCount();
+                    if (Integer.parseInt(monitorInfo.getTaskBeginTime().substring(8, 10)) == i) {
+                        totalTaskTime += monitorInfo.getTaskTotalTime();
+                        attentionTime += monitorInfo.getMonitorAttentionTime();
+                        useCount += monitorInfo.getMonitorPhoneUseCount();
                     }
                 }
-
             }
             entries1.add(new Entry(i - 1, useCount));
-            entries2.add(new Entry(i - 1, usePhoneTime / 60));
+            entries2.add(new Entry(i - 1, totalTaskTime / 60));
             entries3.add(new Entry(i - 1, attentionTime / 60));
 
         }
@@ -218,8 +272,10 @@ public class LineChartFragment extends Fragment {
         XAxis xAxis = mLineChart.getXAxis();
         xAxis.setAxisMaximum(24);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setValueFormatter((value, axis) -> (int) (value) + "");
-
+        xAxis.setValueFormatter((value, axis) -> (int) value + "");
+        mLineChart.getAxisRight().setEnabled(false);
+        YAxis yAxis = mLineChart.getAxisLeft();
+        yAxis.setAxisMinimum(0);
     }
 
     void weekSetting() {
@@ -234,6 +290,10 @@ public class LineChartFragment extends Fragment {
                 return weeks[(int) value % weeks.length];
             }
         });
+
+        mLineChart.getAxisRight().setEnabled(false);
+        YAxis yAxis = mLineChart.getAxisLeft();
+        yAxis.setAxisMinimum(0);
     }
 
     void monthSetting() {
@@ -241,6 +301,10 @@ public class LineChartFragment extends Fragment {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setAxisMaximum(30);
         xAxis.setValueFormatter((value, axis) -> (int) (value + 1) + "");
+
+        mLineChart.getAxisRight().setEnabled(false);
+        YAxis yAxis = mLineChart.getAxisLeft();
+        yAxis.setAxisMinimum(0);
     }
 
 

@@ -18,6 +18,9 @@ import android.widget.RemoteViews;
 
 import com.example.learningsupport_argame.R;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 /**
  * 任务开始时创建，完成或失败后销毁
  * 用于向MonitorActivity传递各项信息
@@ -109,9 +112,9 @@ public class MonitorService extends Service {
                     Intent intent = new Intent(Intent.ACTION_MAIN);
                     intent.setAction(Intent.ACTION_MAIN);
                     intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                    intent.setComponent(new ComponentName(MonitorService.this.getPackageName(),MonitorService.this.getPackageName()+".MonitorModel.MonitorActivity"));
+                    intent.setComponent(new ComponentName(MonitorService.this.getPackageName(), MonitorService.this.getPackageName() + ".MonitorModel.MonitorActivity"));
 
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                     // 点击跳转到主界面
                     PendingIntent intent_go = PendingIntent.getActivity(getApplicationContext(), 5, intent,
                             PendingIntent.FLAG_UPDATE_CURRENT);
@@ -179,14 +182,17 @@ public class MonitorService extends Service {
 
     // 2019/2/12/20:30
     public static long remainingTime(String begin, String end) {
-        String beginTime = begin.split("/")[3];
-        String endTime = end.split("/")[3];
-        int beginHour = Integer.parseInt(beginTime.split(":")[0]);
-        int beginMinute = Integer.parseInt(beginTime.split(":")[1]);
-        int endHour = Integer.parseInt(endTime.split(":")[0]);
-        int endMinute = Integer.parseInt(endTime.split(":")[1]);
-        long second = (endHour * 3600 + endMinute * 60) - (beginHour * 3600 + beginMinute * 60);
-        return second;
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd/HH:mm");
+        Date d1 = null, d2 = null;
+        try {
+            d1 = df.parse(begin);
+            d2 = df.parse(end);
+        } catch (Exception e) {
+        }
+        long diff = d2.getTime() - d1.getTime();
+        long seconds = diff / 1000;
+        return seconds;
     }
 
     boolean outOfDistanceRange() {

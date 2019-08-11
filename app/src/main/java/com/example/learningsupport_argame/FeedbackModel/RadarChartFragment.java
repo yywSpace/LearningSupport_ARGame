@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.FeedbackModel;
 
+import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.learningsupport_argame.MonitorModel.MonitorInfo;
 import com.example.learningsupport_argame.MonitorModel.MonitorInfoLab;
@@ -34,30 +36,17 @@ import java.util.List;
 
 public class RadarChartFragment extends Fragment {
     private MonitorInfoLab mMonitorInfoLab;
-    List<MonitorInfo> mMonitorInfosWeek;
-    List<MonitorInfo> mMonitorInfosMonth;
-    RadarData mRadarData;
-    RadarChart radarChart;
+    private List<MonitorInfo> mMonitorInfosDay;
+    private List<MonitorInfo> mMonitorInfosWeek;
+    private List<MonitorInfo> mMonitorInfosMonth;
+    private RadarChart mRadarChart;
+    private TextView mTimeSelector;
+    String time;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMonitorInfoLab = MonitorInfoLab.get();
-
-        //mMonitorInfosToday = mMonitorInfoLab.getMonitorInfoListToday();
-        Calendar c  = Calendar.getInstance();
-        String today = new SimpleDateFormat("yyyy/MM/dd").format(c.getTime());
-
-        mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(today);
-        mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(today);
-        //RadarDataSet dataSetToday = getRadarEntries(mMonitorInfosToday, "Today", Color.BLUE);
-        RadarDataSet dataSetWeek = getRadarEntries(mMonitorInfosWeek, "This Week", Color.DKGRAY);
-        RadarDataSet dataSetMonth = getRadarEntries(mMonitorInfosMonth, "This Month", Color.MAGENTA);
-        ArrayList<IRadarDataSet> sets = new ArrayList<>();
-        //sets.add(dataSetToday);
-        sets.add(dataSetWeek);
-        sets.add(dataSetMonth);
-        mRadarData = new RadarData(sets);
 
     }
 
@@ -65,19 +54,66 @@ public class RadarChartFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.feedback_radar_chart, container, false);
-        radarChart = view.findViewById(R.id.radar_chart);
-        radarChart.setRotationEnabled(false);
-        radarChart.setData(mRadarData);
-        Description description = radarChart.getDescription();
+
+        mTimeSelector = view.findViewById(R.id.feedback_radar_chart_time_selector);
+        // 设置时间选择器
+        Calendar calendar = Calendar.getInstance();
+        time = calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
+        mTimeSelector.setText(new SimpleDateFormat("yyyy年MM月dd日").format(calendar.getTime()));
+        mTimeSelector.setOnClickListener(v -> {
+            new DatePickerDialog(getActivity(),
+                    (view1, year, monthOfYear, dayOfMonth) -> {
+                        time = String.format("%d/%02d/%02d", year, (monthOfYear + 1), dayOfMonth);
+
+                        mTimeSelector.setText(year + "年" + (monthOfYear + 1)
+                                + "月" + dayOfMonth + "日");
+                        mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(time);
+                        mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(time);
+                        mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(time);
+                        setData();
+                    },
+                    Integer.parseInt(time.split("/")[0]) + 0,
+                    Integer.parseInt(time.split("/")[1]) - 1,
+                    Integer.parseInt(time.split("/")[2]) + 0)
+                    .show();
+        });
+        mRadarChart = view.findViewById(R.id.radar_chart);
+        Calendar c = Calendar.getInstance();
+        String today = new SimpleDateFormat("yyyy/MM/dd").format(c.getTime());
+        mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(today);
+        mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(today);
+        mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(today);
+        setData();
+        radarSetting();
+        return view;
+
+    }
+
+    private void setData() {
+        RadarDataSet dataSetToday = getRadarEntries(mMonitorInfosDay, "Day", Color.BLUE);
+        RadarDataSet dataSetWeek = getRadarEntries(mMonitorInfosWeek, "Week", Color.RED);
+        RadarDataSet dataSetMonth = getRadarEntries(mMonitorInfosMonth, "Month", Color.GREEN);
+        ArrayList<IRadarDataSet> sets = new ArrayList<>();
+        sets.add(dataSetToday);
+        sets.add(dataSetWeek);
+        sets.add(dataSetMonth);
+        RadarData radarData = new RadarData(sets);
+        mRadarChart.setData(radarData);
+        mRadarChart.invalidate();
+    }
+
+    private void radarSetting() {
+        mRadarChart.setRotationEnabled(false);
+        Description description = mRadarChart.getDescription();
         description.setEnabled(false);
         MarkerView mv = new RadarMarkerView(getContext(), R.layout.feedback_radar_markerview);
-        mv.setChartView(radarChart); // For bounds control
-        radarChart.setMarker(mv); // Set the marker to the chart
+        mv.setChartView(mRadarChart); // For bounds control
+        mRadarChart.setMarker(mv); // Set the marker to the chart
 
-        Legend legend = radarChart.getLegend();
+        Legend legend = mRadarChart.getLegend();
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        XAxis xAxis = radarChart.getXAxis();
+        XAxis xAxis = mRadarChart.getXAxis();
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             private final String[] mActivities = new String[]{"使用时间", "息屏时间", "专注时间", "失神时间", "使用次数"};
 
@@ -87,15 +123,11 @@ public class RadarChartFragment extends Fragment {
             }
         });
 
-        YAxis yAxis = radarChart.getYAxis();
+        YAxis yAxis = mRadarChart.getYAxis();
         yAxis.setLabelCount(5, false);
         yAxis.setDrawLabels(false);
         yAxis.setAxisMinimum(0f);
         yAxis.setAxisMaximum(1f);
-
-        radarChart.invalidate();
-        return view;
-
     }
 
     public static RadarChartFragment newInstance() {

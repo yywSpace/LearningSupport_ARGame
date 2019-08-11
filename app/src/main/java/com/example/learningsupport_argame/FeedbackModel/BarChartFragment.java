@@ -69,13 +69,13 @@ public class BarChartFragment extends Fragment {
         // 设置时间选择器
         Calendar calendar = Calendar.getInstance();
         time = calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
-        mTimeSelector.setText(new SimpleDateFormat("当前时间：yyyy年MM月dd日").format(calendar.getTime()));
+        mTimeSelector.setText(new SimpleDateFormat("yyyy年MM月dd日").format(calendar.getTime()));
         mTimeSelector.setOnClickListener(v -> {
             new DatePickerDialog(getActivity(),
                     (view1, year, monthOfYear, dayOfMonth) -> {
                         time = String.format("%d/%02d/%02d", year, (monthOfYear + 1), dayOfMonth);
 
-                        mTimeSelector.setText("您选择了：" + year + "年" + (monthOfYear + 1)
+                        mTimeSelector.setText(year + "年" + (monthOfYear + 1)
                                 + "月" + dayOfMonth + "日");
                         mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(time);
                         mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(time);

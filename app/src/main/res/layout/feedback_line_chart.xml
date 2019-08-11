@@ -21,10 +21,10 @@
 
 
     <LinearLayout
-        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <RadioGroup
@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal">
+
             <RadioButton
                 android:id="@+id/feedback_line_chart_day"
                 android:layout_width="wrap_content"
@@ -43,7 +44,6 @@
                 android:id="@+id/feedback_line_chart_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="Week" />
 
             <RadioButton
@@ -54,12 +54,12 @@
         </RadioGroup>
 
         <TextView
-            android:layout_marginLeft="30dp"
             android:id="@+id/feedback_line_chart_time_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
             android:gravity="center"
-            android:text="2019-12-7"
+            android:text="2019年12月7日"
             android:textSize="17dp" />
 
     </LinearLayout>
