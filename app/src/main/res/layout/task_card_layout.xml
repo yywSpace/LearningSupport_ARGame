@@ -1,0 +1,352 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="wrap_content"
+
+    android:layout_height="wrap_content"
+
+
+    android:background="#00ffffff"
+    android:gravity="center"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants"
+    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp">
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <RelativeLayout
+
+                    android:layout_width="match_parent"
+
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <RelativeLayout
+
+                            android:layout_width="match_parent"
+
+                            android:layout_height="100dp"
+
+                            android:paddingLeft="14dp"
+
+                            android:paddingTop="15dp"
+                            android:elevation="10dp"
+                            android:background="@drawable/myrect"
+                            >
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="任务类型:"
+                                android:textSize="20dp"
+                                android:id="@+id/label_renwuleixin"/>
+
+                            <ImageButton
+                                android:id="@+id/wenhao"
+                                android:layout_width="40dp"
+                                android:layout_height="24dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toRightOf="@id/label_renwuleixin"
+                                android:background="#00000000"
+                                android:scaleType="centerInside"
+                                android:src="@mipmap/wenhao"
+
+
+                                />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="put task name"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerInParent="true"
+                                android:layout_marginRight="30dp"
+                                android:textSize="30sp"
+                                android:id="@+id/taskName"/>
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="#54ff3344"
+                                android:text="标记已完成"
+                                android:layout_alignBottom="@id/taskName"
+                                android:id="@+id/ck_task"
+                                android:layout_below="@id/label_renwuleixin"
+                                android:layout_marginTop="10dp"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+
+                            android:layout_width="match_parent"
+
+                            android:layout_height="wrap_content"
+
+                            android:paddingLeft="14dp"
+
+                            android:paddingTop="15dp"
+                            android:paddingBottom="15dp"
+
+                            android:elevation="10dp"
+                            android:background="@drawable/myrect"
+                            >
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="任务信息"
+                               android:textSize="20sp"
+                               android:id="@+id/rengwuxingxi"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="15sp"
+                                android:text="时间:"
+                                android:layout_below="@id/rengwuxingxi"
+                                android:layout_alignLeft="@id/rengwuxingxi"
+                                android:id="@+id/label_Time"
+                                />
+
+                            <TextClock
+                                android:id="@+id/date_window"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="#63FFFFFF"
+                                android:format12Hour="yyyy-MM-dd,HH:mm"
+                                android:format24Hour="hh:mm:ss,EE"
+                                android:textColor="#000"
+                                android:textSize="20dp"
+                                android:textStyle="bold"
+                                android:layout_toRightOf="@id/label_Time"
+                                android:layout_alignBaseline="@id/label_Time"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginLeft="10dp">
+                            </TextClock>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="15sp"
+                                android:text="地点:"
+                                android:layout_below="@id/label_Time"
+                                android:layout_alignLeft="@id/label_Time"
+                                android:id="@+id/label_didian"
+
+                                />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="这里放地点"
+                                android:textColor="#000"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:layout_toRightOf="@id/label_didian"
+                                android:layout_below="@id/label_didian"
+                                android:id="@+id/text_didian"
+                                android:layout_marginLeft="10dp"
+                               />
+                            <ImageButton
+                                android:id="@+id/btn_ditu"
+
+
+                                android:layout_toRightOf="@id/text_didian"
+                                android:layout_alignTop="@id/label_didian"
+                                android:scaleType="fitXY"
+                                android:clickable="true"
+                                android:src="@drawable/map"
+                                android:focusable="true"
+                                android:layout_width="64dp"
+                                android:layout_height="56dp" />
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="任务要求:"
+                               android:textSize="15sp"
+                               android:layout_below="@id/text_didian"
+                               android:layout_alignLeft="@id/label_didian"
+                               android:layout_marginTop="20dp"
+                               android:id="@+id/label_Taskinfo"
+                              />
+
+                                <EditText
+                                    android:layout_width="match_parent"
+                                    android:layout_height="150dp"
+                                    android:text="这里放任务信息"
+                                    android:textStyle="bold"
+                                    android:textSize="18sp"
+                                    android:textColor="#000"
+                                    android:layout_below="@id/label_Taskinfo"
+                                    android:layout_toRightOf="@id/label_Taskinfo"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="25dp"
+                                    android:background="@drawable/myrect"
+                                    android:inputType="textMultiLine"
+                                    android:enabled="false"
+                                    android:gravity="top"
+
+
+
+
+                                    />
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+
+
+
+
+
+
+
+
+                    <ImageView
+
+                        android:id="@+id/iv_dislike_task"
+
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
+
+                        android:layout_alignParentRight="true"
+
+                        android:layout_marginTop="15dp"
+
+                        android:layout_marginRight="15dp"
+
+                        android:alpha="0"
+
+                        android:src="@drawable/zuojiantou" />
+
+
+                    <ImageView
+
+                        android:id="@+id/iv_like_task"
+
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginLeft="15dp"
+
+                        android:layout_marginTop="15dp"
+
+                        android:alpha="0"
+
+                        android:src="@drawable/next" />
+
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+
+                    android:layout_width="match_parent"
+
+                    android:layout_height="200dp"
+
+                    android:paddingLeft="14dp"
+
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+
+                    android:elevation="10dp"
+                    android:background="@drawable/myrect">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="成员对象"
+                        android:textSize="20sp"
+                        android:id="@+id/label_chenyuan"
+                        />
+                    <ListView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/label_chenyuan"
+                        android:layout_alignBottom="@id/label_chenyuan"
+                        android:id="@+id/list_chenyuan">
+                    </ListView>
+                </RelativeLayout>
+
+
+                <RelativeLayout
+
+                    android:layout_width="match_parent"
+
+                    android:layout_height="100dp"
+
+                    android:paddingLeft="14dp"
+
+                    android:elevation="10dp"
+                    android:paddingTop="15dp"
+                    android:background="@drawable/myrect">
+
+
+                    <TextView
+
+                        android:id="@+id/label_kaishi"
+
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
+
+                        android:gravity="center"
+
+                        android:text="任务开始"
+
+
+
+                        android:textSize="20sp" />
+
+                    <ImageButton
+                        android:id="@+id/btn_renwukaishi"
+                        android:layout_width="84dp"
+                        android:layout_height="77dp"
+
+
+                        android:layout_below="@id/label_kaishi"
+                        android:layout_marginLeft="56dp"
+                        android:layout_marginTop="-25dp"
+                        android:layout_toRightOf="@id/label_kaishi"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/kaishixunjian" />
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+
+
+
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>
