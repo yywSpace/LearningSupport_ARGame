@@ -40,4 +40,6 @@ public class PairInfoBean  {
     public String pairUnitId;
     public Bitmap image;
 
+    //这里再写一个方法可以用uid，从服务器上获取（下载头像保存到本地，并且从本地获取赋值）。
+
 }
