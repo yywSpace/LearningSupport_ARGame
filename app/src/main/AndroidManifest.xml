@@ -27,7 +27,7 @@
         <meta-data android:name="com.google.ar.core" android:value="required" />
 
 
-        <activity android:name=".FeedbackModel.FeedbackDetailsActivity">
+        <activity android:name=".FeedbackModel.MissionAccomplishActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,8 +37,7 @@
         <activity android:name=".ARModel.ScanModel"/>
         <activity android:name=".ARModel.PutModel"/>
         <service android:name=".MonitorModel.MonitorService"/>
-        <activity android:name=".MonitorModel.MonitorActivity"/>
-        <activity android:name=".FeedbackModel.MissionAccomplishActivity"/>
+        <activity android:name=".FeedbackModel.FeedbackDetailsActivity"/>
         <!--<activity android:name=".FeedbackModel.FeedbackDetailsActivity"/>-->
 
     </application>
