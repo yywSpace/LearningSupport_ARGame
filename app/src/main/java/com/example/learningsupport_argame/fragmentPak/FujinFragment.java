@@ -213,7 +213,7 @@ public class FujinFragment extends Fragment {
 
         list.add(R.drawable.img_avatar_06);
 
-        list.add(R.drawable.img_avatar_07);
+        list.add(R.drawable.img_avatar_07);//这里是头像图片
 
     }
 
@@ -239,7 +239,9 @@ public class FujinFragment extends Fragment {
 
             ImageView avatarImageView = ((MyViewHolder) holder).avatarImageView;
 
-            avatarImageView.setImageResource(list.get(position));
+            avatarImageView.setImageResource(list.get(position));//设置头像
+
+            //也请在这个放置每一个人的数据形象，可以将之绑定在list里面，后将list的元素换成一个用户类实体pairOfbean
 
         }
 

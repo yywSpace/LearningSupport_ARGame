@@ -1,4 +1,5 @@
-package com.example.learningsupport_argame.util;
+package com.example.learningsupport_argame.bean;
+
 
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.bean.Msg;
@@ -6,12 +7,13 @@ import com.example.learningsupport_argame.bean.Msg;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MagUtil_shetuan {
+public class MsgUtil {
+
     public static List<Msg> getMsgList(){
 
         List<Msg> msgList = new ArrayList<>();
 
-        Msg msg = new Msg(1, R.drawable.img_avatar_06,
+        Msg msg = new Msg(1, R.drawable.img_avatar_01,
 
                 "华为新一代芯片震撼众人，麒麟990颠覆你认知！",
 
@@ -19,7 +21,7 @@ public class MagUtil_shetuan {
 
         msgList.add(msg);
 
-        msg = new Msg(2,R.drawable.img_avatar_07,
+        msg = new Msg(2,R.drawable.img_avatar_02,
 
                 "网络提速降费今年将放出四个大招!",
 
@@ -54,4 +56,6 @@ public class MagUtil_shetuan {
         return msgList;
 
     }
+
 }
+

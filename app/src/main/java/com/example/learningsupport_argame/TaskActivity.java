@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.tabs.TabLayout;
 
 public class TaskActivity extends AppCompatActivity {
-
+   /*这个类是没有用的，是先前写的废弃的*/
     private TabLayout mTabLayout;
     private Fragment[]mFragmensts;
     @Override

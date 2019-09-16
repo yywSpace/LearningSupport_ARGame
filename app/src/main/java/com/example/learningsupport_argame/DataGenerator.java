@@ -13,6 +13,8 @@ import com.example.learningsupport_argame.fragmentPak.HaoyouFragment;
 import com.example.learningsupport_argame.fragmentPak.ShetuanFragment;
 
 public class DataGenerator {
+
+    //这个类和FriendList_Main配套使用为其提供data数据构造tab
     public static final int []mTabRes = new int[]{R.drawable.aixin,R.drawable.shetuan,R.drawable.fujin,R.drawable.haoyouall};//图标
     public static final int []mTabResPressed = new int[]{R.drawable.aixinselected,R.drawable.shetuanselected,R.drawable.fujinselected,R.drawable.haoyouallselected};
     public static final String []mTabTitle = new String[]{"我的好友","社团","附近","所有人"};//title

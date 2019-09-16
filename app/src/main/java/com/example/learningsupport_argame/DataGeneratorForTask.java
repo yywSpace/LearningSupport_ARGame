@@ -12,6 +12,8 @@ import com.example.learningsupport_argame.fragmentPak.HaoyouFragment;
 import com.example.learningsupport_argame.fragmentPak.ShetuanFragment;
 
 public class DataGeneratorForTask {
+
+    /*这个类也是没有用的，废弃的，和TaskActivity一道使用*/
     public static final int []mTabRes = new int[]{R.drawable.aixin,R.drawable.shetuan};//图标
     public static final int []mTabResPressed = new int[]{R.drawable.aixinselected,R.drawable.shetuanselected};
     public static final String []mTabTitle = new String[]{"执行中","所有任务"};//title

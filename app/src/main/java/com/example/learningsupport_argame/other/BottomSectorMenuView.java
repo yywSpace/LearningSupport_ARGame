@@ -41,6 +41,7 @@ import java.util.List;
  * Version: 2.0
  * Description: 底部扇形菜单
  * 使用方式: new BottomSectorMenuView.Converter(mFab).apply()
+*other里面存放的基本都是动画相关的东西
  */
 public class BottomSectorMenuView extends ViewGroup {
 

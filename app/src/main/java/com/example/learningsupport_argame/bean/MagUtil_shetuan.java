@@ -1,5 +1,4 @@
-package com.example.learningsupport_argame.util;
-
+package com.example.learningsupport_argame.bean;
 
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.bean.Msg;
@@ -7,13 +6,33 @@ import com.example.learningsupport_argame.bean.Msg;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MsgUtil {
+public class MagUtil_shetuan {
+    //这里得修改
 
-    public static List<Msg> getMsgList(){
+    private String uid;
+
+    public MagUtil_shetuan() {
+    }//这个构造方法是为了保证现在不出错而生成，后期用不用，以后再说
+
+    private List<String> fids;
+    public MagUtil_shetuan(String uid) {
+        //通过uid来初始化这个类对象//然后调用下面的getmsglist方法就能得到他的list了
+
+    }
+    private void getPeopleList(){
+        //这里调用服务器的方法，获取到这个用户的好友id列表
+    }
+
+    private Msg getaPersonInfo(String fid){
+
+        //这里通过查服务器获得到用户的特定好友的一个实例
+        return new Msg();
+    }
+    public List<Msg> getMsgList(){
 
         List<Msg> msgList = new ArrayList<>();
 
-        Msg msg = new Msg(1, R.drawable.img_avatar_01,
+        Msg msg = new Msg(1, R.drawable.img_avatar_06,
 
                 "华为新一代芯片震撼众人，麒麟990颠覆你认知！",
 
@@ -21,7 +40,7 @@ public class MsgUtil {
 
         msgList.add(msg);
 
-        msg = new Msg(2,R.drawable.img_avatar_02,
+        msg = new Msg(2,R.drawable.img_avatar_07,
 
                 "网络提速降费今年将放出四个大招!",
 
@@ -56,6 +75,4 @@ public class MsgUtil {
         return msgList;
 
     }
-
 }
-

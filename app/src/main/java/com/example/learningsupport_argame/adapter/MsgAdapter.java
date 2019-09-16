@@ -27,7 +27,8 @@ public class MsgAdapter extends BaseAdapter {
 
     public MsgAdapter(List<Msg> msgList, Context context) {
 
-        this.mMsgList = msgList;
+        this.mMsgList = msgList;//这个adapter用用生成数据，这个列表是一开始就要放进去的，里面装着的是一个people列表
+        //这个列表的初始化请在另一个类（MagUtil_shetuan）里完成
 
         this.mLayoutInflater = LayoutInflater.from(context);
 
@@ -39,7 +40,7 @@ public class MsgAdapter extends BaseAdapter {
 
     public int getCount() {
 
-        return mMsgList.size();
+        return mMsgList.size();//目前代码的关键只是用它来定位而已
 
     }
 
@@ -71,6 +72,7 @@ public class MsgAdapter extends BaseAdapter {
 
             viewHolder = new ViewHolder();
 
+
             viewHolder.imageView = convertView.findViewById(R.id.imageview);
 
 //            viewHolder.titleTV = convertView.findViewById(R.id.title_tv);
@@ -93,6 +95,7 @@ public class MsgAdapter extends BaseAdapter {
         Msg msg = mMsgList.get(position);
 
         viewHolder.imageView.setImageResource(msg.getImageResourceID());
+        //这里就直接用msglist通过position获得msg然后填充就好了
 
 //        viewHolder.titleTV.setText(msg.getTitle());
 //

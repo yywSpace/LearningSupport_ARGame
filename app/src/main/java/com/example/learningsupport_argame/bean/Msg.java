@@ -3,6 +3,8 @@ package com.example.learningsupport_argame.bean;
 
 public class Msg {
 
+    //这里之后直接让他继承PariofBean类即可！！！！
+    //下面的代码其实都是无用的
     private int id;
 
     private int imageResourceID;

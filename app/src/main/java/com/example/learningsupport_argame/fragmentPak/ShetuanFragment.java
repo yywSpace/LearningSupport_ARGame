@@ -13,8 +13,8 @@ import android.widget.ListView;
 
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.adapter.MsgAdapter;
+import com.example.learningsupport_argame.bean.MagUtil_shetuan;
 import com.example.learningsupport_argame.bean.Msg;
-import com.example.learningsupport_argame.util.MsgUtil;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class ShetuanFragment extends Fragment {
 
         listView = getActivity().findViewById(R.id.listview);
 
-        msgList = com.example.learningsupport_argame.util.MagUtil_shetuan.getMsgList();
+        msgList = new MagUtil_shetuan().getMsgList();//现在用到的是一个空的构造方法，以后请用一个uid作为参数创建实例
 
         adapter = new MsgAdapter(msgList,getContext());
 
