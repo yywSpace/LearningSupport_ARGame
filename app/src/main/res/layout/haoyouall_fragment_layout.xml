@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <data>
+        <variable
+            name="presenter"
+            type="com.example.learningsupport_argame.fragmentPak.HaoyouAllFragment"/>
+    </data>
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/colorPrimaryDark">
+     <androidx.cardview.widget.CardView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+
+         app:cardCornerRadius="16dp"
+         app:cardElevation="30dp"
+         android:layout_marginTop="30dp"
+         android:layout_marginBottom="30dp"
+         android:layout_marginLeft="25dp"
+         android:layout_marginRight="25dp">
+         <FrameLayout
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+
+
+
+             >
+             <ExpandableListView
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:id="@+id/expanded_menu"
+                 ></ExpandableListView>
+
+             <androidx.recyclerview.widget.RecyclerView
+                 android:layout_width="20dp"
+                 android:layout_height="wrap_content"
+                 android:layout_marginRight="15dp"
+                 android:layout_gravity="center_vertical|right"
+                 android:id="@+id/recycle_list"
+                 ></androidx.recyclerview.widget.RecyclerView>
+
+         </FrameLayout>
+     </androidx.cardview.widget.CardView>
+
+  </FrameLayout>
+
+</layout>
