@@ -3,11 +3,6 @@ package com.example.learningsupport_argame.ARModel;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.learningsupport_argame.ARModel.Items.Item;
 import com.example.learningsupport_argame.ARModel.Items.ItemType;
 import com.example.learningsupport_argame.ARModel.Items.ItemsAdapter;
@@ -27,9 +27,9 @@ import com.example.learningsupport_argame.ARModel.Items.ModelInfoLab;
 import com.example.learningsupport_argame.ARModel.Utils.LocationSensor;
 import com.example.learningsupport_argame.ARModel.Utils.Utils;
 import com.example.learningsupport_argame.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
-import com.google.ar.core.Plane;
 import com.google.ar.core.Pose;
 import com.google.ar.core.TrackingState;
 import com.google.ar.sceneform.AnchorNode;
@@ -41,8 +41,13 @@ import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
 
-import java.util.ArrayList;
 import java.util.List;
+
+//import android.support.annotation.Nullable;
+//import android.support.design.widget.FloatingActionButton;
+//import android.support.v7.app.AppCompatActivity;
+//import android.support.v7.widget.LinearLayoutManager;
+//import android.support.v7.widget.RecyclerView;
 
 // TODO: 19-7-14 模型放置，扫描流程
 //由于方向传感器的误差过大，在放置模型及检测模型时，强行调整模型的方向为正北，正南，正东，正西

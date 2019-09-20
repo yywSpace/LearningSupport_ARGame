@@ -6,7 +6,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -16,6 +16,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.learningsupport_argame.ARModel.Utils.Utils;
 import com.example.learningsupport_argame.R;
