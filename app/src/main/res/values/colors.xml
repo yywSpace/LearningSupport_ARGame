@@ -3,4 +3,22 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="colorSelected">#00eeee</color>
+
+    <color name="colorBlack">#000000</color>
+    <color name="colorGray">#eeeeee</color>
+    <color name="scu__defaultBackground">#e0e0e0</color>
+    <color name="gray">#C7C7C7</color>
+    <color name="blue_semi_transparent_pressed">#74aaf0</color>
+    <color name="zi">#88700ffe</color>
+    <color name="blue1" >#1e90ff</color>
+    <color name="blue2">#4169e1</color>
+
+    <color name="colorCourse1">#a47aff</color>
+    <color name="colorCourse2">#805677fc</color>
+    <color name="colorCourse3">#00e0ff</color>
+    <color name="colorCourse4">#eebbff</color>
+    <color name="colorCourse5">#ffc0cb</color>
+
 </resources>

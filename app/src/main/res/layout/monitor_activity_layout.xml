@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/monitor_return_coursetable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="16dp"
+        android:onClick="monitor_return_coursetable_onClick"
+        android:src="@drawable/course_ic_return"
+         />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="bottom"
+            android:ems="1"
+            android:textColor="@android:color/black"
+            android:text="不检束,则心日恣肆。｜朱熹" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="9"
+            android:orientation="vertical">
+
+            <TextView
+
+                android:id="@+id/monitor_system_time"
+
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+
+                android:layout_gravity="center"
+
+                android:layout_marginTop="40dp"
+
+                android:text="10:06"
+
+                android:textColor="@android:color/black"
+
+                android:textSize="40dp"
+
+                android:textStyle="bold" />
+
+
+            <TextView
+
+                android:id="@+id/monitor_system_calender"
+
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_marginTop="10dp"
+
+                android:text="7月31日" />
+
+            <FrameLayout
+
+                android:id="@+id/monitor_remaining_time_image"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_gravity="center"
+
+                android:layout_marginTop="10dp">
+
+                <com.example.course.Course.CountDownView
+
+                    android:id="@+id/monitor_count_down_view"
+
+                    android:layout_width="180dp"
+
+                    android:layout_height="180dp" />
+
+            </FrameLayout>
+
+            <TextView
+
+                android:id="@+id/monitor_task_remaining_time"
+
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:text="TextView"
+
+                android:textColor="@android:color/black"
+
+                android:textSize="15dp"
+
+                android:textStyle="bold" />
+
+            <TextView
+
+                android:id="@+id/monitor_phone_use_time_label"
+
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_marginTop="40dp"
+
+                android:text="手机使用时间"
+
+                android:textColor="@android:color/black"
+
+                android:textSize="15dp"
+
+                android:textStyle="bold" />
+
+            <TextView
+
+                android:id="@+id/monitor_phone_use_time"
+
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_marginTop="10dp"
+
+                android:text="TextView" />
+
+            <TextView
+
+                android:id="@+id/monitor_attention_time_label"
+
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_marginTop="15dp"
+
+                android:text="专注时间"
+
+                android:textColor="@android:color/black"
+
+                android:textSize="15dp"
+
+                android:textStyle="bold" />
+
+            <TextView
+
+                android:id="@+id/monitor_task_attention_time"
+
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_marginTop="10dp"
+
+                android:text="TextView" />
+
+            <TextView
+
+                android:id="@+id/monitor_phone_use_count_label"
+
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_marginTop="15dp"
+
+                android:text="手机使用次数"
+
+                android:textColor="@android:color/black"
+
+                android:textSize="15dp"
+
+                android:textStyle="bold" />
+
+
+            <TextView
+
+                android:id="@+id/monitor_phone_use_count"
+
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_marginTop="10dp"
+
+                android:text="TextView" />
+        </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:ems="1"
+                android:layout_marginRight="10dp"
+                android:textColor="@android:color/black"
+                android:text="不奋发，则心日颓靡。" />
+
+        </LinearLayout>
+</LinearLayout>

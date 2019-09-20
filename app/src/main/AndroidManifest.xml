@@ -38,16 +38,30 @@
             android:value="HUR9gkMCssBKWFHYayvz0U3LmdZduud0" />
 
 
-        <activity android:name=".Navi.Activity.MapActivity"
-            android:label="@string/app_name">
+        <!--<activity android:name=".Navi.Activity.MapActivity"-->
+            <!--android:label="@string/app_name">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<action android:name="android.intent.action.VIEW"/>-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+
+        <activity android:name=".Course.CourseMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW"/>
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".Navi.Activity.YoudaoActivity"/>
-        <activity android:name=".MainActivity"></activity>
+
+        <activity android:name=".Course.AddCourseActivity"/>
+        <activity android:name=".Course.CourseTimeActivity"/>
+        <activity android:name=".Course.MonitorActivity"/>
+        <service android:name=".Course.MonitorService"/>
+
     </application>
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -97,6 +111,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <uses-permission android:name="android.permission.VIBRATE"/>
+
+
+    <!--前台服务权限-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
 
 

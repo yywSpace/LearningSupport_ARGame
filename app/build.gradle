@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.learningsupport_argame"
-        minSdkVersion 16
+        minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -19,11 +19,22 @@ android {
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        sit{
+            debuggable true
+        }
         sourceSets {
             main {
                 jniLibs.srcDir 'libs'
             }
         }
+    }
+
+    lintOptions {
+        disable 'GoogleAppIndexingWarning'
     }
 
     useLibrary 'org.apache.http.legacy'
@@ -48,6 +59,13 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation files('libs/BaiduLBS_Android.jar')
+
+    implementation 'com.contrarywind:Android-PickerView:4.1.7'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    //解析json文件
+    implementation 'org.litepal.android:java:3.0.0'
+    // implementation 'com.getbase:floatingactionbutton:1.10.1'
+    implementation files('libs/SQLiteStudioRemote.jar')
 
 
 

@@ -8,10 +8,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true" />
-    <!--<WebView-->
-        <!--android:id="@+id/webView"-->
-        <!--android:clickable="true"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"></WebView>-->
 
 </LinearLayout>
