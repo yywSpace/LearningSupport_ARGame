@@ -1,4 +1,6 @@
-package com.example.learningsupport_argame.bean;
+package com.example.learningsupport_argame.task.data;
+
+import com.example.learningsupport_argame.bean.PairInfoBean;
 
 import java.util.List;
 

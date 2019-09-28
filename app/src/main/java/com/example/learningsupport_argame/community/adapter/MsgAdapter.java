@@ -1,4 +1,4 @@
-package com.example.learningsupport_argame.adapter;
+package com.example.learningsupport_argame.community.adapter;
 
 
 import android.content.Context;
@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.bean.Msg;
+import com.example.learningsupport_argame.community.data.Msg;
 
 import java.util.List;
 

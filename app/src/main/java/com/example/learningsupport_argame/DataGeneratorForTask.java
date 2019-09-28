@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.learningsupport_argame.fragmentPak.HaoyouFragment;
-import com.example.learningsupport_argame.fragmentPak.ShetuanFragment;
+import com.example.learningsupport_argame.community.fragment.HaoyouFragment;
+import com.example.learningsupport_argame.community.fragment.ShetuanFragment;
 
 public class DataGeneratorForTask {
 

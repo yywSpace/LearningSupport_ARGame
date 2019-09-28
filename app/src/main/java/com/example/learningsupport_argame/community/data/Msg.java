@@ -1,4 +1,4 @@
-package com.example.learningsupport_argame.bean;
+package com.example.learningsupport_argame.community.data;
 
 
 public class Msg {

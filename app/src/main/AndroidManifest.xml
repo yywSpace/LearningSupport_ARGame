@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme"
         >
 
-        <activity android:name=".FriendList_Main">
+        <activity android:name=".community.activity.FriendList_Main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -30,13 +30,13 @@
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
-        <activity android:name=".GameActivity">
+        <activity android:name=".unity.GameActivity">
         </activity>
         <activity android:name="com.example.Production.UnityPlayerActivity"></activity>
         <activity android:name=".TaskActivity" >
 
         </activity>
-        <activity android:name=".TaskList_Main" >
+        <activity android:name=".task.activity.TaskList_Main" >
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->

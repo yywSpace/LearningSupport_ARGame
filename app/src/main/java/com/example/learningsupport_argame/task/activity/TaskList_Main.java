@@ -1,13 +1,11 @@
-package com.example.learningsupport_argame;
+package com.example.learningsupport_argame.task.activity;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,10 +18,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.learningsupport_argame.fragmentPak.TestFragment;
-import com.example.learningsupport_argame.fragmentPak.taskAllFragment;
-import com.example.learningsupport_argame.fragmentPak.taskingFragment;
-import com.example.learningsupport_argame.other.BottomSectorMenuView;
+import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.task.fragment.taskAllFragment;
+import com.example.learningsupport_argame.task.fragment.taskingFragment;
+import com.example.learningsupport_argame.community.ainmation.BottomSectorMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
