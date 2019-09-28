@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +22,7 @@ import com.example.learningsupport_argame.ARModel.Items.ModelInfoLab;
 import com.example.learningsupport_argame.ARModel.Utils.DemoUtils;
 import com.example.learningsupport_argame.ARModel.Utils.LocationSensor;
 import com.example.learningsupport_argame.ARModel.Utils.Vector3Utils;
+import com.example.learningsupport_argame.MainActivity;
 import com.example.learningsupport_argame.R;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
@@ -36,7 +40,7 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.TransformableNode;
 import com.google.ar.sceneform.ux.TransformationSystem;
 
-public class ScanModel extends AppCompatActivity {
+public class ScanModel extends AppCompatActivity  implements View.OnClickListener{
     private static final String TAG = ScanModel.class.getSimpleName();
     private ArSceneView mArSceneView;
     private Snackbar loadingMessageSnackbar = null;
@@ -48,10 +52,30 @@ public class ScanModel extends AppCompatActivity {
     TextView mMessageTextView;
     LocationSensor mLocationSensor;
 
+
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    ImageView menu;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.armodel_activity_scan_model);
+
+
+        drawerLayout = findViewById(R.id.armodel_activity_na);
+        navigationView =  findViewById(R.id.armodel_nav);
+        menu=  findViewById(R.id.main_menu);
+        View headerView = navigationView.getHeaderView(0);//获取头布局
+        menu.setOnClickListener(this);
+        navigationView.setNavigationItemSelectedListener(item -> {
+            //item.setChecked(true);
+            Toast.makeText(ScanModel.this,item.getTitle().toString(), Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawer(navigationView);
+            return true;
+        });
+
+
+
         mArSceneView = findViewById(R.id.aomodel_ar_scene_view);
         mPutModelButton = findViewById(R.id.armodel_model_put_test);
         mMessageTextView = findViewById(R.id.armodel_node_message);
@@ -249,5 +273,18 @@ public class ScanModel extends AppCompatActivity {
                         modelInfo.getModelRotation().w
                 });
         return pose;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.main_menu://点击菜单，跳出侧滑菜单
+                if (drawerLayout.isDrawerOpen(navigationView)){
+                    drawerLayout.closeDrawer(navigationView);
+                }else{
+                    drawerLayout.openDrawer(navigationView);
+                }
+                break;
+        }
     }
 }

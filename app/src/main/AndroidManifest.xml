@@ -2,16 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.learningsupport_argame">
     <!--前台服务权限-->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-
-
-    <!-- Both "AR Optional" and "AR Required" apps require CAMERA permission. -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <!-- Indicates that app requires ARCore ("AR Required"). Ensures app is only
-         visible in the Google Play Store on devices that support ARCore.
-         For "AR Optional" apps remove this line. -->
-    <uses-feature android:name="android.hardware.camera.ar" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -24,22 +14,35 @@
          Play Store to download and install ARCore along with the app.
          For an "AR Optional" app, specify "optional" instead of "required".
        -->
-        <meta-data android:name="com.google.ar.core" android:value="required" />
-
-
-        <activity android:name=".FeedbackModel.MissionAccomplishActivity">
+        <activity android:name=".ARModel.ScanModel">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ARModel.ScanModel"/>
-        <activity android:name=".ARModel.PutModel"/>
-        <service android:name=".MonitorModel.MonitorService"/>
-        <activity android:name=".FeedbackModel.FeedbackDetailsActivity"/>
+
+
+<!--        <activity android:name=".ARModel.ScanModel" />-->
+        <activity android:name=".ARModel.PutModel" />
+        <activity android:name=".FeedbackModel.FeedbackDetailsActivity" />
+
+        <meta-data
+            android:name="com.google.ar.core"
+            android:value="required" />
+        <service android:name=".MonitorModel.MonitorService" />
         <!--<activity android:name=".FeedbackModel.FeedbackDetailsActivity"/>-->
 
     </application>
+
+
+    <!-- Both "AR Optional" and "AR Required" apps require CAMERA permission. -->
+    <uses-feature android:name="android.hardware.camera.ar" />
+    <!-- Indicates that app requires ARCore ("AR Required"). Ensures app is only
+         visible in the Google Play Store on devices that support ARCore.
+         For "AR Optional" apps remove this line. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
 
 </manifest>
