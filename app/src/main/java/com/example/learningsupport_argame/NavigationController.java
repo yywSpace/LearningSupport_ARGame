@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.google.android.material.navigation.NavigationView;
 
 
@@ -34,7 +35,18 @@ public class NavigationController {
 
         navigationView.setNavigationItemSelectedListener(item -> {
             Toast.makeText(context, item.getTitle().toString(), Toast.LENGTH_SHORT).show();
-            Log.d(TAG, ": "+ item.getTitle().toString());
+            if (item.getTitle().toString().equals("我的好友"))
+                context.startActivity(new Intent(context, FriendList_Main.class));
+            else if (item.getTitle().toString().equals("我的任务"))
+                context.startActivity(new Intent(context, TaskList_Main.class));
+            else if (item.getTitle().toString().equals("我的课程"))
+                context.startActivity(new Intent(context, FriendList_Main.class));
+            else if (item.getTitle().toString().equals("学习反馈"))
+                context.startActivity(new Intent(context, FeedbackDetailsActivity.class));
+            else if (item.getTitle().toString().equals("VR模式"))
+                context.startActivity(new Intent(context, FriendList_Main.class));
+            else if (item.getTitle().toString().equals("广场与社团"))
+                context.startActivity(new Intent(context, FriendList_Main.class));
             drawerLayout.closeDrawer(navigationView);
             return true;
         });

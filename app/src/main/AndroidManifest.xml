@@ -31,7 +31,7 @@
 
         <activity android:name="com.example.Production.UnityPlayerActivity"/>
         <activity android:name=".TaskActivity" />
-<!--        <activity android:name=".TaskList_Main" />-->
+        <activity android:name=".FriendList_Main" />
 
         <meta-data
             android:name="com.google.ar.core"
