@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/friend"
+        android:title="我的好友" />
+    <item
+        android:id="@+id/task"
+        android:title="我的任务" />
+    <item
+        android:id="@+id/course"
+        android:title="我的课程" />
+    <item
+        android:id="@+id/monitor"
+        android:title="学习反馈" />
+    <item
+        android:id="@+id/vr"
+        android:title="VR模式" />
+    <item
+        android:id="@+id/social_square"
+        android:title="广场与社团" />
+</menu>

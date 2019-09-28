@@ -3,22 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.learningsupport_argame">
     <!--前台服务权限-->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-
-
-    <!-- Both "AR Optional" and "AR Required" apps require CAMERA permission. -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <!-- Indicates that app requires ARCore ("AR Required"). Ensures app is only
-         visible in the Google Play Store on devices that support ARCore.
-         For "AR Optional" apps remove this line. -->
-    <uses-feature android:name="android.hardware.camera.ar" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
-    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -27,57 +11,50 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- Indicates that app requires ARCore ("AR Required"). Causes Google
-         Play Store to download and install ARCore along with the app.
-         For an "AR Optional" app, specify "optional" instead of "required".
-       -->
-        <meta-data android:name="com.google.ar.core" android:value="required" />
-
-
         <activity android:name=".FeedbackModel.MissionAccomplishActivity"></activity>
-        <!--android:theme="@style/AppTheme"-->
-        <!--&gt;-->
 
-        <activity android:name=".FriendList_Main">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
-        <activity android:name=".ARModel.ScanModel"/>
-        <activity android:name=".ARModel.PutModel"/>
-        <service android:name=".MonitorModel.MonitorService"/>
-        <activity android:name=".FeedbackModel.FeedbackDetailsActivity">
+        <activity android:name=".TaskList_Main">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity android:name=".FeedbackModel.FeedbackDetailsActivity"/>-->
 
-        <activity android:name=".MainActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
-        <activity android:name=".GameActivity">
-        </activity>
-        <activity android:name="com.example.Production.UnityPlayerActivity"></activity>
-        <activity android:name=".TaskActivity" >
+        <activity android:name=".ARModel.ScanModel" />
+        <activity android:name=".ARModel.PutModel" />
+        <activity android:name=".FeedbackModel.FeedbackDetailsActivity" />
 
-        </activity>
-        <activity android:name=".TaskList_Main" >
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
+        <activity android:name=".MainActivity" />
 
+        <activity android:name=".GameActivity"/>
 
+        <activity android:name="com.example.Production.UnityPlayerActivity"/>
+        <activity android:name=".TaskActivity" />
+<!--        <activity android:name=".TaskList_Main" />-->
+
+        <meta-data
+            android:name="com.google.ar.core"
+            android:value="required" />
+
+        <service android:name=".MonitorModel.MonitorService" />
 
     </application>
+
+    <!-- Both "AR Optional" and "AR Required" apps require CAMERA permission. -->
+    <uses-feature android:name="android.hardware.camera.ar" />
+    <!-- Indicates that app requires ARCore ("AR Required"). Ensures app is only
+         visible in the Google Play Store on devices that support ARCore.
+         For "AR Optional" apps remove this line. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>

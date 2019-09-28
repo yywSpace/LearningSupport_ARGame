@@ -8,18 +8,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.learningsupport_argame.NavigationController;
 import com.example.learningsupport_argame.R;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//import android.support.annotation.Nullable;
-//import android.support.design.widget.TabLayout;
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentPagerAdapter;
-//import android.support.v4.view.ViewPager;
-//import android.support.v7.app.AppCompatActivity;
 
 public class FeedbackDetailsActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
@@ -31,7 +26,11 @@ public class FeedbackDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.feedback_activity_details);
+        setContentView(R.layout.feedback_navigation_activity_details);
+
+        new NavigationController(this, getWindow().getDecorView());
+
+
         mTabLayout = findViewById(R.id.feedback_details_tabs);
         mViewPager = findViewById(R.id.feedback_details_vp_content);
         fragments.add(RadarChartFragment.newInstance());
