@@ -6,7 +6,7 @@
     <data>
         <variable
             name="presenter"
-            type="com.example.learningsupport_argame.fragmentPak.HaoyouAllFragment"/>
+            type="com.example.learningsupport_argame.community.fragment.HaoyouAllFragment"/>
     </data>
   <FrameLayout
       android:layout_width="match_parent"

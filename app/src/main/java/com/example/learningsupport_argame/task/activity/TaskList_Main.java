@@ -1,15 +1,11 @@
-package com.example.learningsupport_argame;
+package com.example.learningsupport_argame.task.activity;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,19 +13,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.learningsupport_argame.fragmentPak.TestFragment;
-import com.example.learningsupport_argame.fragmentPak.taskAllFragment;
-import com.example.learningsupport_argame.fragmentPak.taskingFragment;
-import com.example.learningsupport_argame.other.BottomSectorMenuView;
+import com.example.learningsupport_argame.NavigationController;
+import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.community.ainmation.BottomSectorMenuView;
+import com.example.learningsupport_argame.task.fragment.taskAllFragment;
+import com.example.learningsupport_argame.task.fragment.taskingFragment;
+import android.view.animation.AlphaAnimation;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;

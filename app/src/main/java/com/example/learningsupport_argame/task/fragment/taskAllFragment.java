@@ -1,9 +1,7 @@
-package com.example.learningsupport_argame.fragmentPak;
+package com.example.learningsupport_argame.task.fragment;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -13,7 +11,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextClock;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -24,18 +21,17 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.adapter.FriendtAdapter;
+import com.example.learningsupport_argame.community.adapter.FriendtAdapter;
 import com.example.learningsupport_argame.bean.PairInfoBean;
-import com.example.learningsupport_argame.other.CardConfig;
-import com.example.learningsupport_argame.other.CardItemTouchHelperCallBack;
-import com.example.learningsupport_argame.other.CardLayoutManager;
-import com.example.learningsupport_argame.other.OnSwipeListener;
+import com.example.learningsupport_argame.community.ainmation.CardConfig;
+import com.example.learningsupport_argame.community.ainmation.CardItemTouchHelperCallBack;
+import com.example.learningsupport_argame.community.ainmation.CardLayoutManager;
+import com.example.learningsupport_argame.community.ainmation.OnSwipeListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class taskingFragment extends Fragment {
-
+public class taskAllFragment extends Fragment {
     private Context con;
     private List<Integer> list = new ArrayList<>();
     private Integer lastcard;
@@ -44,39 +40,26 @@ public class taskingFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.task_now_fragment_layout, container, false);
-
-
-
+        View view = inflater.inflate(R.layout.task_all_layout_fragment, container, false);
         return view;
     }
 
-
-
-        @Override
+    @Override
     public void onStart() {
         super.onStart();
         initView();
         initData();
-        Log.d("KK","ing on start");
+        Log.d("KK","ALL on start");
 
-//        talkbutton.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                if (motionEvent.getAction()==MotionEvent.ACTION_DOWN){
-//                    talkbutton.getBackground().setAlpha(50);
-//                }
-//                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
-//                    talkbutton.getBackground().setAlpha(0);
-//                    //这里处理事件。
-//                    Toast.makeText(con,"这里处理事件",Toast.LENGTH_SHORT).show();
-//                }
-//                Toast.makeText(con,"这里处理事  件",Toast.LENGTH_SHORT).show();
-//                return true;
-//            }
-//        });
+//
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("KK","ALL on resume");
     }
 
     @Override
@@ -88,11 +71,11 @@ public class taskingFragment extends Fragment {
 
     private void initView() {
 
-        final RecyclerView recyclerView = getActivity().findViewById(R.id.recyclerViewforTasking);
+        final RecyclerView recyclerView = getActivity().findViewById(R.id.recyclerViewforTaskAll);
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        recyclerView.setAdapter(new taskingFragment.MyAdapter());
+        recyclerView.setAdapter(new taskAllFragment.MyAdapter());
 
         CardItemTouchHelperCallBack cardCallback = new CardItemTouchHelperCallBack(recyclerView.getAdapter(), list);
 
@@ -103,7 +86,7 @@ public class taskingFragment extends Fragment {
 
             public void onSwiping(RecyclerView.ViewHolder viewHolder, float ratio, int direction) {
 
-                taskingFragment.MyAdapter.MyViewHolder myHolder = (taskingFragment.MyAdapter.MyViewHolder) viewHolder;
+                taskAllFragment.MyAdapter.MyViewHolder myHolder = (taskAllFragment.MyAdapter.MyViewHolder) viewHolder;
 
                 viewHolder.itemView.setAlpha(1 - Math.abs(ratio) * 0.2f);
 
@@ -131,7 +114,7 @@ public class taskingFragment extends Fragment {
 
             public void onSwiped(RecyclerView.ViewHolder viewHolder, Integer o, int direction) {
 
-                taskingFragment.MyAdapter.MyViewHolder myHolder = (taskingFragment.MyAdapter.MyViewHolder) viewHolder;
+                taskAllFragment.MyAdapter.MyViewHolder myHolder = (taskAllFragment.MyAdapter.MyViewHolder) viewHolder;
 
                 viewHolder.itemView.setAlpha(1f);
 
@@ -190,25 +173,20 @@ public class taskingFragment extends Fragment {
 
         list.add(R.drawable.img_avatar_01);
 
-//        list.add(R.drawable.img_avatar_02);
-//
-//        list.add(R.drawable.img_avatar_03);
-//
-//        list.add(R.drawable.img_avatar_04);
-//
-//        list.add(R.drawable.img_avatar_05);
-//
-//        list.add(R.drawable.img_avatar_06);
-//
-//        list.add(R.drawable.img_avatar_07);
+        list.add(R.drawable.img_avatar_02);
+
+        list.add(R.drawable.img_avatar_03);
+
+        list.add(R.drawable.img_avatar_04);
+
+        list.add(R.drawable.img_avatar_05);
+
+        list.add(R.drawable.img_avatar_06);
+
+        list.add(R.drawable.img_avatar_07);
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("KK","ing on resume");
-    }
 
     private class MyAdapter extends RecyclerView.Adapter {
 
@@ -218,7 +196,7 @@ public class taskingFragment extends Fragment {
 
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_card_layout, parent, false);
 
-            return new taskingFragment.MyAdapter.MyViewHolder(view);
+            return new taskAllFragment.MyAdapter.MyViewHolder(view);
 
         }
 
@@ -246,16 +224,17 @@ public class taskingFragment extends Fragment {
         class MyViewHolder extends RecyclerView.ViewHolder {
 
 
-//
+
 
             ImageView likeImageView;
+
             ImageView dislikeImageView;
+            ImageButton tishi;
+
             ImageButton startrwbtn;
             ImageButton ditubtn;
-            ImageButton tishi;
             TextClock textClock;
             ListView listView;
-
             List<PairInfoBean> peopleList = new ArrayList<PairInfoBean>();
 
 
@@ -263,38 +242,39 @@ public class taskingFragment extends Fragment {
 
                 super(itemView);
 
+//                avatarImageView = (ImageView) itemView.findViewById(R.id.iv_avatar_task);
+
 
                 likeImageView = (ImageView) itemView.findViewById(R.id.iv_like_task);
 
                 dislikeImageView = (ImageView) itemView.findViewById(R.id.iv_dislike_task);
-
-//
-                  startrwbtn=(ImageButton)itemView.findViewById(R.id.btn_renwukaishi);
-                  ditubtn =(ImageButton)itemView.findViewById(R.id.btn_ditu);
+                startrwbtn=(ImageButton)itemView.findViewById(R.id.btn_renwukaishi);
+                ditubtn =(ImageButton)itemView.findViewById(R.id.btn_ditu);
 
                 textClock = (TextClock) itemView.findViewById(R.id.date_window);
                 listView = (ListView) itemView.findViewById(R.id.list_chenyuan);
-                tishi =(ImageButton)itemView.findViewById(R.id.wenhao);
 
-
+                tishi=(ImageButton)itemView.findViewById(R.id.wenhao);
                 InitialData();
                 FriendtAdapter adapter=new FriendtAdapter(peopleList,getContext());
                 listView.setAdapter(adapter);
+
                 textClock.setFormat12Hour("1998-08-01 12:00:00");
 //                talkbutton.getBackground().setAlpha(0);
 //                infobutton.getBackground().setAlpha(0);
                 startrwbtn.getBackground().setAlpha(0);
                 ditubtn.getBackground().setAlpha(0);
+
                 tishi.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                           tishi.getBackground().setAlpha(70);
+                            tishi.getBackground().setAlpha(70);
                         }
                         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                             tishi.getBackground().setAlpha(0);
                             //这里处理事件。
-                         //   Toast.makeText(con, "弹出提示框", Toast.LENGTH_SHORT).show();
+                            //   Toast.makeText(con, "弹出提示框", Toast.LENGTH_SHORT).show();
                             new  AlertDialog.Builder(con)
                                     .setTitle("任务类型提示" )
                                     .setMessage("CheckBox选择框\n\t\t\t\t\t为红色则表示自建任务\n\t\t\t\t\t为绿色则表示社团任务\n\t\t\t\t\t为蓝色则表示好友指定任务\n\t\t\t\t\t为紫色则表示主动的接受任务")
@@ -315,17 +295,17 @@ public class taskingFragment extends Fragment {
                         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                             ditubtn.getBackground().setAlpha(0);
                             //这里处理事件。
-                            Toast.makeText(con, "这里处nn理事件", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(con, "这里处mm理事件", Toast.LENGTH_SHORT).show();
 
                         }
                         // Toast.makeText(con,"这里处理事  件",Toast.LENGTH_SHORT).show();
                         return false;
                     }
                 });
-               startrwbtn.setOnTouchListener(new View.OnTouchListener() {
-                   @Override
-                   public boolean onTouch(View view, MotionEvent motionEvent) {
-                       if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                startrwbtn.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                             startrwbtn.getBackground().setAlpha(70);
                         }
                         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
@@ -336,8 +316,44 @@ public class taskingFragment extends Fragment {
                         }
                         // Toast.makeText(con,"这里处理事  件",Toast.LENGTH_SHORT).show();
                         return false;
-                       }
-               });
+                    }
+                });
+//                talkbutton.setOnTouchListener(new View.OnTouchListener() {
+//                    @Override
+//                    public boolean onTouch(View view, MotionEvent motionEvent) {
+//
+//                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+//                            talkbutton.getBackground().setAlpha(70);
+//                        }
+//                        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+//                            talkbutton.getBackground().setAlpha(0);
+//                            //这里处理事件。
+//                            Toast.makeText(con, "这里处理事件", Toast.LENGTH_SHORT).show();
+//
+//                        }
+//                        // Toast.makeText(con,"这里处理事  件",Toast.LENGTH_SHORT).show();
+//                        return false;
+//
+//                    }
+//                });
+//
+//
+//                infobutton.setOnTouchListener(new View.OnTouchListener() {
+//                    @Override
+//                    public boolean onTouch(View view, MotionEvent motionEvent) {
+//
+//                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+//                            infobutton.getBackground().setAlpha(70);
+//                        }
+//                        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+//                            infobutton.getBackground().setAlpha(0);
+//                            //这里处理事件。
+//                            Toast.makeText(con, "这里处理事件", Toast.LENGTH_SHORT).show();
+//                            return false;
+//                        }
+//                        return false;
+//                    }
+//                });
 //
 //
             }

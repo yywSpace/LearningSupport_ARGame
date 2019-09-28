@@ -1,23 +1,24 @@
-package com.example.learningsupport_argame.fragmentPak;
+package com.example.learningsupport_argame.community.fragment;
 
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.learningsupport_argame.adapter.CoinBarAdapter;
-import com.example.learningsupport_argame.adapter.ExpandCoinAdapter;
-import com.example.learningsupport_argame.bean.PairInfoBean;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.bean.PairInfoBean;
+import com.example.learningsupport_argame.community.adapter.CoinBarAdapter;
+import com.example.learningsupport_argame.community.adapter.ExpandCoinAdapter;
 import com.example.learningsupport_argame.databinding.HaoyouallFragmentLayoutBinding;
+
 import java.util.ArrayList;
 import java.util.List;
 

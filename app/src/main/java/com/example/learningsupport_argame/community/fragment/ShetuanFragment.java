@@ -1,20 +1,19 @@
-package com.example.learningsupport_argame.fragmentPak;
+package com.example.learningsupport_argame.community.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.adapter.MsgAdapter;
-import com.example.learningsupport_argame.bean.MagUtil_shetuan;
-import com.example.learningsupport_argame.bean.Msg;
+import com.example.learningsupport_argame.community.adapter.MsgAdapter;
+import com.example.learningsupport_argame.community.data.MagUtil_shetuan;
+import com.example.learningsupport_argame.community.data.Msg;
 
 import java.util.List;
 

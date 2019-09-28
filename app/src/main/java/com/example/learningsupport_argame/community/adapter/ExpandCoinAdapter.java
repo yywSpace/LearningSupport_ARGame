@@ -1,4 +1,4 @@
-package com.example.learningsupport_argame.adapter;
+package com.example.learningsupport_argame.community.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

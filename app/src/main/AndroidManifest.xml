@@ -6,31 +6,47 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="learningsupport_argame"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
         <activity android:name=".FeedbackModel.MissionAccomplishActivity"></activity>
-
-        <activity android:name=".TaskList_Main">
+        <activity android:name=".community.activity.FriendList_Main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".unity.GameActivity">
+        </activity>
+        <activity android:name="com.example.Production.UnityPlayerActivity"></activity>
+        <activity android:name=".TaskActivity" >
+
+        </activity>
+        <activity android:name=".task.activity.TaskList_Main" >
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
 
         <activity android:name=".ARModel.ScanModel" />
         <activity android:name=".ARModel.PutModel" />
         <activity android:name=".FeedbackModel.FeedbackDetailsActivity" />
 
-        <activity android:name=".MainActivity" />
+        <!--<activity android:name=".MainActivity" />-->
 
-        <activity android:name=".GameActivity"/>
 
-        <activity android:name="com.example.Production.UnityPlayerActivity"/>
-        <activity android:name=".TaskActivity" />
+        <!--<activity android:name="com.example.Production.UnityPlayerActivity"/>-->
+        <!--<activity android:name=".TaskActivity" />-->
 <!--        <activity android:name=".TaskList_Main" />-->
 
         <meta-data
