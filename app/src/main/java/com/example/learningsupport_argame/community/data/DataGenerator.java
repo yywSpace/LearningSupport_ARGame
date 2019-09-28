@@ -1,16 +1,18 @@
-package com.example.learningsupport_argame;
+package com.example.learningsupport_argame.community.data;
 
 import android.content.Context;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.learningsupport_argame.fragmentPak.FujinFragment;
-import com.example.learningsupport_argame.fragmentPak.HaoyouAllFragment;
-import com.example.learningsupport_argame.fragmentPak.HaoyouFragment;
-import com.example.learningsupport_argame.fragmentPak.ShetuanFragment;
+import androidx.fragment.app.Fragment;
+
+import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.community.fragment.FujinFragment;
+import com.example.learningsupport_argame.community.fragment.HaoyouAllFragment;
+import com.example.learningsupport_argame.community.fragment.HaoyouFragment;
+import com.example.learningsupport_argame.community.fragment.ShetuanFragment;
 
 public class DataGenerator {
 

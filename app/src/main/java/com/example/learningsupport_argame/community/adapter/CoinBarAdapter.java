@@ -1,8 +1,9 @@
-package com.example.learningsupport_argame.adapter;
+package com.example.learningsupport_argame.community.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 
 import com.example.learningsupport_argame.databinding.ItemBarBinding;
 

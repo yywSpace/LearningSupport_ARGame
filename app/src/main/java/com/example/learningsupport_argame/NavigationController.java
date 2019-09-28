@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
+import com.example.learningsupport_argame.community.activity.FriendList_Main;
+import com.example.learningsupport_argame.task.activity.TaskList_Main;
 import com.google.android.material.navigation.NavigationView;
 
 

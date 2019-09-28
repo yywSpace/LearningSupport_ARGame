@@ -1,12 +1,14 @@
 package com.example.learningsupport_argame;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.learningsupport_argame.unity.GameActivity;
 
 public class MainActivity extends AppCompatActivity {
 

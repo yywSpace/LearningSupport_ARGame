@@ -1,10 +1,9 @@
-package com.example.learningsupport_argame.other;
+package com.example.learningsupport_argame.community.ainmation;
 
 
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;

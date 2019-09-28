@@ -1,4 +1,4 @@
-package com.example.learningsupport_argame;
+package com.example.learningsupport_argame.unity;
 
 import com.example.Production.UnityPlayerActivity;
 

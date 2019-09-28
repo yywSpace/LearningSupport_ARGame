@@ -1,4 +1,4 @@
-package com.example.learningsupport_argame.other;
+package com.example.learningsupport_argame.community.ainmation;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
