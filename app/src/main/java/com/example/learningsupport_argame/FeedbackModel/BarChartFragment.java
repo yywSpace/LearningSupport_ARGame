@@ -4,15 +4,15 @@ package com.example.learningsupport_argame.FeedbackModel;
 import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.learningsupport_argame.MonitorModel.MonitorInfo;
 import com.example.learningsupport_argame.MonitorModel.MonitorInfoLab;
@@ -28,14 +28,16 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
-import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+//import android.support.annotation.NonNull;
+//import android.support.annotation.Nullable;
+//import android.support.v4.app.Fragment;
 
 public class BarChartFragment extends Fragment {
     private static String TAG = BarChartFragment.class.getSimpleName();

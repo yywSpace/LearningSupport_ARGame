@@ -3,13 +3,7 @@ package com.example.learningsupport_argame.ARModel;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,13 +11,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.example.learningsupport_argame.ARModel.Items.ModelInfo;
 import com.example.learningsupport_argame.ARModel.Items.ModelInfoLab;
 import com.example.learningsupport_argame.ARModel.Utils.DemoUtils;
 import com.example.learningsupport_argame.ARModel.Utils.LocationSensor;
-import com.example.learningsupport_argame.ARModel.Utils.Vector3Utils;
-import com.example.learningsupport_argame.MainActivity;
+
 import com.example.learningsupport_argame.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Plane;
@@ -34,11 +35,14 @@ import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
-import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.google.ar.sceneform.ux.TransformableNode;
-import com.google.ar.sceneform.ux.TransformationSystem;
+
+//import android.support.annotation.NonNull;
+//import android.support.annotation.Nullable;
+//import android.support.design.widget.FloatingActionButton;
+//import android.support.design.widget.Snackbar;
+//import android.support.v7.app.AppCompatActivity;
 
 public class ScanModel extends AppCompatActivity  implements View.OnClickListener{
     private static final String TAG = ScanModel.class.getSimpleName();
