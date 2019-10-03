@@ -71,6 +71,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-unity.txt'
             signingConfig signingConfigs.debug
         }
+        sit {
+        }
+        sourceSets {
+        }
     }
 
     packagingOptions {

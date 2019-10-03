@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/course_return_coursetable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="17dp"
+                android:layout_marginRight="15dp"
+                android:onClick="return_coursetable_onClick"
+                android:src="@drawable/course_ic_return" />
+
+            <TextView
+                android:id="@+id/course_time_commit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_margin="15dp"
+                android:background="@drawable/course_shapebtn1"
+                android:includeFontPadding="false"
+                android:onClick="time_commit_onClick"
+                android:paddingLeft="8dp"
+                android:paddingTop="3dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="3dp"
+                android:text="提交"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+
+                />
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"
+                android:text="每日课程节数:"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:id="@+id/tvJieNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:onClick="tvJieNum_onClick"
+                android:hint="未填写"
+                android:layout_marginRight="5dp"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:text="每节课的时间跨度(分钟):"
+                android:layout_marginLeft="15dp"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/course_time_span"
+                android:clickable="true"
+                android:layout_marginLeft="5dp"
+                android:textColor="@android:color/black"
+                android:onClick="tvTime_span_onClick"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="未填写"
+
+                android:textSize="18sp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    <View
+        android:background="@color/colorCourse2"
+        android:layout_marginTop="10dp"
+        android:layout_height="0.5dip"
+        android:layout_width="match_parent"/>
+    />
+
+    <TextView
+        android:text="每节课的开始时间"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <ScrollView
+        android:outlineSpotShadowColor="@color/colorCourse2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/course_time_linearlayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:background="@android:color/transparent"
+            android:layout_height="0.5dip"
+            android:layout_width="match_parent"/>
+        />
+    </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
