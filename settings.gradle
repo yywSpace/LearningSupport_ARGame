@@ -1,1 +1,1 @@
-include ':app', ':Projection'
+include ':app', ':ARModel', ':Projection'

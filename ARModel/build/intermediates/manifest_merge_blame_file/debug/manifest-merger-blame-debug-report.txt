@@ -1,0 +1,155 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    xmlns:tools="http://schemas.android.com/tools"
+4    package="com.example.ARModel"
+5    android:installLocation="preferExternal"
+6    android:versionCode="1"
+7    android:versionName="0.1" >
+8
+9    <uses-sdk
+10        android:minSdkVersion="26"
+10-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml
+11        android:targetSdkVersion="26" />
+11-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml
+12
+13    <supports-screens
+13-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:48:5-53:40
+14        android:anyDensity="true"
+14-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:49:9-34
+15        android:largeScreens="true"
+15-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:50:9-36
+16        android:normalScreens="true"
+16-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:51:9-37
+17        android:smallScreens="true"
+17-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:52:9-36
+18        android:xlargeScreens="true" />
+18-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:53:9-37
+19
+20    <uses-feature android:glEsVersion="0x00030000" />
+20-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:55:5-54
+20-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:55:19-51
+21    <uses-feature
+21-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:57:5-59:36
+22        android:name="android.hardware.location.gps"
+22-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:58:9-53
+23        android:required="false" />
+23-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:59:9-33
+24    <uses-feature
+24-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:60:5-62:36
+25        android:name="android.hardware.location"
+25-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:61:9-49
+26        android:required="false" />
+26-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:62:9-33
+27    <uses-feature
+27-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:63:5-65:36
+28        android:name="android.hardware.touchscreen"
+28-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:64:9-52
+29        android:required="false" />
+29-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:65:9-33
+30    <uses-feature
+30-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:66:5-68:36
+31        android:name="android.hardware.touchscreen.multitouch"
+31-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:67:9-63
+32        android:required="false" />
+32-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:68:9-33
+33    <uses-feature
+33-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:70:5-72:36
+34        android:name="android.hardware.touchscreen.multitouch.distinct"
+34-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:71:9-72
+35        android:required="false" />
+35-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:72:9-33
+36
+37    <uses-permission android:name="android.permission.CAMERA" />
+37-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:74:5-65
+37-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:74:22-62
+38    <uses-permission android:name="android.permission.INTERNET" />
+38-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:75:5-67
+38-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:75:22-64
+39    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+39-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:76:5-86
+39-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:76:22-83
+40    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+40-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:77:5-79
+40-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:77:22-76
+41
+42    <application>
+42-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:7:5-47:19
+43
+44        <!-- android:icon="@mipmap/app_icon" -->
+45        <!-- android:theme="@style/UnityThemeSelector" -->
+46        <activity
+46-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:10:9-27:20
+47            android:name="com.example.ARModel.UnityPlayerActivity"
+47-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:11:13-67
+48            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density"
+48-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:12:13-194
+49            android:hardwareAccelerated="false"
+49-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:13:13-48
+50            android:launchMode="singleTask"
+50-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:14:13-44
+51            android:screenOrientation="fullSensor" >
+51-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:15:13-51
+52            <intent-filter>
+52-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:16:13-19:29
+53                <action android:name="android.intent.action.MAIN" />
+53-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:17:17-69
+53-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:17:25-66
+54
+55                <category android:name="android.intent.category.LAUNCHER" />
+55-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:18:17-77
+55-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:18:27-74
+56            </intent-filter>
+57
+58            <meta-data
+58-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:21:13-23:40
+59                android:name="unityplayer.UnityActivity"
+59-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:22:17-57
+60                android:value="true" />
+60-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:23:17-37
+61            <meta-data
+61-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:24:13-26:40
+62                android:name="android.notch_support"
+62-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:25:17-53
+63                android:value="true" />
+63-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:26:17-37
+64        </activity>
+65
+66        <meta-data
+66-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:29:9-31:36
+67            android:name="unity.tango-enable"
+67-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:30:13-46
+68            android:value="True" />
+68-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:31:13-33
+69        <meta-data
+69-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:32:9-34:36
+70            android:name="unityplayer.SkipPermissionsDialog"
+70-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:33:13-61
+71            android:value="true" />
+71-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:34:13-33
+72        <meta-data
+72-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:35:9-37:68
+73            android:name="unity.build-id"
+73-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:36:13-42
+74            android:value="34e106f8-be5c-4e88-a5dd-a272ec9f7cfd" />
+74-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:37:13-65
+75        <meta-data
+75-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:38:9-40:33
+76            android:name="unity.splash-mode"
+76-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:39:13-45
+77            android:value="0" />
+77-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:40:13-30
+78        <meta-data
+78-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:41:9-43:36
+79            android:name="unity.splash-enable"
+79-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:42:13-47
+80            android:value="True" />
+80-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:43:13-33
+81        <meta-data
+81-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:44:9-46:50
+82            android:name="notch.config"
+82-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:45:13-40
+83            android:value="portrait|landscape" />
+83-->/home/zhy/AndroidStudioProjects/CallUnityArr/ARModel/src/main/AndroidManifest.xml:46:13-47
+84    </application>
+85
+86</manifest>

@@ -14,12 +14,10 @@ buildscript {
         maven {
             url 'https://maven.google.com'
         }
+
         
     }
     dependencies {
-        //classpath 'com.android.tools.build:gradle:3.4.1'
-        classpath 'com.android.tools.build:gradle:3.4.2'
-        classpath 'com.google.ar.sceneform:plugin:1.5.0'
         classpath 'com.android.tools.build:gradle:3.4.2'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -33,15 +31,10 @@ allprojects {
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/google' }
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/gradle-plugin' }
-        maven { url 'https://jitpack.io' } // MPAndroidChart包
-
-        maven { url "https://jitpack.io" }
+        maven { url 'https://jitpack.io' } // MPAndroidChart
         maven { url "https://maven.google.com" }
         google()
         jcenter()
-        maven {
-            url 'https://maven.google.com'
-        }
     }
 }
 
