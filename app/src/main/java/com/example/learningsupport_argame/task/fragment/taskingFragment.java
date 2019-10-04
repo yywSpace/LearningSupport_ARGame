@@ -106,17 +106,17 @@ public class taskingFragment extends Fragment {
 
                 if (direction == CardConfig.SWIPING_LEFT) {
 
-                    myHolder.dislikeImageView.setAlpha(Math.abs(ratio));
+//                    myHolder.dislikeImageView.setAlpha(Math.abs(ratio));
 
                 } else if (direction == CardConfig.SWIPING_RIGHT) {
 
-                    myHolder.likeImageView.setAlpha(Math.abs(ratio));
+//                    myHolder.likeImageView.setAlpha(Math.abs(ratio));
 
                 } else {
 
-                    myHolder.dislikeImageView.setAlpha(0f);
-
-                    myHolder.likeImageView.setAlpha(0f);
+//                    myHolder.dislikeImageView.setAlpha(0f);
+//
+//                    myHolder.likeImageView.setAlpha(0f);
 
 
                 }
@@ -130,11 +130,11 @@ public class taskingFragment extends Fragment {
 
                 taskingFragment.MyAdapter.MyViewHolder myHolder = (taskingFragment.MyAdapter.MyViewHolder) viewHolder;
 
-                viewHolder.itemView.setAlpha(1f);
-
-                myHolder.dislikeImageView.setAlpha(0f);
-
-                myHolder.likeImageView.setAlpha(0f);
+//                viewHolder.itemView.setAlpha(1f);
+//
+//                myHolder.dislikeImageView.setAlpha(0f);
+//
+//                myHolder.likeImageView.setAlpha(0f);
                 //   lastcard=myHolder.avatarImageView.getId();
 
                 Toast.makeText(con, direction == CardConfig.SWIPED_LEFT ? "swiped left" : "swiped right", Toast.LENGTH_SHORT).show();
@@ -261,9 +261,9 @@ public class taskingFragment extends Fragment {
                 super(itemView);
 
 
-                likeImageView = (ImageView) itemView.findViewById(R.id.iv_like_task);
-
-                dislikeImageView = (ImageView) itemView.findViewById(R.id.iv_dislike_task);
+//                likeImageView = (ImageView) itemView.findViewById(R.id.iv_like_task);
+//
+//                dislikeImageView = (ImageView) itemView.findViewById(R.id.iv_dislike_task);
 
 //
                   startrwbtn=(ImageButton)itemView.findViewById(R.id.btn_renwukaishi);

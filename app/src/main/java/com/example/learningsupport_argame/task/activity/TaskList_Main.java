@@ -21,12 +21,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.learningsupport_argame.NavigationController;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.community.ainmation.BottomSectorMenuView;
-import com.example.learningsupport_argame.task.fragment.taskAllFragment;
 import com.example.learningsupport_argame.task.fragment.taskingFragment;
-import android.view.animation.AlphaAnimation;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import androidx.drawerlayout.widget.DrawerLayout;
+import com.example.learningsupport_argame.tempararyfile.tasklist_fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -270,7 +266,8 @@ public class TaskList_Main extends AppCompatActivity{
 //
 
         taskingFragment f1 = new taskingFragment();
-        taskAllFragment f2 = new taskAllFragment();
+       // taskAllFragment f2 = new taskAllFragment();
+        tasklist_fragment f2 = new tasklist_fragment();
         fragments.add(f1);
         fragments.add(f2);
 //

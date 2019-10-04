@@ -9,4 +9,5 @@
 
     <color name="text_Grey">#c1c1c2</color>
     <color name="selector_item_color">#000000</color>
+    <color name="black_font">#000000</color>
 </resources>

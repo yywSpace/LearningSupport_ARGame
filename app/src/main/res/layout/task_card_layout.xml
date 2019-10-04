@@ -73,15 +73,17 @@
 
 
                                 />
+
                             <TextView
+                                android:id="@+id/taskName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="put task name"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerInParent="true"
-                                android:layout_marginRight="30dp"
-                                android:textSize="30sp"
-                                android:id="@+id/taskName"/>
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="65dp"
+                                android:text="任务名称"
+                                android:textSize="30sp" />
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
