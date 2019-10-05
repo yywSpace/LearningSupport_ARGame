@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Fri Oct 04 11:01:08 CST 2019
+#Fri Oct 04 12:29:46 CST 2019
 20.base=/home/zhy/UnityProjects/game-unity-ar/armodel/ARModel/build/intermediates/merged_assets/debug/mergeDebugAssets/out
 143.base=/home/zhy/UnityProjects/game-unity-ar/armodel/ARModel/build/intermediates/transforms/mergeJniLibs/debug/0
 237.path=bin/Data/396f423c6693ea642a4bd8fbfe2cb461

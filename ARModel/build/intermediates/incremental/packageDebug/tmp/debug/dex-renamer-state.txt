@@ -1,4 +1,4 @@
-#Fri Oct 04 11:27:38 CST 2019
+#Fri Oct 04 12:29:43 CST 2019
 base.0=/home/zhy/UnityProjects/game-unity-ar/armodel/ARModel/build/intermediates/transforms/dexMerger/debug/0
 path.1=classes.dex
 renamed.1=classes2.dex

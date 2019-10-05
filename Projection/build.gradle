@@ -61,14 +61,14 @@ android {
         debug {
             minifyEnabled false
             useProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-unity.txt'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-navigation_unity.txt'
             signingConfig signingConfigs.debug
             jniDebuggable true
         }
         release {
             minifyEnabled false
             useProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-unity.txt'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-navigation_unity.txt'
             signingConfig signingConfigs.debug
         }
         sit {

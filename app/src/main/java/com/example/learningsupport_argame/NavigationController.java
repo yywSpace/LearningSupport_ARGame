@@ -8,11 +8,14 @@ import android.widget.Toast;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
+
+import com.example.ARModel.MainPageActivity;
+import com.example.ARModel.ModelPutActivity;
+import com.example.ARModel.ModelScanActivity;
 import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.community.activity.FriendList_Main;
 import com.example.learningsupport_argame.task.activity.TaskList_Main;
-import com.example.learningsupport_argame.unity.ARActivity;
 import com.google.android.material.navigation.NavigationView;
 
 
@@ -37,18 +40,22 @@ public class NavigationController {
 
         navigationView.setNavigationItemSelectedListener(item -> {
             Toast.makeText(context, item.getTitle().toString(), Toast.LENGTH_SHORT).show();
-            if (item.getTitle().toString().equals("我的好友"))
+            if (item.getItemId() == R.id.navigation_menu_friend)
                 context.startActivity(new Intent(context, FriendList_Main.class));
-            else if (item.getTitle().toString().equals("我的任务"))
+            if (item.getItemId() == R.id.navigation_menu_task)
                 context.startActivity(new Intent(context, TaskList_Main.class));
-            else if (item.getTitle().toString().equals("我的课程"))
+            if (item.getItemId() == R.id.navigation_menu_course)
                 context.startActivity(new Intent(context, CourseMainActivity.class));
-            else if (item.getTitle().toString().equals("学习反馈"))
+            if (item.getItemId() == R.id.navigation_menu_feedback)
                 context.startActivity(new Intent(context, FeedbackDetailsActivity.class));
-            else if (item.getTitle().toString().equals("VR模式"))
-                context.startActivity(new Intent(context, ARActivity.class));
-            else if (item.getTitle().toString().equals("广场与社团"))
-                context.startActivity(new Intent(context, ARActivity.class));
+            if (item.getItemId() == R.id.navigation_menu_scan)
+                context.startActivity(new Intent(context, ModelScanActivity.class));
+            if (item.getItemId() == R.id.navigation_menu_put)
+                context.startActivity(new Intent(context, ModelPutActivity.class));
+            if (item.getItemId() == R.id.navigation_menu_main)
+                context.startActivity(new Intent(context, MainPageActivity.class));
+            if (item.getItemId() == R.id.navigation_menu_social)
+                context.startActivity(new Intent(context, ModelPutActivity.class));
             drawerLayout.closeDrawer(navigationView);
             return true;
         });

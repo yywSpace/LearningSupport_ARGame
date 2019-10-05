@@ -40,21 +40,16 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application>
-
-        <!-- android:icon="@mipmap/app_icon" -->
-        <!-- android:theme="@style/UnityThemeSelector" -->
+        <activity android:name="com.example.ARModel.MainPageActivity" />
+        <activity android:name="com.example.ARModel.ModelPutActivity" />
+        <activity android:name="com.example.ARModel.ModelScanActivity" />
+        <activity android:name="com.example.ARModel.ActivityBeCallByUnity" />
         <activity
             android:name="com.example.ARModel.UnityPlayerActivity"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density"
             android:hardwareAccelerated="false"
             android:launchMode="singleTask"
             android:screenOrientation="fullSensor" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
             <meta-data
                 android:name="unityplayer.UnityActivity"
                 android:value="true" />
