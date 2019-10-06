@@ -22,13 +22,9 @@
 
     <item
         android:id="@+id/navigation_menu_put"
-        android:icon="@drawable/navigation_vr"
+        android:icon="@drawable/navigation_unity"
         android:title="模型放置" />
 
-    <item
-        android:id="@+id/navigation_menu_main"
-        android:icon="@drawable/navigation_unity"
-        android:title="Unity主页面" />
 
     <item
         android:id="@+id/navigation_menu_social"

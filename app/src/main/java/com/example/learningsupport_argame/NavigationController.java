@@ -9,7 +9,6 @@ import android.widget.Toast;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 
-import com.example.ARModel.MainPageActivity;
 import com.example.ARModel.ModelPutActivity;
 import com.example.ARModel.ModelScanActivity;
 import com.example.learningsupport_argame.Course.CourseMainActivity;
@@ -52,8 +51,6 @@ public class NavigationController {
                 context.startActivity(new Intent(context, ModelScanActivity.class));
             if (item.getItemId() == R.id.navigation_menu_put)
                 context.startActivity(new Intent(context, ModelPutActivity.class));
-            if (item.getItemId() == R.id.navigation_menu_main)
-                context.startActivity(new Intent(context, MainPageActivity.class));
             if (item.getItemId() == R.id.navigation_menu_social)
                 context.startActivity(new Intent(context, ModelPutActivity.class));
             drawerLayout.closeDrawer(navigationView);

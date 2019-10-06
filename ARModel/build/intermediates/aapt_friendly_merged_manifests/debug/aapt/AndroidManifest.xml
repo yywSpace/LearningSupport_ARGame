@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.ARModel"
     android:installLocation="preferExternal"
     android:versionCode="1"
@@ -40,10 +39,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application>
-        <activity android:name="com.example.ARModel.MainPageActivity" />
         <activity android:name="com.example.ARModel.ModelPutActivity" />
         <activity android:name="com.example.ARModel.ModelScanActivity" />
-        <activity android:name="com.example.ARModel.ActivityBeCallByUnity" />
         <activity
             android:name="com.example.ARModel.UnityPlayerActivity"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density"
@@ -66,7 +63,7 @@
             android:value="true" />
         <meta-data
             android:name="unity.build-id"
-            android:value="34e106f8-be5c-4e88-a5dd-a272ec9f7cfd" />
+            android:value="7c2af827-c350-4871-91b2-76ab703fd3f9" />
         <meta-data
             android:name="unity.splash-mode"
             android:value="0" />

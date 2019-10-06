@@ -20,14 +20,4 @@ public class ModelPutActivity extends UnityPlayerActivity {
         mUnityPlayer.resume();
         UnityPlayer.UnitySendMessage("InteractionController", "LoadModelPutScene", "");
     }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            onDestroy();
-        }
-        return true;
-    }
-
-
 }
