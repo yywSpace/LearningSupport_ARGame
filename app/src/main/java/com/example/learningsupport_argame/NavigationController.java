@@ -47,12 +47,12 @@ public class NavigationController {
                 context.startActivity(new Intent(context, CourseMainActivity.class));
             if (item.getItemId() == R.id.navigation_menu_feedback)
                 context.startActivity(new Intent(context, FeedbackDetailsActivity.class));
-            if (item.getItemId() == R.id.navigation_menu_scan)
-                context.startActivity(new Intent(context, ModelScanActivity.class));
-            if (item.getItemId() == R.id.navigation_menu_put)
-                context.startActivity(new Intent(context, ModelPutActivity.class));
-            if (item.getItemId() == R.id.navigation_menu_social)
-                context.startActivity(new Intent(context, ModelPutActivity.class));
+//            if (item.getItemId() == R.id.navigation_menu_scan)
+//                context.startActivity(new Intent(context, ModelScanActivity.class));
+//            if (item.getItemId() == R.id.navigation_menu_put)
+//                context.startActivity(new Intent(context, ModelPutActivity.class));
+//            if (item.getItemId() == R.id.navigation_menu_social)
+//                context.startActivity(new Intent(context, ModelPutActivity.class));
             drawerLayout.closeDrawer(navigationView);
             return true;
         });
