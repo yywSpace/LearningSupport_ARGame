@@ -20,9 +20,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.learningsupport_argame.NavigationController;
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.community.ainmation.BottomSectorMenuView;
-import com.example.learningsupport_argame.task.fragment.taskingFragment;
 import com.example.learningsupport_argame.tempararyfile.tasklist_fragment;
+import com.example.learningsupport_argame.tempararyfile.tasknow_fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -146,19 +145,22 @@ public class TaskList_Main extends AppCompatActivity{
 /**
  * fab 点击事件结合OnNavigationItemSelectedListener中return false使用
  */
-//        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                if(!fabOpeded){
-//                    openMenu(view);
-//                }else{
-//                    closeMenu(view);
-//
-//                }
-//                Toast.makeText(TaskList_Main.this, "Center", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(con);
+                LayoutInflater inflater = getLayoutInflater();
+                final View layout = inflater.inflate(R.layout.create_task_layout, null);//获取自定义布局
+                builder.setView(layout);
+                builder.setTitle("创建个人任务");
+                builder.setIcon(R.drawable.ziji);
+                builder.setPositiveButton("确定", null);
+                builder.setNegativeButton("取消", null);
+                builder.show();
+                Toast.makeText(TaskList_Main.this, "Center", Toast.LENGTH_SHORT).show();
+            }
+        });
 //        textView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -190,15 +192,15 @@ public class TaskList_Main extends AppCompatActivity{
 
             }
         }
-        new BottomSectorMenuView.Converter(floatingActionButton, this)
-                .setToggleDuration(500, 800)
-                .setAnchorRotationAngle(135f)
-                .addMenuItem(R.drawable.shetuan, "To社团", new itemListener1())
-                .addMenuItem(R.drawable.haoyou, "To好友", new itemListener1())
-                .addMenuItem(R.drawable.ar, "AR发布", new itemListener1())
-                .addMenuItem(R.drawable.ziji, "To自己", new itemListener2())
-//                 .addMenuItem(R.drawable.aixin, "手写",new itemListener1())
-                .apply();
+//        new BottomSectorMenuView.Converter(floatingActionButton, this)
+//                .setToggleDuration(500, 800)
+//                .setAnchorRotationAngle(135f)
+//                .addMenuItem(R.drawable.shetuan, "To社团", new itemListener1())
+//                .addMenuItem(R.drawable.haoyou, "To好友", new itemListener1())
+//                .addMenuItem(R.drawable.ar, "AR发布", new itemListener1())
+//                .addMenuItem(R.drawable.ziji, "To自己", new itemListener2())
+////                 .addMenuItem(R.drawable.aixin, "手写",new itemListener1())
+//                .apply();
 
 
     }
@@ -265,8 +267,8 @@ public class TaskList_Main extends AppCompatActivity{
 
 //
 
-        taskingFragment f1 = new taskingFragment();
-       // taskAllFragment f2 = new taskAllFragment();
+         tasknow_fragment f1 = new tasknow_fragment();
+         //taskAllFragment f1 = new taskAllFragment();
         tasklist_fragment f2 = new tasklist_fragment();
         fragments.add(f1);
         fragments.add(f2);

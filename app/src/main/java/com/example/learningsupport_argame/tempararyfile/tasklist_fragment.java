@@ -57,7 +57,8 @@ public class tasklist_fragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(con);
                 LayoutInflater inflater = getLayoutInflater();
-                final View layout = inflater.inflate(R.layout.task_card_layout, null);//获取自定义布局
+                final View layout = inflater.inflate(R.layout.tasknow_fragment_layout, null);//获取自定义布局
+         //       ImageButton tish1i=(ImageButton)view.findViewById(R.id.wenhao);
                 builder.setView(new tasklist_fragment.MyViewHolder(layout).finalview());
                 builder.setTitle("任务详情");
 
@@ -73,6 +74,7 @@ public class tasklist_fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
          super.onCreateView(inflater, container, savedInstanceState);
          View view = inflater.inflate(R.layout.tasklist_redo_layout, container, false);
+
         return view;
     }
     class MyViewHolder {
@@ -98,16 +100,17 @@ public class tasklist_fragment extends Fragment {
 
 //                avatarImageView = (ImageView) itemView.findViewById(R.id.iv_avatar_task);
 
-            likeImageView = (ImageView) itemView.findViewById(R.id.iv_like_task);
 
-            dislikeImageView = (ImageView) itemView.findViewById(R.id.iv_dislike_task);
-            startrwbtn=(ImageButton)itemView.findViewById(R.id.btn_renwukaishi);
-            ditubtn =(ImageButton)itemView.findViewById(R.id.btn_ditu);
+//            likeImageView = (ImageView) itemView.findViewById(R.id.iv_like_task);
+//
+//            dislikeImageView = (ImageView) itemView.findViewById(R.id.iv_dislike_task);
+            startrwbtn=(ImageButton)itemView.findViewById(R.id.btn_renwukaishi1);
+            ditubtn =(ImageButton)itemView.findViewById(R.id.btn_ditu1);
 
-            textClock = (TextClock) itemView.findViewById(R.id.date_window);
-            listView = (ListView) itemView.findViewById(R.id.list_chenyuan);
+            textClock = (TextClock) itemView.findViewById(R.id.date_window1);
+            listView = (ListView) itemView.findViewById(R.id.list_chenyuan1);
 
-            tishi=(ImageButton)itemView.findViewById(R.id.wenhao);
+            tishi=(ImageButton)itemView.findViewById(R.id.wenhao1);
             InitialData();
             FriendtAdapter adapter=new FriendtAdapter(peopleList,getContext());
             listView.setAdapter(adapter);

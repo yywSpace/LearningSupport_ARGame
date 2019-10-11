@@ -5,90 +5,134 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="25dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="任务名："
-            android:textSize="20sp"
+     >
+        <RelativeLayout
 
-
-            android:id="@+id/b1"/>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="请输入任务名"
-            android:layout_toRightOf="@id/b1"
-            android:layout_alignBaseline="@id/b1"
-            android:id="@+id/input_name"
-
-           />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="任务时间:"
-            android:layout_below="@id/b1"
-            android:textSize="20sp"
-            android:layout_marginTop="15dp"
-            android:id="@+id/b2"/>
-        <DatePicker
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/b2"
-            android:layout_marginTop="10dp"
-            android:id="@+id/input_tasktime"
-            ></DatePicker>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="任务地点:"
-            android:textSize="20sp"
-            android:id="@+id/b3"
-            android:layout_below="@id/input_tasktime"
-            android:layout_marginTop="25dp"
-            />
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/b3"
-            android:layout_alignBaseline="@id/b3"
-            android:text="请输入任务地点"
-            android:id="@+id/input_taskdidian"/>
-        <ImageButton
-            android:id="@+id/btn_ditu_create"
-
-
-            android:layout_toRightOf="@id/input_taskdidian"
-            android:layout_alignBottom="@id/input_taskdidian"
-            android:scaleType="fitXY"
-            android:clickable="true"
-            android:src="@drawable/map"
-            android:focusable="true"
-            android:layout_marginLeft="20dp"
-            android:layout_width="64dp"
-            android:layout_height="56dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="任务信息:"
-            android:textSize="20sp"
-            android:layout_below="@id/b3"
-            android:layout_marginTop="25dp"
-            android:id="@+id/b4"/>
-        <EditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/input_task_info"
-            android:layout_below="@id/b4"
-            android:layout_marginRight="25dp"
-            android:text="请输入任务信息"
-            android:layout_toRightOf="@id/b4"
-            android:inputType="textMultiLine"
-            android:lines="10"
-            android:gravity="top"/>
+
+            android:layout_height="100dp"
+
+            android:paddingLeft="14dp"
+
+            android:paddingTop="15dp"
+            android:elevation="10dp"
+            android:background="@drawable/myrect"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="任务类型:"
+                android:textSize="20dp"
+               android:layout_alignBaseline="@id/taskName_create"
+                android:id="@+id/label_create_renwuleixin"/>
+
+            <ImageButton
+                android:id="@+id/wenhao1"
+                android:layout_width="40dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/label_create_renwuleixin"
+                android:background="#00000000"
+                android:layout_alignBottom="@id/label_create_renwuleixin"
+                android:scaleType="centerInside"
+                android:src="@mipmap/xuanze"
 
 
+                />
+
+            <EditText
+                android:id="@+id/taskName_create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="65dp"
+                android:text="任务名称        "
+                android:textSize="30sp" />
+
+        </RelativeLayout>
     </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       >
+        <RelativeLayout
+
+            android:layout_width="match_parent"
+
+            android:layout_height="100dp"
+
+            android:paddingLeft="14dp"
+
+            android:paddingTop="15dp"
+            android:elevation="10dp"
+            android:background="@drawable/myrect"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="选择任务时间："
+                android:textSize="20sp"/>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/create_date"
+                android:src="re"/>
+
+            <TextClock
+                android:id="@+id/date_window_create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#63FFFFFF"
+                android:format12Hour="yyyy-MM-dd,HH:mm"
+                android:format24Hour="hh:mm:ss,EE"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:layout_below="@id/create_date"
+                android:layout_alignLeft="@id/create_date"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="10dp"
+                android:text="点击左侧按钮是指任务时间"
+
+                >
+            </TextClock>
+
+            <ImageButton
+                android:id="@+id/reqi"
+                android:layout_width="40dp"
+                android:layout_height="20dp"
+                android:layout_alignBottom="@id/date_window_create"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/date_window_create"
+                android:background="#00000000"
+                android:scaleType="centerInside"
+                android:src="@drawable/riqi"
+
+
+                />
+
+            <ImageButton
+                android:id="@+id/shijian"
+                android:layout_width="40dp"
+                android:layout_height="20dp"
+                android:layout_alignBottom="@id/date_window_create"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/reqi"
+                android:background="#00000000"
+                android:scaleType="centerInside"
+                android:src="@drawable/shijian"
+
+
+                />
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
 
 
 </LinearLayout>
