@@ -42,7 +42,7 @@
                         android:id="@+id/label_renwuleixin1"/>
 
                     <ImageButton
-                        android:id="@+id/wenhao1"
+                        android:id="@+id/chosetasktype"
                         android:layout_width="40dp"
                         android:layout_height="24dp"
                         android:layout_marginLeft="10dp"

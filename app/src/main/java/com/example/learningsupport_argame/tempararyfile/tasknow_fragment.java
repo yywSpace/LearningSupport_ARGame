@@ -67,7 +67,7 @@ public class tasknow_fragment extends Fragment {
             textClock = (TextClock) itemView.findViewById(R.id.date_window1);
             listView = (ListView) itemView.findViewById(R.id.list_chenyuan1);
 
-            tishi=(ImageButton)itemView.findViewById(R.id.wenhao1);
+            tishi=(ImageButton)itemView.findViewById(R.id.chosetasktype);
             InitialData();
             FriendtAdapter adapter=new FriendtAdapter(peopleList,getContext());
             listView.setAdapter(adapter);
