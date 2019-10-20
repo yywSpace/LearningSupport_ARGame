@@ -47,9 +47,6 @@ public class Course extends LitePalSupport {
         this.course_name = course_name;
     }
 
-
-
-
     public int getStart_zhoushu() {
         return start_zhoushu;
     }
