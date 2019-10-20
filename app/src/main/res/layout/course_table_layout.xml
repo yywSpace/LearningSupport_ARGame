@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,19 +37,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/days_layout"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_width="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         >
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,13 +69,30 @@
                 android:columnCount="8"
                 android:orientation="horizontal"
                 android:rowCount="13">
-
-
             </GridLayout>
-
         </LinearLayout>
-    </ScrollView>
+   </ScrollView>
+
+        <com.example.learningsupport_argame.Course.FloatingDragActionBtn.DragFloatActionButton
+            android:id="@+id/dragFloatBtn"
+            android:onClick="dragFloatBtn_onClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            
+
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/course_ic_menu_plus"
+            />
+
+
+    </FrameLayout>
+    </LinearLayout>
+    </FrameLayout>
 </LinearLayout>
+
+
 
 
 

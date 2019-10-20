@@ -21,7 +21,7 @@ public class ForegroundService extends Service {
 
     private static final String TAG = "ForegroundService";
     ///////////////////////
-    private static final int RES_ID = R.layout.navi_map_activity;
+    private static final int RES_ID = R.layout.map_map_activity;
     /////////////////////////
 
     @Override

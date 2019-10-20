@@ -4,11 +4,13 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
 
 public class LocationListener extends BDAbstractLocationListener {
 
@@ -53,10 +55,48 @@ public class LocationListener extends BDAbstractLocationListener {
             LatLng ll = new LatLng(location.getLatitude(),
                     location.getLongitude());
 
-            // 设置缩放比例,更新地图状态
-            float f = mBaiduMap.getMaxZoomLevel();// 19.0
-            MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll, f - 2);
-            mBaiduMap.animateMapStatus(u);
+             //设置缩放比例,更新地图状态
+//            float f = mBaiduMap.getMaxZoomLevel();// 19.0
+      //     MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll, f - 2);
+//            mBaiduMap.animateMapStatus(u);
+
+//            MapStatus.Builder builder = new MapStatus.Builder();
+//            builder.zoom(21.0f);
+//            mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+           // mBaiduMap.setMaxAndMinZoomLevel(14,21);
+
+            //float f = mBaiduMap.getMaxZoomLevel();// 19.0
+//                MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll,20);
+//             mBaiduMap.animateMapStatus(u);
+
+
+//            /**
+//
+//             * 限制地图显示范围
+//
+//             */
+//            LatLngBounds.Builder builder1=new LatLngBounds.Builder();
+//            builder1.include(new LatLng(location.getLatitude(),location.getLongitude()));
+//            LatLngBounds bounds=builder1.build();
+//            MapStatusUpdate u=MapStatusUpdateFactory.newLatLngBounds(bounds,50000,50000);
+//            mBaiduMap.setMapStatus(u);
+
+
+
+            // LatLng llCentre = new LatLng(location.getLatitude(),location.getLongitude());
+            MapStatus.Builder builder = new MapStatus.Builder();
+            builder.target(ll )//缩放中心点
+                    .zoom(20);//缩放级别
+//            mBaiduMap.setMaxAndMinZoomLevel(21,14);
+            mBaiduMap.animateMapStatus(MapStatusUpdateFactory
+                    .newMapStatus(builder.build()));
+
+
+
+
+
+
+
 
 
         }

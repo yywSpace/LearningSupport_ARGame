@@ -21,7 +21,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".Navi.Utils.SDKInitializeApplication">
+        android:name=".Navi.Utils.SDKInitializeApplication"
+       >
 
         <service android:name="com.baidu.location.f"
             android:enabled="true"

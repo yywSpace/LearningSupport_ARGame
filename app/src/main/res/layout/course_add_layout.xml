@@ -120,15 +120,17 @@
                 android:paddingRight="30dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-           <Button
+           <TextView
                 android:id="@+id/add_jieshu"
                android:hint="未填写"
                android:maxLength="15"
                android:focusable="false"
                android:background="@null"
                android:gravity="center_vertical|center_horizontal|left"
+               android:textColor="@android:color/black"
                android:layout_marginTop="5dp"
                android:layout_marginRight="17dp"
+               android:layout_marginBottom="7dp"
                android:textSize="18sp"
                 android:onClick="add_jieshu_onClick"
                 android:layout_width="wrap_content"
@@ -141,6 +143,7 @@
             android:id="@+id/add_qitaduan"
             android:text="继续添加其他时段"
             android:layout_width="match_parent"
+            android:layout_marginLeft="200dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:textSize="16sp"
