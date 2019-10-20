@@ -37,7 +37,7 @@ public class YoudaoActivity extends Activity {
         if (view != null) {
             setContentView(view);
         }
-// 开始导航
+        // 开始导航
         mNaviHelper.startWalkNavi(YoudaoActivity.this);
         mNaviHelper.setWalkNaviStatusListener(new IWNaviStatusListener() {
             /**

@@ -12,6 +12,8 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".MainActivity">
+
+<!--        <activity android:name=".Navi.Activity.MapActivity">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -65,12 +65,14 @@ public class MonitorService extends Service {
                     if (outOfDistanceRange()) {
                         Message outOfDistanceMessage = new Message();
                         outOfDistanceMessage.what = 4;
+                        MonitorActivity.handler.sendMessage(outOfDistanceMessage);
                     }
 
 
                     if (mRemainingTime <= 0) {
                         Message taskSuccessFinishMessage = new Message();
                         taskSuccessFinishMessage.what = 3;
+                        MonitorActivity.handler.sendMessage(taskSuccessFinishMessage);
                     }
                     mRemainingTime--;
 
