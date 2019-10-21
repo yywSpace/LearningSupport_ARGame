@@ -86,7 +86,7 @@
 
                 android:layout_marginTop="10dp">
 
-                <com.example.course.Course.CountDownView
+                <com.example.learningsupport_argame.Course.CountDownView
 
                     android:id="@+id/monitor_count_down_view"
 

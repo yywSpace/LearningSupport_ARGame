@@ -358,11 +358,11 @@ public class MonitorActivity extends AppCompatActivity {
 //        stopService(mMonitorIntent);
 //        Log.d("stopService","被执行");
 
-      //stopService(mMonitorIntent);
-//        Log.d("stopService","被执行");
-//        unbindService(mServiceConnection);
-//        Log.d("unbindService","被执行");
-//        mMonitorService=null;
+      stopService(mMonitorIntent);
+        Log.d("stopService","被执行");
+        unbindService(mServiceConnection);
+        Log.d("unbindService","被执行");
+        mMonitorService=null;
 
     }
 

@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+
 import androidx.annotation.Nullable;
 
+import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.walknavi.WalkNavigateHelper;
 import com.baidu.mapapi.walknavi.adapter.IWNaviStatusListener;
 import com.baidu.mapapi.walknavi.adapter.IWRouteGuidanceListener;
@@ -19,7 +21,8 @@ import com.baidu.mapapi.walknavi.adapter.IWTTSPlayer;
 import com.baidu.mapapi.walknavi.model.RouteGuideKind;
 import com.baidu.platform.comapi.walknavi.WalkNaviModeSwitchListener;
 import com.baidu.platform.comapi.walknavi.widget.ArCameraView;
-
+import com.baidu.mapapi.CoordType;
+import com.example.learningsupport_argame.Navi.Utils.ForegroundService;
 
 
 public class YoudaoActivity extends Activity {
@@ -29,6 +32,14 @@ public class YoudaoActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //在使用SDK各组件之前初始化context信息，传入ApplicationContext
+        SDKInitializer.initialize(getApplicationContext());
+        //自4.3.0起，百度地图SDK所有接口均支持百度坐标和国测局坐标，用此方法设置您使用的坐标类型.
+        //包括BD09LL和GCJ02两种坐标，默认是BD09LL坐标。
+        SDKInitializer.setCoordType(CoordType.BD09LL);
+
+        //startService(new Intent(this, ForegroundService.class));
 
         Intent intent=getIntent();
         mNaviHelper = WalkNavigateHelper.getInstance();
@@ -143,6 +154,9 @@ public class YoudaoActivity extends Activity {
             public void onArriveDest() {
 
                // Toast.makeText(YoudaoActivity.this,"已到达目的地，导航结束，onArriveDest",Toast.LENGTH_SHORT);
+//                Intent intent1=new Intent(YoudaoActivity.this,MapActivity.class);
+//                startActivity(intent1);
+//                YoudaoActivity.this.finish();
 
             }
 
@@ -156,6 +170,9 @@ public class YoudaoActivity extends Activity {
             public void onFinalEnd(Message message) {
 
                 //Toast.makeText(YoudaoActivity.this, "onFileEnd", Toast.LENGTH_SHORT).show();
+//                Intent intent1=new Intent(YoudaoActivity.this,MapActivity.class);
+//                startActivity(intent1);
+//                YoudaoActivity.this.finish();
 
 
             }
@@ -184,6 +201,7 @@ public class YoudaoActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //stopService(new Intent(this, ForegroundService.class));
         mNaviHelper.quit();
     }
 

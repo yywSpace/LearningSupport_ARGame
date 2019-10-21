@@ -11,9 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity">
+<!--        <activity android:name=".MainActivity">-->
 
-<!--        <activity android:name=".Navi.Activity.MapActivity">-->
+        <activity android:name=".Navi.Activity.MapActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,7 +38,7 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="HUR9gkMCssBKWFHYayvz0U3LmdZduud0" />
+            android:value="7tOMnGSPlfp1idETI8NOHneH5gz6Sdsp" />
 
         <service
             android:name="com.baidu.location.f"
@@ -50,8 +50,8 @@
         </service>
         <service android:name=".Navi.Utils.ForegroundService" />
         <service android:name=".MonitorModel.MonitorService" />
-
         <service android:name=".Course.MonitorService" />
+        <service android:name=".Navi.Activity.LocationService"/>
 
     </application>
 
