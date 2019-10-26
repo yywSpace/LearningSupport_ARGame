@@ -13,15 +13,13 @@
 
 
         <activity android:name=".task.activity.TaskList_Main">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".MainActivity"/>
         <activity android:name=".unity.GameActivity"/>
-        <activity android:name=".community.activity.FriendList_Main"/>
+        <activity android:name=".community.activity.FriendList_Main">
+
+        </activity>
 
         <activity android:name="com.example.Production.UnityPlayerActivity"></activity>
         <activity android:name=".FeedbackModel.MissionAccomplishActivity"/>
@@ -29,7 +27,13 @@
         <activity android:name=".ARModel.ScanModel" />
         <activity android:name=".ARModel.PutModel" />
         <activity android:name=".FeedbackModel.FeedbackDetailsActivity" />
+        <activity android:name=".community.activity.FriendList_motified">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="com.google.ar.core"
@@ -53,5 +57,6 @@
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>

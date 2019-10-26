@@ -72,6 +72,33 @@ public class PairInfoBean  {
         //在这里通过id去获取这个用户的其他信息
     }
 
+    public void setPairId(String pairId) {
+        this.pairId = pairId;
+    }
+
+    public void setPairName(String pairName) {
+        this.pairName = pairName;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public void setBrithday(String brithday) {
+        this.brithday = brithday;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setCollege(String college) {
+        this.college = college;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
 
 
     //这里再写一个方法可以用uid，从服务器上获取（下载头像保存到本地，并且从本地获取赋值）。
