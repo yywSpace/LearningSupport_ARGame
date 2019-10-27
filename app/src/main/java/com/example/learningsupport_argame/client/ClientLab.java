@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 public class ClientLab {
     public static int sPort = 3000;
     public static String sUserName = "android";
-    public static String sIp = "192.168.0.112";
+    public static String sIp = "47.96.152.133";//192.168.1.107
 
     private static UDPClient sUDPClient;
 

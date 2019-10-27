@@ -11,15 +11,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-<!--        <activity android:name=".MainActivity">-->
-
-        <activity android:name=".Navi.Activity.MapActivity">
+        <activity android:name=".Navi.Activity.MapActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".UserManagement.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".UserManagement.RegisterActivity" />
         <activity android:name=".task.activity.TaskList_Main" />
 
         <activity android:name=".Course.CourseMainActivity" />
@@ -51,7 +53,7 @@
         <service android:name=".Navi.Utils.ForegroundService" />
         <service android:name=".MonitorModel.MonitorService" />
         <service android:name=".Course.MonitorService" />
-        <service android:name=".Navi.Activity.LocationService"/>
+        <service android:name=".Navi.Activity.LocationService" />
 
     </application>
 

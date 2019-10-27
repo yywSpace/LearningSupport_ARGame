@@ -39,6 +39,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application>
+        <activity android:name="com.example.ARModel.SendMessageActivity" />
         <activity android:name="com.example.ARModel.ModelPutActivity" />
         <activity android:name="com.example.ARModel.ModelScanActivity" />
         <activity

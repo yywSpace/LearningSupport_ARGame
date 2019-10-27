@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <RelativeLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp">
+
+            <TextView
+                android:id="@+id/user_management_account_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="帐号"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/user_management_account_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/user_management_account_label"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/user_management_account_label"
+                android:text="用户名过短"
+                android:textColor="#d81c60"
+                android:visibility="invisible" />
+
+            <EditText
+                android:id="@+id/user_management_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/user_management_account_label"
+                android:hint="请输入帐号" />
+
+            <TextView
+                android:id="@+id/user_management_password_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/user_management_account"
+                android:text="密码"
+                android:textSize="17dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/user_management_password_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/user_management_password_label"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/user_management_password_label"
+                android:text="请输入密码"
+                android:textColor="#d81c60"
+                android:visibility="invisible" />
+
+            <EditText
+                android:id="@+id/user_management_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/user_management_password_label"
+                android:hint="请输入密码"
+                android:inputType="textPassword" />
+
+            <Button
+                android:id="@+id/user_management_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/user_management_password"
+                android:layout_marginTop="30dp"
+                android:background="@android:color/holo_blue_light"
+                android:text="登录 " />
+
+            <TextView
+                android:padding="10dp"
+                android:id="@+id/user_management_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/user_management_login"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="还没有账户吗？点击这里"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

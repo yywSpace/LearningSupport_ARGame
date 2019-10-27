@@ -1,23 +1,28 @@
 package com.example.learningsupport_argame;
 
 
-import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.ARModel.UnityPlayerActivity;
+import com.example.ARModel.SendMessageActivity;
 import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
+import com.example.learningsupport_argame.Navi.Activity.MapActivity;
+import com.example.learningsupport_argame.UserManagement.ActivityUtil;
+import com.example.learningsupport_argame.UserManagement.LoginActivity;
 import com.example.learningsupport_argame.community.activity.FriendList_Main;
 import com.example.learningsupport_argame.task.activity.TaskList_Main;
 
 
-public class MainActivity extends UnityPlayerActivity {
-
+public class MainActivity extends SendMessageActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityUtil.addActivity(this);
+        SharedPreferences userInfo = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
+        SendMessage("UIController", "GetUserAccount", userInfo.getString("account", ""));
     }
 
     public void startFriendActivity() {
@@ -40,4 +45,24 @@ public class MainActivity extends UnityPlayerActivity {
         startActivity(new Intent(this, FeedbackDetailsActivity.class));
     }
 
+    public void startMapActivity() {
+        Toast.makeText(this, "startMapActivity", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, MapActivity.class));
+    }
+
+    public void startLoginActivity() {
+        Toast.makeText(this, "startFeedbackActivity", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, LoginActivity.class));
+    }
+
+    public void toast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void logout() {
+        SharedPreferences userInfo = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+        editor.clear();
+        editor.commit();
+    }
 }

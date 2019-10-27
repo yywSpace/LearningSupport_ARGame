@@ -9,16 +9,14 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.baidu.location.BDAbstractLocationListener;
-import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
@@ -26,7 +24,6 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.InfoWindow;
-import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -34,7 +31,6 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
-import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
@@ -57,29 +53,30 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class MapActivity extends AppCompatActivity {
 
-    LatLng[] latLng;
-    LatLng mUser_latlng;
-    LocationListener myLocationListener;
+    private LocationListener myLocationListener;
     private static boolean isPermissionRequested = false;
     private MapView mMapView = null;
     private BaiduMap mBaiduMap;
-    LocationClient mLocationClient;
-    boolean isFirstLoc = true;// 是否首次定位
+    private LocationClient mLocationClient;
+    private boolean isFirstSwitchMode = true;
 
 
     // 客户端相关变量
     private static String TAG = "MapActivity";
     private UDPClient mUDPClient;
     private Intent locationService;
-    boolean mapFollow = false;
-    boolean mapMode = true;
+    /**
+     * true:lock
+     * false:aerial view
+     */
+    boolean mapMode = false;
+    private String currentPopName;
     private FloatingActionButton switchMapModeBtn;
+    private FloatingActionButton goToARBtn;
     SendLocationExample mSendLocationExample1;
     SendLocationExample mSendLocationExample2;
     SendLocationExample mSendLocationExample3;
@@ -123,25 +120,13 @@ public class MapActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         if (mBaiduMap != null) {
                             // 自身图标
-                            if (ClientLab.sUserName.equals(userName)) {
-                                if(mapFollow == true) {
-                                    LatLng center = new LatLng(latitude,
-                                            longitude);
-                                    //定义地图状态
-                                    MapStatus mMapStatus = new MapStatus.Builder()
-                                            .target(center)
-                                            .build();
-                                    //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
-                                    MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
-                                    //改变地图状态
-                                    mBaiduMap.setMapStatus(mMapStatusUpdate);
+                            if (!ClientLab.sUserName.equals(userName)) {
+                                Marker marker = addMarker(new LatLng(latitude, longitude), R.drawable.navi_marker_red, userName);
+                                // 如果姓名等于当前点击的Marker姓名，则刷新时显示PopWindow
+                                if (userName.equals(currentPopName)) {
+                                    showPopWindow(marker, userName);
                                 }
-                                // 本人图标
-                                addMarker(new LatLng(latitude, longitude), R.drawable.navi_marker_yellow);
-
-                            } else
-                                // 其他用户图标
-                                addMarker(new LatLng(latitude, longitude), R.drawable.navi_marker_red);
+                            }
                         }
                     });
                 }
@@ -161,7 +146,13 @@ public class MapActivity extends AppCompatActivity {
         // 地图俯视（3D）
         uiSettings.setOverlookingGesturesEnabled(false);
 
-        mapFollow = false;
+        MapStatus mapStatus = new MapStatus.Builder(mBaiduMap.getMapStatus()).target(myLocationListener.getUserLocation()).zoom(17).build();
+
+        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mapStatus);
+
+        mBaiduMap.setMapStatus(mapStatusUpdate);
+
+        myLocationListener.setMapFollow(false);
 
         mBaiduMap.setMaxAndMinZoomLevel(20, 17);
 
@@ -180,18 +171,49 @@ public class MapActivity extends AppCompatActivity {
         // 地图俯视（3D）
         uiSettings.setOverlookingGesturesEnabled(false);
         // 地图跟随
-        mapFollow = true;
-        //
+        myLocationListener.setMapFollow(true);
+
         mMapView.showZoomControls(false);
 
         //设置俯仰角,和缩放级别
         float overlook = -45.0f;
 
-        MapStatus mapStatus = new MapStatus.Builder(mBaiduMap.getMapStatus()).overlook(overlook).zoom(20).build();
+        MapStatus mapStatus = new MapStatus.Builder(mBaiduMap.getMapStatus()).overlook(overlook).target(myLocationListener.getUserLocation()).zoom(20).build();
 
         MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mapStatus);
 
         mBaiduMap.setMapStatus(mapStatusUpdate);
+    }
+
+    public void showPopWindow(Marker marker, String userName) {
+        Toast.makeText(MapActivity.this, userName, Toast.LENGTH_SHORT).show();
+        View view = View.inflate(MapActivity.this, R.layout.map_marker_pop_view, null);
+        Toast.makeText(this, userName, Toast.LENGTH_SHORT).show();
+
+        TextView navView = view.findViewById(R.id.map_marker_nav);
+        TextView infoView = view.findViewById(R.id.map_marker_user_info);
+
+
+        navView.setOnClickListener(v -> {
+            // 开启导航页面
+            walkNavi(marker.getPosition());
+        });
+
+        infoView.setOnClickListener(v -> {
+            Toast.makeText(this, "UserInfo", Toast.LENGTH_SHORT).show();
+
+        });
+
+        //绘制信息窗
+        LatLng latLng = marker.getPosition();
+
+        //构造InfoWindow
+        //point 描述的位置点
+        //-100 InfoWindow相对于point在y轴的偏移量
+        InfoWindow mInfoWindow = new InfoWindow(view, latLng, -100);
+
+        //使InfoWindow生效
+        mBaiduMap.showInfoWindow(mInfoWindow);
     }
 
     @Override
@@ -216,52 +238,24 @@ public class MapActivity extends AppCompatActivity {
 
         setContentView(R.layout.map_map_activity);
 
-        switchMapModeBtn = findViewById(R.id.map_switch_mode);
-        switchMapModeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mapMode = !mapMode;
-                if (mapMode) {
-                    changeMapToLockMode();
-                }else {
-                    changeMapToAerialViewMode();
-                }
 
-            }
-        });
         //获取地图控件引用
-        mMapView = (MapView) findViewById(R.id.bmapView);
+        mMapView = findViewById(R.id.bmapView);
         //开启个性化地图
         MapView.setMapCustomEnable(true);
         initViews();
 
-          /*
-        地图缩放
-         */
-//        MapStatus.Builder builder = new MapStatus.Builder();
-//        builder.zoom(21.0f);
-//        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+        //若响应点击事件，返回true，否则返回false
+        mBaiduMap.setOnMarkerClickListener(marker -> {
+            Bundle extraInfo = marker.getExtraInfo();
+            String userName = extraInfo.getString("user_name");
 
+            // 记录当前点击的maker所代表的人物名
+            currentPopName = userName;
+            showPopWindow(marker, userName);
 
-        // startService(new Intent(this, ForegroundService.class));
-
-
-        // latLng=new LatLng[5];
-//        for(int i=0;i<5;i++)
-//        {
-//            latLng[1]=new LatLng(39.915160800132085,116.40386525193937);
-//            latLng[2]=new LatLng(37.915160800132085,115.10386525193937);
-//            latLng[3]=new LatLng(41.915160800132085,114.00386525193937);
-//            latLng[4]=new LatLng(38.915160800132085,118.40386525193937);
-//            latLng[0]=new LatLng(40.915160800132085,117.40386525193937);
-//
-//
-//        }
-        //addMarker1(latLng);
-
-
-        initListener();
-        Log.d("MapActivity", "onCreate");
+            return false;
+        });
 
     }
 
@@ -273,7 +267,6 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-
 
         mBaiduMap = mMapView.getMap();
 
@@ -325,8 +318,7 @@ public class MapActivity extends AppCompatActivity {
 
             }
         };
-//        mBaiduMap.setOnMapStatusChangeListener(mapStatusChangeListener);
-
+        mBaiduMap.setOnMapStatusChangeListener(mapStatusChangeListener);
 
         //定位初始化
         mLocationClient = new LocationClient(getApplicationContext());
@@ -335,7 +327,8 @@ public class MapActivity extends AppCompatActivity {
         LocationClientOption option = new LocationClientOption();
         option.setOpenGps(true); // 打开gps
         option.setCoorType("bd09ll"); // 设置坐标类型
-        option.setScanSpan(500);
+        // 必须设置1000以上否则只定位一次
+        option.setScanSpan(1000);
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
 
         //设置locationClientOption
@@ -343,38 +336,31 @@ public class MapActivity extends AppCompatActivity {
 
         //注册LocationListener监听器
         myLocationListener = new LocationListener();
-        myLocationListener.getMap(mMapView, mBaiduMap, isFirstLoc);
-//        mLocationClient.registerLocationListener(myLocationListener);
+        myLocationListener.getMap(mBaiduMap);
 
-
-//        LatLng southwestLatLng = new LatLng(40.789925, 116.838326);
-//
-//        LatLng northeastLatLng = new LatLng(38.740688, 114.647472);
-
-//       // LatLngBounds latLngBounds = new LatLngBounds(southwestLatLng, northeastLatLng);
-//        LatLngBounds latLngBounds=new LatLngBounds(southwestLatLng,northeastLatLng);
-//
-//        mBaiduMap.setMapStatusLimits(latLngBounds);
-//        mBaiduMap.setMapStatusLimits(mBaiduMap.getL);
-
-
-        /**
-         * 限制地图显示范围
-
-         */
-//        LatLngBounds.Builder builder=new LatLngBounds.Builder();
-//        builder.include(new LatLng(myLocationListener.getLatitude(),myLocationListener.getLongitude()));
-//        LatLngBounds bounds=builder.build();
-//        MapStatusUpdate u=MapStatusUpdateFactory.newLatLngBounds(bounds,10000,10000);
-//        mBaiduMap.setMapStatus(u);
-
+        mLocationClient.registerLocationListener(myLocationListener);
         //开启地图定位图层
+        mBaiduMap.setMyLocationEnabled(true);
 
-        //mBaiduMap.setMyLocationEnabled(true);
         mLocationClient.start();
-        //mLocationClient.requestLocation();
 
-        changeMapToLockMode();
+        goToARBtn = findViewById(R.id.map_goto_ar);
+        goToARBtn.setOnClickListener(v -> {
+
+            Toast.makeText(this, "go to ar", Toast.LENGTH_SHORT).show();
+
+        });
+        switchMapModeBtn = findViewById(R.id.map_switch_mode);
+        switchMapModeBtn.setOnClickListener(v -> {
+            mapMode = !mapMode;
+            if (mapMode) {
+                changeMapToLockMode();
+            } else {
+                changeMapToAerialViewMode();
+            }
+
+        });
+        changeMapToAerialViewMode();
     }
 
 
@@ -382,11 +368,7 @@ public class MapActivity extends AppCompatActivity {
     protected void onResume() {
         //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
         mMapView.onResume();
-        Log.d("MapActivity的initView被调用", "onResume");
-        //requestPermission();
-        //initViews();
         super.onResume();
-        Log.d("MapActivity1111111", "onResume");
 
     }
 
@@ -395,20 +377,20 @@ public class MapActivity extends AppCompatActivity {
         //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
         mMapView.onPause();
         super.onPause();
-        Log.d("MapActivity11111111", "onPause");
 
     }
 
     @Override
     protected void onDestroy() {
+
         // 退出时注销用户, 此处有可能bug，mMapView.onDestroy()调用后其后语句无法执行
+        // 所以就不掉用了
         mSendLocationExample1.sendLocationThread.interrupt();
         mSendLocationExample2.sendLocationThread.interrupt();
         mSendLocationExample3.sendLocationThread.interrupt();
         mSendLocationExample4.sendLocationThread.interrupt();
         stopService(locationService);
         new Thread(() -> mUDPClient.Logout()).start();
-
 
         // 退出时销毁定位
         if (mLocationClient != null) {
@@ -417,12 +399,14 @@ public class MapActivity extends AppCompatActivity {
 
         // 关闭定位图层
         mBaiduMap.setMyLocationEnabled(false);
-        mMapView.onDestroy();
-        mMapView = null;
+
         //stopService(new Intent(this, ForegroundService.class));
-        MapView.setMapCustomEnable(true);
+
+        // mMapView.onDestroy();
         super.onDestroy();
-        Log.d("MapActivity", "onDestroy");
+
+        Log.d(TAG, "onDestroy: ");
+
     }
 
     /**
@@ -449,8 +433,6 @@ public class MapActivity extends AppCompatActivity {
                     Manifest.permission.CHANGE_WIFI_STATE,
                     Manifest.permission.CHANGE_WIFI_MULTICAST_STATE,
                     Manifest.permission.VIBRATE
-
-
             };
 
             for (String perm : permissions) {
@@ -468,7 +450,7 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
-    private void addMarker(LatLng latLng, int makerRes) {
+    private Marker addMarker(LatLng latLng, int makerRes, String userName) {
         // 清除地图上的覆盖物
         // mBaiduMap.clear();
 
@@ -476,69 +458,17 @@ public class MapActivity extends AppCompatActivity {
         BitmapDescriptor bitmap = BitmapDescriptorFactory
                 .fromResource(makerRes);
         Bundle bundle = new Bundle();
-        bundle.putString("id", "id_01");
+        bundle.putString("user_name", userName);
         //构建MarkerOption，用于在地图上添加Marker
         OverlayOptions option = new MarkerOptions()
                 .position(latLng)
 //                .animateType(MarkerOptions.MarkerAnimateType.jump)
-                .draggable(true)
-//                .title("你好,百度")
+                .draggable(false)
                 .extraInfo(bundle)
                 .icon(bitmap);
         //在地图上添加Marker，并显示
-        mBaiduMap.addOverlay(option);
-    }
-
-    private void initListener() {
-        mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
-            //marker被点击时回调的方法
-            //若响应点击事件，返回true，否则返回false
-            //默认返回false
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Bundle extraInfo = marker.getExtraInfo();
-//                String id = extraInfo.getString("id");
-//                if ("id_01".equals(id)) {
-//                   showToast(marker.getTitle());
-//                }
-
-                //绘制信息窗
-                LatLng latLng = marker.getPosition();
-                //用来构造InfoWindow的Button
-                Button button = new Button(getApplicationContext());
-                button.setBackgroundResource(R.drawable.course_shapebtn1);
-//                LinearLayout.LayoutParams params=(LinearLayout.LayoutParams)button.getLayoutParams();
-//                params.width=15;
-//                params.height=30;
-//               button.setLayoutParams(params);
-                button.setText("用户1");
-
-                //构造InfoWindow
-                //point 描述的位置点
-                //-100 InfoWindow相对于point在y轴的偏移量
-                InfoWindow mInfoWindow = new InfoWindow(button, latLng, -100);
-
-                //使InfoWindow生效
-                mBaiduMap.showInfoWindow(mInfoWindow);
-
-
-                /////////////////////////////////////////////
-                walkNavi(marker.getPosition());
-                return false;
-            }
-        });
-
-        mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                addMarker(latLng, R.drawable.navi_marker_yellow);
-            }
-
-            @Override
-            public boolean onMapPoiClick(MapPoi mapPoi) {
-                return false;
-            }
-        });
+        Marker marker = (Marker) mBaiduMap.addOverlay(option);
+        return marker;
     }
 
 
@@ -571,18 +501,21 @@ public class MapActivity extends AppCompatActivity {
         //构造WalkNaviLaunchParam
 
         //  LatLng mUser_latlng=myLocationListener.getGCJ02NaviLocation();
-        LatLng mUser_latlng = myLocationListener.getUserLocation();
+        LatLng mUserLatlng = myLocationListener.getUserLocation();
 
         LatLng startPt = new LatLng(29.559010, 106.290216);
         LatLng endPt = new LatLng(29.552061, 106.290216);
 
         /*构造导航起终点参数对象*/
 
+        Log.d(TAG, "routeWalkPlanWithParam: " + mUserLatlng + ":" + end);
         WalkRouteNodeInfo walkStartNode = new WalkRouteNodeInfo();
-        walkStartNode.setLocation(mUser_latlng);
+        walkStartNode.setLocation(mUserLatlng);
         WalkRouteNodeInfo walkEndNode = new WalkRouteNodeInfo();
         walkEndNode.setLocation(end);
-        WalkNaviLaunchParam walkParam = new WalkNaviLaunchParam().startNodeInfo(walkStartNode).endNodeInfo(walkEndNode);
+        WalkNaviLaunchParam walkParam = new WalkNaviLaunchParam()
+                .startNodeInfo(walkStartNode)
+                .endNodeInfo(walkEndNode);
 
 
         //发起算路
@@ -604,7 +537,7 @@ public class MapActivity extends AppCompatActivity {
                 startActivity(intent);
                 //MapActivity.this.finish();
                 //Toast.makeText(MapActivity.this,"intent()被执行",Toast.LENGTH_LONG).show();
-                initViews();
+//                initViews();
                 // Log.d("MapActivity","导航界面结束后调用了InitView方法");
 
 

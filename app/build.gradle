@@ -73,6 +73,12 @@ android {
 
 }
 
+task copyTask(type: Copy) {
+    from '/home/zhy/UnityProjects/game-unity-ar/armodel/ARModel/src/main/assets/'
+    into '/home/zhy/AndroidStudioProjects/LearningSupport_ARGame/ARModel/src/main/assets/'
+}
+
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'

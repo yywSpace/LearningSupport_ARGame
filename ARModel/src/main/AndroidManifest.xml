@@ -4,6 +4,7 @@
     android:installLocation="preferExternal">
 
     <application>
+        <activity android:name="SendMessageActivity"/>
         <activity android:name="ModelPutActivity"/>
         <activity android:name="ModelScanActivity"/>
         <activity

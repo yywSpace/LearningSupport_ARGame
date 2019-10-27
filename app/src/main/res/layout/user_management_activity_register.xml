@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/user_management_register_return"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="left"
+                android:background="@drawable/user_management_return" />
+        </FrameLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:text="注册"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp">
+
+        <TextView
+            android:id="@+id/user_management_account_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="帐号"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/user_management_account_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/user_management_account_label"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/user_management_account_label"
+            android:text="帐号已存在"
+            android:textColor="#d81c60"
+            android:visibility="invisible" />
+
+        <EditText
+            android:id="@+id/user_management_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_management_account_label"
+            android:hint="请输入帐号"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/user_management_username_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_management_account"
+            android:text="用户名"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/user_management_username_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/user_management_username_label"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/user_management_username_label"
+            android:text="用户名已存在"
+            android:textColor="#d81c60"
+
+            android:visibility="invisible" />
+
+        <EditText
+            android:id="@+id/user_management_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_management_username_label"
+            android:hint="请输入用户名"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/user_management_password_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_management_username"
+            android:text="密码"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/user_management_password_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/user_management_password_label"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/user_management_password_label"
+            android:text="密码过短"
+            android:textColor="#d81c60"
+            android:visibility="invisible" />
+
+        <EditText
+            android:id="@+id/user_management_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_management_password_label"
+            android:hint="请输入密码"
+            android:inputType="textPassword"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/user_management_confirm_password_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_management_password"
+            android:text="确认密码"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/user_management_confirm_password_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/user_management_confirm_password_label"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/user_management_confirm_password_label"
+            android:text="两次密码不相同"
+            android:textColor="#d81c60"
+            android:visibility="invisible" />
+
+        <EditText
+            android:id="@+id/user_management_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_management_confirm_password_label"
+            android:hint="验证密码"
+            android:inputType="textPassword"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/user_management_register_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_management_confirm_password"
+            android:layout_marginTop="30dp"
+            android:background="@android:color/holo_blue_light"
+            android:text="注册" />
+    </RelativeLayout>
+
+</LinearLayout>

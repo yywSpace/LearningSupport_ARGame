@@ -16,8 +16,6 @@ import java.net.UnknownHostException;
 
 public class SendLocationExample {
     private final String TAG = "SendLocation";
-    private int port = 3000;
-    private String ip = "192.168.0.112";//"47.96.152.133";
     private UDPClient mUDPClient;
     public Thread sendLocationThread;
 
@@ -51,12 +49,9 @@ public class SendLocationExample {
                         mUDPClient.Location(Float.parseFloat(latlong[0]), Float.parseFloat(latlong[1]));
                     }
                 }
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | IOException e) {
                 Log.e(TAG, "SendLocation: ", e);
-                e.printStackTrace();
-            } catch (IOException e) {
-                Log.e(TAG, "SendLocation: ", e);
-                e.printStackTrace();
+//                e.printStackTrace();
             } finally {
                 mUDPClient.Logout();
 

@@ -1,6 +1,7 @@
 package com.example.learningsupport_argame.Navi.Utils;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
@@ -15,107 +16,58 @@ import com.baidu.mapapi.model.LatLng;
 
 public class LocationListener extends BDAbstractLocationListener {
     static String TAG = "LocationListener";
-    LatLng mUser_latlng;
-    double latitude;
-    double longitude;
-    float radius;
-    String coorType;
-    int errorCode;
-    private MapView mMapView;
+    private LatLng mUserLatlng;
+
     private BaiduMap mBaiduMap;
-    boolean isFirstLoc;
-    BDLocation userlocation;
+    private BDLocation mUserLocation;
+    private boolean mMapFollow;
+    private boolean isFirstLocation = true;
 
 
-    public void getMap(MapView mapView, BaiduMap baiduMap, boolean isFirstLoc) {
-        mMapView = mapView;
+    public void getMap(BaiduMap baiduMap) {
         mBaiduMap = baiduMap;
-        this.isFirstLoc = isFirstLoc;
-
     }
 
     @Override
     public void onReceiveLocation(BDLocation location) {
-        userlocation = location;
-        Log.d(TAG, "onReceiveLocation: "+location.getLongitude());
-        //mapView 销毁后不在处理新接收的位置
-        if (location == null || mMapView == null) {
-            return;
-        }
+        mUserLocation = location;
 
-        if (isFirstLoc) {
-            isFirstLoc = false;
-            LatLng ll = new LatLng(location.getLatitude(),
+        Log.d(TAG, "onReceiveLocation: mMapFollow:" + mMapFollow);
+
+        if (mMapFollow == true || isFirstLocation) {
+            LatLng center = new LatLng(location.getLatitude(),
                     location.getLongitude());
-
-            //设置缩放比例,更新地图状态
-//            float f = mBaiduMap.getMaxZoomLevel();// 19.0
-            //     MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll, f - 2);
-//            mBaiduMap.animateMapStatus(u);
-
-//            MapStatus.Builder builder = new MapStatus.Builder();
-//            builder.zoom(21.0f);
-//            mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
-            // mBaiduMap.setMaxAndMinZoomLevel(14,21);
-
-            //float f = mBaiduMap.getMaxZoomLevel();// 19.0
-//                MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll,20);
-//             mBaiduMap.animateMapStatus(u);
-
-
-//            /**
-//
-//             * 限制地图显示范围
-//
-//             */
-//            LatLngBounds.Builder builder1=new LatLngBounds.Builder();
-//            builder1.include(new LatLng(location.getLatitude(),location.getLongitude()));
-//            LatLngBounds bounds=builder1.build();
-//            MapStatusUpdate u=MapStatusUpdateFactory.newLatLngBounds(bounds,50000,50000);
-//            mBaiduMap.setMapStatus(u);
-
-            // LatLng llCentre = new LatLng(location.getLatitude(),location.getLongitude());
-            MapStatus.Builder builder = new MapStatus.Builder();
-            builder.target(ll)//缩放中心点
-                    .zoom(20);//缩放级别
-//            mBaiduMap.setMaxAndMinZoomLevel(21,14);
-            mBaiduMap.animateMapStatus(MapStatusUpdateFactory
-                    .newMapStatus(builder.build()));
-
+            //定义地图状态
+            MapStatus mMapStatus = new MapStatus.Builder()
+                    .target(center)
+                    .build();
+            //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
+            MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
+            //改变地图状态
+            mBaiduMap.setMapStatus(mMapStatusUpdate);
+            MyLocationData locData = new MyLocationData.Builder()
+                    .latitude(location.getLatitude())
+                    .longitude(location.getLongitude()).build();
+            mBaiduMap.setMyLocationData(locData);
+            isFirstLocation = false;
         }
-
-
-//        latitude = location.getLatitude();    //获取纬度信息
-//         longitude = location.getLongitude();    //获取经度信息
-//         radius = location.getRadius();    //获取定位精度，默认值为0.0f
-//
-//         coorType = location.getCoorType();
-//        //获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
-//
-//         errorCode = location.getLocType();
-//        //获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
-
     }
 
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
 
     public LatLng getUserLocation() {
-
-        mUser_latlng = new LatLng(userlocation.getLatitude(), userlocation.getLongitude());
-        return mUser_latlng;
+        if (mUserLocation != null)
+            mUserLatlng = new LatLng(mUserLocation.getLatitude(), mUserLocation.getLongitude());
+        return mUserLatlng;
     }
 
     public LatLng getGCJ02NaviLocation() {
 
-        LocationClient.getBDLocationInCoorType(userlocation, BDLocation.BDLOCATION_BD09LL_TO_GCJ02);
-        mUser_latlng = new LatLng(userlocation.getLatitude(), userlocation.getLongitude());
-        return mUser_latlng;
+        LocationClient.getBDLocationInCoorType(mUserLocation, BDLocation.BDLOCATION_BD09LL_TO_GCJ02);
+        mUserLatlng = new LatLng(mUserLocation.getLatitude(), mUserLocation.getLongitude());
+        return mUserLatlng;
+    }
+
+    public void setMapFollow(boolean mapFollow) {
+        mMapFollow = mapFollow;
     }
 }
