@@ -1,7 +1,13 @@
 package com.example.learningsupport_argame.UserManagement;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.example.learningsupport_argame.DbUtils;
+import com.example.learningsupport_argame.UserManagement.LoginAndLogout.UserManagementStatus;
+
+import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,16 +16,17 @@ import java.sql.SQLException;
 
 
 public class UserLab {
-    private static String TAG = "UserLab";
-    private static String DB_USER = "argame";
-    private static String DB_PASSWORD = "1095204049";
-    private static String DB_URL = "jdbc:mysql://47.96.152.133:3306/game_learn_ar?characterEncoding=utf-8";
-    private static String DB_DRIVER = "com.mysql.jdbc.Driver";
+    public static String TAG = "UserLab";
+
 
     private static User sCurrentUser;
 
     private UserLab() {
 
+    }
+
+    public static void setCurrentUser(User user) {
+        sCurrentUser = user;
     }
 
     public static User getCurrentUser() {
@@ -30,9 +37,9 @@ public class UserLab {
         User user = null;
         try {
             //加载驱动
-            Class.forName(DB_DRIVER);
+            Class.forName(DbUtils.DB_DRIVER);
             //建立连接
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            Connection connection = DriverManager.getConnection(DbUtils.DB_URL,DbUtils. DB_USER, DbUtils.DB_PASSWORD);
             //查询数据
             String sql = "SELECT * FROM user WHERE user_account = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -43,7 +50,9 @@ public class UserLab {
                 user.setId(rs.getInt("user_id"));
                 user.setAccount(rs.getString("user_account"));
                 user.setName(rs.getString("user_name"));
+                user.setAvatar(Bytes2Bitmap(rs.getBytes("user_avatar")));
                 user.setPassword(rs.getString("user_password"));
+                user.setBirthday(rs.getString("user_birthday"));
                 user.setSex(rs.getString("user_sex"));
                 user.setCity(rs.getString("user_city"));
                 user.setExp(rs.getInt("user_exp"));
@@ -72,8 +81,8 @@ public class UserLab {
         if (!user.getPassword().equals(rePassword))
             return UserManagementStatus.REGISTER_PASSWORD_DIFFERENT;
         try {
-            Class.forName(DB_DRIVER);
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            Class.forName(DbUtils.DB_DRIVER);
+            Connection connection = DriverManager.getConnection(DbUtils.DB_URL, DbUtils.DB_USER, DbUtils.DB_PASSWORD);
             String sql = "INSERT INTO user(user_id,user_account,user_name,user_password) VALUE(null,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, user.getAccount());
@@ -85,5 +94,57 @@ public class UserLab {
             e.printStackTrace();
         }
         return UserManagementStatus.REGISTER_SUCCESS;
+    }
+
+    /**
+     * 相同为true
+     *
+     * @param account
+     * @param oldPassword
+     * @return
+     */
+    public static boolean confirmPassword(String account, String oldPassword) {
+        User user = getUser(account);
+        Log.d(TAG, "confirmPassword: " + account);
+        if (user.getPassword().equals(oldPassword))
+            return true;
+        else return false;
+
+    }
+
+    public static void updateUser(User user) {
+        try {
+            Class.forName(DbUtils.DB_DRIVER);
+            Connection connection = DriverManager.getConnection(DbUtils.DB_URL, DbUtils.DB_USER, DbUtils.DB_PASSWORD);
+            String sql = "UPDATE user " +
+                    "SET user_name = ?, user_avatar = ?, user_password = ?,user_sex = ?, user_birthday = ?,  user_city= ? " +
+                    "WHERE user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, user.getName());
+            statement.setBytes(2, Bitmap2Bytes(user.getAvatar()));
+            statement.setString(3, user.getPassword());
+            statement.setString(4, user.getSex());
+            statement.setString(5, user.getBirthday());
+            statement.setString(6, user.getCity());
+            statement.setInt(7, user.getId());
+            statement.executeUpdate();
+        } catch (ClassNotFoundException | SQLException e) {
+            Log.e(TAG, "updateUser: ", e);
+            e.printStackTrace();
+        }
+    }
+
+    public static byte[] Bitmap2Bytes(Bitmap bm) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        return baos.toByteArray();
+    }
+
+    public static Bitmap Bytes2Bitmap(byte[] b) {
+        if (b.length != 0) {
+            return BitmapFactory.decodeByteArray(b, 0, b.length);
+        } else {
+            return null;
+        }
     }
 }

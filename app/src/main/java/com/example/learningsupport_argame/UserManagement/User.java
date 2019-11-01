@@ -1,8 +1,12 @@
 package com.example.learningsupport_argame.UserManagement;
 
+import android.graphics.Bitmap;
+
 public class User {
+    public static String CURRENT_USER_ID = "current_user_id";
     private int mId;
     private String mAccount;
+    private Bitmap mAvatar;
     private String mName;
     private String mPassword;
     private String mSex;
@@ -92,5 +96,13 @@ public class User {
 
     public void setCredits(int credits) {
         mCredits = credits;
+    }
+
+    public Bitmap getAvatar() {
+        return mAvatar;
+    }
+
+    public void setAvatar(Bitmap avatar) {
+        mAvatar = avatar;
     }
 }

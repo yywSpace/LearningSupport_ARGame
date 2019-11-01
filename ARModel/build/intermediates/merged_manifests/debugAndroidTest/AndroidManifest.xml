@@ -52,6 +52,7 @@
     <application android:debuggable="true" >
         <uses-library android:name="android.test.runner" />
 
+        <activity android:name="com.example.ARModel.SendMessageActivity" />
         <activity android:name="com.example.ARModel.ModelPutActivity" />
         <activity android:name="com.example.ARModel.ModelScanActivity" />
         <activity

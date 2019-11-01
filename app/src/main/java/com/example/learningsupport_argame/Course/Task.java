@@ -14,6 +14,8 @@ public class Task {
 
     private String mTaskParticipant;  //任务参与人员
 
+    private String mTaskLocation;   // 任务地点
+
     private String mTaskStartAt;  // 任务开始时间
 
     private String mTaskEndIn;  //任务结束时间
@@ -146,5 +148,13 @@ public class Task {
 
         mTaskEndIn = taskEndIn;
 
+    }
+
+    public String getTaskLocation() {
+        return mTaskLocation;
+    }
+
+    public void setTaskLocation(String taskLocation) {
+        mTaskLocation = taskLocation;
     }
 }

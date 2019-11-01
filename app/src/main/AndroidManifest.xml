@@ -11,9 +11,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".Navi.Activity.MapActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".UserManagement.LoginActivity">
+        <activity android:name=".UserManagement.UserMessage.UserMessageActivity" />
+        <!--        <activity android:name=".Navi.Activity.MapActivity" >-->
+        <!--        <activity android:name=".UserManagement.LoginActivity">-->
+        <!--        <activity android:name=".UserManagement.TestActivity">-->
+        <activity android:name=".UserManagement.UserMessage.FriendMessageActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +25,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".UserManagement.RegisterActivity" />
+        <activity android:name=".UserManagement.LoginAndLogout.RegisterActivity" />
+        <activity android:name=".UserManagement.LoginAndLogout.ChangePasswordActivity" />
+
         <activity android:name=".task.activity.TaskList_Main" />
 
         <activity android:name=".Course.CourseMainActivity" />
@@ -55,6 +61,15 @@
         <service android:name=".Course.MonitorService" />
         <service android:name=".Navi.Activity.LocationService" />
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.learningsupport_argame"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
 
 

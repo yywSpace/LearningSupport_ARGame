@@ -17,6 +17,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.task.Task;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package com.example.learningsupport_argame.UserManagement;
+package com.example.learningsupport_argame.UserManagement.LoginAndLogout;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 
 public class RegisterActivity extends AppCompatActivity {
     private FrameLayout mReturnButton;

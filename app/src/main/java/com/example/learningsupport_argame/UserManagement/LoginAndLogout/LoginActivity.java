@@ -1,6 +1,5 @@
-package com.example.learningsupport_argame.UserManagement;
+package com.example.learningsupport_argame.UserManagement.LoginAndLogout;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -16,11 +15,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.learningsupport_argame.MainActivity;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.UserManagement.ActivityUtil;
+import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserLab;
+import com.example.learningsupport_argame.UserManagement.UserMessage.UserMessageActivity;
 
 
 public class LoginActivity extends AppCompatActivity {
+    private static String TAG = "LoginActivity";
     public static String PREFS_NAME = "user_info";
     private TextView mAccountTextLabel;
     private TextView mAccountTextStatus;
@@ -79,7 +82,8 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("password", user.getPassword());
                         editor.commit();//提交修改
                         Toast.makeText(this, "LOGIN_SUCCESS", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, MainActivity.class));
+//                        startActivity(new Intent(this, MainActivity.class));
+                        startActivity(new Intent(this, UserMessageActivity.class));
                         finish();
                     }
                 });
@@ -101,9 +105,15 @@ public class LoginActivity extends AppCompatActivity {
         if (account.equals("") || password.equals("")) {
             return;
         }
-
-        startActivity(new Intent(this, MainActivity.class));
+        new Thread(() -> {
+            User user = UserLab.getUser(account);
+            UserLab.setCurrentUser(user);
+            Log.d(TAG, "Login: " + user.getAvatar());
+        }).start();
+        // startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, UserMessageActivity.class));
         finish();
+
     }
 
     private boolean changePromptMessage(boolean status, String promptMessage, TextView labelTextView, TextView statusTextView) {

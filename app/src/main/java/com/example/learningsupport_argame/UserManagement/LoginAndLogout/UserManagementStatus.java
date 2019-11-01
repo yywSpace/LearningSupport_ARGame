@@ -1,4 +1,4 @@
-package com.example.learningsupport_argame.UserManagement;
+package com.example.learningsupport_argame.UserManagement.LoginAndLogout;
 
 public enum UserManagementStatus {
     LOGIN_SUCCESS,
