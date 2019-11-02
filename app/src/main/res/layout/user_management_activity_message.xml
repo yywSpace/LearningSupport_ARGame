@@ -40,12 +40,20 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_management_message_recycle_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
 
     </androidx.recyclerview.widget.RecyclerView>
 
+    <Button
+        android:id="@+id/user_management_message_logout"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/holo_red_light"
+        android:text="登出" />
 
 </LinearLayout>

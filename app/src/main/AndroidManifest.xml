@@ -13,14 +13,14 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".MainActivity" />
-        <activity android:name=".UserManagement.UserMessage.UserMessageActivity" />
-        <!--        <activity android:name=".Navi.Activity.MapActivity" >-->
-        <!--        <activity android:name=".UserManagement.LoginActivity">-->
-        <!--        <activity android:name=".UserManagement.TestActivity">-->
-                <activity android:name=".community.activity.FriendList_motified" >
-<!--        <activity android:name=".task.activity.TaskList_Main">-->
+        <activity android:name=".UserManagement.UserMessage.FriendMessageActivity" />
 
-            <!--        <activity android:name=".UserManagement.UserMessage.FriendMessageActivity">-->
+        <activity android:name=".UserManagement.UserMessage.UserMessageActivity" />
+        <activity android:name=".Navi.Activity.MapActivity">
+            <!--        <activity android:name=".UserManagement.LoginAndLogout.LoginActivity">-->
+            <!--        <activity android:name=".UserManagement.TestActivity">-->
+            <!--        <activity android:name=".community.activity.FriendList_modified">-->
+            <!--        <activity android:name=".task.activity.TaskList_Main">-->
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

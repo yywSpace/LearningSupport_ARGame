@@ -43,6 +43,8 @@ import com.baidu.mapapi.walknavi.params.WalkRouteNodeInfo;
 import com.baidu.mapapi.CoordType;
 import com.example.learningsupport_argame.Navi.Utils.LocationListener;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserMessage.FriendMessageActivity;
 import com.example.learningsupport_argame.client.ClientLab;
 import com.example.learningsupport_argame.client.MessageData;
 import com.example.learningsupport_argame.client.UDPClient;
@@ -87,10 +89,10 @@ public class MapActivity extends AppCompatActivity {
         startService(locationService);
         // 模拟多个用户
         try {
-            mSendLocationExample1 = new SendLocationExample("MapWayExample/way1.txt", this);
-            mSendLocationExample2 = new SendLocationExample("MapWayExample/way2.txt", this);
-            mSendLocationExample3 = new SendLocationExample("MapWayExample/way3.txt", this);
-            mSendLocationExample4 = new SendLocationExample("MapWayExample/way4.txt", this);
+            mSendLocationExample1 = new SendLocationExample("MapWayExample/way1.txt", this, "4");
+            mSendLocationExample2 = new SendLocationExample("MapWayExample/way2.txt", this, "5");
+            mSendLocationExample3 = new SendLocationExample("MapWayExample/way3.txt", this, "6");
+            mSendLocationExample4 = new SendLocationExample("MapWayExample/way4.txt", this, "7");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -201,7 +203,9 @@ public class MapActivity extends AppCompatActivity {
 
         infoView.setOnClickListener(v -> {
             Toast.makeText(this, "UserInfo", Toast.LENGTH_SHORT).show();
-
+            Intent intent = new Intent(this, FriendMessageActivity.class);
+            intent.putExtra(User.CURRENT_USER_ID, userName);
+            startActivity(intent);
         });
 
         //绘制信息窗

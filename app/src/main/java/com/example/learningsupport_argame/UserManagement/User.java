@@ -9,6 +9,7 @@ public class User {
     private Bitmap mAvatar;
     private String mName;
     private String mPassword;
+    private String mLevel;
     private String mSex;
     private String mBirthday;
     private String mCity;
@@ -104,5 +105,13 @@ public class User {
 
     public void setAvatar(Bitmap avatar) {
         mAvatar = avatar;
+    }
+
+    public String getLevel() {
+        return mLevel;
+    }
+
+    public void setLevel(String level) {
+        mLevel = level;
     }
 }

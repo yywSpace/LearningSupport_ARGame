@@ -33,13 +33,46 @@ public class UserLab {
         return sCurrentUser;
     }
 
+
+    public static User getUserById(String userId) {
+        User user = null;
+        try {
+
+            Connection connection = DbUtils.getConnection();
+            //
+            String sql = "SELECT * FROM user WHERE user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, userId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                user = new User();
+                user.setId(rs.getInt("user_id"));
+                user.setAccount(rs.getString("user_account"));
+                user.setName(rs.getString("user_name"));
+                user.setAvatar(Bytes2Bitmap(rs.getBytes("user_avatar")));
+                user.setPassword(rs.getString("user_password"));
+                user.setLevel(rs.getString("user_level"));
+                user.setBirthday(rs.getString("user_birthday"));
+                user.setSex(rs.getString("user_sex"));
+                user.setCity(rs.getString("user_city"));
+                user.setExp(rs.getInt("user_exp"));
+                user.setCredits(rs.getInt("user_credits"));
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "getUser: ", e);
+            e.printStackTrace();
+        }
+        return user;
+
+    }
+
     public static User getUser(String account) {
         User user = null;
         try {
             //加载驱动
             Class.forName(DbUtils.DB_DRIVER);
             //建立连接
-            Connection connection = DriverManager.getConnection(DbUtils.DB_URL,DbUtils. DB_USER, DbUtils.DB_PASSWORD);
+            Connection connection = DriverManager.getConnection(DbUtils.DB_URL, DbUtils.DB_USER, DbUtils.DB_PASSWORD);
             //查询数据
             String sql = "SELECT * FROM user WHERE user_account = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -52,6 +85,7 @@ public class UserLab {
                 user.setName(rs.getString("user_name"));
                 user.setAvatar(Bytes2Bitmap(rs.getBytes("user_avatar")));
                 user.setPassword(rs.getString("user_password"));
+                user.setLevel(rs.getString("user_level"));
                 user.setBirthday(rs.getString("user_birthday"));
                 user.setSex(rs.getString("user_sex"));
                 user.setCity(rs.getString("user_city"));

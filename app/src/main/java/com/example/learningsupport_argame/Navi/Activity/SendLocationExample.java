@@ -19,11 +19,11 @@ public class SendLocationExample {
     private UDPClient mUDPClient;
     public Thread sendLocationThread;
 
-    public SendLocationExample(String wayName, Context context) throws IOException {
+    public SendLocationExample(String wayName, Context context, String userName) throws IOException {
 
         new Thread(() -> {
             try {
-                mUDPClient = new UDPClient(ClientLab.sPort, ClientLab.sIp, wayName);
+                mUDPClient = new UDPClient(ClientLab.sPort, ClientLab.sIp, userName);
                 mUDPClient.Login();
             } catch (SocketException e) {
                 e.printStackTrace();

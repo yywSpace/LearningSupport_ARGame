@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.learningsupport_argame.community.fragment.HaoyouFragment;
+import com.example.learningsupport_argame.community.fragment.FriendListFragment;
 import com.example.learningsupport_argame.community.fragment.ShetuanFragment;
 
 public class DataGeneratorForTask {
@@ -20,7 +20,7 @@ public class DataGeneratorForTask {
 
     public static Fragment[] getFragments(String from){//
         Fragment fragments[] = new Fragment[2];
-        fragments[0] = new HaoyouFragment();//需要更换图标和设置它们的fragment
+        fragments[0] = new FriendListFragment();//需要更换图标和设置它们的fragment
         fragments[1] = new ShetuanFragment();
 
         return fragments;

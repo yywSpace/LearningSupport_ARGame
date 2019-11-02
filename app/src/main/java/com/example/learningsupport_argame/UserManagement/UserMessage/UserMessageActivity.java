@@ -3,6 +3,7 @@ package com.example.learningsupport_argame.UserManagement.UserMessage;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
@@ -16,6 +17,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,6 +38,7 @@ import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.LoginAndLogout.ChangePasswordActivity;
+import com.example.learningsupport_argame.UserManagement.LoginAndLogout.LoginActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.address.AddressManager;
@@ -59,8 +62,10 @@ public class UserMessageActivity extends AppCompatActivity {
     private static final int CROP_REQUEST_CODE = 3;
     private RecyclerView mMessageRecyclerView;
     private RecyclerView.Adapter mAdapter;
+    private Button mLogoutButton;
     private File mTempFile;
     private List<MessageItem> mMessageItems;
+
 
     //地址选择s
     private List<Province> mProvinceList;
@@ -72,7 +77,14 @@ public class UserMessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_management_activity_message);
         mProvinceList = AddressManager.getProvince(this);
-
+        mLogoutButton = findViewById(R.id.user_management_message_logout);
+        mLogoutButton.setOnClickListener((view) -> {
+            SharedPreferences userInfo = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+            editor.clear();
+            editor.commit();
+            ActivityUtil.destroyAll();
+        });
         mMessageRecyclerView = findViewById(R.id.user_management_message_recycle_view);
         mMessageItems = new ArrayList<>(
                 Arrays.asList(

@@ -44,7 +44,7 @@ public class ReleasedTaskFragment extends Fragment {
         mReleasedTasks = new ArrayList<>();
         View view = inflater.inflate(R.layout.user_management_friend_fragment_release_task, container, false);
         mRecyclerView = view.findViewById(R.id.user_management_released_task_recycler_view);
-        mTaskItemAdapter = new TaskItemAdapter(mReleasedTasks);
+        mTaskItemAdapter = new TaskItemAdapter(mReleasedTasks, getActivity());
         mRecyclerView.setAdapter(mTaskItemAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return view;
@@ -54,7 +54,7 @@ public class ReleasedTaskFragment extends Fragment {
     public void onResume() {
         super.onResume();
         new Thread(() -> {
-            List<Task> tasks = TaskLab.getReleasedTask("4");
+            List<Task> tasks = TaskLab.getReleasedTask(mCurrentUserId);
             Log.d(TAG, "onResume: " + tasks.size());
             mReleasedTasks.addAll(tasks);
             getActivity().runOnUiThread(() -> {
@@ -69,50 +69,5 @@ public class ReleasedTaskFragment extends Fragment {
         args.putString(User.CURRENT_USER_ID, userId);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    class TaskItemAdapter extends RecyclerView.Adapter<TaskItemAdapter.TaskItemViewHolder> {
-        private List<Task> mAccomplishTasks;
-
-        public TaskItemAdapter(List<Task> accomplishTasks) {
-            mAccomplishTasks = accomplishTasks;
-        }
-
-        @NonNull
-        @Override
-        public TaskItemAdapter.TaskItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(getActivity()).inflate(R.layout.user_management_task_item, parent, false);
-            return new TaskItemViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull TaskItemViewHolder holder, int position) {
-            holder.bind(mAccomplishTasks.get(position));
-        }
-
-
-        @Override
-        public int getItemCount() {
-            return mAccomplishTasks.size();
-        }
-
-        public class TaskItemViewHolder extends RecyclerView.ViewHolder {
-            private TextView taskName;
-            private TextView taskTime;
-            private TextView taskLocation;
-
-            public TaskItemViewHolder(@NonNull View itemView) {
-                super(itemView);
-                taskName = itemView.findViewById(R.id.user_management_task_name);
-                taskTime = itemView.findViewById(R.id.user_management_task_time);
-                taskLocation = itemView.findViewById(R.id.user_management_task_location);
-            }
-
-            public void bind(Task task) {
-                taskName.setText(task.getTaskName());
-                taskTime.setText(task.getTaskStartAt() + "-" + task.getTaskEndIn());
-                taskLocation.setText(task.getTaskLocation());
-            }
-        }
     }
 }

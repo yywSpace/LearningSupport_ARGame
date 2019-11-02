@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.community.fragment.FujinFragment;
 import com.example.learningsupport_argame.community.fragment.HaoyouAllFragment;
-import com.example.learningsupport_argame.community.fragment.HaoyouFragment;
+import com.example.learningsupport_argame.community.fragment.FriendListFragment;
 import com.example.learningsupport_argame.community.fragment.ShetuanFragment;
 
 public class DataGenerator {
@@ -23,7 +23,7 @@ public class DataGenerator {
 
     public static Fragment[] getFragments(String from){//
         Fragment fragments[] = new Fragment[4];
-        fragments[0] = new HaoyouFragment();
+        fragments[0] = new FriendListFragment();
         fragments[1] = new ShetuanFragment();
         fragments[2] = new FujinFragment();
         fragments[3] = new HaoyouAllFragment();

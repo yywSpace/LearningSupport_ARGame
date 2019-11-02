@@ -20,12 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.community.adapter.TestAdapter;
+import com.example.learningsupport_argame.community.adapter.FriendItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HaoyouFragment extends Fragment {
+public class FriendListFragment extends Fragment {
 
 //    private ListView listView;
 //
@@ -44,22 +44,17 @@ public class HaoyouFragment extends Fragment {
     private RecyclerView recycler;
 
     private boolean isAnimmating;//是否正在进行动画
-    private Context con;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-//        View view = inflater.inflate(R.layout.haoyou_fragment_layout, container, false);
+        // View view = inflater.inflate(R.layout.haoyou_fragment_layout, container, false);
         View view = inflater.inflate(R.layout.haoyou_layout_motified ,container, false);
 
-
-        con = this.getContext();
-
-
-        recycler = (RecyclerView) view.findViewById(R.id.recycler);
-        ll_search = (LinearLayout) view.findViewById(R.id.ll_search);
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
+        recycler =  view.findViewById(R.id.recycler);
+        ll_search =  view.findViewById(R.id.ll_search);
+        refreshLayout =  view.findViewById(R.id.refresh_layout);
         return view;
     }
 
@@ -81,14 +76,7 @@ public class HaoyouFragment extends Fragment {
 //
 //                listView.setAdapter(adapter);
 
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                reflash();
-
-            }
-        });
-
+        refreshLayout.setOnRefreshListener(() -> refresh());
 
         // refreshLayout.stopNestedScroll();
         List<String> list = new ArrayList<>();
@@ -99,8 +87,8 @@ public class HaoyouFragment extends Fragment {
         list.add("啦啦啦");
         list.add("哭丧脸");
         list.add("啦啦啦");
-        TestAdapter adapter = new TestAdapter(con, list);
-        recycler.setLayoutManager(new LinearLayoutManager(con));
+        FriendItemAdapter adapter = new FriendItemAdapter(getActivity(), list);
+        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         recycler.setAdapter(adapter);
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -181,9 +169,10 @@ public class HaoyouFragment extends Fragment {
 
     }
 
-    private void reflash() {
 
-        Toast.makeText(con, "处理事件", Toast.LENGTH_SHORT).show();
+    private void refresh() {
+
+        Toast.makeText(getActivity(), "处理事件", Toast.LENGTH_SHORT).show();
         if (refreshLayout.isRefreshing() == true) ;
         {
             refreshLayout.setRefreshing(false);

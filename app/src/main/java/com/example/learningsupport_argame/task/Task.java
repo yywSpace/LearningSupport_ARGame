@@ -11,7 +11,7 @@ public class Task {
     private String mTaskLocation;   // 任务地点
     private String mTaskStartAt;  // 任务开始时间
     private String mTaskEndIn;  //任务结束时间
-
+    private String mTaskCreateTime; // 任务创建，完成，接取时间
 
     public String getTaskName() {
         return mTaskName;
@@ -91,5 +91,13 @@ public class Task {
 
     public void setTaskLocation(String taskLocation) {
         mTaskLocation = taskLocation;
+    }
+
+    public String getTaskCreateTime() {
+        return mTaskCreateTime;
+    }
+
+    public void setTaskCreateTime(String taskCreateTime) {
+        mTaskCreateTime = taskCreateTime;
     }
 }
