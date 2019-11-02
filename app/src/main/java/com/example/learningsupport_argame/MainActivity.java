@@ -11,7 +11,7 @@ import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.Navi.Activity.MapActivity;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
-import com.example.learningsupport_argame.UserManagement.LoginActivity;
+import com.example.learningsupport_argame.UserManagement.LoginAndLogout.LoginActivity;
 import com.example.learningsupport_argame.community.activity.FriendList_Main;
 import com.example.learningsupport_argame.task.activity.TaskList_Main;
 

@@ -146,7 +146,7 @@ public class MapActivity extends AppCompatActivity {
         // 地图俯视（3D）
         uiSettings.setOverlookingGesturesEnabled(false);
 
-        MapStatus mapStatus = new MapStatus.Builder(mBaiduMap.getMapStatus()).target(myLocationListener.getUserLocation()).zoom(17).build();
+        MapStatus mapStatus = new MapStatus.Builder(mBaiduMap.getMapStatus()).overlook(90).target(myLocationListener.getUserLocation()).zoom(17).build();
 
         MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mapStatus);
 
@@ -366,7 +366,7 @@ public class MapActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
+        //在activity执行onResume时执行mMapView. onResume()，实现地图生命周期管理
         mMapView.onResume();
         super.onResume();
 

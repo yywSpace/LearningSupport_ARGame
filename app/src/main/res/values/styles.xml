@@ -22,5 +22,11 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
+    <!--选择头像时,弹出菜单动画-->
+    <style name="user_management_pop_window_anim_style" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/user_management_pop_window_enter</item>
+        <item name="android:windowExitAnimation">@anim/user_management_pop_window_exit</item>
+    </style>
+
 </resources>
 

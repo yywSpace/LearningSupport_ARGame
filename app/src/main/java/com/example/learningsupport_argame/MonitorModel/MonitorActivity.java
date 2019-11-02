@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.task.Task;
 
 //import android.support.v7.app.AppCompatActivity;
 

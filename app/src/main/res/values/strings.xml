@@ -2,4 +2,7 @@
     <string name="app_name">LearningSupport_ARGame</string>
     <string name="feedback_mission_success">Mission Success</string>
     <string name="feedback_mission_failure">Mission Failure</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

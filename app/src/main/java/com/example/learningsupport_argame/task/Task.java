@@ -1,12 +1,14 @@
-package com.example.learningsupport_argame.MonitorModel;
+package com.example.learningsupport_argame.task;
 
 public class Task {
+    private int mUserId;
     private String mTaskName;  //任务名
     private String mTaskContent; //任务内容
     private String mTaskType;  //任务类型：自身任务，好友间任务，社团任务，一般任务
     private String mTaskStatus;  //任务状态：执行中，普通
-    private String mTaskNotification;  //任务是否提醒
+    private boolean mTaskNotification;  //任务是否提醒
     private String mTaskParticipant;  //任务参与人员
+    private String mTaskLocation;   // 任务地点
     private String mTaskStartAt;  // 任务开始时间
     private String mTaskEndIn;  //任务结束时间
 
@@ -43,11 +45,11 @@ public class Task {
         mTaskStatus = taskStatus;
     }
 
-    public String getTaskNotification() {
+    public boolean getTaskNotification() {
         return mTaskNotification;
     }
 
-    public void setTaskNotification(String taskNotification) {
+    public void setTaskNotification(boolean taskNotification) {
         mTaskNotification = taskNotification;
     }
 
@@ -73,5 +75,21 @@ public class Task {
 
     public void setTaskEndIn(String taskEndIn) {
         mTaskEndIn = taskEndIn;
+    }
+
+    public int getUserId() {
+        return mUserId;
+    }
+
+    public void setUserId(int userId) {
+        mUserId = userId;
+    }
+
+    public String getTaskLocation() {
+        return mTaskLocation;
+    }
+
+    public void setTaskLocation(String taskLocation) {
+        mTaskLocation = taskLocation;
     }
 }
