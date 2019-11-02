@@ -53,11 +53,7 @@
             <meta-data
                 android:name="android.notch_support"
                 android:value="true" />
-        </activity>
-
-        <meta-data
-            android:name="unity.build-id"
-            android:value="4947b02a-eddc-465a-a203-39584d82b838" />
+        </activity> <!-- <meta-data android:name="unity.build-id" android:value="4947b02a-eddc-465a-a203-39584d82b838" /> -->
         <meta-data
             android:name="unity.splash-mode"
             android:value="0" />

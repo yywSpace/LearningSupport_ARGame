@@ -1,126 +1,120 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-21:12
-INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-21:12
-INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-21:12
-INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-21:12
-INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-21:12
-INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-21:12
-INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-21:12
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-57:12
+INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-57:12
+INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-57:12
+INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-57:12
+INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-57:12
+INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-57:12
+INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-57:12
 	package
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:70-102
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:4:5-37
 		INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml
 		INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml
 	android:versionName
 		INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-21:12
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-57:12
 		INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml
 	xmlns:tools
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:103-149
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:3:5-51
 	android:versionCode
 		INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-21:12
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:1-57:12
 		INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:11-69
 	android:installLocation
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:2:150-180
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:5:5-35
 supports-screens
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:3:3-163
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:7:5-12:40
 	android:largeScreens
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:3:78-105
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:9:9-36
 	android:smallScreens
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:3:21-48
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:11:9-36
 	android:normalScreens
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:3:49-77
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:10:9-37
 	android:xlargeScreens
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:3:106-134
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:12:9-37
 	android:anyDensity
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:3:135-160
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:8:9-34
 application
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:4:3-14:17
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:13:5-39:19
 activity#com.example.Production.UnityPlayerActivity
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:5:5-9:16
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:14:9-28:20
 	android:screenOrientation
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:5:48-86
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:20:13-51
 	android:label
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:5:15-47
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:18:13-45
 	android:launchMode
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:5:87-118
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:19:13-44
 	android:hardwareAccelerated
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:5:301-336
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:17:13-48
 	android:configChanges
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:5:119-300
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:16:13-194
 	android:name
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:5:337-394
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:15:13-70
 meta-data#unityplayer.UnityActivity
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:7:7-82
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:22:13-24:40
 	android:value
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:7:59-79
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:24:17-37
 	android:name
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:7:18-58
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:23:17-57
 meta-data#android.notch_support
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:8:7-78
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:25:13-27:40
 	android:value
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:8:55-75
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:27:17-37
 	android:name
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:8:18-54
-meta-data#unity.build-id
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:10:5-101
-	android:value
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:10:46-98
-	android:name
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:10:16-45
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:26:17-53
 meta-data#unity.splash-mode
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:11:5-69
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:30:9-32:33
 	android:value
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:11:49-66
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:32:13-30
 	android:name
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:11:16-48
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:31:13-45
 meta-data#unity.splash-enable
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:12:5-74
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:33:9-35:36
 	android:value
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:12:51-71
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:35:13-33
 	android:name
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:12:16-50
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:34:13-47
 meta-data#notch.config
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:13:5-81
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:36:9-38:50
 	android:value
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:13:44-78
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:38:13-47
 	android:name
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:13:16-43
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:37:13-40
 uses-feature#0x00020000
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:15:3-52
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:41:5-54
 	android:glEsVersion
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:15:17-49
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:41:19-51
 uses-feature#android.hardware.vulkan
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:16:3-83
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:42:5-44:36
 	android:required
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:16:56-80
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:44:9-33
 	android:name
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:16:17-55
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:43:9-47
 uses-permission#android.permission.INTERNET
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:17:3-65
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:46:5-67
 	android:name
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:17:20-62
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:46:22-64
 uses-feature#android.hardware.touchscreen
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:18:3-88
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:48:5-50:36
 	android:required
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:18:61-85
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:50:9-33
 	android:name
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:18:17-60
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:49:9-52
 uses-feature#android.hardware.touchscreen.multitouch
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:19:3-99
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:51:5-53:36
 	android:required
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:19:72-96
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:53:9-33
 	android:name
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:19:17-71
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:52:9-63
 uses-feature#android.hardware.touchscreen.multitouch.distinct
-ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:20:3-108
+ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:54:5-56:36
 	android:required
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:20:81-105
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:56:9-33
 	android:name
-		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:20:17-80
+		ADDED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml:55:9-72
 uses-sdk
 INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /home/zhy/AndroidStudioProjects/LearningSupport_ARGame/Projection/src/main/AndroidManifest.xml

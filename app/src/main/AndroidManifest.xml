@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.learningsupport_argame">
 
     <application
@@ -16,29 +17,31 @@
         <!--        <activity android:name=".Navi.Activity.MapActivity" >-->
         <!--        <activity android:name=".UserManagement.LoginActivity">-->
         <!--        <activity android:name=".UserManagement.TestActivity">-->
-        <activity android:name=".UserManagement.UserMessage.FriendMessageActivity">
+                <activity android:name=".community.activity.FriendList_motified" >
+<!--        <activity android:name=".task.activity.TaskList_Main">-->
+
+            <!--        <activity android:name=".UserManagement.UserMessage.FriendMessageActivity">-->
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <activity android:name=".UserManagement.LoginAndLogout.RegisterActivity" />
         <activity android:name=".UserManagement.LoginAndLogout.ChangePasswordActivity" />
 
-        <activity android:name=".task.activity.TaskList_Main" />
 
         <activity android:name=".Course.CourseMainActivity" />
 
-        <activity android:name=".community.activity.FriendList_Main" />
 
         <activity android:name=".FeedbackModel.MissionAccomplishActivity" />
 
         <activity android:name=".TaskActivity" />
 
         <activity android:name=".FeedbackModel.FeedbackDetailsActivity" />
+
         <activity android:name=".Navi.Activity.YoudaoActivity" />
         <activity android:name=".Course.AddCourseActivity" />
         <activity android:name=".Course.CourseTimeActivity" />
@@ -107,6 +110,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!--允许sd卡写权限，需写入地图数据，禁用后无法显示地图-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <!--获取统计数据-->
     <!--<uses-permission android:name="android.permission.GET_TASKS" />-->
 

@@ -28,10 +28,15 @@ public class TaskInfo {
         //或者在使用的时候把他规范化也可以
     }
 
-    public void unzip(){
-
+    public void unzip( TaskInfo.FormatTask formatTask){
+         this.taskname=formatTask.getTaskName();
+         this.tasktime=formatTask.getTaskTime();
+         this.tasklocation=formatTask.getTaskLocation();
+         this.taskinfo=formatTask.getTaskInfo();
     }
-    class FormatTask{
+    public class FormatTask{
+
+        int tid;
         String TaskName;
         String TaskTime;//因为设置时间是使用TaskClock传入一个字符串设置的的，所以这里使用字符串//注意格式format
         String TaskLocation;//字符串约定，形如“地点名称，经纬度”
@@ -39,8 +44,15 @@ public class TaskInfo {
         List<PairInfoBean> friendlist;
         String monitorid;//传递一个monitorid即可。
 
+        public int getTid() {
+            return tid;
+        }
         public FormatTask() {
             //在此处规划好FormatTask的规范化
+            this.TaskName=TaskInfo.this.taskname;
+            this.TaskTime=TaskInfo.this.tasktime;
+            this.TaskLocation=TaskInfo.this.tasklocation;
+            this.TaskInfo = TaskInfo.this.taskinfo;
         }
 
         public String getTaskName() {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="taskType">
+        <item>对自己发布</item>
+        <item>对好友发布 </item>
+        <item>对社团发布</item>
+        <item>使用Ar发布</item>
+
+    </string-array>
+</resources>

@@ -31,7 +31,7 @@ public class FriendList_Main extends AppCompatActivity {
     }
 
     private void initView() {
-        mTabLayout = (TabLayout) findViewById(R.id.bottom_tab_layout);
+        mTabLayout = findViewById(R.id.bottom_tab_layout);
 
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -40,8 +40,8 @@ public class FriendList_Main extends AppCompatActivity {
                 // Tab 选中之后，改变各个Tab的状态
                 for (int i = 0; i < mTabLayout.getTabCount(); i++) {
                     View view = mTabLayout.getTabAt(i).getCustomView();
-                    ImageView icon = (ImageView) view.findViewById(R.id.tab_content_image);
-                    TextView text = (TextView) view.findViewById(R.id.tab_content_text);
+                    ImageView icon = view.findViewById(R.id.tab_content_image);
+                    TextView text = view.findViewById(R.id.tab_content_text);
                     if (i == tab.getPosition()) { // 选中状态
                         icon.setImageResource(DataGenerator.mTabResPressed[i]);
 
