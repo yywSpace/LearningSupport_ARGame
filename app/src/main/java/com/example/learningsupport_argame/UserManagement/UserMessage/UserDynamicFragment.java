@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +45,7 @@ public class UserDynamicFragment extends Fragment {
         mAdapter = new DynamicTaskItemAdapter(mTaskList, getContext());
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         return view;
     }
 
@@ -115,7 +117,7 @@ public class UserDynamicFragment extends Fragment {
                 dynamicDesc.setText(task.getTaskStatus());
                 taskName.setText(task.getTaskName());
                 taskTime.setText(task.getTaskStartAt() + "-" + task.getTaskEndIn());
-                taskLocation.setText(task.getTaskLocation());
+                taskLocation.setText(task.getAccomplishTaskLocation());
             }
         }
     }

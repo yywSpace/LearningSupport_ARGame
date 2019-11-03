@@ -3,7 +3,6 @@
 
     <item
         android:id="@+id/menu_main"
-
         android:icon="@drawable/renwuselected"
         android:title="进行中" />
 

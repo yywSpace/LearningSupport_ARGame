@@ -4,13 +4,9 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-
         android:layout_width="match_parent"
-
         android:layout_height="100dp"
-
         android:background="@drawable/myrect"
-
         android:elevation="10dp"
         android:paddingLeft="14dp"
         android:paddingTop="15dp">

@@ -1,4 +1,4 @@
-package com.example.learningsupport_argame.UserManagement.LoginAndLogout;
+package com.example.learningsupport_argame.UserManagement.Login;
 
 import android.graphics.Color;
 import android.os.Bundle;

@@ -13,7 +13,7 @@
         android:layout_gravity="left"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/navigation_head"
-        app:menu="@menu/new_menu">
+        app:menu="@menu/navigation_layout_menu">
 
     </com.google.android.material.navigation.NavigationView>
 

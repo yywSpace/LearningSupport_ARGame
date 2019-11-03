@@ -14,13 +14,13 @@
 
         <activity android:name=".MainActivity" />
         <activity android:name=".UserManagement.UserMessage.FriendMessageActivity" />
-
+        <activity android:name=".community.activity.FriendList_modified" />
         <activity android:name=".UserManagement.UserMessage.UserMessageActivity" />
-        <activity android:name=".Navi.Activity.MapActivity">
-            <!--        <activity android:name=".UserManagement.LoginAndLogout.LoginActivity">-->
+        <activity android:name=".Navi.Activity.MapActivity" />
+        <activity android:name=".task.activity.TaskListActivity">
+
             <!--        <activity android:name=".UserManagement.TestActivity">-->
-            <!--        <activity android:name=".community.activity.FriendList_modified">-->
-            <!--        <activity android:name=".task.activity.TaskList_Main">-->
+            <!--        <activity android:name=".UserManagement.Login.LoginActivity" >-->
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,8 +29,8 @@
 
         </activity>
 
-        <activity android:name=".UserManagement.LoginAndLogout.RegisterActivity" />
-        <activity android:name=".UserManagement.LoginAndLogout.ChangePasswordActivity" />
+        <activity android:name=".UserManagement.Login.RegisterActivity" />
+        <activity android:name=".UserManagement.Login.ChangePasswordActivity" />
 
 
         <activity android:name=".Course.CourseMainActivity" />
@@ -95,7 +95,7 @@
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 
     <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
-    <!-- 地图 -->
+    <!-- navigation_map -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <!--获取设备网络状态，禁用后无法获取网络状态-->

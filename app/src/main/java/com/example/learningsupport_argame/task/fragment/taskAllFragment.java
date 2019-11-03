@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.community.adapter.FriendtAdapter;
+import com.example.learningsupport_argame.community.adapter.FriendAdapter;
 import com.example.learningsupport_argame.bean.PairInfoBean;
 import com.example.learningsupport_argame.community.ainmation.CardConfig;
 import com.example.learningsupport_argame.community.ainmation.CardItemTouchHelperCallBack;
@@ -256,7 +256,7 @@ public class taskAllFragment extends Fragment {
 
                 tishi=(ImageButton)itemView.findViewById(R.id.wenhao);
                 InitialData();
-                FriendtAdapter adapter=new FriendtAdapter(peopleList,getContext());
+                FriendAdapter adapter=new FriendAdapter(peopleList,getContext());
                 listView.setAdapter(adapter);
 
                 textClock.setFormat12Hour("1998-08-01 12:00:00");

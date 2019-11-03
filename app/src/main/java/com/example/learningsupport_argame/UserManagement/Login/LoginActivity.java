@@ -1,4 +1,4 @@
-package com.example.learningsupport_argame.UserManagement.LoginAndLogout;
+package com.example.learningsupport_argame.UserManagement.Login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +20,7 @@ import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.UserMessageActivity;
+import com.example.learningsupport_argame.task.activity.TaskListActivity;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -111,9 +112,8 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, "Login: " + user.getAvatar());
         }).start();
         // startActivity(new Intent(this, MainActivity.class));
-        startActivity(new Intent(this, UserMessageActivity.class));
+        startActivity(new Intent(this, TaskListActivity.class));
         finish();
-
     }
 
     private boolean changePromptMessage(boolean status, String promptMessage, TextView labelTextView, TextView statusTextView) {
@@ -144,6 +144,5 @@ public class LoginActivity extends AppCompatActivity {
                 })
                 .create()
                 .show();
-
     }
 }

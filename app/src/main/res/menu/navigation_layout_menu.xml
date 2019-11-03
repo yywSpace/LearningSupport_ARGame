@@ -15,19 +15,10 @@
         android:id="@+id/navigation_menu_feedback"
         android:icon="@drawable/navigation_feedback"
         android:title="学习反馈" />
-    <item
-        android:id="@+id/navigation_menu_scan"
-        android:icon="@drawable/navigation_vr"
-        android:title="模型扫描" />
 
     <item
-        android:id="@+id/navigation_menu_put"
-        android:icon="@drawable/navigation_unity"
-        android:title="模型放置" />
+        android:id="@+id/navigation_menu_map"
+        android:icon="@drawable/navigation_map"
+        android:title="地图" />
 
-
-    <item
-        android:id="@+id/navigation_menu_social"
-        android:icon="@drawable/navigation_team"
-        android:title="广场与社团" />
 </menu>

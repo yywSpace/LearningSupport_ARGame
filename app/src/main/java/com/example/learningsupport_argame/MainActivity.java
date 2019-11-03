@@ -11,9 +11,9 @@ import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.Navi.Activity.MapActivity;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
-import com.example.learningsupport_argame.UserManagement.LoginAndLogout.LoginActivity;
+import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
 import com.example.learningsupport_argame.community.activity.FriendList_Main;
-import com.example.learningsupport_argame.task.activity.TaskList_Main;
+import com.example.learningsupport_argame.task.activity.TaskListActivity;
 
 
 public class MainActivity extends SendMessageActivity {
@@ -32,7 +32,7 @@ public class MainActivity extends SendMessageActivity {
 
     public void startTaskActivity() {
         Toast.makeText(this, "startTaskActivity", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, TaskList_Main.class));
+        startActivity(new Intent(this, TaskListActivity.class));
     }
 
     public void startCourseActivity() {

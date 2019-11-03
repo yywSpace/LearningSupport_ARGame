@@ -1,4 +1,4 @@
-package com.example.learningsupport_argame.UserManagement.LoginAndLogout;
+package com.example.learningsupport_argame.UserManagement.Login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
-import com.example.learningsupport_argame.UserManagement.LoginAndLogout.LoginActivity;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
 public class ChangePasswordActivity extends AppCompatActivity {

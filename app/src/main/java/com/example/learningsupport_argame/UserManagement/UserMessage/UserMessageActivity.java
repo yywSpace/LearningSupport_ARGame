@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
@@ -37,8 +38,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
-import com.example.learningsupport_argame.UserManagement.LoginAndLogout.ChangePasswordActivity;
-import com.example.learningsupport_argame.UserManagement.LoginAndLogout.LoginActivity;
+import com.example.learningsupport_argame.UserManagement.Login.ChangePasswordActivity;
+import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.address.AddressManager;
@@ -65,6 +66,7 @@ public class UserMessageActivity extends AppCompatActivity {
     private Button mLogoutButton;
     private File mTempFile;
     private List<MessageItem> mMessageItems;
+    private FrameLayout mReturnButton;
 
 
     //地址选择s
@@ -76,6 +78,8 @@ public class UserMessageActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_management_activity_message);
+        mReturnButton = findViewById(R.id.user_management_message_return);
+        mReturnButton.setOnClickListener((view) -> finish());
         mProvinceList = AddressManager.getProvince(this);
         mLogoutButton = findViewById(R.id.user_management_message_logout);
         mLogoutButton.setOnClickListener((view) -> {

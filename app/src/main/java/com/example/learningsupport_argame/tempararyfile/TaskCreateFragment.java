@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextClock;
@@ -34,39 +35,40 @@ public class TaskCreateFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       super.onCreateView(inflater, container, savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.create_task_layout, container, false);
         return new TaskCreateFragment.ViewAdapter(view).getView();
     }
-    class ViewAdapter
-    {
+
+    class ViewAdapter {
         private View view;
         private Spinner choseTaskType;
-        private ImageButton choseTaskStartdate;
-        private ImageButton choseTaskStarttime;
-        private ImageButton choseTaskendate;
-        private ImageButton choseTaskentime;
-        private ImageButton choseLocation;
+        private ImageView choseTaskStartdate;
+        private ImageView choseTaskStarttime;
+        private ImageView choseTaskendate;
+        private ImageView choseTaskentime;
+        private ImageView choseLocation;
         private RelativeLayout layout;
         private TextClock textClockStart;
         private TextClock textClockEnd;
         private Context con;
+
         public View getView() {
             return view;
         }
 
         public ViewAdapter(View view) {
 
-            con=getContext();
-            choseTaskType=(Spinner) view.findViewById(R.id.task_type);
-            choseTaskStartdate=(ImageButton) view.findViewById(R.id.start_reqi);
-            choseTaskStarttime=(ImageButton)view .findViewById(R.id.start_shijian);
-            choseTaskendate=(ImageButton) view .findViewById(R.id.reqi_end);
-            choseTaskentime=(ImageButton)view.findViewById(R.id.shijian_end);
-            choseLocation =(ImageButton) view .findViewById(R.id .btn_ditu_create);
-            layout=(RelativeLayout)view.findViewById(R.id.layout_task_type);
-            textClockStart=(TextClock)view.findViewById(R.id.date_show_create);
-            textClockEnd=(TextClock)view.findViewById(R.id.date_window_create_end);
+            con = getContext();
+            choseTaskType = (Spinner) view.findViewById(R.id.task_type);
+            choseTaskStartdate =  view.findViewById(R.id.start_reqi);
+            choseTaskStarttime = view.findViewById(R.id.start_shijian);
+            choseTaskendate =  view.findViewById(R.id.reqi_end);
+            choseTaskentime =  view.findViewById(R.id.shijian_end);
+            choseLocation =  view.findViewById(R.id.btn_ditu_create);
+            layout = (RelativeLayout) view.findViewById(R.id.layout_task_type);
+            textClockStart = (TextClock) view.findViewById(R.id.date_show_create);
+            textClockEnd = (TextClock) view.findViewById(R.id.date_window_create_end);
             choseLocation.getBackground().setAlpha(0);
             choseTaskStarttime.getBackground().setAlpha(0);
             choseTaskStartdate.getBackground().setAlpha(0);
@@ -77,15 +79,15 @@ public class TaskCreateFragment extends Fragment {
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     String[] taskType = getResources().getStringArray(R.array.taskType);
 
-                    switch (i){
+                    switch (i) {
                         case 0://对自己发布
                             layout.removeAllViews();
                             break;
                         case 1:
                             layout.removeAllViews();
-                            MultiSelectionSpinner chosefriends=new MultiSelectionSpinner(con);
-                            List<PairInfoBean> peopleList=new ArrayList<>();
-                            List<String> peopleListString =new ArrayList<>();
+                            MultiSelectionSpinner chosefriends = new MultiSelectionSpinner(con);
+                            List<PairInfoBean> peopleList = new ArrayList<>();
+                            List<String> peopleListString = new ArrayList<>();
                             char a = 'A';
                             for (int j = 0; j < 10; j++) {
                                 PairInfoBean pairInfoBean = new PairInfoBean();
@@ -94,24 +96,28 @@ public class TaskCreateFragment extends Fragment {
                                 peopleList.add(pairInfoBean);
                                 a++;
                             }
-                            ArrayAdapter<PairInfoBean> adapter= new ArrayAdapter<PairInfoBean>(con,android.R.layout.simple_spinner_dropdown_item,peopleList);
+                            ArrayAdapter<PairInfoBean> adapter = new ArrayAdapter<PairInfoBean>(con, android.R.layout.simple_spinner_dropdown_item, peopleList);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             //chosefriends.setAdapter(adapter);
                             chosefriends.setItems(peopleListString);
                             layout.addView(chosefriends);
                             chosefriends.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-                                @Override public void selectedIndices(List<Integer> indices) {
-                                    Toast.makeText(con,"22222",Toast.LENGTH_SHORT).show();
+                                @Override
+                                public void selectedIndices(List<Integer> indices) {
+                                    Toast.makeText(con, "22222", Toast.LENGTH_SHORT).show();
                                 }
-                                @Override public void selectedStrings(List<String> strings) {
 
-                                } });
+                                @Override
+                                public void selectedStrings(List<String> strings) {
+
+                                }
+                            });
                             break;
                         case 2:
                             layout.removeAllViews();
-                            MultiSelectionSpinner choseshetuan=new MultiSelectionSpinner(con);
+                            MultiSelectionSpinner choseshetuan = new MultiSelectionSpinner(con);
 
-                            List<String> shetuanListString =new ArrayList<>();
+                            List<String> shetuanListString = new ArrayList<>();
                             char b = 'A';
                             for (int j = 0; j < 10; j++) {
 
@@ -121,24 +127,28 @@ public class TaskCreateFragment extends Fragment {
                                 b++;
                             }
                             choseshetuan.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-                                @Override public void selectedIndices(List<Integer> indices) {
-                                    Toast.makeText(con,"22222",Toast.LENGTH_SHORT).show();
+                                @Override
+                                public void selectedIndices(List<Integer> indices) {
+                                    Toast.makeText(con, "22222", Toast.LENGTH_SHORT).show();
                                 }
-                                @Override public void selectedStrings(List<String> strings) {
 
-                                } });
+                                @Override
+                                public void selectedStrings(List<String> strings) {
+
+                                }
+                            });
                             choseshetuan.setItems(shetuanListString);
                             layout.addView(choseshetuan);
 
                             break;
                         case 3:
                             layout.removeAllViews();
-                            Button button =new Button(con);
-                            button .setText("放置在当前位置");
+                            Button button = new Button(con);
+                            button.setText("放置在当前位置");
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    Toast.makeText(con,"22",Toast.LENGTH_SHORT);
+                                    Toast.makeText(con, "22", Toast.LENGTH_SHORT);
                                 }
                             });
                             layout.addView(button);
@@ -180,14 +190,14 @@ public class TaskCreateFragment extends Fragment {
                         choseTaskStartdate.getBackground().setAlpha(0);
                         //这里处理事件。
                         Toast.makeText(con, "这里处理事件", Toast.LENGTH_SHORT).show();
-                        DatePickerDialog.OnDateSetListener startdateListener=new DatePickerDialog.OnDateSetListener() {
+                        DatePickerDialog.OnDateSetListener startdateListener = new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                textClockStart.setFormat24Hour(year+"-"+monthOfYear+"-"+dayOfMonth);
-                                Toast.makeText(con,"XXX",Toast.LENGTH_SHORT).show();
+                                textClockStart.setFormat24Hour(year + "-" + monthOfYear + "-" + dayOfMonth);
+                                Toast.makeText(con, "XXX", Toast.LENGTH_SHORT).show();
                             }
                         };
-                        DatePickerDialog date=new DatePickerDialog(con,  startdateListener, Calendar.YEAR,Calendar.MONTH,Calendar.DAY_OF_MONTH);
+                        DatePickerDialog date = new DatePickerDialog(con, startdateListener, Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH);
                         date.setTitle("日期对话框");
                         date.show();
 
@@ -235,14 +245,14 @@ public class TaskCreateFragment extends Fragment {
                         choseTaskStartdate.getBackground().setAlpha(0);
                         //这里处理事件。
 
-                        DatePickerDialog.OnDateSetListener startdateListener1=new DatePickerDialog.OnDateSetListener() {
+                        DatePickerDialog.OnDateSetListener startdateListener1 = new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                textClockStart.setFormat24Hour(year+"-"+monthOfYear+"-"+dayOfMonth);
-                                Toast.makeText(con,"XXX",Toast.LENGTH_SHORT).show();
+                                textClockStart.setFormat24Hour(year + "-" + monthOfYear + "-" + dayOfMonth);
+                                Toast.makeText(con, "XXX", Toast.LENGTH_SHORT).show();
                             }
                         };
-                        DatePickerDialog date=new DatePickerDialog(con,  startdateListener1, Calendar.YEAR,Calendar.MONTH,Calendar.DAY_OF_MONTH);
+                        DatePickerDialog date = new DatePickerDialog(con, startdateListener1, Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH);
                         date.setTitle("日期对话框");
                         date.show();
 
@@ -278,7 +288,7 @@ public class TaskCreateFragment extends Fragment {
             });
 
 
-            this.view=view;
+            this.view = view;
         }
     }
 }

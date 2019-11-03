@@ -9,7 +9,7 @@
         android:layout_height="wrap_content">
 
         <FrameLayout
-            android:id="@+id/user_management_register_return"
+            android:id="@+id/user_management_message_return"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="10dp">
@@ -32,10 +32,10 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:background="@android:color/darker_gray" />-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_management_message_recycle_view"

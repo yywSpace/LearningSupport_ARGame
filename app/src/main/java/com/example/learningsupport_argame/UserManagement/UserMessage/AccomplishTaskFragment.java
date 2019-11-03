@@ -5,16 +5,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.learningsupport_argame.task.Task;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.tempararyfile.TaskItemAdapter;
 import com.example.learningsupport_argame.task.TaskLab;
 
 import java.util.ArrayList;
@@ -44,6 +44,8 @@ public class AccomplishTaskFragment extends Fragment {
         mTaskItemAdapter = new TaskItemAdapter(mAccomplishTasks, getActivity());
         mRecyclerView.setAdapter(mTaskItemAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+
         return view;
     }
 

@@ -1,14 +1,19 @@
 package com.example.learningsupport_argame.task;
 
+import com.example.learningsupport_argame.UserManagement.User;
+
+import java.util.List;
+
 public class Task {
+    private int mTaskId;
     private int mUserId;
     private String mTaskName;  //任务名
     private String mTaskContent; //任务内容
     private String mTaskType;  //任务类型：自身任务，好友间任务，社团任务，一般任务
     private String mTaskStatus;  //任务状态：执行中，普通
     private boolean mTaskNotification;  //任务是否提醒
-    private String mTaskParticipant;  //任务参与人员
-    private String mTaskLocation;   // 任务地点
+    private List<User> mTaskParticipant;  //任务参与人员
+    private String mAccomplishTaskLocation;   // 任务完成所需到达的地点 (地点名称，经纬度)
     private String mTaskStartAt;  // 任务开始时间
     private String mTaskEndIn;  //任务结束时间
     private String mTaskCreateTime; // 任务创建，完成，接取时间
@@ -53,14 +58,6 @@ public class Task {
         mTaskNotification = taskNotification;
     }
 
-    public String getTaskParticipant() {
-        return mTaskParticipant;
-    }
-
-    public void setTaskParticipant(String taskParticipant) {
-        mTaskParticipant = taskParticipant;
-    }
-
     public String getTaskStartAt() {
         return mTaskStartAt;
     }
@@ -85,13 +82,7 @@ public class Task {
         mUserId = userId;
     }
 
-    public String getTaskLocation() {
-        return mTaskLocation;
-    }
 
-    public void setTaskLocation(String taskLocation) {
-        mTaskLocation = taskLocation;
-    }
 
     public String getTaskCreateTime() {
         return mTaskCreateTime;
@@ -99,5 +90,29 @@ public class Task {
 
     public void setTaskCreateTime(String taskCreateTime) {
         mTaskCreateTime = taskCreateTime;
+    }
+
+    public List<User> getTaskParticipant() {
+        return mTaskParticipant;
+    }
+
+    public void setTaskParticipant(List<User> taskParticipant) {
+        mTaskParticipant = taskParticipant;
+    }
+
+    public int getTaskId() {
+        return mTaskId;
+    }
+
+    public void setTaskId(int taskId) {
+        mTaskId = taskId;
+    }
+
+    public String getAccomplishTaskLocation() {
+        return mAccomplishTaskLocation;
+    }
+
+    public void setAccomplishTaskLocation(String accomplishTaskLocation) {
+        mAccomplishTaskLocation = accomplishTaskLocation;
     }
 }

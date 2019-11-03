@@ -18,12 +18,12 @@ import com.example.learningsupport_argame.bean.PairInfoBean;
 
 import java.util.List;
 
-public class FriendtAdapter extends BaseAdapter{
+public class FriendAdapter extends BaseAdapter{
 
     private List<PairInfoBean> list;
     private Context mcon;
 
-    public FriendtAdapter(List<PairInfoBean> list, Context mcon) {
+    public FriendAdapter(List<PairInfoBean> list, Context mcon) {
         this.list = list;
         this.mcon = mcon;
     }

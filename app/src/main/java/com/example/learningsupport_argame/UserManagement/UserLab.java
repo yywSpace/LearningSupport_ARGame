@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.example.learningsupport_argame.DbUtils;
-import com.example.learningsupport_argame.UserManagement.LoginAndLogout.UserManagementStatus;
+import com.example.learningsupport_argame.UserManagement.Login.UserManagementStatus;
 
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
@@ -49,7 +49,7 @@ public class UserLab {
                 user.setId(rs.getInt("user_id"));
                 user.setAccount(rs.getString("user_account"));
                 user.setName(rs.getString("user_name"));
-                user.setAvatar(Bytes2Bitmap(rs.getBytes("user_avatar")));
+                user.setAvatar(DbUtils.Bytes2Bitmap(rs.getBytes("user_avatar")));
                 user.setPassword(rs.getString("user_password"));
                 user.setLevel(rs.getString("user_level"));
                 user.setBirthday(rs.getString("user_birthday"));
@@ -83,7 +83,7 @@ public class UserLab {
                 user.setId(rs.getInt("user_id"));
                 user.setAccount(rs.getString("user_account"));
                 user.setName(rs.getString("user_name"));
-                user.setAvatar(Bytes2Bitmap(rs.getBytes("user_avatar")));
+                user.setAvatar(DbUtils.Bytes2Bitmap(rs.getBytes("user_avatar")));
                 user.setPassword(rs.getString("user_password"));
                 user.setLevel(rs.getString("user_level"));
                 user.setBirthday(rs.getString("user_birthday"));
@@ -155,7 +155,7 @@ public class UserLab {
                     "WHERE user_id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, user.getName());
-            statement.setBytes(2, Bitmap2Bytes(user.getAvatar()));
+            statement.setBytes(2, DbUtils.Bitmap2Bytes(user.getAvatar()));
             statement.setString(3, user.getPassword());
             statement.setString(4, user.getSex());
             statement.setString(5, user.getBirthday());
@@ -168,17 +168,4 @@ public class UserLab {
         }
     }
 
-    public static byte[] Bitmap2Bytes(Bitmap bm) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        return baos.toByteArray();
-    }
-
-    public static Bitmap Bytes2Bitmap(byte[] b) {
-        if (b.length != 0) {
-            return BitmapFactory.decodeByteArray(b, 0, b.length);
-        } else {
-            return null;
-        }
-    }
 }

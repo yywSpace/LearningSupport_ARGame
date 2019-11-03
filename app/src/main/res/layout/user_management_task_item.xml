@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="90dp"
         android:elevation="10dp"
         android:paddingLeft="14dp"
         android:paddingTop="15dp">
@@ -25,7 +25,9 @@
             android:layout_height="20dp"
             android:layout_below="@id/user_management_task_name"
             android:layout_alignBottom="@id/user_management_task_time"
-            android:layout_marginLeft="5dp" />
+
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/shijian" />
 
         <TextView
             android:id="@+id/user_management_task_time"
@@ -42,7 +44,8 @@
             android:layout_height="20dp"
             android:layout_below="@id/user_management_task_time"
             android:layout_alignBottom="@id/user_management_task_location"
-            android:layout_marginLeft="5dp" />
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/gongzuodidian" />
 
         <TextView
             android:id="@+id/user_management_task_location"
