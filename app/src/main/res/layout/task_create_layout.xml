@@ -25,7 +25,7 @@
                     android:id="@+id/label_name_create"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="任务名称"
+                    android:text="任务名称："
                     android:textSize="20sp" />
 
                 <EditText
@@ -55,7 +55,7 @@
                         android:id="@+id/task_create_choose_type_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="任务类型:"
+                        android:text="任务发布类型："
                         android:textSize="20dp" />
 
                     <Spinner
@@ -98,7 +98,7 @@
                         android:id="@+id/task_create_start_time_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="选择任务开始时间："
+                        android:text="任务开始时间："
                         android:textSize="20sp" />
 
 
@@ -159,7 +159,7 @@
                         android:id="@+id/task_create_end_time_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="选择任务结束时间："
+                        android:text="任务结束时间："
                         android:textSize="20sp" />
 
                     <TextView
@@ -218,7 +218,7 @@
                         android:id="@+id/create_task_location_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="选择任务执行地点："
+                        android:text="任务执行地点："
                         android:textSize="20sp" />
 
                     <TextView
@@ -261,7 +261,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="任务要求:"
+                        android:text="任务要求："
                         android:textSize="20sp" />
 
                     <EditText
@@ -282,5 +282,4 @@
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>
-
 </LinearLayout>

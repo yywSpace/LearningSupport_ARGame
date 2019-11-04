@@ -26,7 +26,7 @@
                     android:id="@+id/label_name_create"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="任务名称"
+                    android:text="任务名称："
                     android:textSize="20sp" />
 
                 <EditText
@@ -57,7 +57,7 @@
                         android:id="@+id/label_create_renwuleixin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="任务类型:"
+                        android:text="任务发布类型:"
                         android:textSize="20dp" />
 
                     <Spinner
@@ -99,7 +99,7 @@
                         android:id="@+id/task_time_start_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="选择任务开始时间："
+                        android:text="任务开始时间："
                         android:textSize="20sp" />
 
 
@@ -163,7 +163,7 @@
                         android:id="@+id/task_time_end_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="选择任务结束时间："
+                        android:text="任务结束时间："
                         android:textSize="20sp" />
 
                     <TextClock
@@ -224,7 +224,7 @@
                         android:id="@+id/label_create_didian_task"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="选择任务执行地点："
+                        android:text="任务执行地点："
                         android:textSize="20sp" />
 
                     <TextView

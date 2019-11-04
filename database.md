@@ -1,22 +1,61 @@
 # 数据库
 
-- User
+- user
     - user_id
+    - user_account
     - user_name
+    - user_avatar
+    - user_password
     - user_sex
     - user_birthday
     - user_city
+    - user_hp
+    - user_max_hp
+    - user_level
     - user_exp
     - user_credits
-    - user_Items_id  
-        链接至道具表，表示用户所拥有的物品
 
-- Friend
-    - friend_id
-    - friend_current_user  
-        外键，代表当前用户
-    - friend  
-        链接至user表, 表示此user为当前用户的朋友
+
+- task
+  - task_id
+  - user_id  
+      外键，代表此任务的所有者
+  - task_name  
+      任务名
+  - task_content  
+      任务内容
+  - task_release_for  
+      任务发布类型，及发布对象（自身，好友，社团，全部）
+  - task_type  
+      相对于任务本身(发布，接取)
+  - task_status  
+      任务状态（执行中，未开始，已完成）
+  - task_notification  
+      任务是否提醒
+  - task_participant  
+      任务参与人员
+  - task_accomplish_location  
+      完成任务所需要到达的地点（地点名,x,y）
+  - task_start_at  
+      任务开始时间
+  - task_end_in  
+      任务结束时间
+  - task_create_time  
+      不同类型的任务，代表不同的意义  
+      发布的任务：任务创建的时间  
+      接取的任务：任务完成的时间
+
+
+- task_participant  
+  此表链接用户及任务，记录某一任务当前的参与人物
+  - task_participant_id
+  - task_id  
+  - participant_id  
+    参与者的Id
+
+
+---
+以下数据数据库中还未涉及，只供参考
 
 - Course
     - course_id
@@ -30,27 +69,15 @@
     - course_notification
 
 
-- Task
-   - task_id
-   - task_user_id  
-        外键，代表此任务的所有者
-   - task_name  
-        任务名
-    - task_content  
-        任务内容
-    - task_type  
-        任务类型：自身任务，好友间任务，社团任务，一般任务
-    - task_status  
-        任务状态：执行中，普通
-    - task_notification  
-        任务是否提醒
-    - task_participant  
-        任务参与人员
-    - task_start_at  
-        任务开始时间
-    - task_end_in  
-        任务结束时间
-        
+- Friend
+    - friend_id
+    - friend_current_user  
+        外键，代表当前用户
+    - friend  
+        链接至user表, 表示此user为当前用户的朋友
+
+
+
 - Reward
     - reward_id
     - reward_task_id  
@@ -92,4 +119,3 @@
 
 - Items  
     道具表
-
