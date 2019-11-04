@@ -9,14 +9,18 @@ public class Task {
     private int mUserId;
     private String mTaskName;  //任务名
     private String mTaskContent; //任务内容
+    private String mTaskReleaseFor; // 任务发布的主体
     private String mTaskType;  //任务类型：自身任务，好友间任务，社团任务，一般任务
-    private String mTaskStatus;  //任务状态：执行中，普通
+    private String mTaskStatus;  //任务状态：执行中，未开始，已完成
     private boolean mTaskNotification;  //任务是否提醒
     private List<User> mTaskParticipant;  //任务参与人员
     private String mAccomplishTaskLocation;   // 任务完成所需到达的地点 (地点名称，经纬度)
     private String mTaskStartAt;  // 任务开始时间
     private String mTaskEndIn;  //任务结束时间
     private String mTaskCreateTime; // 任务创建，完成，接取时间
+
+    public Task() {
+    }
 
     public String getTaskName() {
         return mTaskName;
@@ -114,5 +118,13 @@ public class Task {
 
     public void setAccomplishTaskLocation(String accomplishTaskLocation) {
         mAccomplishTaskLocation = accomplishTaskLocation;
+    }
+
+    public String getTaskReleaseFor() {
+        return mTaskReleaseFor;
+    }
+
+    public void setTaskReleaseFor(String taskReleaseFor) {
+        mTaskReleaseFor = taskReleaseFor;
     }
 }

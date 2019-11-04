@@ -120,4 +120,37 @@ public class TaskLab {
         }
         return users;
     }
+
+    public static int insertTask(Task task) {
+        int row = 0;
+        Connection connection = DbUtils.getConnection();
+        String sql = "INSERT INTO task (" +
+                " user_id, task_name, task_content, task_release_for, " +
+                " task_type, task_status, task_notification, task_participant, " +
+                " task_accomplish_location,task_start_at, task_end_in, task_create_time " +
+                ") VALUE(?,?,?,?,?,?,?,?,?,?,?,?);";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, task.getUserId());
+            ps.setString(2, task.getTaskName());
+            ps.setString(3, task.getTaskContent());
+            ps.setString(4, task.getTaskReleaseFor());
+            ps.setString(5, task.getTaskType());
+            ps.setString(6, task.getTaskStatus());
+            ps.setBoolean(7, false);
+            // TODO: 19-11-4 设置选择到的数据
+            ps.setString(8, task.getTaskReleaseFor());
+            ps.setString(9, task.getAccomplishTaskLocation());
+            ps.setString(10, task.getTaskStartAt());
+            ps.setString(11, task.getTaskEndIn());
+            ps.setString(12, task.getTaskCreateTime());
+            row = ps.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(TAG, "insertTask: ", e);
+            e.printStackTrace();
+        }
+        return row;
+    }
+
+
 }

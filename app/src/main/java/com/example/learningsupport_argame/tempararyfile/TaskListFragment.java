@@ -85,6 +85,7 @@ public class TaskListFragment extends Fragment {
         new Thread(() -> {
             List<Task> tasks = TaskLab.getAllTask(mCurrentUserId);
             Log.d(TAG, "onResume: " + tasks.size());
+            mTaskList.clear();
             mTaskList.addAll(tasks);
             getActivity().runOnUiThread(() -> {
                 mTaskItemAdapter.notifyDataSetChanged();

@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +39,10 @@ import com.example.learningsupport_argame.NavigationController;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.bean.PairInfoBean;
+import com.example.learningsupport_argame.task.Task;
+import com.example.learningsupport_argame.task.TaskLab;
 import com.example.learningsupport_argame.tempararyfile.MultiSelectionSpinner;
 import com.example.learningsupport_argame.tempararyfile.TaskListFragment;
 import com.example.learningsupport_argame.tempararyfile.CurrentTaskFragment;
@@ -155,35 +159,68 @@ public class TaskListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(TaskListActivity.this);
                 LayoutInflater inflater = getLayoutInflater();
                 View layout = inflater.inflate(R.layout.task_create_layout, null);//获取自定义布局
                 CreateTaskViewAdapter taskViewAdapter = new CreateTaskViewAdapter(layout);
-
-                builder.setView(taskViewAdapter.getView());
-                builder.setTitle("创建任务");
-                builder.setIcon(R.drawable.ziji);
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                AlertDialog dialog = new AlertDialog.Builder(TaskListActivity.this)
+                        .setView(taskViewAdapter.getView())
+                        .setTitle("创建任务")
+                        .setIcon(R.drawable.ziji)
+                        .setNegativeButton("取消", null)
+                        .setPositiveButton("确定", null)
+                        .create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 保存数据
-                        String taskName = taskViewAdapter.mTaskNameEditText.getText().toString();
+                    public void onClick(View v) {
+                        String[] taskReleaseTypeStr = new String[]{"自身", "好友", "社团", "全体"};
                         int taskType = taskViewAdapter.mTaskType;
-                        String taskStartTime = taskViewAdapter.mTaskStartTime.getText().toString();
-                        String taskEndTime = taskViewAdapter.mTaskEndTime.getText().toString();
-                        String taskAccomplishLoc = taskViewAdapter.mTaskLocation.getText().toString();
-                        String taskDesc = taskViewAdapter.mTaskDescEditText.getText().toString();
+                        String[] taskStartTimeArray = taskViewAdapter.mStartTimes;
+                        String[] taskEndTimeArray = taskViewAdapter.mEndTimes;
 
-                        Toast.makeText(TaskListActivity.this, "taskStartTime: " + taskStartTime, Toast.LENGTH_SHORT).show();
+                        // 保存数据
+                        Task task = new Task();
+                        task.setTaskName(taskViewAdapter.mTaskNameEditText.getText().toString());
+                        task.setTaskType("创建");
+                        task.setTaskReleaseFor(taskReleaseTypeStr[taskType]);
+                        task.setTaskStartAt(taskViewAdapter.mTaskStartTime.getText().toString());
+                        task.setTaskEndIn(taskViewAdapter.mTaskEndTime.getText().toString());
+                        task.setAccomplishTaskLocation(taskViewAdapter.mTaskLocation.getText().toString());
+                        task.setTaskContent(taskViewAdapter.mTaskDescEditText.getText().toString());
+                        task.setTaskCreateTime(taskViewAdapter.mTaskCreateTime);
+                        task.setUserId(UserLab.getCurrentUser().getId());
+                        task.setTaskStatus("未开始");
 
-                        // 如果为用AR发布，则设置模型
+                        if (task.getTaskName().equals("")) {
+                            Toast.makeText(TaskListActivity.this, "请输入任务名称", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if (taskStartTimeArray[0] == null || taskStartTimeArray[1] == null || taskEndTimeArray[0] == null || taskEndTimeArray[1] == null) {
+                            Toast.makeText(TaskListActivity.this, "请输入任务日期和时间", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if (task.getAccomplishTaskLocation().equals("")) {
+                            Toast.makeText(TaskListActivity.this, "请输入任务完成地点", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if (task.getTaskContent().equals("")) {
+                            Toast.makeText(TaskListActivity.this, "请输入任务描述", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        // 如果为用AR发布，则传递数据到Unity,并设置模型
                         if (taskType == 3) {
                             Toast.makeText(TaskListActivity.this, "AR放置模型", Toast.LENGTH_SHORT).show();
                         }
+
+                        // 存储数据
+                        new Thread(() -> {
+                            TaskLab.insertTask(task);
+                        }).start();
+                        // 如果任务信息没有错误，销毁对话框
+                        dialog.dismiss();
                     }
                 });
-                builder.setNegativeButton("取消", null);
-                builder.show();
+
                 Toast.makeText(TaskListActivity.this, "Center", Toast.LENGTH_SHORT).show();
             }
         });
@@ -254,10 +291,10 @@ public class TaskListActivity extends AppCompatActivity {
         Spinner mChooseTaskType;
         ImageView mChooseTaskStartDate;
         ImageView mChooseTaskStartTime;
-        TextClock mTaskStartTime;
+        TextView mTaskStartTime;
         ImageView mChooseTaskEndDate;
         ImageView mChooseTaskEndTime;
-        TextClock mTaskEndTime;
+        TextView mTaskEndTime;
         ImageView mChooseLocation;
         TextView mTaskLocation;
         FrameLayout mTaskTypeDynamicLayout;
@@ -269,6 +306,9 @@ public class TaskListActivity extends AppCompatActivity {
          * 3:AR
          */
         int mTaskType = 0;
+        String[] mStartTimes = new String[2];
+        String[] mEndTimes = new String[2];
+        String mTaskCreateTime;
 
 
         public View getView() {
@@ -288,6 +328,23 @@ public class TaskListActivity extends AppCompatActivity {
             mTaskLocation = createTaskView.findViewById(R.id.task_create_location);
             mTaskTypeDynamicLayout = createTaskView.findViewById(R.id.layout_task_type);
             mTaskDescEditText = createTaskView.findViewById(R.id.task_create_enter_task_desc);
+
+            // 设置任务时间默认为当前时间
+            Calendar calendar = Calendar.getInstance();
+            String currentTime = String.format("%s-%s-%s %s:%02d",
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH) + 1,
+                    calendar.get(Calendar.DAY_OF_MONTH),
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE));
+            mStartTimes[0] = mEndTimes[0] = calendar.get(Calendar.YEAR) + "-" +
+                    (calendar.get(Calendar.MONTH) + 1) + "-" +
+                    calendar.get(Calendar.DAY_OF_MONTH);
+            mStartTimes[1] = mEndTimes[1] = calendar.get(Calendar.HOUR_OF_DAY) + ":" +
+                    String.format("%02d", calendar.get(Calendar.MINUTE));
+            mTaskCreateTime = currentTime;
+            mTaskStartTime.setText(currentTime);
+            mTaskEndTime.setText(currentTime);
 
             mChooseTaskType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -368,48 +425,65 @@ public class TaskListActivity extends AppCompatActivity {
             });
 
             mChooseLocation.setOnClickListener(v -> {
-                Toast.makeText(TaskListActivity.this, "地图选点", Toast.LENGTH_SHORT).show();
+                // TODO: 19-11-4 地图选点
+                mTaskLocation.setText("地图选点");
             });
 
             mChooseTaskStartDate.setOnClickListener(v -> {
                 //设置DateDialog为当前时间
-                Calendar calendar = Calendar.getInstance();
                 DatePickerDialog date = new DatePickerDialog(
                         TaskListActivity.this, (view, year, month, dayOfMonth) -> {
-                    Toast.makeText(TaskListActivity.this, year + "-" + month + "-" + dayOfMonth, Toast.LENGTH_SHORT).show();
-                    mTaskStartTime.setFormat24Hour(year + "-" + month + "-" + dayOfMonth);
+                    mStartTimes[0] = year + "-" + (month + 1) + "-" + dayOfMonth;
+                    mTaskStartTime.setText(mStartTimes[0] + " " + (mStartTimes[1] == null ? "" : mStartTimes[1]));
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 date.setTitle("选择开始日期");
                 date.show();
+
+
             });
 
             mChooseTaskStartTime.setOnClickListener(v -> {
 
-                TimePickerDialog.OnTimeSetListener timeListener = (view, hourOfDay, minute) -> {
-                    Toast.makeText(TaskListActivity.this, "hourOfDay:" + hourOfDay + ",minute:" + minute, Toast.LENGTH_SHORT).show();
-                };
-                TimePickerDialog timePicker = new TimePickerDialog(TaskListActivity.this, timeListener, Calendar.HOUR_OF_DAY, Calendar.MINUTE, true);
+                TimePickerDialog timePicker = new TimePickerDialog(
+                        TaskListActivity.this,
+                        (view, hourOfDay, minute) -> {
+                            mStartTimes[1] = String.format("%02d:%02d", hourOfDay, minute);
+                            mTaskStartTime.setText((mStartTimes[0] == null ? "" : mStartTimes[0]) + " " + mStartTimes[1]);
+                        },
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE), false);
                 timePicker.setTitle("选择开始时间");
                 timePicker.show();
+
             });
 
             mChooseTaskEndDate.setOnClickListener(v -> {
-                DatePickerDialog.OnDateSetListener startDateListener = (view, year, monthOfYear, dayOfMonth) -> {
-                    mTaskEndTime.setFormat24Hour(year + "-" + monthOfYear + "-" + dayOfMonth);
-                    Toast.makeText(TaskListActivity.this, year + "-" + monthOfYear + "-" + dayOfMonth, Toast.LENGTH_SHORT).show();
-                };
-                DatePickerDialog datePicker = new DatePickerDialog(TaskListActivity.this, startDateListener, Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH);
+                //设置DateDialog为当前时间
+                DatePickerDialog datePicker = new DatePickerDialog(
+                        TaskListActivity.this,
+                        (view, year, month, dayOfMonth) -> {
+                            mEndTimes[0] = year + "-" + (month + 1) + "-" + dayOfMonth;
+                            Toast.makeText(TaskListActivity.this, mEndTimes[0], Toast.LENGTH_SHORT).show();
+                            mTaskEndTime.setText(mEndTimes[0] + " " + (mEndTimes[1] == null ? "" : mEndTimes[1]));
+                        },
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
                 datePicker.setTitle("选择结束日期");
                 datePicker.show();
             });
             mChooseTaskEndTime.setOnClickListener(v -> {
-                TimePickerDialog.OnTimeSetListener timeListener = (view, hourOfDay, minute) -> {
-
-                    Toast.makeText(TaskListActivity.this, "hourOfDay:" + hourOfDay + ",minute:" + minute, Toast.LENGTH_SHORT).show();
-                };
-                TimePickerDialog timePicker = new TimePickerDialog(TaskListActivity.this, timeListener, Calendar.HOUR_OF_DAY, Calendar.MINUTE, true);
+                TimePickerDialog timePicker = new TimePickerDialog(
+                        TaskListActivity.this,
+                        (view, hourOfDay, minute) -> {
+                            mEndTimes[1] = String.format("%02d:%02d", hourOfDay, minute);
+                            mTaskEndTime.setText((mEndTimes[0] == null ? "" : mEndTimes[0]) + " " + mEndTimes[1]);
+                        },
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE), false);
                 timePicker.setTitle("选择结束时间");
                 timePicker.show();
+
             });
             mCreateTaskView = createTaskView;
         }

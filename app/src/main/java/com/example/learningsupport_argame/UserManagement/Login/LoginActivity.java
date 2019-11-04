@@ -83,8 +83,8 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("password", user.getPassword());
                         editor.commit();//提交修改
                         Toast.makeText(this, "LOGIN_SUCCESS", Toast.LENGTH_SHORT).show();
-//                        startActivity(new Intent(this, MainActivity.class));
-                        startActivity(new Intent(this, UserMessageActivity.class));
+                        // startActivity(new Intent(this, MainActivity.class));
+                        startActivity(new Intent(this, TaskListActivity.class));
                         finish();
                     }
                 });
@@ -109,7 +109,6 @@ public class LoginActivity extends AppCompatActivity {
         new Thread(() -> {
             User user = UserLab.getUser(account);
             UserLab.setCurrentUser(user);
-            Log.d(TAG, "Login: " + user.getAvatar());
         }).start();
         // startActivity(new Intent(this, MainActivity.class));
         startActivity(new Intent(this, TaskListActivity.class));

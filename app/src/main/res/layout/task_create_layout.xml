@@ -102,18 +102,16 @@
                         android:textSize="20sp" />
 
 
-                    <TextClock
+                    <TextView
                         android:id="@+id/task_create_start_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/task_create_start_time_label"
-                        android:layout_alignLeft="@id/task_create_start_time_label"
+                        android:layout_alignStart="@id/task_create_start_time_label"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
-                        android:format12Hour="yyyy-MM-dd,HH:mm"
-                        android:format24Hour="hh:mm:ss,EE"
-                        android:text="点击左侧按钮是指任务时间"
+                        android:text="点击右侧按钮设定任务时间"
                         android:textColor="@android:color/black" />
 
                     <ImageView
@@ -164,16 +162,14 @@
                         android:text="选择任务结束时间："
                         android:textSize="20sp" />
 
-                    <TextClock
+                    <TextView
                         android:id="@+id/task_create_end_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/task_create_end_time_label"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="10dp"
-                        android:format12Hour="yyyy-MM-dd,HH:mm"
-                        android:format24Hour="hh:mm:ss,EE"
-                        android:text="点击左侧按钮是指任务时间"
+                        android:text="点击右侧按钮设定任务时间"
                         android:textColor="#000" />
 
                     <ImageView
