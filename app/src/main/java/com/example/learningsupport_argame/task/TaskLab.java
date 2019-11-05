@@ -54,34 +54,29 @@ public class TaskLab {
      */
     public static List<Task> getAllTask(String userId) {
         List<Task> tasks = new ArrayList<>();
-        Connection connection = DbUtils.getConnection();
-        String sql = "SELECT * FROM task WHERE user_id = ?";
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, Integer.parseInt(userId));
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
+
+        DbUtils.query(resultSet -> {
+            while (resultSet.next()) {
                 Task task = new Task();
-                task.setTaskId(rs.getInt("task_id"));
-                task.setUserId(rs.getInt("user_id"));
-                task.setTaskName(rs.getString("task_name"));
-                task.setTaskContent(rs.getString("task_content"));
-                task.setTaskType(rs.getString("task_type"));
-                task.setTaskEndIn(rs.getString("task_end_in"));
-                task.setTaskStartAt(rs.getString("task_start_at"));
-                task.setTaskStatus(rs.getString("task_status"));
-                task.setTaskNotification(rs.getBoolean("task_notification"));
-                task.setAccomplishTaskLocation(rs.getString("task_accomplish_location"));
-                task.setTaskCreateTime(rs.getString("task_create_time"));
+                task.setTaskId(resultSet.getInt("task_id"));
+                task.setUserId(resultSet.getInt("user_id"));
+                task.setTaskName(resultSet.getString("task_name"));
+                task.setTaskContent(resultSet.getString("task_content"));
+                task.setTaskType(resultSet.getString("task_type"));
+                task.setTaskEndIn(resultSet.getString("task_end_in"));
+                task.setTaskStartAt(resultSet.getString("task_start_at"));
+                task.setTaskStatus(resultSet.getString("task_status"));
+                task.setTaskNotification(resultSet.getBoolean("task_notification"));
+                task.setAccomplishTaskLocation(resultSet.getString("task_accomplish_location"));
+                task.setTaskCreateTime(resultSet.getString("task_create_time"));
                 // 此处查询消耗时间过长
                 // 获取参与人员列表
                 // List<User> participant = getParticipant(task.getTaskId() + "");
                 // task.setTaskParticipant(participant);
                 tasks.add(task);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        }, "SELECT * FROM task WHERE user_id = ?", userId);
+
         return tasks;
     }
 
@@ -93,64 +88,40 @@ public class TaskLab {
      */
     public static List<User> getParticipant(String taskId) {
         List<User> users = new ArrayList<>();
-        String sql = "select * from user,task_participant where task_participant.participant_id = user.user_id and task_participant.task_id = ?;";
-        Connection connection = DbUtils.getConnection();
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, taskId);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                User user = new User();
-                user.setId(rs.getInt("user_id"));
-                user.setAccount(rs.getString("user_account"));
-                user.setName(rs.getString("user_name"));
-                user.setAvatar(DbUtils.Bytes2Bitmap(rs.getBytes("user_avatar")));
-                user.setPassword(rs.getString("user_password"));
-                user.setLevel(rs.getString("user_level"));
-                user.setBirthday(rs.getString("user_birthday"));
-                user.setSex(rs.getString("user_sex"));
-                user.setCity(rs.getString("user_city"));
-                user.setExp(rs.getInt("user_exp"));
-                user.setCredits(rs.getInt("user_credits"));
-                users.add(user);
-            }
-        } catch (SQLException e) {
-            Log.e(TAG, "getParticipant: ", e);
-            e.printStackTrace();
-        }
+
+        DbUtils.query(resultSet -> {
+                    while (resultSet.next()) {
+                        User user = new User();
+                        user.setId(resultSet.getInt("user_id"));
+                        user.setName(resultSet.getString("user_name"));
+                        user.setLevel(resultSet.getString("user_level"));
+                        users.add(user);
+                    }
+                },
+                "select user_id, user_name, user_level from user,task_participant " +
+                        "where task_participant.participant_id = user.user_id and task_participant.task_id = ?;",
+                taskId);
         return users;
     }
 
-    public static int insertTask(Task task) {
-        int row = 0;
-        Connection connection = DbUtils.getConnection();
-        String sql = "INSERT INTO task (" +
-                " user_id, task_name, task_content, task_release_for, " +
-                " task_type, task_status, task_notification, task_participant, " +
-                " task_accomplish_location,task_start_at, task_end_in, task_create_time " +
-                ") VALUE(?,?,?,?,?,?,?,?,?,?,?,?);";
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, task.getUserId());
-            ps.setString(2, task.getTaskName());
-            ps.setString(3, task.getTaskContent());
-            ps.setString(4, task.getTaskReleaseFor());
-            ps.setString(5, task.getTaskType());
-            ps.setString(6, task.getTaskStatus());
-            ps.setBoolean(7, false);
-            // TODO: 19-11-4 设置选择到的数据
-            ps.setString(8, task.getTaskReleaseFor());
-            ps.setString(9, task.getAccomplishTaskLocation());
-            ps.setString(10, task.getTaskStartAt());
-            ps.setString(11, task.getTaskEndIn());
-            ps.setString(12, task.getTaskCreateTime());
-            row = ps.executeUpdate();
-        } catch (SQLException e) {
-            Log.e(TAG, "insertTask: ", e);
-            e.printStackTrace();
-        }
-        return row;
+    public static void insertTask(Task task) {
+        DbUtils.update(null,
+                "INSERT INTO task (" +
+                        " user_id, task_name, task_content, task_release_for, " +
+                        " task_type, task_status, task_notification, task_participant, " +
+                        " task_accomplish_location,task_start_at, task_end_in, task_create_time " +
+                        ") VALUE(?,?,?,?,?,?,?,?,?,?,?,?);",
+                task.getUserId(),
+                task.getTaskName(),
+                task.getTaskContent(),
+                task.getTaskReleaseFor(),
+                task.getTaskType(),
+                task.getTaskStatus(),
+                false,
+                task.getTaskReleaseFor(), // TODO: 19-11-4 设置选择到的数据, 参与者
+                task.getAccomplishTaskLocation(),
+                task.getTaskStartAt(),
+                task.getTaskEndIn(),
+                task.getTaskCreateTime());
     }
-
-
 }

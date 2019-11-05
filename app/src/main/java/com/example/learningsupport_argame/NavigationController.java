@@ -12,8 +12,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.Navi.Activity.MapActivity;
+import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.UserMessageActivity;
-import com.example.learningsupport_argame.community.activity.FriendList_modified;
+import com.example.learningsupport_argame.community.activity.FriendListActivity;
 import com.example.learningsupport_argame.task.activity.TaskListActivity;
 import com.google.android.material.navigation.NavigationView;
 
@@ -43,10 +45,16 @@ public class NavigationController {
 
         navigationView.setNavigationItemSelectedListener(item -> {
             Toast.makeText(context, item.getTitle().toString(), Toast.LENGTH_SHORT).show();
-            if (item.getItemId() == R.id.navigation_menu_friend)
-                context.startActivity(new Intent(context, FriendList_modified.class));
-            if (item.getItemId() == R.id.navigation_menu_task)
-                context.startActivity(new Intent(context, TaskListActivity.class));
+            if (item.getItemId() == R.id.navigation_menu_friend) {
+                Intent intent = new Intent(context, FriendListActivity.class);
+                intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId());
+                context.startActivity(intent);
+            }
+            if (item.getItemId() == R.id.navigation_menu_task) {
+                Intent intent = new Intent(context, TaskListActivity.class);
+                intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId());
+                context.startActivity(intent);
+            }
             if (item.getItemId() == R.id.navigation_menu_course)
                 context.startActivity(new Intent(context, CourseMainActivity.class));
             if (item.getItemId() == R.id.navigation_menu_feedback)

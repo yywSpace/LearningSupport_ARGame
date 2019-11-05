@@ -144,6 +144,7 @@ public class TaskListFragment extends Fragment {
         // 参与列表
         new Thread(() -> {
             List<User> participants = TaskLab.getParticipant("" + task.getTaskId());
+            mUserList.clear();
             mUserList.addAll(participants);
             getActivity().runOnUiThread(() -> {
                 mParticipantItemAdapter.notifyDataSetChanged();

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/friendlist_motified" />
+    <include layout="@layout/friend_list_activity_layout" />
 
     <com.google.android.material.navigation.NavigationView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/navigation_nav"

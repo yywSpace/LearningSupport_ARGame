@@ -4,7 +4,6 @@ package com.example.learningsupport_argame.community.fragment;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,77 +19,79 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.community.FriendLab;
 import com.example.learningsupport_argame.community.adapter.FriendItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FriendListFragment extends Fragment {
-
-//    private ListView listView;
-//
-//    private List<Msg> msgList;
-//
-//    private MsgAdapter adapter;
-
-
-    private LinearLayout ll_search;  //外层的搜索框控件
-    private SwipeRefreshLayout refreshLayout;
+    private String mCurrentUserID;
+    private LinearLayout mFriendsSearch;  //外层的搜索框控件
+    private SwipeRefreshLayout mRefreshLayout;
     private int mLlSearchHeight; // 搜索框的高度
-
-    private int mScrollY;  //recyclerview 滑动的距离
-
+    private int mScrollY;  //recycler view 滑动的距离
     private boolean isShow = true;  //搜索框是否显示
-    private RecyclerView recycler;
+    private RecyclerView mFriendsRecyclerView;
+    private boolean isAnimating;//是否正在进行动画
 
-    private boolean isAnimmating;//是否正在进行动画
+    private List<User> mFriendList;
+    private FriendItemAdapter mItemAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mFriendList = new ArrayList<>();
+        mItemAdapter = new FriendItemAdapter(getActivity(), mFriendList);
+        mCurrentUserID = getArguments().getString(User.CURRENT_USER_ID);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        // View view = inflater.inflate(R.layout.haoyou_fragment_layout, container, false);
-        View view = inflater.inflate(R.layout.haoyou_layout_motified ,container, false);
-
-        recycler =  view.findViewById(R.id.recycler);
-        ll_search =  view.findViewById(R.id.ll_search);
-        refreshLayout =  view.findViewById(R.id.refresh_layout);
+        View view = inflater.inflate(R.layout.friend_list_fragment_layout, container, false);
+        mFriendsRecyclerView = view.findViewById(R.id.friend_list_recycler_view);
+        mFriendsSearch = view.findViewById(R.id.friend_list_search);
+        mRefreshLayout = view.findViewById(R.id.friend_list_refresh_layout);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new Thread(() -> {
+            List<User> friendList = FriendLab.getFriends(mCurrentUserID);
+            mFriendList.clear();
+            mFriendList.addAll(friendList);
+            getActivity().runOnUiThread(() -> {
+                mItemAdapter.notifyDataSetChanged();
+            });
+        }).start();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        // 下拉刷新
+        mRefreshLayout.setOnRefreshListener(() -> {
+            if (mRefreshLayout.isRefreshing() == true)
+                mRefreshLayout.setRefreshing(false);
+            new Thread(() -> {
+                List<User> friendList = FriendLab.getFriends(mCurrentUserID);
+                mFriendList.clear();
+                mFriendList.addAll(friendList);
+                getActivity().runOnUiThread(() -> {
+                    mItemAdapter.notifyDataSetChanged();
+                });
+            }).start();
 
+        });
 
-//                listView = getActivity().findViewById(R.id.listview);
-//
-//
-//                //在这个fragment里面点击刷新按钮，则执行方法，运行服务器类的获取方法，获取得到一个list列表（这个list列表可以是PariofBean）然后将这个规范化的列表直接传递给adapter
-//
-//                msgList = MsgUtil.getMsgList();//这里放置每一个人的用户数据，是以一个msg类保存在一个列表里//这个类打算后期不用！！！
-//
-//
-//                adapter = new MsgAdapter(msgList,getContext());//若如上这adapter也要做相应的修改
-//
-//
-//                listView.setAdapter(adapter);
-
-        refreshLayout.setOnRefreshListener(() -> refresh());
-
-        // refreshLayout.stopNestedScroll();
-        List<String> list = new ArrayList<>();
-        list.add("你好啊");
-        list.add("哭丧脸");
-        list.add("啦啦啦");
-        list.add("哭丧脸");
-        list.add("啦啦啦");
-        list.add("哭丧脸");
-        list.add("啦啦啦");
-        FriendItemAdapter adapter = new FriendItemAdapter(getActivity(), list);
-        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recycler.setAdapter(adapter);
-        recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mFriendsRecyclerView.setAdapter(mItemAdapter);
+        mFriendsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -99,43 +100,41 @@ public class FriendListFragment extends Fragment {
                 //需要获取llSearch 的高度作为 判断条件   所以布局文件中  llSearch的 visiable属性  不能设置为 gone
                 // 设置为  gone之后，llSearch 不进行渲染  获取不到高度
                 if (mLlSearchHeight == 0) {
-                    mLlSearchHeight = ll_search.getHeight();
+                    mLlSearchHeight = mFriendsSearch.getHeight();
                 }
                 //记录滑动的距离
                 mScrollY += dy;
 
                 if (mScrollY <= 0) {
-                    ll_search.setVisibility(View.INVISIBLE);
+                    mFriendsSearch.setVisibility(View.INVISIBLE);
                 } else {
-                    ll_search.setVisibility(View.VISIBLE);
+                    mFriendsSearch.setVisibility(View.VISIBLE);
                 }
 
-                if (isAnimmating || (mScrollY <= mLlSearchHeight)) {
+                if (isAnimating || (mScrollY <= mLlSearchHeight)) {
                     return;
                 }
 
                 if (dy < 0) {
-
                     if (isShow) {
                         return;
                     }
 
-                    ObjectAnimator animator = ObjectAnimator.ofFloat(ll_search, "translationY", -mLlSearchHeight, 0);
+                    ObjectAnimator animator = ObjectAnimator.ofFloat(mFriendsSearch, "translationY", -mLlSearchHeight, 0);
                     animator.setDuration(300);
                     animator.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
                             isShow = true;
-                            isAnimmating = false;
+                            isAnimating = false;
                             animation.removeAllListeners();
                         }
 
                         @Override
                         public void onAnimationStart(Animator animation) {
                             super.onAnimationStart(animation);
-                            isAnimmating = true;
-
+                            isAnimating = true;
                         }
                     });
                     animator.start();
@@ -143,21 +142,21 @@ public class FriendListFragment extends Fragment {
                     if (!isShow) {
                         return;
                     }
-                    ObjectAnimator animator = ObjectAnimator.ofFloat(ll_search, "translationY", 0, -mLlSearchHeight);
+                    ObjectAnimator animator = ObjectAnimator.ofFloat(mFriendsSearch, "translationY", 0, -mLlSearchHeight);
                     animator.setDuration(300);
                     animator.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
                             isShow = false;
-                            isAnimmating = false;
+                            isAnimating = false;
                             animation.removeAllListeners();
                         }
 
                         @Override
                         public void onAnimationStart(Animator animation) {
                             super.onAnimationStart(animation);
-                            isAnimmating = true;
+                            isAnimating = true;
 
                         }
                     });
@@ -165,19 +164,14 @@ public class FriendListFragment extends Fragment {
                 }
             }
         });
-
-
     }
 
-
-    private void refresh() {
-
-        Toast.makeText(getActivity(), "处理事件", Toast.LENGTH_SHORT).show();
-        if (refreshLayout.isRefreshing() == true) ;
-        {
-            refreshLayout.setRefreshing(false);
-        }
-
+    public static FriendListFragment getInstance(String userId) {
+        FriendListFragment fragment = new FriendListFragment();
+        Bundle args = new Bundle();
+        args.putString(User.CURRENT_USER_ID, userId);
+        fragment.setArguments(args);
+        return fragment;
     }
 }
 

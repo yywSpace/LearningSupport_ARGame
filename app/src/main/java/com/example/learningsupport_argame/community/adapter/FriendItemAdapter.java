@@ -1,111 +1,82 @@
 package com.example.learningsupport_argame.community.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserMessage.FriendMessageActivity;
 
 import java.util.List;
 
+
 public class FriendItemAdapter extends RecyclerView.Adapter<FriendItemAdapter.FriendItemViewHolder> {
-
-    public static final int TYPE_SEARCH = 0;
-    public static final int TYPE_NORMAL = 1;
-
+    private static String TAG = "FriendItemAdapter";
     private Context mContext;
-    private List<String> mDatas;
+    private List<User> mFriendList;
 
-    private LayoutInflater mLayoutInflater;
-
-    public FriendItemAdapter(Context context, List<String> datas) {
-        mDatas = datas;
-        mLayoutInflater = LayoutInflater.from(context);
+    public FriendItemAdapter(Context context, List<User> friendList) {
+        mFriendList = friendList;
         mContext = context;
     }
 
     @Override
-    public int getItemViewType(int position) {
-        return position == 0 ? TYPE_SEARCH : TYPE_NORMAL;
-    }
-
-    @Override
     public FriendItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        switch (viewType) {
-//            case TYPE_NORMAL:
-//
-//                return new FriendItemViewHolder(mLayoutInflater.inflate(R.layout.item_haoyou_layout, parent, false));
-//              case TYPE_SEARCH:
-//
-//               return new FriendItemViewHolder(mLayoutInflater.inflate(R.layout.special_layout, parent, false));
-//        }
-        return new FriendItemViewHolder(mLayoutInflater.inflate(R.layout.item_haoyou_layout, parent, false));
+        View view = LayoutInflater.from(mContext).inflate(R.layout.friend_list_item, parent, false);
+        return new FriendItemViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(FriendItemViewHolder holder, int position) {
-        holder.infoButton.getBackground().setAlpha(0);
-        holder.infoButton.getBackground().setAlpha(0);
-        holder.infoButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    view.getBackground().setAlpha(70);
-                }
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    view.getBackground().setAlpha(0);
-                    //这里处理事件。
-                    Toast.makeText(mContext, "这里处理事件", Toast.LENGTH_SHORT).show();
-
-                }
-                // Toast.makeText(con,"这里处理事  件",Toast.LENGTH_SHORT).show();
-                return false;
-
-            }
-        });
-
-
-        holder.infoButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    view.getBackground().setAlpha(70);
-                }
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    view.getBackground().setAlpha(0);
-                    //这里处理事件。
-                    Toast.makeText(mContext, "这里处理事件", Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-                return false;
-            }
-        });
+        holder.bind(mFriendList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mDatas == null ? 0 : mDatas.size();
+        return mFriendList.size();
     }
 
     public class FriendItemViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
-        ImageButton talkButton;
-        ImageButton infoButton;
+        private ImageView friendAvatar;
+        private TextView friendName;
+        private TextView friendLevel;
+        private TextView friendMajor;
+        private TextView friendLastMessage;
+        private ImageView friendInfo;
 
         public FriendItemViewHolder(View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.imageview);
-            talkButton = itemView.findViewById(R.id.btn_talk);
-            infoButton =  itemView.findViewById(R.id.btn_info);
+            friendAvatar = itemView.findViewById(R.id.friend_list_item_avatar);
+            friendName = itemView.findViewById(R.id.friend_list_item_name);
+            friendLevel = itemView.findViewById(R.id.friend_list_item_level);
+            friendMajor = itemView.findViewById(R.id.friend_list_item_major);
+            friendLastMessage = itemView.findViewById(R.id.friend_item_last_message);
+            friendInfo = itemView.findViewById(R.id.friend_item_friend_info);
+        }
+
+        public void bind(User user) {
+            Log.d(TAG, "bind: " + user.getId());
+            friendAvatar.setImageBitmap(user.getAvatar());
+            friendName.setText(user.getName());
+            friendLevel.setText("Lv." + user.getLevel());
+            // friendMajor.setText(user.getName());
+            friendLastMessage.setText("消息来了");
+            friendInfo.setOnClickListener((view) -> {
+                Intent intent = new Intent(mContext, FriendMessageActivity.class);
+                intent.putExtra(User.CURRENT_USER_ID, user.getId()+"");
+                mContext.startActivity(intent);
+            });
         }
     }
 

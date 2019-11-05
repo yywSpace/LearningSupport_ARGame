@@ -43,9 +43,7 @@ public class FriendMessageActivity extends AppCompatActivity {
         mReturnBtn = findViewById(R.id.user_management_friend_message_return);
         mReturnBtn.setOnClickListener(v -> finish());
         mCurrentUserId = getIntent().getStringExtra(User.CURRENT_USER_ID);
-        if (mCurrentUserId == null) {
-            mCurrentUserId = "4";
-        }
+
         mTitleList = new ArrayList<>(Arrays.asList("已发布", "已完成", "动态"));
         mFragmentList = new ArrayList<>(Arrays.asList(
                 new Fragment[]{
