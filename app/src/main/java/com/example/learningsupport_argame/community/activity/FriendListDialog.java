@@ -1,32 +1,31 @@
-package com.example.learningsupport_argame.community.fragment;
-
+package com.example.learningsupport_argame.community.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.os.Bundle;
+import android.app.Activity;
+import android.content.Context;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.community.FriendLab;
 import com.example.learningsupport_argame.community.adapter.FriendItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FriendListFragment extends Fragment {
+public class FriendListDialog {
     private String mCurrentUserID;
     private LinearLayout mFriendsSearch;  //外层的搜索框控件
     private SwipeRefreshLayout mRefreshLayout;
@@ -39,9 +38,12 @@ public class FriendListFragment extends Fragment {
     private List<User> mFriendList;
     private FriendItemAdapter mItemAdapter;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    private Activity mContext;
+    private AlertDialog mFriendAlertDialog;
+
+    public FriendListDialog(Activity context, String currentUserID) {
+        mContext = context;
+        mCurrentUserID = currentUserID;
 
         // 为增强体验，如果已有数据则提前显示，后续在onResume中继续查询更新数据
         if(FriendLab.getFriendList() != null)
@@ -49,37 +51,32 @@ public class FriendListFragment extends Fragment {
         else
             mFriendList = new ArrayList<>();
 
-        mItemAdapter = new FriendItemAdapter(getActivity(), mFriendList);
-        mCurrentUserID = getArguments().getString(User.CURRENT_USER_ID);
-    }
+        mItemAdapter = new FriendItemAdapter(context, mFriendList);
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.friend_list_fragment_layout, container, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.friend_list_fragment_layout, null, false);
         mFriendsRecyclerView = view.findViewById(R.id.friend_list_recycler_view);
         mFriendsSearch = view.findViewById(R.id.friend_list_search);
         mRefreshLayout = view.findViewById(R.id.friend_list_refresh_layout);
-        return view;
-    }
+        mFriendAlertDialog = new AlertDialog.Builder(context)
+                .setView(view)
+                .setTitle("好友列表")
+                .setNegativeButton("取消", null)
+                .setPositiveButton("确认", null)
+                .create();
+        initView();
 
-    @Override
-    public void onResume() {
-        super.onResume();
+
         new Thread(() -> {
             List<User> friendList = FriendLab.getFriends(mCurrentUserID);
             mFriendList.clear();
             mFriendList.addAll(friendList);
-            getActivity().runOnUiThread(() -> {
+            context.runOnUiThread(() -> {
                 mItemAdapter.notifyDataSetChanged();
             });
         }).start();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    void initView() {
         // 下拉刷新
         mRefreshLayout.setOnRefreshListener(() -> {
             if (mRefreshLayout.isRefreshing() == true)
@@ -88,14 +85,15 @@ public class FriendListFragment extends Fragment {
                 List<User> friendList = FriendLab.getFriends(mCurrentUserID);
                 mFriendList.clear();
                 mFriendList.addAll(friendList);
-                getActivity().runOnUiThread(() -> {
+                mContext.runOnUiThread(() -> {
                     mItemAdapter.notifyDataSetChanged();
                 });
             }).start();
 
         });
 
-        mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+//        mFriendsRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
         mFriendsRecyclerView.setAdapter(mItemAdapter);
         mFriendsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -172,12 +170,9 @@ public class FriendListFragment extends Fragment {
         });
     }
 
-    public static FriendListFragment getInstance(String userId) {
-        FriendListFragment fragment = new FriendListFragment();
-        Bundle args = new Bundle();
-        args.putString(User.CURRENT_USER_ID, userId);
-        fragment.setArguments(args);
-        return fragment;
+    public AlertDialog getFriendAlertDialog() {
+        return mFriendAlertDialog;
     }
+
 }
 

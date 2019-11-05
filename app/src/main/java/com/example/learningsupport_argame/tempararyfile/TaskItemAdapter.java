@@ -15,11 +15,15 @@ import com.example.learningsupport_argame.task.Task;
 
 import java.util.List;
 
-public class TaskItemAdapter extends RecyclerView.Adapter<TaskItemAdapter.TaskItemViewHolder> {
+public class TaskItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static String TAG = "TaskItemAdapter";
     private OnRecycleViewItemClick mOnRecycleViewItemClick;
     private List<Task> mTasks;
     private Context mContext;
+
+
+    public static final int ITEM_NORMAL = 1;
+    public static final int ITEM_EMPTY = 0;
 
     public TaskItemAdapter(List<Task> accomplishTasks, Context context) {
         mTasks = accomplishTasks;
@@ -28,22 +32,43 @@ public class TaskItemAdapter extends RecyclerView.Adapter<TaskItemAdapter.TaskIt
 
     @NonNull
     @Override
-    public TaskItemAdapter.TaskItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //在这里根据不同的viewType进行引入不同的布局
+        if (viewType == ITEM_EMPTY) {
+            View emptyView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_empty_item, parent, false);
+            return new RecyclerView.ViewHolder(emptyView) {
+            };
+        }
         View view = LayoutInflater.from(mContext).inflate(R.layout.user_management_task_item, parent, false);
 
         return new TaskItemAdapter.TaskItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TaskItemViewHolder holder, int position) {
-        holder.bind(mTasks.get(position), position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof TaskItemViewHolder) {
+            ((TaskItemViewHolder) holder).bind(mTasks.get(position), position);
+        }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        // 如果没有数据，使用空布局的布局
+        if (mTasks.size() == 0) {
+            return ITEM_EMPTY;
+        }
+        //如果有数据，则使用ITEM的布局
+        return ITEM_NORMAL;
+    }
 
     @Override
     public int getItemCount() {
         Log.d(TAG, "getItemCount: " + mTasks.size());
-
+        // mTasks.size()为0的话，只引入一个空布局,此时recyclerView的itemCount为1
+        if (mTasks.size() == 0) {
+            return 1;
+        }
+        //如果不为0，按正常的流程跑
         return mTasks.size();
     }
 

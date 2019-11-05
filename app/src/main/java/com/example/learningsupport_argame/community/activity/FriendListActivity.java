@@ -1,6 +1,5 @@
 package com.example.learningsupport_argame.community.activity;
 
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;

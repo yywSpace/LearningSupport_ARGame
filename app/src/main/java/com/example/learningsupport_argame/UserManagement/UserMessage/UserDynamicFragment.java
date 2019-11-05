@@ -29,6 +29,11 @@ public class UserDynamicFragment extends Fragment {
     private List<Task> mTaskList;
     private DynamicTaskItemAdapter mAdapter;
 
+
+    public static final int ITEM_NORMAL = 1;
+    public static final int ITEM_EMPTY = 0;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +73,7 @@ public class UserDynamicFragment extends Fragment {
         return fragment;
     }
 
-    public class DynamicTaskItemAdapter extends RecyclerView.Adapter<DynamicTaskItemAdapter.DynamicTaskItemViewHolder> {
+    public class DynamicTaskItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private List<Task> mTasks;
         private Context mContext;
 
@@ -77,21 +82,45 @@ public class UserDynamicFragment extends Fragment {
             mContext = context;
         }
 
+
+        @Override
+        public int getItemViewType(int position) {
+            // 如果没有数据，使用空布局的布局
+            if (mTasks.size() == 0) {
+                return ITEM_EMPTY;
+            }
+            //如果有数据，则使用ITEM的布局
+            return ITEM_NORMAL;
+        }
+
         @NonNull
         @Override
-        public DynamicTaskItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            //在这里根据不同的viewType进行引入不同的布局
+            if (viewType == ITEM_EMPTY) {
+                View emptyView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_empty_item, parent, false);
+                return new RecyclerView.ViewHolder(emptyView) {
+                };
+            }
+
             View view = LayoutInflater.from(mContext).inflate(R.layout.user_management_dynamic_task_item, parent, false);
             return new DynamicTaskItemViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull DynamicTaskItemViewHolder holder, int position) {
-            holder.bind(mTasks.get(position));
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            if (holder instanceof DynamicTaskItemViewHolder)
+                ((DynamicTaskItemViewHolder) holder).bind(mTasks.get(position));
         }
 
 
         @Override
         public int getItemCount() {
+            // mTasks.size()为0的话，只引入一个空布局,此时recyclerView的itemCount为1
+            if (mTasks.size() == 0) {
+                return 1;
+            }
+            //如果不为0，按正常的流程跑
             return mTasks.size();
         }
 

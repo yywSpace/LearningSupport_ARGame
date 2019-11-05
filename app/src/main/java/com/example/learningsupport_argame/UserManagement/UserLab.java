@@ -129,4 +129,15 @@ public class UserLab {
                 user.getCity(),
                 user.getId());
     }
+
+    /**
+     * 根据好友Id添加好友
+     * @param friendId
+     */
+    public static void addFriend(String friendId){
+        DbUtils.update(null,
+                "INSERT INTO friend VALUE(null, ?, ?);",
+                getCurrentUser().getId(),
+                Integer.parseInt(friendId));
+    }
 }

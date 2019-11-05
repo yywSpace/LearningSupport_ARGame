@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginTop="5dp">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/friend_list_refresh_layout"
@@ -13,7 +12,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/friend_list_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -23,8 +22,8 @@
         android:layout_height="50dp"
         android:background="#FFFF"
         android:elevation="3dp"
-        android:paddingBottom="8dp"
         android:paddingTop="10dp"
+        android:paddingBottom="8dp"
         android:visibility="invisible">
 
         <LinearLayout
@@ -49,11 +48,11 @@
                     android:text="  搜索好友" />
 
                 <ImageButton
-                    android:layout_marginLeft="5dp"
+                    android:id="@+id/btn_search"
                     android:layout_width="46dp"
                     android:layout_height="32dp"
+                    android:layout_marginLeft="5dp"
                     android:scaleType="centerInside"
-                    android:id="@+id/btn_search"
                     android:src="@drawable/sousuo" />
 
                 <TextView

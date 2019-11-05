@@ -4,13 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,10 +18,13 @@ import com.example.learningsupport_argame.UserManagement.UserMessage.FriendMessa
 import java.util.List;
 
 
-public class FriendItemAdapter extends RecyclerView.Adapter<FriendItemAdapter.FriendItemViewHolder> {
+public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static String TAG = "FriendItemAdapter";
     private Context mContext;
     private List<User> mFriendList;
+
+    public static final int ITEM_NORMAL = 1;
+    public static final int ITEM_EMPTY = 0;
 
     public FriendItemAdapter(Context context, List<User> friendList) {
         mFriendList = friendList;
@@ -32,18 +32,39 @@ public class FriendItemAdapter extends RecyclerView.Adapter<FriendItemAdapter.Fr
     }
 
     @Override
-    public FriendItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        //在这里根据不同的viewType进行引入不同的布局
+        if (viewType == ITEM_EMPTY) {
+            View emptyView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_empty_item, parent, false);
+            return new RecyclerView.ViewHolder(emptyView) {
+            };
+        }
         View view = LayoutInflater.from(mContext).inflate(R.layout.friend_list_item, parent, false);
         return new FriendItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(FriendItemViewHolder holder, int position) {
-        holder.bind(mFriendList.get(position));
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof FriendItemViewHolder)
+            ((FriendItemViewHolder)holder).bind(mFriendList.get(position));
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        // 如果没有数据，使用空布局的布局
+        if (mFriendList.size() == 0) {
+            return ITEM_EMPTY;
+        }
+        //如果有数据，则使用ITEM的布局
+        return ITEM_NORMAL;
     }
 
     @Override
     public int getItemCount() {
+        // size()为0的，只引入一个空布局,此时recyclerView的itemCount为1
+        if (mFriendList.size() == 0) {
+            return 1;
+        }
         return mFriendList.size();
     }
 
@@ -74,7 +95,7 @@ public class FriendItemAdapter extends RecyclerView.Adapter<FriendItemAdapter.Fr
             friendLastMessage.setText("消息来了");
             friendInfo.setOnClickListener((view) -> {
                 Intent intent = new Intent(mContext, FriendMessageActivity.class);
-                intent.putExtra(User.CURRENT_USER_ID, user.getId()+"");
+                intent.putExtra(User.CURRENT_USER_ID, user.getId() + "");
                 mContext.startActivity(intent);
             });
         }

@@ -17,8 +17,8 @@
         <activity android:name=".UserManagement.UserMessage.UserMessageActivity" />
         <activity android:name=".Navi.Activity.MapActivity" />
         <activity android:name=".task.activity.TaskListActivity" />
+        <activity android:name=".UserManagement.TestActivity"/>
 
-        <!--        <activity android:name=".UserManagement.TestActivity">-->
         <activity android:name=".community.activity.FriendListActivity" />
         <activity android:name=".UserManagement.Login.LoginActivity">
 
