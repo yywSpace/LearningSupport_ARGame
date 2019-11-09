@@ -47,12 +47,11 @@ public class FriendMessageActivity extends AppCompatActivity {
         mTitleList = new ArrayList<>(Arrays.asList("已发布", "已完成", "动态"));
         mFragmentList = new ArrayList<>(Arrays.asList(
                 new Fragment[]{
-                        ReleasedTaskFragment.getInstance(mCurrentUserId),
-                        AccomplishTaskFragment.getInstance(mCurrentUserId),
-                        UserDynamicFragment.getInstance(mCurrentUserId)}
+                        FriendReleasedTaskFragment.getInstance(mCurrentUserId),
+                        FriendAccomplishTaskFragment.getInstance(mCurrentUserId),
+                        FriendDynamicFragment.getInstance(mCurrentUserId)}
         ));
         mTabLayout = findViewById(R.id.user_management_friend_tab_layout);
-        mViewPager = findViewById(R.id.user_management_friend_view_paper);
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int i) {

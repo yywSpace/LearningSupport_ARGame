@@ -9,8 +9,7 @@ public class Task {
     private int mUserId;
     private String mTaskName;  //任务名
     private String mTaskContent; //任务内容
-    private String mTaskReleaseFor; // 任务发布的主体
-    private String mTaskType;  //任务类型：自身任务，好友间任务，社团任务，一般任务
+    private String mTaskType;  //任务类型：个人任务，好友任务，社团任务，AR任务
     private String mTaskStatus;  //任务状态：执行中，未开始，已完成
     private boolean mTaskNotification;  //任务是否提醒
     private List<User> mTaskParticipant;  //任务参与人员
@@ -20,6 +19,20 @@ public class Task {
     private String mTaskCreateTime; // 任务创建，完成，接取时间
 
     public Task() {
+    }
+
+    public Task(Task task) {
+        mUserId = task.getUserId();
+        mTaskName = task.getTaskName();
+        mTaskContent = task.getTaskContent();
+        mTaskType = task.getTaskType();
+        mTaskStatus = task.getTaskStatus();
+        mTaskNotification = task.getTaskNotification();
+        mTaskParticipant = task.getTaskParticipant();
+        mAccomplishTaskLocation = task.getAccomplishTaskLocation();
+        mTaskStartAt = task.getTaskStartAt();
+        mTaskEndIn = task.getTaskEndIn();
+        mTaskCreateTime = task.getTaskCreateTime();
     }
 
     public String getTaskName() {
@@ -87,7 +100,6 @@ public class Task {
     }
 
 
-
     public String getTaskCreateTime() {
         return mTaskCreateTime;
     }
@@ -120,11 +132,4 @@ public class Task {
         mAccomplishTaskLocation = accomplishTaskLocation;
     }
 
-    public String getTaskReleaseFor() {
-        return mTaskReleaseFor;
-    }
-
-    public void setTaskReleaseFor(String taskReleaseFor) {
-        mTaskReleaseFor = taskReleaseFor;
-    }
 }

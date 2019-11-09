@@ -49,7 +49,9 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <application android:debuggable="true" >
+    <application
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+        android:debuggable="true" >
         <uses-library android:name="android.test.runner" />
 
         <activity android:name="com.example.ARModel.SendMessageActivity" />

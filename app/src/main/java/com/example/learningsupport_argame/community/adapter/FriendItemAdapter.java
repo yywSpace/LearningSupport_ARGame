@@ -13,22 +13,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.FriendMessageActivity;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static String TAG = "FriendItemAdapter";
     private Context mContext;
     private List<User> mFriendList;
+    private String[] mUserAndMessages;
 
     public static final int ITEM_NORMAL = 1;
     public static final int ITEM_EMPTY = 0;
 
-    public FriendItemAdapter(Context context, List<User> friendList) {
+    private OnRecycleViewItemClick mOnRecycleViewItemClick;
+
+
+    public FriendItemAdapter(Context context, List<User> friendList, String[] userAndMessage) {
         mFriendList = friendList;
+
         mContext = context;
+        mUserAndMessages = userAndMessage;
     }
 
     @Override
@@ -45,8 +54,32 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof FriendItemViewHolder)
-            ((FriendItemViewHolder)holder).bind(mFriendList.get(position));
+        if (holder instanceof FriendItemViewHolder) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnRecycleViewItemClick != null) {
+                        mOnRecycleViewItemClick.onRecycleViewItemClick(v, position);
+                    }
+                }
+            });
+
+            ((FriendItemViewHolder) holder).bind(mFriendList.get(position));
+            if (mUserAndMessages == null)
+                return;
+
+            for (String uams : mUserAndMessages) {
+                String[] uam = uams.split(":");
+                if (uam[0].equals(mFriendList.get(position).getName())) {
+                    holder.itemView.findViewById(R.id.friend_list_item_avatar_red_point).setVisibility(View.VISIBLE);
+                    TextView message = holder.itemView.findViewById(R.id.friend_item_last_message);
+                    message.setText(uam[2]);
+                }
+
+            }
+
+        }
+
     }
 
     @Override
@@ -68,6 +101,10 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return mFriendList.size();
     }
 
+    public void setOnRecycleViewItemClick(OnRecycleViewItemClick onRecycleViewItemClick) {
+        mOnRecycleViewItemClick = onRecycleViewItemClick;
+    }
+
     public class FriendItemViewHolder extends RecyclerView.ViewHolder {
         private ImageView friendAvatar;
         private TextView friendName;
@@ -87,7 +124,6 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         public void bind(User user) {
-            Log.d(TAG, "bind: " + user.getId());
             friendAvatar.setImageBitmap(user.getAvatar());
             friendName.setText(user.getName());
             friendLevel.setText("Lv." + user.getLevel());
@@ -101,4 +137,7 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
+    public interface OnRecycleViewItemClick {
+        void onRecycleViewItemClick(View view, int position);
+    }
 }

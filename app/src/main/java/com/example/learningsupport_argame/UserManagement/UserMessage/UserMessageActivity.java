@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.UserManagement.UserMessage;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -57,7 +58,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class UserMessageActivity extends AppCompatActivity {
+public class UserMessageActivity extends Activity {
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int ALBUM_REQUEST_CODE = 2;
     private static final int CROP_REQUEST_CODE = 3;
@@ -97,9 +98,9 @@ public class UserMessageActivity extends AppCompatActivity {
                         new MessageItem("性别", "性别", ItemType.NORMAL_ITEM),
                         new MessageItem("生日", "生日", ItemType.NORMAL_ITEM),
                         new MessageItem("城市", "城市", ItemType.NORMAL_ITEM),
-                        new MessageItem("发布任务", "1", ItemType.NORMAL_ITEM),
-                        new MessageItem("接受任务", "1", ItemType.NORMAL_ITEM),
-                        new MessageItem("完成任务", "1", ItemType.NORMAL_ITEM),
+                        new MessageItem("发布的任务", R.drawable.user_management_next, ItemType.IMAGE_ITEM),
+                        new MessageItem("接受的任务", R.drawable.user_management_next, ItemType.IMAGE_ITEM),
+                        new MessageItem("完成的任务", R.drawable.user_management_next, ItemType.IMAGE_ITEM),
                         new MessageItem("更多信息", R.drawable.user_management_next, ItemType.IMAGE_ITEM),
                         new MessageItem("修改密码", R.drawable.user_management_next, ItemType.IMAGE_ITEM)
                 ));
@@ -195,6 +196,18 @@ public class UserMessageActivity extends AppCompatActivity {
                     case 4:
                         // 城市
                         changeAddressDialog();
+                        break;
+                    case 5:
+                        // 发布的任务
+                        Toast.makeText(UserMessageActivity.this, "发布的任务", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 6:
+                        // 接受的任务
+                        Toast.makeText(UserMessageActivity.this, "接受的任务", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 7:
+                        // 完成的任务
+                        Toast.makeText(UserMessageActivity.this, "完成的任务", Toast.LENGTH_SHORT).show();
                         break;
                     case 8:
                         startActivity(new Intent(UserMessageActivity.this, FeedbackDetailsActivity.class));

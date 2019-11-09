@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.learningsupport_argame.MainActivity;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.User;
@@ -83,8 +84,10 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("password", user.getPassword());
                         editor.commit();//提交修改
                         Toast.makeText(this, "LOGIN_SUCCESS", Toast.LENGTH_SHORT).show();
-                        // startActivity(new Intent(this, MainActivity.class));
-                        startActivity(new Intent(this, TaskListActivity.class));
+//                         startActivity(new Intent(this, MainActivity.class));
+                        Intent intent = new Intent(this, TaskListActivity.class);
+                        intent.putExtra(User.CURRENT_USER_ID, user.getId());
+                        startActivity(intent);
                         finish();
                     }
                 });
@@ -109,10 +112,13 @@ public class LoginActivity extends AppCompatActivity {
         new Thread(() -> {
             User user = UserLab.getUser(account);
             UserLab.setCurrentUser(user);
+            Log.d(TAG, "onCreate: "+UserLab.getCurrentUser().getId());
+            Intent intent = new Intent(this, TaskListActivity.class);
+            intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId()+"");
+            startActivity(intent);
+            finish();
         }).start();
-        // startActivity(new Intent(this, MainActivity.class));
-        startActivity(new Intent(this, TaskListActivity.class));
-        finish();
+//        startActivity(new Intent(this, MainActivity.class));
     }
 
     private boolean changePromptMessage(boolean status, String promptMessage, TextView labelTextView, TextView statusTextView) {

@@ -7,37 +7,44 @@
 
     <include layout="@layout/navigation_tool_bar" />
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/vp"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/bnve" />
+            android:layout_height="match_parent">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/task_list_vp_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/task_list_navigation_view" />
+
+
+            <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
+                android:id="@+id/task_list_navigation_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorWhite"
+                app:itemIconTint="@color/selector_item_color"
+                app:itemTextColor="@color/selector_item_color"
+                app:menu="@menu/menu_bottom_navigation" />
+        </RelativeLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
+            android:id="@+id/task_list_add_task"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
+            android:layout_gravity="right|bottom"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="110dp"
             android:src="@drawable/tianjia"
             app:backgroundTint="@android:color/white"
             app:borderWidth="0dp"
             app:elevation="9dp" />
 
-        <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
-            android:id="@+id/bnve"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/colorWhite"
-            app:itemIconTint="@color/selector_item_color"
-            app:itemTextColor="@color/selector_item_color"
-            app:menu="@menu/menu_bottom_navigation" />
-    </RelativeLayout>
+    </FrameLayout>
 
 </LinearLayout>

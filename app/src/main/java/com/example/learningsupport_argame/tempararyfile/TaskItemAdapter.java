@@ -93,7 +93,8 @@ public class TaskItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             taskTime.setText(task.getTaskStartAt() + "-" + task.getTaskEndIn());
             taskLocation.setText(task.getAccomplishTaskLocation());
             mItemView.setOnClickListener((view) -> {
-                mOnRecycleViewItemClick.onRecycleViewItemClick(view, position);
+                if (mOnRecycleViewItemClick != null)
+                    mOnRecycleViewItemClick.onRecycleViewItemClick(view, position);
             });
         }
     }
@@ -102,7 +103,7 @@ public class TaskItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mOnRecycleViewItemClick = onRecycleViewItemClick;
     }
 
-    interface OnRecycleViewItemClick {
+    public interface OnRecycleViewItemClick {
         void onRecycleViewItemClick(View view, int position);
     }
 }

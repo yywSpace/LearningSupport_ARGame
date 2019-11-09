@@ -28,31 +28,22 @@ public class UserLab {
 
 
     public static User getUserById(String userId) {
-        List<User> users = new ArrayList<>();
-        DbUtils.query(resultSet -> {
-            if (resultSet.next()) {
-                User user = new User();
-                user.setId(resultSet.getInt("user_id"));
-                user.setAccount(resultSet.getString("user_account"));
-                user.setName(resultSet.getString("user_name"));
-                user.setAvatar(DbUtils.Bytes2Bitmap(resultSet.getBytes("user_avatar")));
-                user.setPassword(resultSet.getString("user_password"));
-                user.setLevel(resultSet.getString("user_level"));
-                user.setBirthday(resultSet.getString("user_birthday"));
-                user.setSex(resultSet.getString("user_sex"));
-                user.setCity(resultSet.getString("user_city"));
-                user.setExp(resultSet.getInt("user_exp"));
-                user.setCredits(resultSet.getInt("user_credits"));
-                users.add(user);
-            }
-        }, "SELECT * FROM user WHERE user_id = ?", userId);
+        List<User> users = getUserWith("SELECT * FROM user WHERE user_id = ?", userId);
         if (users.size() == 0)
             return null;
         return users.get(0);
+
 
     }
 
     public static User getUser(String account) {
+        List<User> users = getUserWith("SELECT * FROM user WHERE user_account = ?", account);
+        if (users.size() == 0)
+            return null;
+        return users.get(0);
+    }
+
+    public static List<User> getUserWith(String sql, Object... args) {
         List<User> users = new ArrayList<>();
         DbUtils.query(resultSet -> {
             if (resultSet.next()) {
@@ -70,10 +61,8 @@ public class UserLab {
                 user.setCredits(resultSet.getInt("user_credits"));
                 users.add(user);
             }
-        }, "SELECT * FROM user WHERE user_account = ?", account);
-        if (users.size() == 0)
-            return null;
-        return users.get(0);
+        }, sql, args);
+        return users;
     }
 
     public static UserManagementStatus login(String account, String password) {
@@ -132,12 +121,19 @@ public class UserLab {
 
     /**
      * 根据好友Id添加好友
+     *
      * @param friendId
      */
-    public static void addFriend(String friendId){
+    public static void addFriend(String friendId) {
         DbUtils.update(null,
                 "INSERT INTO friend VALUE(null, ?, ?);",
                 getCurrentUser().getId(),
+                Integer.parseInt(friendId));
+    }
+
+    public static void deleteFriend(String friendId) {
+        DbUtils.update(null,
+                "DELETE FROM friend WHERE friend_id = ?",
                 Integer.parseInt(friendId));
     }
 }

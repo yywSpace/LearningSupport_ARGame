@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -31,6 +33,14 @@ public class NavigationController {
         navigationView = view.findViewById(R.id.navigation_nav);
         navigationButton = view.findViewById(R.id.navigation_button);
         View headerView = navigationView.getHeaderView(0);//获取头布局
+        User user = UserLab.getCurrentUser();
+        ImageView avatar = headerView.findViewById(R.id.user_avatar);
+        avatar.setImageBitmap(user.getAvatar());
+        TextView name = headerView.findViewById(R.id.user_name);
+        name.setText(user.getName());
+        TextView level = headerView.findViewById(R.id.user_level);
+        level.setText("Lv." + user.getLevel());
+
         headerView.setOnClickListener(v -> {
             Intent intent = new Intent(context, UserMessageActivity.class);
             context.startActivity(intent);
@@ -52,7 +62,7 @@ public class NavigationController {
             }
             if (item.getItemId() == R.id.navigation_menu_task) {
                 Intent intent = new Intent(context, TaskListActivity.class);
-                intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId());
+                intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId() + "");
                 context.startActivity(intent);
             }
             if (item.getItemId() == R.id.navigation_menu_course)

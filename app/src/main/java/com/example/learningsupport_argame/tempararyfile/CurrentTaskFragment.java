@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.tempararyfile;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ public class CurrentTaskFragment extends Fragment {
     private ParticipantItemAdapter mItemAdapter;
     private List<User> mUserList;
 
+    private static Activity mActivity;
 
     @Nullable
     @Override
@@ -59,6 +61,7 @@ public class CurrentTaskFragment extends Fragment {
         super.onResume();
         // 获取数据
         new Thread(() -> {
+            Log.d(TAG, "onResume: " + mCurrentUserId);
             List<Task> tasks = TaskLab.getAllTask(mCurrentUserId);
 
             getActivity().runOnUiThread(() -> {
@@ -109,10 +112,10 @@ public class CurrentTaskFragment extends Fragment {
         mTaskDescTextView.setText(task.getTaskContent());
         // 参与列表
         new Thread(() -> {
-            List<User> participants = TaskLab.getParticipant(""+task.getTaskId());
+            List<User> participants = TaskLab.getParticipant("" + task.getTaskId());
             mUserList.clear();
             mUserList.addAll(participants);
-            getActivity().runOnUiThread(()->{
+            mActivity.runOnUiThread(() -> {
                 mItemAdapter.notifyDataSetChanged();
                 Log.d(TAG, "initData: " + mUserList.size());
             });
@@ -120,8 +123,9 @@ public class CurrentTaskFragment extends Fragment {
 
     }
 
-    public static CurrentTaskFragment getInstance(String userId) {
+    public static CurrentTaskFragment getInstance(String userId, Activity activity) {
         CurrentTaskFragment fragment = new CurrentTaskFragment();
+        mActivity = activity;
         Bundle args = new Bundle();
         args.putString(User.CURRENT_USER_ID, userId);
         fragment.setArguments(args);

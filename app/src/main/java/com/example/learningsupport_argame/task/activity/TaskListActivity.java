@@ -2,28 +2,18 @@ package com.example.learningsupport_argame.task.activity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextClock;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,6 +34,8 @@ import com.example.learningsupport_argame.bean.PairInfoBean;
 import com.example.learningsupport_argame.task.Task;
 import com.example.learningsupport_argame.task.TaskLab;
 import com.example.learningsupport_argame.tempararyfile.MultiSelectionSpinner;
+import com.example.learningsupport_argame.tempararyfile.TaskAcceptedListFragment;
+import com.example.learningsupport_argame.tempararyfile.TaskCanAcceptListFragment;
 import com.example.learningsupport_argame.tempararyfile.TaskListFragment;
 import com.example.learningsupport_argame.tempararyfile.CurrentTaskFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -51,16 +43,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
 public class TaskListActivity extends AppCompatActivity {
     private String mCurrentUserId;
-    private BottomNavigationViewEx bnve;
-    private VpAdapter adapter;
-    private List<Fragment> fragments;
-    private ViewPager viewPager;
-    private FloatingActionButton floatingActionButton;
+    private VpAdapter mVpAdapter;
+    private List<Fragment> mFragmentList;
+    private List<String> mFragmentTitle;
+    private List<Integer> mFragmentTabImage;
+    private ViewPager mViewPager;
+    private FloatingActionButton mFloatingActionButton;
+    private BottomNavigationViewEx mNavigationView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,13 +64,23 @@ public class TaskListActivity extends AppCompatActivity {
         // 初始化导航栏信息
         new NavigationController(this, getWindow().getDecorView());
         mCurrentUserId = getIntent().getStringExtra(User.CURRENT_USER_ID);
-        if (mCurrentUserId == null) {
-            mCurrentUserId = "4";
-        }
 
+        mNavigationView = findViewById(R.id.task_list_navigation_view);
+
+        mFloatingActionButton = findViewById(R.id.task_list_add_task);
+        mViewPager = findViewById(R.id.task_list_vp_content);
+
+        mFragmentList = new ArrayList<>(Arrays.asList(
+                CurrentTaskFragment.getInstance(mCurrentUserId, this),
+                TaskAcceptedListFragment.getInstance(mCurrentUserId),
+                TaskCanAcceptListFragment.getInstance(mCurrentUserId)
+        ));
+
+        mViewPager.setCurrentItem(0);
+
+        mVpAdapter = new VpAdapter(getSupportFragmentManager(), mFragmentList);
+        mViewPager.setAdapter(mVpAdapter);
         ActivityUtil.addActivity(this);
-        initView();
-        initData();
         initBNVE();
         initEvent();
 
@@ -85,43 +90,42 @@ public class TaskListActivity extends AppCompatActivity {
      * init BottomNavigationViewEx envent
      */
     private void initEvent() {
-        bnve.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        mNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             private int previousPosition = -1;
 
-            Menu menu = bnve.getMenu();
-            MenuItem lastItem = menu.findItem(R.id.menu_main);
+            Menu menu = mNavigationView.getMenu();
+            MenuItem lastItem;
 
+            //            MenuItem lastItem = menu.findItem(R.id.menu_main);
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+                menu.findItem(R.id.menu_task_running).setIcon(R.drawable.task_list_icon_running);
+                menu.findItem(R.id.menu_task_accepted).setIcon(R.drawable.task_list_icon_accepted);
+                menu.findItem(R.id.menu_task_can_accept).setIcon(R.drawable.task_list_icon_all);
+
                 int position = -1;
                 switch (item.getItemId()) {
-                    case R.id.menu_main:
-                        position = 0;
-                        if (lastItem != null)
-                            lastItem.setIcon(R.drawable.renwuall);
-                        item.setIcon(R.drawable.renwuselected);
-                        lastItem = item;
+                    case R.id.menu_task_running:
+                        item.setIcon(R.drawable.task_list_icon_running_sellected);
                         break;
-                    case R.id.menu_me:
+                    case R.id.menu_task_accepted:
                         position = 1;
-                        if (lastItem != null)
-                            lastItem.setIcon(R.drawable.renwu);
-
-                        item.setIcon(R.drawable.renwuallselected);
-                        lastItem = item;
+                        item.setIcon(R.drawable.navigation_task);
                         break;
-//                    case R.id.menu_empty: {
-//                        position = 1;
-//                        //此处return false且在FloatingActionButton没有自定义点击事件时 会屏蔽点击事件
-//                       // return false;
-//                   }
+                    case R.id.menu_task_can_accept: {
+                        position = 2;
+                        item.setIcon(R.drawable.task_list_icon_all_sellected);
+                        // 此处return false且在FloatingActionButton没有自定义点击事件时 会屏蔽点击事件
+                        // return false;
+                    }
                     default:
                         break;
                 }
 
+
                 if (previousPosition != position) {
-                    viewPager.setCurrentItem(position, false);
+                    mViewPager.setCurrentItem(position, false);
                     previousPosition = position;
                 }
 
@@ -130,7 +134,7 @@ public class TaskListActivity extends AppCompatActivity {
         });
 
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -141,10 +145,10 @@ public class TaskListActivity extends AppCompatActivity {
                 // 1 is center
                 // 此段结合屏蔽FloatingActionButton点击事件的情况使用
                 // 在viewPage滑动的时候 跳过最中间的page
-                if (position >= 1)
-                    position++;
+//                if (position >= 1)
+//                    position++;
 
-                bnve.setCurrentItem(position);
+                mNavigationView.setCurrentItem(position);
             }
 
             @Override
@@ -152,10 +156,12 @@ public class TaskListActivity extends AppCompatActivity {
 
             }
         });
+
+
         /**
          * fab 点击事件结合OnNavigationItemSelectedListener中return false使用
          */
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -173,7 +179,7 @@ public class TaskListActivity extends AppCompatActivity {
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String[] taskReleaseTypeStr = new String[]{"自身", "好友", "社团", "全体"};
+                        String[] taskReleaseTypeStr = new String[]{"个人任务", "好友任务", "社团任务", "AR任务"};
                         int taskType = taskViewAdapter.mTaskType;
                         String[] taskStartTimeArray = taskViewAdapter.mStartTimes;
                         String[] taskEndTimeArray = taskViewAdapter.mEndTimes;
@@ -181,8 +187,7 @@ public class TaskListActivity extends AppCompatActivity {
                         // 保存数据
                         Task task = new Task();
                         task.setTaskName(taskViewAdapter.mTaskNameEditText.getText().toString());
-                        task.setTaskType("创建");
-                        task.setTaskReleaseFor(taskReleaseTypeStr[taskType]);
+                        task.setTaskType(taskReleaseTypeStr[taskType]);
                         task.setTaskStartAt(taskViewAdapter.mTaskStartTime.getText().toString());
                         task.setTaskEndIn(taskViewAdapter.mTaskEndTime.getText().toString());
                         task.setAccomplishTaskLocation(taskViewAdapter.mTaskLocation.getText().toString());
@@ -212,9 +217,12 @@ public class TaskListActivity extends AppCompatActivity {
                             Toast.makeText(TaskListActivity.this, "AR放置模型", Toast.LENGTH_SHORT).show();
                         }
 
+
                         // 存储数据
                         new Thread(() -> {
                             TaskLab.insertTask(task);
+                            // 如果为自己发布的任务直接添加进参与者列表
+                            TaskLab.acceptTask(task);
                         }).start();
                         // 如果任务信息没有错误，销毁对话框
                         dialog.dismiss();
@@ -226,61 +234,42 @@ public class TaskListActivity extends AppCompatActivity {
         });
     }
 
-    private void initView() {
-        floatingActionButton = findViewById(R.id.fab);
-        viewPager = findViewById(R.id.vp);
-        bnve = findViewById(R.id.bnve);
-    }
-
-    /**
-     * create fragments
-     */
-    private void initData() {
-        fragments = new ArrayList<>(3);
-        CurrentTaskFragment currentTaskFragment = CurrentTaskFragment.getInstance(mCurrentUserId);
-        TaskListFragment taskListFragment = TaskListFragment.getInstance(mCurrentUserId);
-        fragments.add(currentTaskFragment);
-        fragments.add(taskListFragment);
-
-    }
 
     /**
      * init BottomNavigationViewEx
      */
     private void initBNVE() {
-
-        bnve.enableAnimation(false);
-        bnve.enableShiftingMode(false);
-        bnve.enableItemShiftingMode(false);
-
-        adapter = new VpAdapter(getSupportFragmentManager(), fragments);
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(0);
-
+        mNavigationView.enableAnimation(false);
+        mNavigationView.enableShiftingMode(false);
+        mNavigationView.enableItemShiftingMode(false);
     }
 
-    /**
-     * view pager adapter
-     */
-    private static class VpAdapter extends FragmentPagerAdapter {
-        private List<Fragment> data;
-        private FragmentManager fragmentManager;
 
-        public VpAdapter(FragmentManager fm, List<Fragment> data) {
+    /**
+     * view pager mVpAdapter
+     */
+    class VpAdapter extends FragmentPagerAdapter {
+        private List<Fragment> mFragmentList;
+
+        public VpAdapter(FragmentManager fm, List<Fragment> fragmentList) {
             super(fm);
-            this.data = data;
-            this.fragmentManager = fm;
+            mFragmentList = fragmentList;
         }
 
         @Override
         public int getCount() {
-            return data.size();
+            return mFragmentList.size();
         }
 
         @Override
         public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
 
-            return data.get(position);
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitle.get(position);
         }
     }
 

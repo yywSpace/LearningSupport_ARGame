@@ -32,13 +32,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskListFragment extends Fragment {
-    private static String TAG = "TaskListFragment";
-    private String mCurrentUserId;
-    private RecyclerView mTaskRecycleView;
-    private TaskItemAdapter mTaskItemAdapter;
-    private ImageButton mTaskStatusFaq;
-    private ImageView mMapLocationBtn;
-    private List<Task> mTaskList;
+    protected static String TAG = "TaskListFragment";
+    protected String mCurrentUserId;
+    protected RecyclerView mTaskRecycleView;
+    protected TaskItemAdapter mTaskItemAdapter;
+    protected ImageButton mTaskStatusFaq;
+    protected ImageView mMapLocationBtn;
+    protected List<Task> mTaskList;
+
 
     private TextView mTaskStatusTextView;
     private TextView mTaskNameTextView;
@@ -50,13 +51,13 @@ public class TaskListFragment extends Fragment {
     private ParticipantItemAdapter mParticipantItemAdapter;
     private List<User> mUserList;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tasklist_redo_layout, container, false);
         mTaskRecycleView = view.findViewById(R.id.list_task_redo);
-
         mCurrentUserId = getArguments().getString(User.CURRENT_USER_ID);
         mTaskList = new ArrayList<>();
 
@@ -78,20 +79,6 @@ public class TaskListFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // 获取数据
-        new Thread(() -> {
-            List<Task> tasks = TaskLab.getAllTask(mCurrentUserId);
-            Log.d(TAG, "onResume: " + tasks.size());
-            mTaskList.clear();
-            mTaskList.addAll(tasks);
-            getActivity().runOnUiThread(() -> {
-                mTaskItemAdapter.notifyDataSetChanged();
-            });
-        }).start();
-    }
 
     public static TaskListFragment getInstance(String userId) {
         TaskListFragment fragment = new TaskListFragment();
@@ -134,7 +121,7 @@ public class TaskListFragment extends Fragment {
     }
 
 
-    private void initData(Task task) {
+    public void initData(Task task) {
         mTaskStatusTextView.setText(task.getTaskStatus());
         mTaskNameTextView.setText(task.getTaskName());
         mTaskTypeTextView.setText(task.getTaskType());

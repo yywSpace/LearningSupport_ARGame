@@ -15,7 +15,7 @@ import java.util.List;
 
 public class FriendLab {
     private static String TAG = "FriendLab";
-    private static List<User> sFriendList;
+    public static List<User> sFriendList;
 
     public static List<User> getFriends(String userId) {
         List<User> friendList = new ArrayList<>();
@@ -36,7 +36,6 @@ public class FriendLab {
                 friendList.add(user);
             }
         }, "SELECT * FROM user,friend where user.user_id = friend.friend_id AND friend.user_id = ?;", userId);
-        sFriendList = friendList;
         return friendList;
     }
 

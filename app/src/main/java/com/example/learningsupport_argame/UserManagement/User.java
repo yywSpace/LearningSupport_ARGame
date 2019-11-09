@@ -15,6 +15,7 @@ public class User {
     private String mCity;
     private int mExp;
     private int mCredits;
+    private boolean mReceiveMessage;
 
 
     public User() {
@@ -113,5 +114,13 @@ public class User {
 
     public void setLevel(String level) {
         mLevel = level;
+    }
+
+    public boolean isReceiveMessage() {
+        return mReceiveMessage;
+    }
+
+    public void setReceiveMessage(boolean receiveMessage) {
+        mReceiveMessage = receiveMessage;
     }
 }

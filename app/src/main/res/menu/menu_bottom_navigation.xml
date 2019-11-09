@@ -2,20 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_main"
-        android:icon="@drawable/renwuselected"
+        android:id="@+id/menu_task_running"
+        android:icon="@drawable/task_list_icon_running_sellected"
         android:title="进行中" />
 
-    <!--因为需要覆盖view 此处省略android:icon-->
     <item
-        android:id="@+id/menu_empty"
-        android:title="" />
+        android:id="@+id/menu_task_accepted"
+        android:icon="@drawable/task_list_icon_accepted"
+        android:title="已接受任务" />
 
     <item
-        android:id="@+id/menu_me"
+        android:id="@+id/menu_task_can_accept"
         android:checked="true"
-        android:icon="@drawable/renwuall"
-        android:title="所有任务" />
+        android:icon="@drawable/task_list_icon_all"
+        android:title="任务列表" />
 
 
 </menu>
