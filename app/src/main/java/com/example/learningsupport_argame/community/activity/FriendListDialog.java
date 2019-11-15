@@ -27,6 +27,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
+import com.example.learningsupport_argame.client.ClientLab;
+import com.example.learningsupport_argame.client.UDPClient;
 import com.example.learningsupport_argame.community.FriendLab;
 import com.example.learningsupport_argame.community.adapter.FriendItemAdapter;
 
@@ -61,10 +63,14 @@ public class FriendListDialog {
 
     Handler mHandler;
 
+    private UDPClient mUDPClient;
+
     public FriendListDialog(Activity context, String currentUserID, String[] userAndMessages) {
         mContext = context;
         mCurrentUserID = currentUserID;
         mUserAndMessages = userAndMessages;
+
+        mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
 
         mHandler = new Handler();
         // 为增强体验，如果已有数据则提前显示，后续在onResume中继续查询更新数据
@@ -111,17 +117,38 @@ public class FriendListDialog {
             mFriendList.clear();
             mFriendList.addAll(friendList);
             mHandler.post(() -> {
-                // 将接收到的好友，放到列表的前边
+
+                // 先将在线的好友放到前方
+                List<String> onlineUser = mUDPClient.onlineUser();
+
+                if (onlineUser.size() >= 0) {
+                    int indexCount = 0;
+                    for (int i = 0; i < mFriendList.size(); i++) {
+                        if (onlineUser.contains(mFriendList.get(i).getName())) {
+                            mFriendList.get(i).setOnlineStatus(1);
+                            Collections.swap(mFriendList, indexCount, i);
+                            indexCount++;
+                        }
+                    }
+                }
+
+                if (mUserAndMessages == null) {
+                    FriendLab.sFriendList = mFriendList;
+                    mItemAdapter.notifyDataSetChanged();
+                    return;
+                }
+
+                // 再将发送信息的好友，放到列表的前边
                 for (String uams : mUserAndMessages) {
                     String[] uam = uams.split(":");
                     Optional<User> optionalUser = mFriendList.stream().filter(user -> user.getName().equals(uam[0])).findFirst();
                     if (optionalUser.isPresent())
-                        optionalUser.get().setReceiveMessage(true);
+                        optionalUser.get().setOnlineStatus(2);
                 }
 
                 int indexCount = 0;
                 for (int i = 0; i < mFriendList.size(); i++) {
-                    if (mFriendList.get(i).isReceiveMessage()) {
+                    if (mFriendList.get(i).getOnlineStatus() == 2) {
                         Collections.swap(mFriendList, indexCount, i);
                         indexCount++;
                     }

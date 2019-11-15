@@ -48,6 +48,8 @@ public class TaskActivity extends AppCompatActivity {
                         text.setTextColor(getResources().getColor(android.R.color.darker_gray));
                     }
                 }
+
+
             }
 
 

@@ -91,7 +91,9 @@ public class TaskItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public void bind(Task task, int position) {
             taskName.setText(task.getTaskName());
             taskTime.setText(task.getTaskStartAt() + "-" + task.getTaskEndIn());
-            taskLocation.setText(task.getAccomplishTaskLocation());
+
+            taskLocation.setText(task.getAccomplishTaskLocation().split(",")[0]);
+
             mItemView.setOnClickListener((view) -> {
                 if (mOnRecycleViewItemClick != null)
                     mOnRecycleViewItemClick.onRecycleViewItemClick(view, position);

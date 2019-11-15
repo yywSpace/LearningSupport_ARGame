@@ -89,10 +89,10 @@ public class MapActivity extends AppCompatActivity {
         startService(locationService);
         // 模拟多个用户
         try {
-            mSendLocationExample1 = new SendLocationExample("MapWayExample/way1.txt", this, "4");
-            mSendLocationExample2 = new SendLocationExample("MapWayExample/way2.txt", this, "5");
-            mSendLocationExample3 = new SendLocationExample("MapWayExample/way3.txt", this, "6");
-            mSendLocationExample4 = new SendLocationExample("MapWayExample/way4.txt", this, "7");
+            mSendLocationExample1 = new SendLocationExample("MapWayExample/way1.txt", this, "王烁");
+            mSendLocationExample2 = new SendLocationExample("MapWayExample/way2.txt", this, "郭小磊");
+            mSendLocationExample3 = new SendLocationExample("MapWayExample/way3.txt", this, "刘根");
+            mSendLocationExample4 = new SendLocationExample("MapWayExample/way4.txt", this, "yywSpace");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -389,11 +389,11 @@ public class MapActivity extends AppCompatActivity {
 
         // 退出时注销用户, 此处有可能bug，mMapView.onDestroy()调用后其后语句无法执行
         // 所以就不掉用了
-        mSendLocationExample1.sendLocationThread.interrupt();
-        mSendLocationExample2.sendLocationThread.interrupt();
-        mSendLocationExample3.sendLocationThread.interrupt();
-        mSendLocationExample4.sendLocationThread.interrupt();
-        stopService(locationService);
+//        mSendLocationExample1.sendLocationThread.interrupt();
+//        mSendLocationExample2.sendLocationThread.interrupt();
+//        mSendLocationExample3.sendLocationThread.interrupt();
+//        mSendLocationExample4.sendLocationThread.interrupt();
+//        stopService(locationService);
         new Thread(() -> mUDPClient.Logout()).start();
 
         // 退出时销毁定位

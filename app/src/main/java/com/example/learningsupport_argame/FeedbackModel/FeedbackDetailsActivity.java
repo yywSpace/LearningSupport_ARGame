@@ -26,10 +26,7 @@ public class FeedbackDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.feedback_navigation_activity_details);
-
-        new NavigationController(this, getWindow().getDecorView());
-
+        setContentView(R.layout.feedback_activity_details);
 
         mTabLayout = findViewById(R.id.feedback_details_tabs);
         mViewPager = findViewById(R.id.feedback_details_vp_content);

@@ -1,9 +1,13 @@
 package com.example.learningsupport_argame.UserManagement.Login;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.learningsupport_argame.MainActivity;
+import com.example.learningsupport_argame.Navi.Activity.LocationService;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.User;
@@ -37,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView mRegisterTextView;
     // 防止多次点击
     private long lastClickTime = 0;
+    private Intent mLocationServiceIntent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,6 +49,8 @@ public class LoginActivity extends AppCompatActivity {
         ActivityUtil.addActivity(this);
 
         setContentView(R.layout.user_management_activity_login);
+        mLocationServiceIntent = new Intent(this, LocationService.class);
+
         mAccountTextLabel = findViewById(R.id.user_management_account_label);
         mAccountTextStatus = findViewById(R.id.user_management_account_status);
         mAccountEditText = findViewById(R.id.user_management_account);
@@ -83,15 +90,16 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("account", user.getAccount());
                         editor.putString("password", user.getPassword());
                         editor.commit();//提交修改
-                        Toast.makeText(this, "LOGIN_SUCCESS", Toast.LENGTH_SHORT).show();
-//                         startActivity(new Intent(this, MainActivity.class));
+                        Toast.makeText(this, "LOGIN_SUCCESS"+UserLab.getCurrentUser().getName(), Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onCreate: "+user.getName());
+                        startService(mLocationServiceIntent);
                         Intent intent = new Intent(this, TaskListActivity.class);
-                        intent.putExtra(User.CURRENT_USER_ID, user.getId());
+                        intent.putExtra(User.CURRENT_USER_ID, user.getId()+"");
                         startActivity(intent);
-                        finish();
                     }
                 });
             }).start();
+            finish();
 
         });
         mRegisterTextView.setOnClickListener((view) -> {
@@ -112,13 +120,13 @@ public class LoginActivity extends AppCompatActivity {
         new Thread(() -> {
             User user = UserLab.getUser(account);
             UserLab.setCurrentUser(user);
-            Log.d(TAG, "onCreate: "+UserLab.getCurrentUser().getId());
+            Log.d(TAG, "onCreate: " + UserLab.getCurrentUser().getId());
+            startService(mLocationServiceIntent);
             Intent intent = new Intent(this, TaskListActivity.class);
-            intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId()+"");
+            intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId() + "");
             startActivity(intent);
             finish();
         }).start();
-//        startActivity(new Intent(this, MainActivity.class));
     }
 
     private boolean changePromptMessage(boolean status, String promptMessage, TextView labelTextView, TextView statusTextView) {
@@ -150,4 +158,5 @@ public class LoginActivity extends AppCompatActivity {
                 .create()
                 .show();
     }
+
 }

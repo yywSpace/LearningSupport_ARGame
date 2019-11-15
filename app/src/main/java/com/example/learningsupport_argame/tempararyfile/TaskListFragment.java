@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.baidu.mapapi.model.LatLng;
+import com.example.learningsupport_argame.Navi.Activity.ShowLocationPopWindow;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.bean.PairInfoBean;
@@ -40,7 +42,6 @@ public class TaskListFragment extends Fragment {
     protected ImageView mMapLocationBtn;
     protected List<Task> mTaskList;
 
-
     private TextView mTaskStatusTextView;
     private TextView mTaskNameTextView;
     private TextView mTaskTypeTextView;
@@ -50,6 +51,7 @@ public class TaskListFragment extends Fragment {
     private RecyclerView mTaskParticipantRecyclerView;
     private ParticipantItemAdapter mParticipantItemAdapter;
     private List<User> mUserList;
+    private LatLng mAccomplishTaskLatLng;
 
 
     @Nullable
@@ -115,18 +117,21 @@ public class TaskListFragment extends Fragment {
         });
 
         mMapLocationBtn.setOnClickListener((v) -> {
-            Toast.makeText(getContext(), "地图位置", Toast.LENGTH_SHORT).show();
-
-        });
+            if (mAccomplishTaskLatLng != null)
+                new ShowLocationPopWindow(getActivity(), (float) mAccomplishTaskLatLng.latitude, (float) mAccomplishTaskLatLng.longitude);
+         });
     }
 
 
     public void initData(Task task) {
+        String[] location = task.getAccomplishTaskLocation().split(",");
+        mAccomplishTaskLatLng = new LatLng(Double.parseDouble(location[1]), Double.parseDouble(location[2]));
+
         mTaskStatusTextView.setText(task.getTaskStatus());
         mTaskNameTextView.setText(task.getTaskName());
         mTaskTypeTextView.setText(task.getTaskType());
         mTaskTimeTextClock.setFormat12Hour(task.getTaskStartAt());
-        mTaskLocationTextView.setText(task.getAccomplishTaskLocation());
+        mTaskLocationTextView.setText(location[0]);
         mTaskDescTextView.setText(task.getTaskContent());
         // 参与列表
         new Thread(() -> {

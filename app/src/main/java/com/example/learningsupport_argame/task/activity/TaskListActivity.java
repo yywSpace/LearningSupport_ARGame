@@ -2,7 +2,9 @@ package com.example.learningsupport_argame.task.activity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,8 +27,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.learningsupport_argame.Navi.Activity.LocationService;
+import com.example.learningsupport_argame.Navi.Activity.SelectLocationPopWindow;
 import com.example.learningsupport_argame.NavigationController;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.TestActivity;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
@@ -48,11 +53,10 @@ import java.util.Calendar;
 import java.util.List;
 
 public class TaskListActivity extends AppCompatActivity {
+    private static String TAG = "TaskListActivity";
     private String mCurrentUserId;
     private VpAdapter mVpAdapter;
     private List<Fragment> mFragmentList;
-    private List<String> mFragmentTitle;
-    private List<Integer> mFragmentTabImage;
     private ViewPager mViewPager;
     private FloatingActionButton mFloatingActionButton;
     private BottomNavigationViewEx mNavigationView;
@@ -83,7 +87,6 @@ public class TaskListActivity extends AppCompatActivity {
         ActivityUtil.addActivity(this);
         initBNVE();
         initEvent();
-
     }
 
     /**
@@ -94,9 +97,7 @@ public class TaskListActivity extends AppCompatActivity {
             private int previousPosition = -1;
 
             Menu menu = mNavigationView.getMenu();
-            MenuItem lastItem;
 
-            //            MenuItem lastItem = menu.findItem(R.id.menu_main);
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -176,60 +177,60 @@ public class TaskListActivity extends AppCompatActivity {
                         .setPositiveButton("确定", null)
                         .create();
                 dialog.show();
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String[] taskReleaseTypeStr = new String[]{"个人任务", "好友任务", "社团任务", "AR任务"};
-                        int taskType = taskViewAdapter.mTaskType;
-                        String[] taskStartTimeArray = taskViewAdapter.mStartTimes;
-                        String[] taskEndTimeArray = taskViewAdapter.mEndTimes;
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                    String[] taskReleaseTypeStr = new String[]{"个人任务", "好友任务", "社团任务", "AR任务"};
+                    int taskType = taskViewAdapter.mTaskType;
+                    String[] taskStartTimeArray = taskViewAdapter.mStartTimes;
+                    String[] taskEndTimeArray = taskViewAdapter.mEndTimes;
 
-                        // 保存数据
-                        Task task = new Task();
-                        task.setTaskName(taskViewAdapter.mTaskNameEditText.getText().toString());
-                        task.setTaskType(taskReleaseTypeStr[taskType]);
-                        task.setTaskStartAt(taskViewAdapter.mTaskStartTime.getText().toString());
-                        task.setTaskEndIn(taskViewAdapter.mTaskEndTime.getText().toString());
-                        task.setAccomplishTaskLocation(taskViewAdapter.mTaskLocation.getText().toString());
-                        task.setTaskContent(taskViewAdapter.mTaskDescEditText.getText().toString());
-                        task.setTaskCreateTime(taskViewAdapter.mTaskCreateTime);
-                        task.setUserId(UserLab.getCurrentUser().getId());
-                        task.setTaskStatus("未开始");
+                    // 保存数据
+                    Task task = new Task();
+                    task.setTaskName(taskViewAdapter.mTaskNameEditText.getText().toString());
+                    task.setTaskType(taskReleaseTypeStr[taskType]);
+                    task.setTaskStartAt(taskViewAdapter.mTaskStartTime.getText().toString());
+                    task.setTaskEndIn(taskViewAdapter.mTaskEndTime.getText().toString());
+                    task.setAccomplishTaskLocation(taskViewAdapter.mTaskAccomplishFullAddress);
+                    task.setTaskContent(taskViewAdapter.mTaskDescEditText.getText().toString());
+                    task.setTaskCreateTime(taskViewAdapter.mTaskCreateTime);
+                    task.setUserId(UserLab.getCurrentUser().getId());
+                    task.setTaskStatus("未开始");
 
-                        if (task.getTaskName().equals("")) {
-                            Toast.makeText(TaskListActivity.this, "请输入任务名称", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        if (taskStartTimeArray[0] == null || taskStartTimeArray[1] == null || taskEndTimeArray[0] == null || taskEndTimeArray[1] == null) {
-                            Toast.makeText(TaskListActivity.this, "请输入任务日期和时间", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        if (task.getAccomplishTaskLocation().equals("")) {
-                            Toast.makeText(TaskListActivity.this, "请输入任务完成地点", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        if (task.getTaskContent().equals("")) {
-                            Toast.makeText(TaskListActivity.this, "请输入任务描述", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        // 如果为用AR发布，则传递数据到Unity,并设置模型
-                        if (taskType == 3) {
-                            Toast.makeText(TaskListActivity.this, "AR放置模型", Toast.LENGTH_SHORT).show();
-                        }
-
-
-                        // 存储数据
-                        new Thread(() -> {
-                            TaskLab.insertTask(task);
-                            // 如果为自己发布的任务直接添加进参与者列表
-                            TaskLab.acceptTask(task);
-                        }).start();
-                        // 如果任务信息没有错误，销毁对话框
-                        dialog.dismiss();
+                    if (task.getTaskName().equals("")) {
+                        Toast.makeText(TaskListActivity.this, "请输入任务名称", Toast.LENGTH_SHORT).show();
+                        return;
                     }
-                });
+                    if (taskStartTimeArray[0] == null || taskStartTimeArray[1] == null || taskEndTimeArray[0] == null || taskEndTimeArray[1] == null) {
+                        Toast.makeText(TaskListActivity.this, "请输入任务日期和时间", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (task.getAccomplishTaskLocation().equals("")) {
+                        Toast.makeText(TaskListActivity.this, "请输入任务完成地点", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (task.getTaskContent().equals("")) {
+                        Toast.makeText(TaskListActivity.this, "请输入任务描述", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    // 如果为用AR发布，则传递数据到Unity,并设置模型
+                    if (taskType == 3) {
+                        Intent intent = new Intent();
+                        intent.putExtra("task_name", task.getTaskName());
+                        intent.putExtra("task_create_time", task.getTaskCreateTime());
+                        intent.putExtra("task_content", task.getTaskContent());
+                        setResult(RESULT_OK, intent);
+                        Toast.makeText(TaskListActivity.this, "AR放置模型", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
 
-                Toast.makeText(TaskListActivity.this, "Center", Toast.LENGTH_SHORT).show();
+                    // 存储数据
+                    new Thread(() -> {
+                        TaskLab.insertTask(task);
+                        // 如果为自己发布的任务直接添加进参与者列表
+                        TaskLab.acceptTask(task);
+                    }).start();
+                    // 如果任务信息没有错误，销毁对话框
+                    dialog.dismiss();
+                });
             }
         });
     }
@@ -266,11 +267,6 @@ public class TaskListActivity extends AppCompatActivity {
             return mFragmentList.get(position);
         }
 
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitle.get(position);
-        }
     }
 
 
@@ -298,6 +294,7 @@ public class TaskListActivity extends AppCompatActivity {
         String[] mStartTimes = new String[2];
         String[] mEndTimes = new String[2];
         String mTaskCreateTime;
+        String mTaskAccomplishFullAddress = "";
 
 
         public View getView() {
@@ -414,8 +411,13 @@ public class TaskListActivity extends AppCompatActivity {
             });
 
             mChooseLocation.setOnClickListener(v -> {
-                // TODO: 19-11-4 地图选点
-                mTaskLocation.setText("地图选点");
+                SelectLocationPopWindow slpw = new SelectLocationPopWindow(TaskListActivity.this);
+                slpw.setOnMarkerSet((address, latLng) -> {
+                    mTaskLocation.setText(address);
+                    mTaskAccomplishFullAddress = String.format("%s,%f,%f", address, latLng.latitude, latLng.longitude);
+                    Toast.makeText(TaskListActivity.this, address, Toast.LENGTH_SHORT).show();
+                });
+                slpw.showMapDialog();
             });
 
             mChooseTaskStartDate.setOnClickListener(v -> {
@@ -427,8 +429,6 @@ public class TaskListActivity extends AppCompatActivity {
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 date.setTitle("选择开始日期");
                 date.show();
-
-
             });
 
             mChooseTaskStartTime.setOnClickListener(v -> {

@@ -46,7 +46,7 @@ public class UserAccomplishTaskFragment extends TaskListFragment {
             builder.show();
         });
         mTaskTitle = view.findViewById(R.id.taskTitle);
-        mTaskTitle.setText("已接受的任务");
+        mTaskTitle.setText("已完成的任务");
         return view;
     }
 
@@ -65,8 +65,8 @@ public class UserAccomplishTaskFragment extends TaskListFragment {
         }).start();
     }
 
-    public static com.example.learningsupport_argame.tempararyfile.TaskAcceptedListFragment getInstance(String userId) {
-        com.example.learningsupport_argame.tempararyfile.TaskAcceptedListFragment fragment = new com.example.learningsupport_argame.tempararyfile.TaskAcceptedListFragment();
+    public static UserAccomplishTaskFragment getInstance(String userId) {
+        UserAccomplishTaskFragment fragment = new UserAccomplishTaskFragment();
         Bundle args = new Bundle();
         args.putString(User.CURRENT_USER_ID, userId);
         fragment.setArguments(args);

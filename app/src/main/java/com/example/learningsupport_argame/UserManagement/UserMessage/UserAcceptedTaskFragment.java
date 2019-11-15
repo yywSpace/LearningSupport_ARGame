@@ -66,8 +66,8 @@ public class UserAcceptedTaskFragment extends TaskListFragment {
     }
 
 
-    public static com.example.learningsupport_argame.tempararyfile.TaskAcceptedListFragment getInstance(String userId) {
-        com.example.learningsupport_argame.tempararyfile.TaskAcceptedListFragment fragment = new com.example.learningsupport_argame.tempararyfile.TaskAcceptedListFragment();
+    public static UserAcceptedTaskFragment getInstance(String userId) {
+        UserAcceptedTaskFragment fragment = new UserAcceptedTaskFragment();
         Bundle args = new Bundle();
         args.putString(User.CURRENT_USER_ID, userId);
         fragment.setArguments(args);

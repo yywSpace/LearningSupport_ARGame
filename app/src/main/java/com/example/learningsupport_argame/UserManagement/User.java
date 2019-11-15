@@ -15,7 +15,7 @@ public class User {
     private String mCity;
     private int mExp;
     private int mCredits;
-    private boolean mReceiveMessage;
+    private int mOnlineStatus;// 0 不在线， 1 在线， 2 接收到消息
 
 
     public User() {
@@ -116,11 +116,11 @@ public class User {
         mLevel = level;
     }
 
-    public boolean isReceiveMessage() {
-        return mReceiveMessage;
+    public int getOnlineStatus() {
+        return mOnlineStatus;
     }
 
-    public void setReceiveMessage(boolean receiveMessage) {
-        mReceiveMessage = receiveMessage;
+    public void setOnlineStatus(int onlineStatus) {
+        mOnlineStatus = onlineStatus;
     }
 }

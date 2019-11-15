@@ -15,6 +15,8 @@ import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.FriendMessageActivity;
+import com.example.learningsupport_argame.client.ClientLab;
+import com.example.learningsupport_argame.client.UDPClient;
 
 import java.util.Collections;
 import java.util.List;
@@ -63,21 +65,38 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                 }
             });
+            User user = mFriendList.get(position);
 
-            ((FriendItemViewHolder) holder).bind(mFriendList.get(position));
-            if (mUserAndMessages == null)
-                return;
+            ((FriendItemViewHolder) holder).bind(user);
 
-            for (String uams : mUserAndMessages) {
-                String[] uam = uams.split(":");
-                if (uam[0].equals(mFriendList.get(position).getName())) {
-                    holder.itemView.findViewById(R.id.friend_list_item_avatar_red_point).setVisibility(View.VISIBLE);
-                    TextView message = holder.itemView.findViewById(R.id.friend_item_last_message);
-                    message.setText(uam[2]);
-                }
+            if (user.getOnlineStatus() == 1) {
+                // 在线
+                holder.itemView
+                        .findViewById(R.id.friend_list_item_avatar_red_point)
+                        .setBackgroundResource(R.drawable.friend_list_item_green_point);
+                TextView message = holder.itemView.findViewById(R.id.friend_item_last_message);
+                message.setText("在线");
 
+            } else if (user.getOnlineStatus() == 2) {
+                // 如果消息列表不为空
+                if (mUserAndMessages != null)
+                    for (String uams : mUserAndMessages) {
+                        String[] uam = uams.split(":");
+                        if (uam[0].equals(user.getName())) {
+                            holder.itemView.findViewById(R.id.friend_list_item_avatar_red_point)
+                                    .setBackgroundResource(R.drawable.friend_list_item_red_point);
+                            TextView message = holder.itemView.findViewById(R.id.friend_item_last_message);
+                            message.setText(uam[2]);
+                        }
+                    }
+            } else {
+                // 不在线
+                holder.itemView
+                        .findViewById(R.id.friend_list_item_avatar_red_point)
+                        .setBackgroundResource(R.drawable.friend_list_item_gray_point);
+                TextView message = holder.itemView.findViewById(R.id.friend_item_last_message);
+                message.setText("不在线");
             }
-
         }
 
     }

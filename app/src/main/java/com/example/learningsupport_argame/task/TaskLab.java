@@ -10,7 +10,6 @@ import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TaskLab {
     private static String TAG = "TaskLab";
@@ -44,10 +43,12 @@ public class TaskLab {
      * @return
      */
     public static List<Task> getAccomplishTask(String userId) {
-        List<Task> tasks = getAllTask(userId);
-        List<Task> accomplishTasks = tasks.stream()
-                .filter((task -> task.getTaskStatus().equals("已完成")))
-                .collect(Collectors.toList());
+        String sql = "select * from task where task_id in " +
+                "       (select task_id from task_participant " +
+                "           where task_participant.participant_id = ? and task_accomplish_status = '完成');";
+
+        List<Task> accomplishTasks = getTasksWith(sql, Integer.parseInt(userId));
+
         return accomplishTasks;
     }
 
@@ -58,11 +59,9 @@ public class TaskLab {
      * @return
      */
     public static List<Task> getReleasedTask(String userId) {
-        List<Task> tasks = getAllTask(userId);
-
-        List<Task> releasedTasks = tasks.stream()
-                .filter((task -> task.getTaskType().equals("发布")))
-                .collect(Collectors.toList());
+        List<Task> releasedTasks = getTasksWith(
+                "select * from task where user_id = ?",
+                userId);
 
         return releasedTasks;
     }
@@ -74,30 +73,7 @@ public class TaskLab {
      * @return
      */
     public static List<Task> getAllTask(String userId) {
-        List<Task> tasks = new ArrayList<>();
-
-        DbUtils.query(resultSet -> {
-            while (resultSet.next()) {
-                Task task = new Task();
-                task.setTaskId(resultSet.getInt("task_id"));
-                task.setUserId(resultSet.getInt("user_id"));
-                task.setTaskName(resultSet.getString("task_name"));
-                task.setTaskContent(resultSet.getString("task_content"));
-                task.setTaskType(resultSet.getString("task_type"));
-                task.setTaskEndIn(resultSet.getString("task_end_in"));
-                task.setTaskStartAt(resultSet.getString("task_start_at"));
-                task.setTaskStatus(resultSet.getString("task_status"));
-                task.setTaskNotification(resultSet.getBoolean("task_notification"));
-                task.setAccomplishTaskLocation(resultSet.getString("task_accomplish_location"));
-                task.setTaskCreateTime(resultSet.getString("task_create_time"));
-                // 此处查询消耗时间过长
-                // 获取参与人员列表
-                // List<User> participant = getParticipant(task.getTaskId() + "");
-                // task.setTaskParticipant(participant);
-                tasks.add(task);
-            }
-        }, "SELECT * FROM task WHERE user_id = ?", userId);
-
+        List<Task> tasks = getTasksWith("SELECT * FROM task WHERE user_id = ?", userId);
         return tasks;
     }
 
@@ -175,7 +151,7 @@ public class TaskLab {
 
     public static void acceptTask(Task task) {
         Log.d(TAG, "acceptTask: " + task.getTaskName());
-        DbUtils.update(null, "insert into task_participant values (null, (select task_id from task where task_name = ? and user_id = ?) , ?);",
+        DbUtils.update(null, "insert into task_participant values (null, (select task_id from task where task_name = ? and user_id = ?) , ? , '进行中');",
                 task.getTaskName(), task.getUserId(), UserLab.getCurrentUser().getId());
     }
 }

@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.baidu.mapapi.model.LatLng;
+import com.example.learningsupport_argame.Navi.Activity.ShowLocationPopWindow;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.task.Task;
@@ -44,6 +46,7 @@ public class CurrentTaskFragment extends Fragment {
     private ParticipantItemAdapter mItemAdapter;
     private List<User> mUserList;
 
+    private LatLng mAccomplishTaskLatLng;
     private static Activity mActivity;
 
     @Nullable
@@ -79,6 +82,11 @@ public class CurrentTaskFragment extends Fragment {
         mTaskLocationTextView = view.findViewById(R.id.task_location);
         mTaskDescTextView = view.findViewById(R.id.task_desc);
         mMapLocationBtn = view.findViewById(R.id.task_map_location);
+        mMapLocationBtn.setOnClickListener((v) -> {
+            if (mAccomplishTaskLatLng != null)
+                new ShowLocationPopWindow(getActivity(), (float)mAccomplishTaskLatLng.latitude, (float)mAccomplishTaskLatLng.longitude);
+
+        });
         mTaskParticipantRecyclerView = view.findViewById(R.id.task_participant_list);
 
         mUserList = new ArrayList<>();
@@ -97,19 +105,21 @@ public class CurrentTaskFragment extends Fragment {
         });
 
         mMapLocationBtn.setOnClickListener((v) -> {
-            Toast.makeText(getContext(), "地图位置", Toast.LENGTH_SHORT).show();
-
+            if (mAccomplishTaskLatLng != null)
+                new ShowLocationPopWindow(getActivity(), (float) mAccomplishTaskLatLng.latitude, (float) mAccomplishTaskLatLng.longitude);
         });
     }
 
 
     private void initData(Task task) {
+        String[] location = task.getAccomplishTaskLocation().split(",");
         mTaskStatusTextView.setText(task.getTaskStatus());
         mTaskNameTextView.setText(task.getTaskName());
         mTaskTypeTextView.setText(task.getTaskType());
         mTaskTimeTextClock.setFormat12Hour(task.getTaskStartAt());
-        mTaskLocationTextView.setText(task.getAccomplishTaskLocation());
+        mTaskLocationTextView.setText(location[0]);
         mTaskDescTextView.setText(task.getTaskContent());
+        mAccomplishTaskLatLng = new LatLng(Double.parseDouble(location[1]), Double.parseDouble(location[2]));
         // 参与列表
         new Thread(() -> {
             List<User> participants = TaskLab.getParticipant("" + task.getTaskId());

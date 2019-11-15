@@ -2,12 +2,14 @@ package com.example.learningsupport_argame;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 
@@ -18,6 +20,7 @@ import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.UserMessageActivity;
 import com.example.learningsupport_argame.community.activity.FriendListActivity;
+import com.example.learningsupport_argame.community.activity.FriendListDialog;
 import com.example.learningsupport_argame.task.activity.TaskListActivity;
 import com.google.android.material.navigation.NavigationView;
 
@@ -28,7 +31,7 @@ public class NavigationController {
     private ImageButton navigationButton;
     private String TAG = "NavigationController";
 
-    public NavigationController(Context context, View view) {
+    public NavigationController(AppCompatActivity context, View view) {
         drawerLayout = view.findViewById(R.id.navigation_drawer);
         navigationView = view.findViewById(R.id.navigation_nav);
         navigationButton = view.findViewById(R.id.navigation_button);
@@ -56,14 +59,15 @@ public class NavigationController {
         navigationView.setNavigationItemSelectedListener(item -> {
             Toast.makeText(context, item.getTitle().toString(), Toast.LENGTH_SHORT).show();
             if (item.getItemId() == R.id.navigation_menu_friend) {
-                Intent intent = new Intent(context, FriendListActivity.class);
-                intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId());
-                context.startActivity(intent);
+                FriendListDialog fld = new FriendListDialog(context, UserLab.getCurrentUser().getId() + "", null);
+//                Intent intent = new Intent(context, FriendListActivity.class);
+//                intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId() + "");
+//                context.startActivity(intent);
             }
             if (item.getItemId() == R.id.navigation_menu_task) {
-                Intent intent = new Intent(context, TaskListActivity.class);
-                intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId() + "");
-                context.startActivity(intent);
+//                Intent intent = new Intent(context, TaskListActivity.class);
+//                intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId() + "");
+//                context.startActivity(intent);
             }
             if (item.getItemId() == R.id.navigation_menu_course)
                 context.startActivity(new Intent(context, CourseMainActivity.class));

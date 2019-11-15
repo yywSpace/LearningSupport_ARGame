@@ -199,15 +199,15 @@ public class UserMessageActivity extends Activity {
                         break;
                     case 5:
                         // 发布的任务
-                        Toast.makeText(UserMessageActivity.this, "发布的任务", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(UserMessageActivity.this, UserReleasedTaskActivity.class));
                         break;
                     case 6:
                         // 接受的任务
-                        Toast.makeText(UserMessageActivity.this, "接受的任务", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(UserMessageActivity.this, UserAcceptedTaskActivity.class));
                         break;
                     case 7:
                         // 完成的任务
-                        Toast.makeText(UserMessageActivity.this, "完成的任务", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(UserMessageActivity.this, UserAccomplishTaskActivity.class));
                         break;
                     case 8:
                         startActivity(new Intent(UserMessageActivity.this, FeedbackDetailsActivity.class));

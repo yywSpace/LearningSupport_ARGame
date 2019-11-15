@@ -9,9 +9,11 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class UDPClient {
-
 
     private int port;
     private String ip;
@@ -19,6 +21,8 @@ public class UDPClient {
     private DatagramSocket socket;
     private String userName;
     private OnReceiveUserList mOnReceiveUserList;
+
+    private String mOnlineUserList;
 
     public UDPClient(int port, String ip, String userName) throws SocketException, UnknownHostException {
         this.port = port;
@@ -28,7 +32,6 @@ public class UDPClient {
         this.userName = userName;
         receive();
     }
-
 
 
     public void Login() {
@@ -71,6 +74,7 @@ public class UDPClient {
                     DatagramPacket packet = new DatagramPacket(data, data.length);
                     socket.receive(packet);
                     String userListStr = new String(data, 0, packet.getLength());
+                    mOnlineUserList = userListStr;
                     if (mOnReceiveUserList != null)
                         mOnReceiveUserList.onReceiveUserList(userListStr);
                 }
@@ -94,7 +98,23 @@ public class UDPClient {
         return null;
     }
 
+    public List<String> onlineUser() {
+        List<String> userList = new ArrayList<>();
+        MessageData data = new Gson().fromJson(mOnlineUserList, MessageData.class);
+        if (data == null || data.Message == null)
+            return userList;
+        String[] users = data.Message.split(";");
+        for (int i = 0; i < users.length; i++) {
+            String[] userArgs = users[i].split(",");
+            String userName = userArgs[0];
+            userList.add(userName);
+        }
+
+        return userList;
+    }
+
     public void setOnReceiveUserList(OnReceiveUserList onReceiveUserList) {
         mOnReceiveUserList = onReceiveUserList;
     }
+
 }

@@ -17,15 +17,11 @@ public class FriendListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.friendlist_navigation_layout);
+        setContentView(R.layout.friendlist_layout);
 
-        new NavigationController(this, getWindow().getDecorView());
         ActivityUtil.addActivity(this);
 
         mCurrentUserID = getIntent().getStringExtra(User.CURRENT_USER_ID);
-        if (mCurrentUserID == null) {
-            mCurrentUserID = "4";
-        }
 
         FriendListFragment fragment = FriendListFragment.getInstance(mCurrentUserID);
         getSupportFragmentManager().beginTransaction().replace(R.id.friend_list_fragment_container, fragment).commit();

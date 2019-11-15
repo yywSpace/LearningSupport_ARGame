@@ -2,6 +2,7 @@ package com.example.learningsupport_argame.Navi.Activity;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.client.ClientLab;
 import com.example.learningsupport_argame.client.UDPClient;
 
@@ -18,12 +20,19 @@ public class LocationService extends Service {
     public static String TAG = "LocationService";
     private LocationClient mLocationClient;
     private UDPClient mUDPClient;
+    private static BDLocation mCurrentLocation;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate: ");
-        mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp,ClientLab.sUserName);
+        Log.d(TAG, "onCreate: "+UserLab.getCurrentUser());
+
+        mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, UserLab.getCurrentUser().getName());
+        new Thread(() -> {
+            mUDPClient.Login();
+        }).start();
         mLocationClient = new LocationClient(getApplicationContext());
+
         LocationClientOption option = new LocationClientOption();
 
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
@@ -57,9 +66,10 @@ public class LocationService extends Service {
 
             @Override
             public void onReceiveLocation(BDLocation bdLocation) {
-//                Log.d(TAG, "onReceiveLocation: "+bdLocation.getLatitude());
-                new Thread(()->{
-                    mUDPClient.Location((float) bdLocation.getLatitude(),(float)bdLocation.getLongitude());
+                mCurrentLocation = bdLocation;
+//                Log.d(TAG, "onReceiveLocation: " + bdLocation.getLatitude());
+                new Thread(() -> {
+                    mUDPClient.Location((float) bdLocation.getLatitude(), (float) bdLocation.getLongitude());
                     mUDPClient.UserList();
                 }).start();
             }
@@ -77,5 +87,9 @@ public class LocationService extends Service {
     public void onDestroy() {
         mLocationClient.stop();
         super.onDestroy();
+    }
+
+    public static BDLocation getCurrentLocation() {
+        return mCurrentLocation;
     }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,17 +37,18 @@ public class UserReleasedTaskFragment extends TaskListFragment {
             builder.setView(taskDetailView);
             builder.setTitle("任务详情");
             builder.setPositiveButton("删除", (dialog, which) -> {
-                new Thread(() -> {
-                    DbUtils.update(null,
-                            "DELETE FROM task_participant WHERE task_id = ? AND participant_id = ?",
-                            mTaskList.get(position).getTaskId(), UserLab.getCurrentUser().getId());
-                }).start();
+                Toast.makeText(getActivity(), "删除或修改，待定", Toast.LENGTH_SHORT).show();
+//                new Thread(() -> {
+//                    DbUtils.update(null,
+//                            "DELETE FROM task WHERE task_id = ?",
+//                            mTaskList.get(position).getTaskId());
+//                }).start();
             });
             builder.setNegativeButton("取消", null);
             builder.show();
         });
         mTaskTitle = view.findViewById(R.id.taskTitle);
-        mTaskTitle.setText("已接受的任务");
+        mTaskTitle.setText("已发布的任务");
         return view;
     }
 
@@ -66,8 +68,8 @@ public class UserReleasedTaskFragment extends TaskListFragment {
     }
 
 
-    public static com.example.learningsupport_argame.tempararyfile.TaskAcceptedListFragment getInstance(String userId) {
-        com.example.learningsupport_argame.tempararyfile.TaskAcceptedListFragment fragment = new com.example.learningsupport_argame.tempararyfile.TaskAcceptedListFragment();
+    public static UserReleasedTaskFragment getInstance(String userId) {
+        UserReleasedTaskFragment fragment = new UserReleasedTaskFragment();
         Bundle args = new Bundle();
         args.putString(User.CURRENT_USER_ID, userId);
         fragment.setArguments(args);
