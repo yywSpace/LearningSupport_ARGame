@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.learningsupport_argame">
 
     <application
+
         android:name=".Navi.Utils.SDKInitializeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,6 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.ar.core"
+            android:value="optional" />
 
 
         <activity android:name=".Navi.Activity.MapActivity" />
@@ -19,8 +22,6 @@
         <activity android:name=".task.activity.TaskListActivity" />
 
         <!--                    <activity android:name=".TestActivity">-->
-        <activity android:name=".MainActivity" />
-        >
         <activity android:name=".UserManagement.Login.LoginActivity">
 
             <intent-filter>
