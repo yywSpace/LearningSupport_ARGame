@@ -19,7 +19,7 @@ public class ItemsViewHolder extends RecyclerView.ViewHolder implements View.OnC
     public ItemsViewHolder(@NonNull View itemView) {
         super(itemView);
         itemView.setOnClickListener(this);
-//        mTextView = itemView.findViewById(R.id.armodel_item_name);
+        mTextView = itemView.findViewById(R.id.armodel_item_name);
 
     }
 

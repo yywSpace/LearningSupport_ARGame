@@ -30,17 +30,13 @@ import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 
-//import android.support.annotation.NonNull;
-//import android.support.annotation.Nullable;
-//import android.support.design.widget.FloatingActionButton;
-//import android.support.design.widget.Snackbar;
-//import android.support.v7.app.AppCompatActivity;
 
-public class ScanModel extends AppCompatActivity {
-    private static final String TAG = ScanModel.class.getSimpleName();
+public class ScanModelActivity extends AppCompatActivity {
+    private static final String TAG = ScanModelActivity.class.getSimpleName();
     private ArSceneView mArSceneView;
     private Snackbar loadingMessageSnackbar = null;
     private FloatingActionButton mPutModelButton;
@@ -60,62 +56,26 @@ public class ScanModel extends AppCompatActivity {
         mMessageTextView = findViewById(R.id.armodel_node_message);
         mModelInfoLab = ModelInfoLab.get();
         mLocationSensor = LocationSensor.get(this);
+        // 不检测平面
+        mArSceneView.getPlaneRenderer().setEnabled(false);
         mPutModelButton.setOnClickListener(v -> {
             if (mArSceneView == null)
                 return;
-            //Vector3 transform = displayModel(mModelInfoLab.getModelInfoList().get(0));
-            //Vector3 transform = new Vector3(0, -.5f, -1);
-
-            Pose pose = displayModel(mModelInfoLab.getModelInfoList().get(0));
             //当Frame处于跟踪状态再继续
             if (mArSceneView.getArFrame().getCamera().getTrackingState() != TrackingState.TRACKING) {
-                Toast.makeText(ScanModel.this, "NO_TRACKING", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ScanModelActivity.this, "NO_TRACKING", Toast.LENGTH_SHORT).show();
                 return;
             }
+            Vector3 transform = new Vector3(0, -0.5f, -1);
+            transform = Vector3.add(mArSceneView.getScene().getCamera().getWorldPosition(), transform);
+            Pose pose = Pose.makeTranslation(transform.x, transform.y, transform.z);
             Anchor anchor = mArSceneView.getSession().createAnchor(pose);
             AnchorNode anchorNode = new AnchorNode(anchor);
             anchorNode.setParent(mArSceneView.getScene());
-            anchorNode.setRenderable(mModelRenderable);
+            Node node = createNode(ModelInfoLab.get().getCurrentModelInfo());
+            anchorNode.addChild(node);
         });
 
-        ModelRenderable.builder()
-                .setSource(this, Uri.parse("andy.sfb"))
-                .build()
-                .thenAccept(renderable -> {
-                    mModelRenderable = renderable;
-                    Toast.makeText(this, "ModelRenderable build finish", Toast.LENGTH_SHORT).show();
-                })
-                .exceptionally(
-                        throwable -> {
-                            Log.e(TAG, "Unable to load Renderable.", throwable);
-                            return null;
-                        });
-
-        // Set an update listener on the Scene that will hide the loading message once a Plane is
-        // detected.
-        mArSceneView
-                .getScene()
-                .addOnUpdateListener(
-                        frameTime -> {
-                            if (loadingMessageSnackbar == null) {
-                                return;
-                            }
-
-                            Frame frame = mArSceneView.getArFrame();
-                            if (frame == null) {
-                                return;
-                            }
-
-                            if (frame.getCamera().getTrackingState() != TrackingState.TRACKING) {
-                                return;
-                            }
-
-                            for (Plane plane : frame.getUpdatedTrackables(Plane.class)) {
-                                if (plane.getTrackingState() == TrackingState.TRACKING) {
-                                    hideLoadingMessage();
-                                }
-                            }
-                        });
     }
 
     @Override
@@ -147,10 +107,6 @@ public class ScanModel extends AppCompatActivity {
             DemoUtils.displayError(this, "Unable to get camera", ex);
             finish();
             return;
-        }
-
-        if (mArSceneView.getSession() != null) {
-            showLoadingMessage();
         }
     }
 
@@ -205,52 +161,13 @@ public class ScanModel extends AppCompatActivity {
         }
     }
 
-    private void showLoadingMessage() {
-        if (loadingMessageSnackbar != null && loadingMessageSnackbar.isShownOrQueued()) {
-            return;
-        }
 
-        loadingMessageSnackbar =
-                Snackbar.make(
-                        ScanModel.this.findViewById(android.R.id.content),
-                        R.string.armodel_plane_finding,
-                        Snackbar.LENGTH_INDEFINITE);
-        loadingMessageSnackbar.getView().setBackgroundColor(0xbf323232);
-        loadingMessageSnackbar.show();
-    }
-
-    private void hideLoadingMessage() {
-        if (loadingMessageSnackbar == null) {
-            return;
-        }
-
-        loadingMessageSnackbar.dismiss();
-        loadingMessageSnackbar = null;
-    }
-
-    Pose displayModel(ModelInfo modelInfo) {
-        //算出当前相机位置到模型位置的向量（向量间减法）
-        Vector3 transform = Vector3.forward();//Vector3Utils.sub(modelInfo.getModelPosition(), modelInfo.getCameraPosition());
-        float currentDegree = mLocationSensor.getCurrentDegree();
-        float originalDegree = modelInfo.getCurrentDegree();
-        float rotation = (currentDegree - originalDegree);
-        mMessageTextView.setText("CurrentDegree: " + currentDegree +
-                "\nOriginalDegree:" + originalDegree +
-                "\nrotation:" + rotation);
-        Toast.makeText(this, transform + "", Toast.LENGTH_SHORT).show();
-        float zRotated = (float) (transform.z * Math.cos(rotation) - transform.x * Math.sin(rotation));
-        // 根据深度和方向角计算xz平面上的x的大小
-        float xRotated = (float) -(transform.z * Math.sin(rotation) + transform.x * Math.cos(rotation));
-        //Pose pose = Pose.makeTranslation(new float[]{xRotated, transform.y, zRotated});
-        // 第二个参数指的是，模型的旋转
-        Pose pose = new Pose(
-                new float[]{xRotated, transform.y, zRotated},
-                new float[]{
-                        modelInfo.getModelRotation().x,
-                        modelInfo.getModelRotation().y,
-                        modelInfo.getModelRotation().z,
-                        modelInfo.getModelRotation().w
-                });
-        return pose;
+    Node createNode(ModelInfo modelInfo) {
+        Node node = new Node();
+        node.setLocalScale(modelInfo.getModelScale());
+        node.setLocalPosition(modelInfo.getModelPosition());
+        node.setLocalRotation(modelInfo.getModelRotation());
+        node.setRenderable(modelInfo.getRenderable());
+        return node;
     }
 }

@@ -8,6 +8,7 @@ import java.util.List;
 public class ModelInfoLab {
     private static ModelInfoLab sModelInfoLab;
     private List<ModelInfo> mModelInfoList;
+    private ModelInfo mCurrentModelInfo;
 
 
     private ModelInfoLab() {
@@ -22,6 +23,14 @@ public class ModelInfoLab {
 
     public List<ModelInfo> getModelInfoList() {
         return mModelInfoList;
+    }
+
+    public ModelInfo getCurrentModelInfo() {
+        return mCurrentModelInfo;
+    }
+
+    public void setCurrentModelInfo(ModelInfo currentModelInfo) {
+        mCurrentModelInfo = currentModelInfo;
     }
 }
 

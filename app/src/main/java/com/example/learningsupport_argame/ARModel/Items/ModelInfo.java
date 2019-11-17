@@ -2,14 +2,13 @@ package com.example.learningsupport_argame.ARModel.Items;
 
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
+import com.google.ar.sceneform.rendering.Renderable;
 
 public class ModelInfo {
-    //private LatLng mCurrentLatLng; // 手机当前经纬度
-    private Quaternion mModelRotation; // 模型世界旋转角度
+    private Quaternion mModelRotation; // 模型本地旋转角度
     private Vector3 mModelScale; // 模型世界缩放大小
     private Vector3 mModelPosition; // 模型世界坐标
-    private float mCurrentDegree;     // 手机当前朝向
-    private Vector3 mCameraPosition; // 相机世界坐标
+    private Renderable mRenderable;
 
     public ModelInfo(Quaternion rotation, Vector3 scale, Vector3 position) {
         setModelRotation(rotation);
@@ -41,19 +40,11 @@ public class ModelInfo {
         mModelPosition = modelPosition;
     }
 
-    public float getCurrentDegree() {
-        return mCurrentDegree;
+    public Renderable getRenderable() {
+        return mRenderable;
     }
 
-    public void setCurrentDegree(float currentDegree) {
-        mCurrentDegree = currentDegree;
-    }
-
-    public Vector3 getCameraPosition() {
-        return mCameraPosition;
-    }
-
-    public void setCameraPosition(Vector3 cameraPosition) {
-        mCameraPosition = cameraPosition;
+    public void setRenderable(Renderable renderable) {
+        mRenderable = renderable;
     }
 }

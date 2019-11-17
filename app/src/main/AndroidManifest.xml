@@ -20,9 +20,11 @@
 
         <activity android:name=".community.activity.FriendListActivity" />
         <activity android:name=".task.activity.TaskListActivity" />
+        <activity android:name=".ARModel.ScanModelActivity" />
 
-        <!--                    <activity android:name=".TestActivity">-->
-        <activity android:name=".UserManagement.Login.LoginActivity">
+        <!--                <activity android:name=".TestActivity">-->
+        <!--        <activity android:name=".UserManagement.Login.LoginActivity">-->
+        <activity android:name=".ARModel.PutModelActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.learningsupport_argame.ARModel.MainActivity;
 import com.example.learningsupport_argame.Navi.Activity.LocationService;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
@@ -93,9 +94,12 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(this, "LOGIN_SUCCESS"+UserLab.getCurrentUser().getName(), Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "onCreate: "+user.getName());
                         startService(mLocationServiceIntent);
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        /*
                         Intent intent = new Intent(this, TaskListActivity.class);
                         intent.putExtra(User.CURRENT_USER_ID, user.getId()+"");
                         startActivity(intent);
+                        */
                     }
                 });
             }).start();
@@ -122,9 +126,12 @@ public class LoginActivity extends AppCompatActivity {
             UserLab.setCurrentUser(user);
             Log.d(TAG, "onCreate: " + UserLab.getCurrentUser().getId());
             startService(mLocationServiceIntent);
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            /*
             Intent intent = new Intent(this, TaskListActivity.class);
-            intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId() + "");
+            intent.putExtra(User.CURRENT_USER_ID, user.getId()+"");
             startActivity(intent);
+            */
             finish();
         }).start();
     }
