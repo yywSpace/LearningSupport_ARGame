@@ -91,13 +91,21 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
 
     FloatingActionButton dragFloatActionButton;
 
+    ImageButton mReturnButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.course_table_navigation_layout);
         // 添加侧边栏
-        new NavigationController(this, getWindow().getDecorView());
-
+//        new NavigationController(this, getWindow().getDecorView());
+        mReturnButton  = findViewById(R.id.navigation_button);
+        mReturnButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         SQLiteStudioService.instance().start(this);
 
         LitePal.initialize(CourseMainActivity.this);

@@ -19,7 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.learningsupport_argame.ARModel.MainActivity;
+import com.example.learningsupport_argame.MainActivity;
 import com.example.learningsupport_argame.Navi.Activity.LocationService;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
@@ -100,10 +100,10 @@ public class LoginActivity extends AppCompatActivity {
                         intent.putExtra(User.CURRENT_USER_ID, user.getId()+"");
                         startActivity(intent);
                         */
+                        finish();
                     }
                 });
             }).start();
-            finish();
 
         });
         mRegisterTextView.setOnClickListener((view) -> {
@@ -126,14 +126,14 @@ public class LoginActivity extends AppCompatActivity {
             UserLab.setCurrentUser(user);
             Log.d(TAG, "onCreate: " + UserLab.getCurrentUser().getId());
             startService(mLocationServiceIntent);
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
             /*
             Intent intent = new Intent(this, TaskListActivity.class);
             intent.putExtra(User.CURRENT_USER_ID, user.getId()+"");
             startActivity(intent);
             */
-            finish();
         }).start();
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        finish();
     }
 
     private boolean changePromptMessage(boolean status, String promptMessage, TextView labelTextView, TextView statusTextView) {
