@@ -44,9 +44,7 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 
-//import android.support.annotation.Nullable;
-//import android.support.v4.app.ActivityCompat;
-//import android.support.v4.content.ContextCompat;
+
 
 /** Static utility methods to simplify creating multiple demo activities. */
 public class DemoUtils {

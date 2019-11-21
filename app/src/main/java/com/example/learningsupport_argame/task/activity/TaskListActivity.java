@@ -61,21 +61,21 @@ public class TaskListActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private FloatingActionButton mFloatingActionButton;
     private BottomNavigationViewEx mNavigationView;
-    private ImageButton mReturnButton;
+//    private ImageButton mReturnButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.tasklist_layout);
+        setContentView(R.layout.tasklist_navigation_layout);
         // 初始化导航栏信息
-//        new NavigationController(this, getWindow().getDecorView());
-        mReturnButton = findViewById(R.id.navigation_button);
-        mReturnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        new NavigationController(this, getWindow().getDecorView());
+//        mReturnButton = findViewById(R.id.navigation_button);
+//        mReturnButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
         mCurrentUserId = getIntent().getStringExtra(User.CURRENT_USER_ID);
 
 

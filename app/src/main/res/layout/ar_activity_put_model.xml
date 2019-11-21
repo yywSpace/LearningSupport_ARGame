@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <com.google.ar.sceneform.ArSceneView
         android:id="@+id/aomodel_put_ar_scene_view"
         android:layout_width="fill_parent"
@@ -28,7 +29,7 @@
         android:layout_marginRight="30dp"
         android:layout_marginBottom="120dp"
         android:backgroundTint="@android:color/white"
-        android:src="@drawable/armodel_delete_icon"
+        android:src="@drawable/ar_delete_icon"
         app:borderWidth="0dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -39,7 +40,7 @@
         android:layout_marginRight="30dp"
         android:layout_marginBottom="50dp"
         android:backgroundTint="@android:color/white"
-        android:src="@drawable/armodel_model_icon"
+        android:src="@drawable/ar_model_icon"
         app:borderWidth="0dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -50,7 +51,7 @@
         android:layout_marginRight="30dp"
         android:layout_marginBottom="190dp"
         android:backgroundTint="@android:color/white"
-        android:src="@drawable/armodel_submit_icon"
+        android:src="@drawable/ar_submit_icon"
         app:borderWidth="0dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -61,7 +62,11 @@
         android:layout_marginRight="30dp"
         android:layout_marginBottom="260dp"
         android:backgroundTint="@android:color/white"
-        android:src="@drawable/armodel_scan_icon"
+        android:src="@drawable/ar_scan_icon"
         app:borderWidth="0dp" />
-
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:text="123"
+        android:layout_height="wrap_content"/>
 </FrameLayout>

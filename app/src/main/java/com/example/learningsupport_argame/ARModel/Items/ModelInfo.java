@@ -5,39 +5,15 @@ import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.Renderable;
 
 public class ModelInfo {
-    private Quaternion mModelRotation; // 模型本地旋转角度
-    private Vector3 mModelScale; // 模型世界缩放大小
-    private Vector3 mModelPosition; // 模型世界坐标
+    private Quaternion mRotation; // 模型本地旋转角度
+    private Vector3 mScale; // 模型世界缩放大小
+    private Vector3 mRelativePosition; // 模型相对于相机坐标
     private Renderable mRenderable;
 
-    public ModelInfo(Quaternion rotation, Vector3 scale, Vector3 position) {
-        setModelRotation(rotation);
-        setModelPosition(position);
-        setModelScale(scale);
-    }
-
-    public Quaternion getModelRotation() {
-        return mModelRotation;
-    }
-
-    public void setModelRotation(Quaternion modelRotation) {
-        mModelRotation = modelRotation;
-    }
-
-    public Vector3 getModelScale() {
-        return mModelScale;
-    }
-
-    public void setModelScale(Vector3 modelScale) {
-        mModelScale = modelScale;
-    }
-
-    public Vector3 getModelPosition() {
-        return mModelPosition;
-    }
-
-    public void setModelPosition(Vector3 modelPosition) {
-        mModelPosition = modelPosition;
+    public ModelInfo(Vector3 relativePosition, Vector3 scale, Quaternion rotation) {
+        setRotation(rotation);
+        setRelativePosition(relativePosition);
+        setScale(scale);
     }
 
     public Renderable getRenderable() {
@@ -46,5 +22,29 @@ public class ModelInfo {
 
     public void setRenderable(Renderable renderable) {
         mRenderable = renderable;
+    }
+
+    public Vector3 getRelativePosition() {
+        return mRelativePosition;
+    }
+
+    public void setRelativePosition(Vector3 relativePosition) {
+        mRelativePosition = relativePosition;
+    }
+
+    public Quaternion getRotation() {
+        return mRotation;
+    }
+
+    public void setRotation(Quaternion rotation) {
+        mRotation = rotation;
+    }
+
+    public Vector3 getScale() {
+        return mScale;
+    }
+
+    public void setScale(Vector3 scale) {
+        mScale = scale;
     }
 }

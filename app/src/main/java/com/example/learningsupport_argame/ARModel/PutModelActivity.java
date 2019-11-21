@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,11 +30,12 @@ import com.example.learningsupport_argame.ARModel.Items.ItemsLab;
 import com.example.learningsupport_argame.ARModel.Items.ModelInfo;
 import com.example.learningsupport_argame.ARModel.Items.ModelInfoLab;
 import com.example.learningsupport_argame.ARModel.Utils.DemoUtils;
-import com.example.learningsupport_argame.ARModel.Utils.LocationSensor;
 import com.example.learningsupport_argame.ARModel.Utils.Utils;
+import com.example.learningsupport_argame.ARModel.Utils.Vector3Utils;
 import com.example.learningsupport_argame.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.ar.core.Anchor;
+import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.core.TrackingState;
@@ -42,6 +43,7 @@ import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.Camera;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
@@ -53,8 +55,9 @@ import java.util.List;
 
 
 public class PutModelActivity extends AppCompatActivity {
-    private static String TAG = PutModelActivity.class.getSimpleName();
-    private PopupWindow mItemsPopupWindow;
+    private static final String TAG = PutModelActivity.class.getSimpleName();
+    private static final int RC_PERMISSIONS = 0x123;
+    private AlertDialog mItemsAlertDialog;
     private ImageView mPutStatusImage;
     private FloatingActionButton mShowModelItemButton;
     private FloatingActionButton mSubmitModelButton;
@@ -62,11 +65,7 @@ public class PutModelActivity extends AppCompatActivity {
     private FloatingActionButton mScanModelButton;
     private RecyclerView mItemsRecyclerView;
     private ItemsAdapter mItemsAdapter;
-    private boolean hasShowItemsPopupWindow = false;// 是否显示了 PopupWindow
-    private List<Item> mItems;
-    private List<ModelInfo> mModelInfoList;
     private ItemsLab mItemsLab;
-    private ModelInfoLab mModelInfoLab;
 
     private boolean hasSetToPanel = false;
     private ViewRenderable mViewRenderable;
@@ -80,9 +79,6 @@ public class PutModelActivity extends AppCompatActivity {
      */
     private Vector3 mNodeRotation;
     private int SLIDE_EFFECTIVE_DISTANCE = 3;
-
-    LocationSensor mLocationSensor;
-    ModelInfo modelInfo;
     private boolean installRequested;
     float startX;
     float startY;
@@ -97,19 +93,44 @@ public class PutModelActivity extends AppCompatActivity {
         if (!DemoUtils.checkIsSupportedDeviceOrFinish(this))
             return;
 
-        mLocationSensor = LocationSensor.get(this);
-
-        setContentView(R.layout.armodel_activity_put_model);
+        setContentView(R.layout.ar_activity_put_model);
 
         mItemsLab = ItemsLab.get();
-        mItems = mItemsLab.getItemList();
-        mModelInfoLab = ModelInfoLab.get();
-        mModelInfoList = mModelInfoLab.getModelInfoList();
         mNodeRotation = new Vector3();
         mPutStatus = ModelPutStatus.DO_NOT_PUT;
         initView();
         initEvent();
+        TextView message = findViewById(R.id.message);
+        mArSceneView
+                .getScene()
+                .addOnUpdateListener(
+                        frameTime -> {
 
+                            Frame frame = mArSceneView.getArFrame();
+
+                            if (frame == null) {
+                                return;
+                            }
+
+                            //当Frame处于跟踪状态再继续
+                            if (frame.getCamera().getTrackingState() != TrackingState.TRACKING) {
+                                return;
+                            }
+
+                            Camera camera = mArSceneView.getScene().getCamera();
+                            Vector3 rotation_l = Vector3Utils.quaternion2Euler(camera.getLocalRotation());
+                            if (rotation_l.x > 0) {
+                                rotation_l.y = 180 - rotation_l.y;
+                            }
+                            Vector3 rotation_w = Vector3Utils.quaternion2Euler(camera.getWorldRotation());
+                            String rotation = "l rotation:" + rotation_l +
+                                    "\nw rotation:" + rotation_w +
+                                    "\nl position:" + camera.getLocalRotation() +
+                                    "\nw position:" + camera.getWorldPosition();
+                            message.setText(rotation);
+                        });
+        // 申请相机权限
+        DemoUtils.requestCameraPermission(this, RC_PERMISSIONS);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -151,8 +172,20 @@ public class PutModelActivity extends AppCompatActivity {
                 Toast.makeText(this, "请放置一个模型", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            // 当用户打开scanModelActivity后将用户放置模型相对于相机状态复现
+            // 规定一次只放一个节点
             Node node = mSelectNode.getChildren().get(0);
-            ModelInfo modelInfo = new ModelInfo(node.getLocalRotation(), node.getLocalScale(), node.getLocalPosition());
+            // 模型相对相机位置
+            Vector3 relativePosition = Vector3.subtract(
+                    node.getWorldPosition(),
+                    mArSceneView.getScene().getCamera().getWorldPosition());
+            // 模型缩放大小
+            Vector3 modelScale = node.getLocalScale();
+            // 模型绕自身旋转
+            Quaternion modelRotation = node.getLocalRotation();
+            // 构建模型信息
+            ModelInfo modelInfo = new ModelInfo(relativePosition, modelScale, modelRotation);
             modelInfo.setRenderable(node.getRenderable());
             ModelInfoLab.get().setCurrentModelInfo(modelInfo);
             Toast.makeText(this, "放置模型完毕", Toast.LENGTH_SHORT).show();
@@ -268,6 +301,55 @@ public class PutModelActivity extends AppCompatActivity {
 
         mArSceneView.setOnTouchListener(mSwipeOnTouchListener);
 
+        mShowModelItemButton.setOnClickListener((v) -> {
+            View view = LayoutInflater.from(this).inflate(R.layout.ar_item_recycle_layout, null, false);
+            mItemsRecyclerView = view.findViewById(R.id.ar_items_recycler_view);
+            mItemsAdapter = new ItemsAdapter(this, ItemsLab.get().getItemList());
+            mItemsRecyclerView.setAdapter(mItemsAdapter);
+            mItemsAdapter.setOnModelItemClickListener(item -> {
+                // 如果已经放置模型，则返回
+                if (hasSetToPanel) {
+                    Toast.makeText(this, "只能放置一个模型", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //当Frame处于跟踪状态再继续
+                if (mArSceneView.getArFrame().getCamera().getTrackingState() != TrackingState.TRACKING) {
+                    Toast.makeText(PutModelActivity.this, "NO_TRACKING", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (item.getItemType() == ItemType.VIEW) {
+                    Utils.buildViewRenderable(this, item, renderable -> {
+                        mViewRenderable = (ViewRenderable) renderable;
+                        createAnchorNode(mArSceneView, mViewRenderable);
+                        Toast.makeText(this, "View renderable build finish", Toast.LENGTH_SHORT).show();
+                    });
+
+                } else if (item.getItemType() == ItemType.MODEL) {
+                    Utils.buildModelRenderable(this, item, renderable -> {
+                        mModelRenderable = (ModelRenderable) renderable;
+                        createAnchorNode(mArSceneView, mModelRenderable);
+                        Toast.makeText(this, "Model renderable build finish", Toast.LENGTH_SHORT).show();
+                    });
+                }
+
+                hasSetToPanel = true;
+
+                mPutStatus = ModelPutStatus.LR_BA_MODE;
+                mPutStatusImage.setImageResource(R.drawable.friend_list_item_green_point);
+                mItemsAlertDialog.dismiss();
+            });
+            mItemsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            // 弹出dialog
+            mItemsAlertDialog = new AlertDialog.Builder(this)
+                    .setTitle("选择模型")
+                    .setView(view)
+                    .create();
+            mItemsAlertDialog.show();
+            // 设置dialog宽高
+            mItemsAlertDialog.getWindow().setLayout(Utils.dp2px(this, 340), Utils.dp2px(this, 500));
+        });
     }
 
     void initView() {
@@ -278,84 +360,7 @@ public class PutModelActivity extends AppCompatActivity {
         mSubmitModelButton = findViewById(R.id.armodel_model_submit_button);
         mDeleteModelButton = findViewById(R.id.armodel_model_delete_button);
         mScanModelButton = findViewById(R.id.armodel_model_scan_button);
-
-        // 道具相关
-        // TODO: 19-7-14  item之间增加间距，采用瀑布流形式（每行数量固定，可上下滑动），长按item显示提示信息，酌情美化
         mShowModelItemButton = findViewById(R.id.armodel_model_show_button);
-        View contentView = LayoutInflater.from(this).inflate(R.layout.armodel_popwindow_items, null, false);
-        mItemsRecyclerView = contentView.findViewById(R.id.armodel_popwindow_items_recycler_view);
-        mItemsAdapter = new ItemsAdapter(this, mItems);
-        mItemsRecyclerView.setAdapter(mItemsAdapter);
-        mItemsAdapter.setOnModelItemClickListener(item -> {
-            mItemsPopupWindow.dismiss();
-            hasShowItemsPopupWindow = false;
-            // 如果已经放置模型，则返回
-            if (hasSetToPanel) {
-                Toast.makeText(this, "只能放置一个模型", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            hasSetToPanel = true;
-
-            //当Frame处于跟踪状态再继续
-            if (mArSceneView.getArFrame().getCamera().getTrackingState() != TrackingState.TRACKING) {
-                Toast.makeText(PutModelActivity.this, "NO_TRACKING", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (item.getItemType() == ItemType.VIEW) {
-                ViewRenderable.builder()
-                        .setView(this, item.getViewId())
-                        .build()
-                        .thenAccept(renderable -> {
-                            mViewRenderable = renderable;
-                            createAnchorNode(mArSceneView, mViewRenderable);
-                            Toast.makeText(this, "ViewRenderable build finish", Toast.LENGTH_SHORT).show();
-                        })
-                        .exceptionally(
-                                throwable -> {
-                                    Log.e(TAG, "Unable to load Renderable.", throwable);
-                                    return null;
-                                });
-            } else if (item.getItemType() == ItemType.MODEL) {
-                ModelRenderable.builder()
-                        .setSource(this, Uri.parse(item.getModelPath()))
-                        .build()
-                        .thenAccept(renderable -> {
-                            mModelRenderable = renderable;
-                            createAnchorNode(mArSceneView, mModelRenderable);
-                            Toast.makeText(this, "ModelRenderable build finish", Toast.LENGTH_SHORT).show();
-                        })
-                        .exceptionally(
-                                throwable -> {
-                                    Log.e(TAG, "Unable to load Renderable.", throwable);
-                                    return null;
-                                });
-            }
-            mPutStatus = ModelPutStatus.LR_BA_MODE;
-            mPutStatusImage.setImageResource(R.drawable.friend_list_item_green_point);
-        });
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mItemsRecyclerView.setLayoutManager(llm);
-
-        // 设置 PopupWindow 的宽度为比屏幕像素少一些
-        mItemsPopupWindow = new PopupWindow(contentView,
-                getResources().getDisplayMetrics().widthPixels - (Utils.dp2px(this, 50) + 147 + 20),
-                ViewGroup.LayoutParams.WRAP_CONTENT, false);
-
-        mShowModelItemButton.setOnClickListener(v -> {
-            // 如果已经显示PopupWindow则销毁，否则创建
-            if (!hasShowItemsPopupWindow) {
-                mItemsPopupWindow.showAsDropDown(
-                        mShowModelItemButton,
-                        -(getResources().getDisplayMetrics().widthPixels - (Utils.dp2px(this, 50) + 147)),
-                        -(mShowModelItemButton.getHeight() / 2 + Utils.dp2px(PutModelActivity.this, 50) / 2));
-                hasShowItemsPopupWindow = true;
-            } else {
-                mItemsPopupWindow.dismiss();
-                hasShowItemsPopupWindow = false;
-            }
-        });
     }
 
     /**
@@ -372,15 +377,25 @@ public class PutModelActivity extends AppCompatActivity {
             return;
         if (mPutStatus == ModelPutStatus.LR_BA_MODE) {
             if (Math.abs(offset_x) > Math.abs(offset_y)) {
-                // 左右-左右移动
+                // 左右-左右围绕移动
                 if (Math.abs(offset_x) < SLIDE_EFFECTIVE_DISTANCE)
                     return;
-                node.setWorldPosition(new Vector3(location.x - offset_x / 500, location.y, location.z));
+                // 获取当前手机camera坐标
+                Vector3 center = mArSceneView.getScene().getCamera().getWorldPosition();
+                // 计算模型绕camera旋转一定角度后坐标
+                location = Vector3Utils.rotateAroundY(center, location, -offset_x / 10);
+                node.setWorldPosition(location);
             } else {
                 // 上下-前后移动
                 if (Math.abs(offset_y) < SLIDE_EFFECTIVE_DISTANCE)
                     return;
-                node.setWorldPosition(new Vector3(location.x, location.y, location.z - offset_y / 500));
+                Vector3 rotation = getCameraEulerRotation();
+
+                // 计算与当前相机在同一方向上的距离向量
+                Vector3 distance = Vector3Utils.rotateAroundY(new Vector3(0, 0, -offset_y / 500), rotation.y);
+                // 当前模型坐标加上距离向量（此时模型沿相机向前后移动）
+                location = Vector3.add(distance, location);
+                node.setWorldPosition(location);
             }
         }
         if (mPutStatus == ModelPutStatus.ROTATE_UD_MODE) {
@@ -404,8 +419,18 @@ public class PutModelActivity extends AppCompatActivity {
     void createAnchorNode(ArSceneView arSceneView, Renderable renderable) {
         Toast.makeText(this, "createAnchorNode", Toast.LENGTH_SHORT).show();
         // 放置模型到前方
-        Vector3 transform = new Vector3(0, -0.5f, -1);
-        transform = Vector3.add(arSceneView.getScene().getCamera().getWorldPosition(), transform);
+        Vector3 distance = new Vector3(0, -0.5f, -1);
+
+        // 获取相机当前旋转欧拉角
+        Vector3 rotation = getCameraEulerRotation();
+
+        // 计算模型沿Y轴旋转相机旋转角度（此时模型在相机同一方向）
+        distance = Vector3Utils.rotateAroundY(distance, rotation.y);
+
+        // camera的local position几乎不会变动，所以此处使用getWorldPosition
+        // 相机位置加上沿相机正对方向距离（此时模型在相机前方）
+        Vector3 transform = Vector3.add(arSceneView.getScene().getCamera().getWorldPosition(), distance);
+
         Pose pose = Pose.makeTranslation(transform.x, transform.y, transform.z);
         Anchor anchor = arSceneView.getSession().createAnchor(pose);
         AnchorNode anchorNode = new AnchorNode(anchor);
@@ -416,10 +441,26 @@ public class PutModelActivity extends AppCompatActivity {
         mSelectNode = anchorNode;
     }
 
+    /**
+     * 获取相机当前旋转欧拉角
+     *
+     * @return
+     */
+    Vector3 getCameraEulerRotation() {
+        Camera camera = mArSceneView.getScene().getCamera();
+        // 获取当前相机旋转的四元数并转化为欧拉角
+        Vector3 rotation = Vector3Utils.quaternion2Euler(camera.getWorldRotation());
+        // 通过绕x轴旋转确定绕y轴旋转
+        // if x>0 y={90,-90} else y = {180-90,180-(-90)}
+        if (rotation.x > 0) {
+            rotation.y = 180 - rotation.y;
+        }
+        return rotation;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        mLocationSensor.onResume();
         if (mArSceneView == null) {
             return;
         }
@@ -452,7 +493,6 @@ public class PutModelActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        mLocationSensor.onPause();
         if (mArSceneView != null) {
             mArSceneView.pause();
         }
@@ -482,23 +522,4 @@ public class PutModelActivity extends AppCompatActivity {
 
         }
     }
-
-    class ScaleGesture extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-            return super.onScaleBegin(detector);
-        }
-
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            return super.onScale(detector);
-        }
-
-        @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-            super.onScaleEnd(detector);
-        }
-    }
-
 }
-

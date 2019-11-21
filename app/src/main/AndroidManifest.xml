@@ -3,7 +3,6 @@
     package="com.example.learningsupport_argame">
 
     <application
-
         android:name=".Navi.Utils.SDKInitializeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,12 +19,11 @@
 
         <activity android:name=".community.activity.FriendListActivity" />
         <activity android:name=".task.activity.TaskListActivity" />
-        <activity android:name=".ARModel.MainActivity" />
         <activity android:name=".ARModel.ScanModelActivity" />
         <activity android:name=".MainActivity" />
-        <!--                <activity android:name=".TestActivity">-->
-        <activity android:name=".UserManagement.Login.LoginActivity">
-            <!--        <activity android:name=".ARModel.PutModelActivity">-->
+        <!--        <activity android:name=".TestActivity">-->
+        <!--        <activity android:name=".UserManagement.Login.LoginActivity">-->
+        <activity android:name=".ARModel.PutModelActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +31,6 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".ARModel.PutModelActivity" />
         <activity android:name=".UserManagement.Login.RegisterActivity" />
         <activity android:name=".UserManagement.Login.ChangePasswordActivity" />
         <activity android:name=".UserManagement.UserMessage.FriendMessageActivity" />

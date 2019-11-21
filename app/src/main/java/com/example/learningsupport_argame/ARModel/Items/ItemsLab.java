@@ -12,11 +12,8 @@ public class ItemsLab {
     // TODO: 19-7-14 更改Path使其通过模型直接读取
     private ItemsLab() {
         mItemList = new ArrayList<>();
-        mItemList.add(new Item("Text", "只包含文字的ViewRenderable", R.layout.armodel_view_renderable_text,ItemType.VIEW));
-        mItemList.add(new Item("Model", "模型", "andy.sfb",ItemType.MODEL));
-        for (int i = 0; i < 3; i++) {
-            mItemList.add(new Item(" ", " ", "",ItemType.OTHER));
-        }
+        mItemList.add(new Item("Android 模型", "简单的android模型", "andy.sfb", ItemType.MODEL));
+        mItemList.add(new Item("文字", "只包含文字的布局", R.layout.armodel_view_renderable_text, ItemType.VIEW));
 
     }
 

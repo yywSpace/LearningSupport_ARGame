@@ -1,9 +1,7 @@
 package com.example.learningsupport_argame.ARModel;
 
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -17,12 +15,11 @@ import com.example.learningsupport_argame.ARModel.Items.ModelInfo;
 import com.example.learningsupport_argame.ARModel.Items.ModelInfoLab;
 import com.example.learningsupport_argame.ARModel.Utils.DemoUtils;
 import com.example.learningsupport_argame.ARModel.Utils.LocationSensor;
+import com.example.learningsupport_argame.ARModel.Utils.Utils;
+import com.example.learningsupport_argame.ARModel.Utils.Vector3Utils;
 import com.example.learningsupport_argame.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.ar.core.Anchor;
-import com.google.ar.core.Frame;
-import com.google.ar.core.Plane;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.core.TrackingState;
@@ -30,18 +27,18 @@ import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.Camera;
 import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
-import com.google.ar.sceneform.rendering.ModelRenderable;
 
 
 public class ScanModelActivity extends AppCompatActivity {
     private static final String TAG = ScanModelActivity.class.getSimpleName();
+    private static final int RC_PERMISSIONS = 0x123;
     private ArSceneView mArSceneView;
-    private Snackbar loadingMessageSnackbar = null;
     private FloatingActionButton mPutModelButton;
     private boolean installRequested;
-    private ModelRenderable mModelRenderable;
     private ModelInfoLab mModelInfoLab;
 
     TextView mMessageTextView;
@@ -50,7 +47,7 @@ public class ScanModelActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.armodel_activity_scan_model);
+        setContentView(R.layout.ar_activity_scan_model);
         mArSceneView = findViewById(R.id.aomodel_ar_scene_view);
         mPutModelButton = findViewById(R.id.armodel_model_put_test);
         mMessageTextView = findViewById(R.id.armodel_node_message);
@@ -66,16 +63,10 @@ public class ScanModelActivity extends AppCompatActivity {
                 Toast.makeText(ScanModelActivity.this, "NO_TRACKING", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Vector3 transform = new Vector3(0, -0.5f, -1);
-            transform = Vector3.add(mArSceneView.getScene().getCamera().getWorldPosition(), transform);
-            Pose pose = Pose.makeTranslation(transform.x, transform.y, transform.z);
-            Anchor anchor = mArSceneView.getSession().createAnchor(pose);
-            AnchorNode anchorNode = new AnchorNode(anchor);
-            anchorNode.setParent(mArSceneView.getScene());
-            Node node = createNode(ModelInfoLab.get().getCurrentModelInfo());
-            anchorNode.addChild(node);
+            createAnchorNode(mModelInfoLab.getCurrentModelInfo());
         });
-
+        // 申请相机权限
+        DemoUtils.requestCameraPermission(this, RC_PERMISSIONS);
     }
 
     @Override
@@ -161,13 +152,34 @@ public class ScanModelActivity extends AppCompatActivity {
         }
     }
 
-
-    Node createNode(ModelInfo modelInfo) {
+    // TODO: 19-11-21 有问题，可能是放置时参数设置，也可能是这里 
+    AnchorNode createAnchorNode(ModelInfo modelInfo) {
+        Camera camera = mArSceneView.getScene().getCamera();
+        // 模型放置时相对与相机的坐标与AnchorNode坐标相同，因为node是他的子项
+        Vector3 relativePosition = modelInfo.getRelativePosition();
+        // 获取相机当前旋转欧拉角
+        Vector3 rotation = Utils.getCameraEulerRotation(camera);
+        // 计算模型沿Y轴旋转相机旋转角度（此时模型在相机同一方向）
+        relativePosition = Vector3Utils.rotateAroundY(relativePosition, rotation.y);
+        Vector3 transform = Vector3.add(camera.getWorldPosition(), relativePosition);
+        Pose pose = Pose.makeTranslation(transform.x, transform.y, transform.z);
+        Anchor anchor = mArSceneView.getSession().createAnchor(pose);
+        AnchorNode anchorNode = new AnchorNode(anchor);
+        anchorNode.setParent(mArSceneView.getScene());
         Node node = new Node();
-        node.setLocalScale(modelInfo.getModelScale());
-        node.setLocalPosition(modelInfo.getModelPosition());
-        node.setLocalRotation(modelInfo.getModelRotation());
+        node.setLocalScale(modelInfo.getScale());
+        // 调整模型自身旋转方向（避免因相机旋转造成的模型自身旋转出错）
+        Vector3 nodeRotation = Vector3Utils.quaternion2Euler(modelInfo.getRotation());
+        if (nodeRotation.x > 0) {
+            nodeRotation.y = 180 - nodeRotation.y;
+        }
+        // 当前模型自身y轴旋转加上因相机旋转产生的偏移
+        nodeRotation = Vector3.add(nodeRotation, new Vector3(0, rotation.y, 0));
+        node.setLocalRotation(Quaternion.eulerAngles(nodeRotation));
         node.setRenderable(modelInfo.getRenderable());
-        return node;
+        anchorNode.addChild(node);
+        return anchorNode;
     }
+
+
 }

@@ -17,7 +17,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
     private Context mContext;
     private OnModelItemClickListener mOnModelItemClickListener;
 
-    public ItemsAdapter(Context context,List<Item> items) {
+    public ItemsAdapter(Context context, List<Item> items) {
         mContext = context;
         mItems = items;
     }
@@ -25,14 +25,17 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
     @NonNull
     @Override
     public ItemsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.armodel_popwindow_item, null, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.ar_recycle_item, null, false);
         return new ItemsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemsViewHolder viewHolder, int i) {
-        viewHolder.setOnModelItemClickListener(mOnModelItemClickListener);
         viewHolder.bind(mItems.get(i));
+        viewHolder.itemView.setOnClickListener(v -> {
+            if (mOnModelItemClickListener != null)
+                mOnModelItemClickListener.onMyItemClick(mItems.get(i));
+        });
     }
 
     @Override
@@ -40,7 +43,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsViewHolder> {
         return mItems.size();
     }
 
-    public void setOnModelItemClickListener(OnModelItemClickListener itemClickListener){
-        mOnModelItemClickListener =itemClickListener;
+    public void setOnModelItemClickListener(OnModelItemClickListener itemClickListener) {
+        mOnModelItemClickListener = itemClickListener;
     }
 }
