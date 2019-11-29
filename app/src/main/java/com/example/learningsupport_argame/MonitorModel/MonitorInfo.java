@@ -1,27 +1,29 @@
 package com.example.learningsupport_argame.MonitorModel;
 
-public class MonitorInfo {
-    public static final String PHONE_TOTAL_TIME = "mMonitorPhoneTotalTime";
+import java.io.Serializable;
+
+public class MonitorInfo implements Serializable {
+    public static final String MONITOR_INFO = "mMonitorInfo";
     public static final String TASK_SCREEN_ON_TIME = "mMonitorTaskScreenOnTime";
+    public static final String TASK_SCREEN_OFF_TIME = "mMonitorTaskScreenOffTime";
     public static final String ATTENTION_TIME = "mMonitorScreenOnAttentionSpan";
     public static final String PHONE_USE_COUNT = "mMonitorPhoneUseCount";
     public static final String TASK_REMANDING_TIME = "mRemainingTime";
+    public static final String TASK_OUT_OF_RANGE_TIME = "mTaskOutOfRangeTime";
 
-
-    // private int mMonitorLevel; // 监督等级
     private String mTaskBeginTime;
-
     private String mTaskEndTime;
-
+    private int mTaskOutOfRangeTime;
     private float mMonitorTaskScreenOnTime; //任务过程中手机亮屏时间
-
-    //private float mMonitorTaskScreenOffTime; //任务过程中手机非亮屏时间
-
+    private int mMonitorTaskScreenOffTime;
     private float mMonitorScreenOnAttentionSpan;
-
-
     private float mMonitorPhoneUseCount;//任务过程手机使用次数
 
+    /**
+     * 亮屏时间
+     *
+     * @return
+     */
     public float getMonitorTaskScreenOnTime() {
         return mMonitorTaskScreenOnTime;
     }
@@ -30,16 +32,33 @@ public class MonitorInfo {
         mMonitorTaskScreenOnTime = monitorTaskScreenOnTime;
     }
 
-    public float getTaskTotalTime() {
-        return MonitorService.remainingTime(getTaskBeginTime(), getTaskEndTime());
+    /**
+     * 监督总时间
+     *
+     * @return
+     */
+    public int getTaskTotalTime() {
+        return (int) TimeUtils.remainingTime(getTaskBeginTime(), getTaskEndTime(), "yyyy-MM-dd HH:mm");
     }
 
-
-    public float getMonitorTaskScreenOffTime() {
-        return getTaskTotalTime() - mMonitorTaskScreenOnTime;
+    /**
+     * 息屏时间
+     *
+     * @return
+     */
+    public int getMonitorTaskScreenOffTime() {
+        return mMonitorTaskScreenOffTime;
     }
 
+    public void setMonitorTaskScreenOffTime(int monitorTaskScreenOffTime) {
+        mMonitorTaskScreenOffTime = monitorTaskScreenOffTime;
+    }
 
+    /**
+     * 亮屏过程中专注时间
+     *
+     * @return
+     */
     public float getMonitorScreenOnAttentionSpan() {
         return mMonitorScreenOnAttentionSpan;
     }
@@ -48,11 +67,20 @@ public class MonitorInfo {
         mMonitorScreenOnAttentionSpan = monitorScreenOnAttentionSpan;
     }
 
+    /**
+     * 亮屏过程中非专注时间
+     *
+     * @return
+     */
     public float getMonitorScreenOnInattentionSpan() {
         return mMonitorTaskScreenOnTime - mMonitorScreenOnAttentionSpan;
     }
 
-
+    /**
+     * 任务过程中手机使用次数
+     *
+     * @return
+     */
     public float getMonitorPhoneUseCount() {
         return mMonitorPhoneUseCount;
     }
@@ -61,6 +89,11 @@ public class MonitorInfo {
         mMonitorPhoneUseCount = monitorPhoneUseCount;
     }
 
+    /**
+     * 任务开始时间
+     *
+     * @return
+     */
     public String getTaskBeginTime() {
         return mTaskBeginTime;
     }
@@ -69,6 +102,11 @@ public class MonitorInfo {
         mTaskBeginTime = taskBeginTime;
     }
 
+    /**
+     * 任务结束时间
+     *
+     * @return
+     */
     public String getTaskEndTime() {
         return mTaskEndTime;
     }
@@ -77,9 +115,25 @@ public class MonitorInfo {
         mTaskEndTime = taskEndTime;
     }
 
-    //亮屏过程中专注时间+灭屏时间
+    /**
+     * 总专注时间 = 亮屏过程中专注时间+灭屏时间
+     *
+     * @return
+     */
     public float getMonitorAttentionTime() {
         return getMonitorTaskScreenOffTime() + getMonitorScreenOnAttentionSpan();
     }
 
+    /**
+     * 任务过程中在任务规定地点之外的时间
+     *
+     * @return
+     */
+    public int getTaskOutOfRangeTime() {
+        return mTaskOutOfRangeTime;
+    }
+
+    public void setTaskOutOfRangeTime(int taskOutOfRangeTime) {
+        mTaskOutOfRangeTime = taskOutOfRangeTime;
+    }
 }

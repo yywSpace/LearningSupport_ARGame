@@ -22,9 +22,7 @@ import com.example.learningsupport_argame.R;
 public class ForegroundService extends Service {
 
     private static final String TAG = "ForegroundService";
-    ///////////////////////
     private static final int RES_ID = R.layout.map_map_activity;
-    /////////////////////////
 
     @Override
     public IBinder onBind(Intent intent) {

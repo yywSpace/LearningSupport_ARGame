@@ -2,8 +2,8 @@ package com.example.learningsupport_argame.ARModel;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,16 +23,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.learningsupport_argame.ARModel.Items.Item;
-import com.example.learningsupport_argame.ARModel.Items.ItemType;
-import com.example.learningsupport_argame.ARModel.Items.ItemsAdapter;
-import com.example.learningsupport_argame.ARModel.Items.ItemsLab;
+import com.baidu.mapapi.model.LatLng;
+import com.example.learningsupport_argame.ARModel.Items.ModelItem;
+import com.example.learningsupport_argame.ARModel.Items.ModelItemType;
+import com.example.learningsupport_argame.ARModel.Items.ModelItemsAdapter;
+import com.example.learningsupport_argame.ARModel.Items.ModelItemsLab;
 import com.example.learningsupport_argame.ARModel.Items.ModelInfo;
 import com.example.learningsupport_argame.ARModel.Items.ModelInfoLab;
+import com.example.learningsupport_argame.ARModel.Utils.ARUtils;
 import com.example.learningsupport_argame.ARModel.Utils.DemoUtils;
-import com.example.learningsupport_argame.ARModel.Utils.Utils;
 import com.example.learningsupport_argame.ARModel.Utils.Vector3Utils;
+import com.example.learningsupport_argame.Navi.Activity.LocationService;
+import com.example.learningsupport_argame.Navi.Utils.MapUtils;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.Task.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
@@ -51,8 +55,6 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 
-import java.util.List;
-
 
 public class PutModelActivity extends AppCompatActivity {
     private static final String TAG = PutModelActivity.class.getSimpleName();
@@ -64,8 +66,7 @@ public class PutModelActivity extends AppCompatActivity {
     private FloatingActionButton mDeleteModelButton;
     private FloatingActionButton mScanModelButton;
     private RecyclerView mItemsRecyclerView;
-    private ItemsAdapter mItemsAdapter;
-    private ItemsLab mItemsLab;
+    private ModelItemsAdapter mModelItemsAdapter;
 
     private boolean hasSetToPanel = false;
     private ViewRenderable mViewRenderable;
@@ -73,6 +74,7 @@ public class PutModelActivity extends AppCompatActivity {
 
     private ArSceneView mArSceneView;
     private AnchorNode mSelectNode;// 当前选中的model
+    private ModelItem mSelectItem;// 当前选中的model
     private ModelPutStatus mPutStatus;
     /**
      * 代表当前选中节点的旋转
@@ -80,10 +82,14 @@ public class PutModelActivity extends AppCompatActivity {
     private Vector3 mNodeRotation;
     private int SLIDE_EFFECTIVE_DISTANCE = 3;
     private boolean installRequested;
-    float startX;
-    float startY;
+    private float startX;
+    private float startY;
     private ScaleGestureDetector mScaleGestureDetector;
-    View.OnTouchListener mScaleOnTouchListener, mSwipeOnTouchListener;
+    private View.OnTouchListener mScaleOnTouchListener, mSwipeOnTouchListener;
+
+    private Task mCurrentTask;
+    private String mModelAddress = "";
+    private LatLng mCurrentLatLng;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -94,10 +100,9 @@ public class PutModelActivity extends AppCompatActivity {
             return;
 
         setContentView(R.layout.ar_activity_put_model);
-
-        mItemsLab = ItemsLab.get();
         mNodeRotation = new Vector3();
         mPutStatus = ModelPutStatus.DO_NOT_PUT;
+        mCurrentTask = (Task) getIntent().getSerializableExtra("task");
         initView();
         initEvent();
         TextView message = findViewById(R.id.message);
@@ -172,7 +177,6 @@ public class PutModelActivity extends AppCompatActivity {
                 Toast.makeText(this, "请放置一个模型", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             // 当用户打开scanModelActivity后将用户放置模型相对于相机状态复现
             // 规定一次只放一个节点
             Node node = mSelectNode.getChildren().get(0);
@@ -186,9 +190,25 @@ public class PutModelActivity extends AppCompatActivity {
             Quaternion modelRotation = node.getLocalRotation();
             // 构建模型信息
             ModelInfo modelInfo = new ModelInfo(relativePosition, modelScale, modelRotation);
+            modelInfo.setModelName(mSelectItem.getItemName());
             modelInfo.setRenderable(node.getRenderable());
-            ModelInfoLab.get().setCurrentModelInfo(modelInfo);
-            Toast.makeText(this, "放置模型完毕", Toast.LENGTH_SHORT).show();
+            modelInfo.setModelLatLng(mCurrentLatLng);
+
+            new AlertDialog.Builder(PutModelActivity.this)
+                    .setTitle("放置模型")
+                    .setMessage(String.format("任务名称：%s\n任务地点：%s\n模型名称：%s\n是否想要放置模型?", mCurrentTask.getTaskName(), mModelAddress, mSelectItem.getItemName()))
+                    .setPositiveButton("确定", (dialog, which) -> {
+                        new Thread(() -> {
+                            ModelInfoLab.insertModelInfo(modelInfo, mCurrentTask);
+                            Looper.prepare();
+                            Toast.makeText(PutModelActivity.this, "放置模型完毕", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }).start();
+                        setResult(RESULT_OK);
+                        finish();
+                    })
+                    .setNegativeButton("取消", null)
+                    .show();
         });
 
         mScanModelButton.setOnClickListener(v -> {
@@ -304,9 +324,9 @@ public class PutModelActivity extends AppCompatActivity {
         mShowModelItemButton.setOnClickListener((v) -> {
             View view = LayoutInflater.from(this).inflate(R.layout.ar_item_recycle_layout, null, false);
             mItemsRecyclerView = view.findViewById(R.id.ar_items_recycler_view);
-            mItemsAdapter = new ItemsAdapter(this, ItemsLab.get().getItemList());
-            mItemsRecyclerView.setAdapter(mItemsAdapter);
-            mItemsAdapter.setOnModelItemClickListener(item -> {
+            mModelItemsAdapter = new ModelItemsAdapter(this, ModelItemsLab.get().getItemList());
+            mItemsRecyclerView.setAdapter(mModelItemsAdapter);
+            mModelItemsAdapter.setOnModelItemClickListener(item -> {
                 // 如果已经放置模型，则返回
                 if (hasSetToPanel) {
                     Toast.makeText(this, "只能放置一个模型", Toast.LENGTH_SHORT).show();
@@ -319,23 +339,28 @@ public class PutModelActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (item.getItemType() == ItemType.VIEW) {
-                    Utils.buildViewRenderable(this, item, renderable -> {
+                if (item.getModelItemType() == ModelItemType.VIEW) {
+                    ARUtils.buildViewRenderable(this, item, renderable -> {
                         mViewRenderable = (ViewRenderable) renderable;
                         createAnchorNode(mArSceneView, mViewRenderable);
                         Toast.makeText(this, "View renderable build finish", Toast.LENGTH_SHORT).show();
                     });
 
-                } else if (item.getItemType() == ItemType.MODEL) {
-                    Utils.buildModelRenderable(this, item, renderable -> {
+                } else if (item.getModelItemType() == ModelItemType.MODEL) {
+                    ARUtils.buildModelRenderable(this, item, renderable -> {
                         mModelRenderable = (ModelRenderable) renderable;
                         createAnchorNode(mArSceneView, mModelRenderable);
                         Toast.makeText(this, "Model renderable build finish", Toast.LENGTH_SHORT).show();
                     });
                 }
-
+                // 获取 item
+                mSelectItem = item;
+                // 获取当前位置
+                mCurrentLatLng = new LatLng(
+                        LocationService.getCurrentLocation().getLatitude(),
+                        LocationService.getCurrentLocation().getLongitude());
+                MapUtils.latLng2Address(mCurrentLatLng, address -> mModelAddress = address);
                 hasSetToPanel = true;
-
                 mPutStatus = ModelPutStatus.LR_BA_MODE;
                 mPutStatusImage.setImageResource(R.drawable.friend_list_item_green_point);
                 mItemsAlertDialog.dismiss();
@@ -348,7 +373,7 @@ public class PutModelActivity extends AppCompatActivity {
                     .create();
             mItemsAlertDialog.show();
             // 设置dialog宽高
-            mItemsAlertDialog.getWindow().setLayout(Utils.dp2px(this, 340), Utils.dp2px(this, 500));
+            mItemsAlertDialog.getWindow().setLayout(ARUtils.dp2px(this, 340), ARUtils.dp2px(this, 500));
         });
     }
 

@@ -4,11 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <com.google.ar.sceneform.ArSceneView
-        android:id="@+id/aomodel_ar_scene_view"
+        android:id="@+id/armodel_ar_scene_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_gravity="top"/>
+        android:layout_gravity="top" />
 
     <TextView
         android:id="@+id/armodel_node_message"
@@ -25,4 +26,21 @@
         android:backgroundTint="@android:color/white"
         android:src="@drawable/ar_submit_icon"
         app:borderWidth="0dp" />
+
+
+    <com.example.learningsupport_argame.ARModel.CircleFrameLayout
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="left|bottom"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        app:borderWidth="5dp"
+        app:circleRadius="100dp">
+
+        <com.baidu.mapapi.map.MapView
+            android:id="@+id/ar_mini_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.example.learningsupport_argame.ARModel.CircleFrameLayout>
+
 </FrameLayout>

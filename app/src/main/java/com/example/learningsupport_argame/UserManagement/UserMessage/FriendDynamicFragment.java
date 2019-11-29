@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
-import com.example.learningsupport_argame.task.Task;
-import com.example.learningsupport_argame.task.TaskLab;
+import com.example.learningsupport_argame.Task.Task;
+import com.example.learningsupport_argame.Task.TaskLab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +144,7 @@ public class FriendDynamicFragment extends Fragment {
                 dynamicDesc.setText(task.getTaskStatus());
                 taskName.setText(task.getTaskName());
                 taskTime.setText(task.getTaskStartAt() + "-" + task.getTaskEndIn());
-                taskLocation.setText(task.getAccomplishTaskLocation());
+                taskLocation.setText(task.getAccomplishTaskLocation().split(",")[0]);
             }
         }
     }

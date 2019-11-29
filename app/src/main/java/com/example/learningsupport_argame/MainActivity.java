@@ -1,35 +1,12 @@
 package com.example.learningsupport_argame;
 
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import com.example.ARModel.SendMessageActivity;
 import com.example.learningsupport_argame.ARModel.PutModelActivity;
@@ -42,23 +19,9 @@ import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.UserMessageActivity;
-import com.example.learningsupport_argame.bean.PairInfoBean;
-import com.example.learningsupport_argame.community.activity.FriendListDialog;
-import com.example.learningsupport_argame.community.activity.FriendList_Main;
-import com.example.learningsupport_argame.task.Task;
-import com.example.learningsupport_argame.task.TaskLab;
-import com.example.learningsupport_argame.task.TaskPopWindow.TaskListPopWindow;
-import com.example.learningsupport_argame.task.activity.TaskListActivity;
-import com.example.learningsupport_argame.tempararyfile.CurrentTaskFragment;
-import com.example.learningsupport_argame.tempararyfile.MultiSelectionSpinner;
-import com.example.learningsupport_argame.tempararyfile.TaskListFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import com.example.learningsupport_argame.Community.activity.FriendListActivity;
+import com.example.learningsupport_argame.Community.activity.FriendListDialog;
+import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 
 
 public class MainActivity extends SendMessageActivity {//NavigationMainActivity
@@ -94,7 +57,7 @@ public class MainActivity extends SendMessageActivity {//NavigationMainActivity
 
     public void startFriendActivity() {
         Toast.makeText(this, "startFriendActivity", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, FriendList_Main.class));
+        startActivity(new Intent(this, FriendListActivity.class));
     }
 
     public void startTaskActivity() {

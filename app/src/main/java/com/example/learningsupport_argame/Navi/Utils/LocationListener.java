@@ -16,22 +16,21 @@ import com.baidu.mapapi.model.LatLng;
 
 public class LocationListener extends BDAbstractLocationListener {
     static String TAG = "LocationListener";
-    private LatLng mUserLatlng;
+    private LatLng mUserLatLng;
 
-    private BaiduMap mBaiduMap;
+    private BaiduMap mBaiDuMap;
     private BDLocation mUserLocation;
     private boolean mMapFollow;
     private boolean isFirstLocation = true;
 
 
     public void getMap(BaiduMap baiduMap) {
-        mBaiduMap = baiduMap;
+        mBaiDuMap = baiduMap;
     }
 
     @Override
     public void onReceiveLocation(BDLocation location) {
         mUserLocation = location;
-
         Log.d(TAG, "onReceiveLocation: mMapFollow:" + mMapFollow);
 
         if (mMapFollow == true || isFirstLocation) {
@@ -44,11 +43,11 @@ public class LocationListener extends BDAbstractLocationListener {
             //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
             MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
             //改变地图状态
-            mBaiduMap.setMapStatus(mMapStatusUpdate);
+            mBaiDuMap.setMapStatus(mMapStatusUpdate);
             MyLocationData locData = new MyLocationData.Builder()
                     .latitude(location.getLatitude())
                     .longitude(location.getLongitude()).build();
-            mBaiduMap.setMyLocationData(locData);
+            mBaiDuMap.setMyLocationData(locData);
             isFirstLocation = false;
         }
     }
@@ -56,15 +55,8 @@ public class LocationListener extends BDAbstractLocationListener {
 
     public LatLng getUserLocation() {
         if (mUserLocation != null)
-            mUserLatlng = new LatLng(mUserLocation.getLatitude(), mUserLocation.getLongitude());
-        return mUserLatlng;
-    }
-
-    public LatLng getGCJ02NaviLocation() {
-
-        LocationClient.getBDLocationInCoorType(mUserLocation, BDLocation.BDLOCATION_BD09LL_TO_GCJ02);
-        mUserLatlng = new LatLng(mUserLocation.getLatitude(), mUserLocation.getLongitude());
-        return mUserLatlng;
+            mUserLatLng = new LatLng(mUserLocation.getLatitude(), mUserLocation.getLongitude());
+        return mUserLatLng;
     }
 
     public void setMapFollow(boolean mapFollow) {

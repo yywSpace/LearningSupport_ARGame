@@ -12,13 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
-import com.example.learningsupport_argame.DbUtils;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
-import com.example.learningsupport_argame.UserManagement.UserLab;
-import com.example.learningsupport_argame.task.Task;
-import com.example.learningsupport_argame.task.TaskLab;
-import com.example.learningsupport_argame.tempararyfile.TaskListFragment;
+import com.example.learningsupport_argame.Task.Task;
+import com.example.learningsupport_argame.Task.TaskLab;
+import com.example.learningsupport_argame.Task.fragment.TaskListFragment;
 
 import java.util.List;
 

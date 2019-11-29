@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.learningsupport_argame.task.Task;
+import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
-import com.example.learningsupport_argame.tempararyfile.TaskItemAdapter;
-import com.example.learningsupport_argame.task.TaskLab;
+import com.example.learningsupport_argame.Task.adapter.TaskItemAdapter;
+import com.example.learningsupport_argame.Task.TaskLab;
 
 import java.util.ArrayList;
 import java.util.List;

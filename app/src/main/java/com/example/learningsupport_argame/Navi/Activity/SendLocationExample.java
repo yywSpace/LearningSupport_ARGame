@@ -3,11 +3,10 @@ package com.example.learningsupport_argame.Navi.Activity;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.learningsupport_argame.client.ClientLab;
-import com.example.learningsupport_argame.client.UDPClient;
+import com.example.learningsupport_argame.Client.ClientLab;
+import com.example.learningsupport_argame.Client.UDPClient;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

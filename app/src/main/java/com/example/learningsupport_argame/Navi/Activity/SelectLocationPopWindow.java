@@ -38,6 +38,7 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.example.learningsupport_argame.Navi.Utils.MapUtils;
 import com.example.learningsupport_argame.R;
 import com.mysql.jdbc.log.LogUtils;
 
@@ -171,20 +172,7 @@ public class SelectLocationPopWindow {
     }
 
     private void latLntToAddress(LatLng latLng) {
-        GeoCoder mSearch = GeoCoder.newInstance();
-        mSearch.setOnGetGeoCodeResultListener(new OnGetGeoCoderResultListener() {
-            @Override
-            public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
-
-            }
-
-            @Override
-            public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
-                mMarkerAddress = reverseGeoCodeResult.getAddress();
-            }
-        });
-        //下面是传入对应的经纬度
-        mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
+        MapUtils.latLng2Address(latLng, address -> mMarkerAddress = address);
     }
 
     public View getView() {

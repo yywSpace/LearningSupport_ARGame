@@ -1,13 +1,9 @@
 package com.example.learningsupport_argame.UserManagement.Login;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,14 +15,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.learningsupport_argame.MainActivity;
+import com.example.learningsupport_argame.MonitorModel.MonitorActivity;
+import com.example.learningsupport_argame.MonitorModel.MonitorTaskStatusService;
 import com.example.learningsupport_argame.Navi.Activity.LocationService;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
-import com.example.learningsupport_argame.UserManagement.UserMessage.UserMessageActivity;
-import com.example.learningsupport_argame.task.activity.TaskListActivity;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -42,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
     private TextView mRegisterTextView;
     // 防止多次点击
     private long lastClickTime = 0;
-    private Intent mLocationServiceIntent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,8 +44,8 @@ public class LoginActivity extends AppCompatActivity {
         ActivityUtil.addActivity(this);
 
         setContentView(R.layout.user_management_activity_login);
-        mLocationServiceIntent = new Intent(this, LocationService.class);
-
+        LocationService.mLocationServiceIntent = new Intent(this, LocationService.class);
+        MonitorTaskStatusService.mMonitorTaskStatusServiceIntent = new Intent(this, MonitorTaskStatusService.class);
         mAccountTextLabel = findViewById(R.id.user_management_account_label);
         mAccountTextStatus = findViewById(R.id.user_management_account_status);
         mAccountEditText = findViewById(R.id.user_management_account);
@@ -91,13 +85,12 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("account", user.getAccount());
                         editor.putString("password", user.getPassword());
                         editor.commit();//提交修改
-                        Toast.makeText(this, "LOGIN_SUCCESS"+UserLab.getCurrentUser().getName(), Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "onCreate: "+user.getName());
-                        startService(mLocationServiceIntent);
-                        //startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        Intent intent = new Intent(this, TaskListActivity.class);
-                        intent.putExtra(User.CURRENT_USER_ID, user.getId()+"");
-                        startActivity(intent);
+                        Toast.makeText(this, "LOGIN_SUCCESS" + UserLab.getCurrentUser().getName(), Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onCreate: " + user.getName());
+                        startService(LocationService.mLocationServiceIntent);
+                        startService(MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
+//                        startActivity(new Intent(LoginActivity.this, MapActivity.class));
+                        startActivity(new Intent(this, MonitorActivity.class));
                         finish();
                     }
                 });
@@ -123,13 +116,12 @@ public class LoginActivity extends AppCompatActivity {
             User user = UserLab.getUser(account);
             UserLab.setCurrentUser(user);
             Log.d(TAG, "onCreate: " + UserLab.getCurrentUser().getId());
-            startService(mLocationServiceIntent);
-            Intent intent = new Intent(this, TaskListActivity.class);
-            intent.putExtra(User.CURRENT_USER_ID, user.getId()+"");
-            startActivity(intent);
-            finish();
+            startService(LocationService.mLocationServiceIntent);
+            startService(MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
         }).start();
-//        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        startActivity(new Intent(this, MonitorActivity.class));
+//        startActivity(new Intent(LoginActivity.this, MapActivity.class));
+        finish();
     }
 
     private boolean changePromptMessage(boolean status, String promptMessage, TextView labelTextView, TextView statusTextView) {

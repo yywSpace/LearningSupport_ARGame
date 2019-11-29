@@ -1,53 +1,79 @@
 package com.example.learningsupport_argame;
 
+import android.graphics.Camera;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.os.Handler;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Transformation;
+import android.widget.TextSwitcher;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.learningsupport_argame.MonitorModel.Poetry;
+import com.example.learningsupport_argame.MonitorModel.PoetryLab;
 
-import com.example.learningsupport_argame.ARModel.Items.ItemsAdapter;
-import com.example.learningsupport_argame.ARModel.Items.ItemsLab;
-import com.example.learningsupport_argame.ARModel.Utils.Utils;
+import java.util.List;
+
 
 public class TestActivity extends AppCompatActivity {
-    private static String TAG = "TestActivity";
-    private RecyclerView mItemsRecyclerView;
-    private ItemsAdapter mItemsAdapter;
+    private String TAG = "TestActivity";
+    private int mCnt = 0;
+    private TextSwitcher mTextSwitcherRight, mTextSwitcherLeft;
+    private Handler mHandler;
+    private Runnable mRunnable;
+    private List<Poetry> mPoetryList;
+
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Button button = findViewById(R.id.button);
-        button.setOnClickListener((v) -> {
-            View view = LayoutInflater.from(this).inflate(R.layout.ar_item_recycle_layout, null, false);
-            mItemsRecyclerView = view.findViewById(R.id.ar_items_recycler_view);
-            mItemsAdapter = new ItemsAdapter(this, ItemsLab.get().getItemList());
-            mItemsRecyclerView.setAdapter(mItemsAdapter);
-            mItemsAdapter.setOnModelItemClickListener(item -> {
-                Toast.makeText(this, item.getItemName(), Toast.LENGTH_SHORT).show();
-            });
-            mItemsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-            AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("选择模型")
-                    .setView(view)
-                    .create();
-            dialog.show();
-            dialog.getWindow().setLayout(Utils.dp2px(this, 340), Utils.dp2px(this, 500));
-
+        mHandler = new Handler();
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Poetry poetry = mPoetryList.get(mCnt++ % mPoetryList.size());
+                mTextSwitcherRight.setText(poetry.getPoetryHead());
+                mTextSwitcherLeft.setText(poetry.getPoetryTail() + "   ｜" + poetry.getPoetryAuthor());
+                //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作
+                mHandler.postDelayed(this, 10000);
+            }
+        };
+        // 诗歌列表
+        mPoetryList = PoetryLab.get().getPoetryList();
+        // 初始化控件
+        mTextSwitcherRight = findViewById(R.id.textSwitcherRight);
+        mTextSwitcherRight.setFactory(() -> {
+            TextView tv = new TextView(TestActivity.this);
+            tv.setTextSize(20);
+            return tv;
         });
-
+        mTextSwitcherLeft = findViewById(R.id.textSwitcherLeft);
+        mTextSwitcherLeft.setFactory(() -> {
+            TextView tv = new TextView(TestActivity.this);
+            tv.setTextSize(20);
+            return tv;
+        });
     }
-}
 
+    @Override
+    protected void onResume() {
+        mHandler.postDelayed(mRunnable, 0);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        mHandler.removeCallbacks(mRunnable);
+        super.onPause();
+    }
+
+}

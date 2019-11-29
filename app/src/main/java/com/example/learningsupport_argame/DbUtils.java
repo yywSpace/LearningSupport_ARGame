@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DbUtils {
     private static String TAG = "DbUtils";
@@ -49,6 +50,24 @@ public class DbUtils {
         } finally {
             close(connection, statement, resultSet);
         }
+    }
+
+    public static void deleteAll(String[] sqls) {
+        Connection connection = getConnection();
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            for (int i = 0; i < sqls.length; i++) {
+                statement.addBatch(sqls[i]);// 将所有的SQL语句添加到Statement中
+            }
+            statement.executeBatch();
+        } catch (SQLException e) {
+            Log.e(TAG, "deleteAll: ", e);
+            e.printStackTrace();
+        } finally {
+            close(connection, statement);
+        }
+
     }
 
     public static void update(OnSqlUpdate onSqlUpdate, String sql, Object... args) {
@@ -89,6 +108,17 @@ public class DbUtils {
                 conn.close();
             if (ps != null)
                 ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void close(Connection conn, Statement statement) {
+        try {
+            if (conn != null)
+                conn.close();
+            if (statement != null)
+                statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

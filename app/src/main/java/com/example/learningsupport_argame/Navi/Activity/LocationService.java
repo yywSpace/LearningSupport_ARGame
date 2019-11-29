@@ -2,7 +2,6 @@ package com.example.learningsupport_argame.Navi.Activity;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -12,69 +11,88 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.model.LatLng;
+import com.example.learningsupport_argame.ARModel.Items.ModelInfo;
+import com.example.learningsupport_argame.ARModel.Items.ModelInfoLab;
+import com.example.learningsupport_argame.ARModel.Utils.VibratorUtil;
+import com.example.learningsupport_argame.Navi.Utils.MapUtils;
 import com.example.learningsupport_argame.UserManagement.UserLab;
-import com.example.learningsupport_argame.client.ClientLab;
-import com.example.learningsupport_argame.client.UDPClient;
+import com.example.learningsupport_argame.Client.ClientLab;
+import com.example.learningsupport_argame.Client.UDPClient;
 
+/**
+ * 在login里开启
+ */
 public class LocationService extends Service {
     public static String TAG = "LocationService";
     private LocationClient mLocationClient;
     private UDPClient mUDPClient;
+    private Thread mDetectionARTaskThread;
     private static BDLocation mCurrentLocation;
+    public static Intent mLocationServiceIntent;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate: "+UserLab.getCurrentUser());
-
-        mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, UserLab.getCurrentUser().getName());
-        new Thread(() -> {
-            mUDPClient.Login();
-        }).start();
-        mLocationClient = new LocationClient(getApplicationContext());
-
-        LocationClientOption option = new LocationClientOption();
-
-        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
-        //可选，设置定位模式，默认高精度
-        //LocationMode.Hight_Accuracy：高精度；
-        //LocationMode. Battery_Saving：低功耗；
-        //LocationMode. Device_Sensors：仅使用设备；
-
-        option.setCoorType("bd09ll");
-        //可选，设置返回经纬度坐标类型，默认GCJ02
-        //GCJ02：国测局坐标；
-        //BD09ll：百度经纬度坐标；
-        //BD09：百度墨卡托坐标；
-        //海外地区定位，无需设置坐标类型，统一返回WGS84类型坐标
-
-        option.setScanSpan(1000);
-        //可选，设置发起定位请求的间隔，int类型，单位ms
-        //如果设置为0，则代表单次定位，即仅定位一次，默认为0
-        //如果设置非0，需设置1000ms以上才有效
-
-        option.setOpenGps(true);
-        //可选，设置是否使用gps，默认false
-        //使用高精度和仅用设备两种定位模式的，参数必须设置为true
-
-
-        option.setEnableSimulateGps(false);
-        //可选，设置是否需要过滤GPS仿真结果，默认需要，即参数为false
-
-        mLocationClient.setLocOption(option);
-        mLocationClient.registerLocationListener(new BDAbstractLocationListener() {
-
-            @Override
-            public void onReceiveLocation(BDLocation bdLocation) {
-                mCurrentLocation = bdLocation;
-//                Log.d(TAG, "onReceiveLocation: " + bdLocation.getLatitude());
-                new Thread(() -> {
-                    mUDPClient.Location((float) bdLocation.getLatitude(), (float) bdLocation.getLongitude());
-                    mUDPClient.UserList();
-                }).start();
+        mDetectionARTaskThread = new Thread(() -> {
+            while (!Thread.interrupted()) {
+                if (ModelInfoLab.mModelInfoList != null) {
+                    for (ModelInfo info : ModelInfoLab.mModelInfoList) {
+                        if (withinDistance(info.getModelLatLng(), 5)) {
+                            if (!info.isHasVibratorShaken()) {
+                                VibratorUtil.Vibrate(this, 1000);
+                                info.setHasVibratorShaken(true);
+                            }
+                        } else
+                            info.setHasVibratorShaken(false);
+                    }
+                }
             }
         });
-        mLocationClient.start();
+        new Thread(() -> {
+            // 获取AR模型列表
+            ModelInfoLab.getModelInfoList();
+
+            while (UserLab.getCurrentUser() == null) ;
+            Log.d(TAG, "onCreate: " + UserLab.getCurrentUser());
+            mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, UserLab.getCurrentUser().getName());
+
+            mUDPClient.Login();
+
+            mLocationClient = new LocationClient(getApplicationContext());
+            LocationClientOption option = new LocationClientOption();
+            option.setCoorType("bd09ll");
+            // >= 1000 才有效
+            option.setScanSpan(1000);
+            //使用高精度和仅用设备两种定位模式的，参数必须设置为true
+            option.setOpenGps(true);
+            mLocationClient.setLocOption(option);
+            mLocationClient.registerLocationListener(new BDAbstractLocationListener() {
+
+                @Override
+                public void onReceiveLocation(BDLocation bdLocation) {
+                    mCurrentLocation = bdLocation;
+                    new Thread(() -> {
+                        // 发送当前信息
+                        mUDPClient.Location((float) bdLocation.getLatitude(), (float) bdLocation.getLongitude());
+                        mUDPClient.UserList();
+                        // 检测是否到达目标点
+
+                    }).start();
+
+                }
+            });
+            mLocationClient.start();
+        }).start();
+    }
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(TAG, "onStartCommand");
+        if (!mDetectionARTaskThread.isAlive())
+            mDetectionARTaskThread.start();
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Nullable
@@ -85,11 +103,29 @@ public class LocationService extends Service {
 
     @Override
     public void onDestroy() {
-        mLocationClient.stop();
+        mDetectionARTaskThread.interrupt();
+        if (mLocationClient != null)
+            mLocationClient.stop();
         super.onDestroy();
     }
 
     public static BDLocation getCurrentLocation() {
         return mCurrentLocation;
+    }
+
+
+    private boolean withinDistance(LatLng modelLatLng, int distanceLimit) {
+        if (getCurrentLocation() == null)
+            return false;
+        return distance(modelLatLng) <= distanceLimit;
+    }
+
+    public int distance(LatLng modelLatLng) {
+        return (int) Math.round(
+                MapUtils.distance(
+                        modelLatLng.latitude,
+                        modelLatLng.longitude,
+                        getCurrentLocation().getLatitude(),
+                        getCurrentLocation().getLongitude()));
     }
 }

@@ -4,65 +4,88 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.learningsupport_argame.FeedbackModel.MissionAccomplishActivity;
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.task.Task;
+import com.example.learningsupport_argame.Task.Task;
+import com.example.learningsupport_argame.TestActivity;
 
-//import android.support.v7.app.AppCompatActivity;
+import java.util.List;
+
 
 /*
     任务时间到达自动执行此Activity
     任务执行后如果不在执行地点，或走出执行地点见： MonitorUIHandler 中 case 4
     任务顺利完成后各监督信息见： MonitorUIHandler 中 case 3
 */
-// todo 任务信息如何传入此Activity还未决定
 // todo 引导用户将此应用加入白名单
 public class MonitorActivity extends AppCompatActivity {
+    private static String TAG = "MonitorActivity";
     private Intent mMonitorIntent;
-    private TextView mSystemTime;
-    private TextView mSystemCalender;
+    private ImageView mReturnImageView;
     private TextView mAttentionTime;
     private TextView mPhoneUseCount;
     private TextView mTaskScreenOnTime;
     private TextView mRemainingTime;
     private int mInitialRemainingTime;
-    private CountDownView mView;
+    private CountDownView mCountDownView;
     private boolean hasSetTime;
-    public static MonitorUIHandler handler;
+    public static MonitorUIHandler mMonitorHandler;
     public static boolean isActivityOn;
-    private MonitorService mMonitorService;
+    private MonitorTaskAccomplishService mMonitorTaskAccomplishService;
     private Task mTask;
+    private boolean mIsUnBound = false;
+    private TextSwitcher mTextSwitcherRight, mTextSwitcherLeft;
+    // 诗词切换
+    private Handler mHandler;
+    private Runnable mRunnable;
+    private List<Poetry> mPoetryList;
+    private int mCnt = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.monitor_activity_monitor);
-        getSupportActionBar().hide();
-        handler = new MonitorUIHandler();
-        mSystemTime = findViewById(R.id.monitor_system_time);
-        mSystemCalender = findViewById(R.id.monitor_system_calender);
-        mTaskScreenOnTime = findViewById(R.id.monitor_phone_use_time);
-        mAttentionTime = findViewById(R.id.monitor_task_attention_time);
-        mPhoneUseCount = findViewById(R.id.monitor_phone_use_count);
-        mRemainingTime = findViewById(R.id.monitor_task_remaining_time);
-        mView = findViewById(R.id.monitor_count_down_view);
-        mMonitorIntent = new Intent(this, MonitorService.class);
+        initView();
+        // 用户循环切换诗词
+        mHandler = new Handler();
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Poetry poetry = mPoetryList.get(mCnt++ % mPoetryList.size());
+                mTextSwitcherRight.setText(poetry.getPoetryHead());
+                mTextSwitcherLeft.setText(poetry.getPoetryTail() + "｜" + poetry.getPoetryAuthor());
+                //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作
+                mHandler.postDelayed(this, 10000);
+            }
+        };
+        // 诗歌列表
+        mPoetryList = PoetryLab.get().getPoetryList();
+        // 获取当前任务
+        mTask = new Task();
+        mTask.setAccomplishTaskLocation("I do flowers鲜花店,34.819612,114.321369");
+        mTask.setTaskName("任务测试");
+        mTask.setTaskContent("task content");
+        mTask.setTaskStartAt("2019-7-30 16:29");
+        mTask.setTaskEndIn("2019-7-30 16:30");
+        // 打开监督服务
+        mMonitorIntent = new Intent(this, MonitorTaskAccomplishService.class);
         startService(mMonitorIntent);
         bindService(mMonitorIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
-        mTask = new Task();
-        mTask.setTaskName("task name");
-        mTask.setTaskContent("task content");
-        mTask.setTaskStartAt("2019/7/30/16:00");
-        mTask.setTaskEndIn("2019/7/30/16:30");
+        mMonitorHandler = new MonitorUIHandler();
     }
 
     //屏蔽返回键的代码:
@@ -75,12 +98,14 @@ public class MonitorActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mHandler.postDelayed(mRunnable, 0);
         isActivityOn = true;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        mHandler.removeCallbacks(mRunnable);
         isActivityOn = false;
     }
 
@@ -89,56 +114,73 @@ public class MonitorActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    void initView() {
+        mReturnImageView = findViewById(R.id.monitor_return);
+        mReturnImageView.setOnClickListener(v -> finish());
+        mTaskScreenOnTime = findViewById(R.id.monitor_phone_use_time);
+        mAttentionTime = findViewById(R.id.monitor_task_attention_time);
+        mPhoneUseCount = findViewById(R.id.monitor_phone_use_count);
+        mRemainingTime = findViewById(R.id.monitor_task_remaining_time);
+        mCountDownView = findViewById(R.id.monitor_count_down_view);
+        mCountDownView.setRadius(270);
+        mTextSwitcherLeft = findViewById(R.id.monitor_poetry_switcher_left);
+        mTextSwitcherRight = findViewById(R.id.monitor_poetry_switcher_right);
+        ViewSwitcher.ViewFactory viewFactory = () -> {
+            TextView tv = new TextView(MonitorActivity.this);
+            tv.setTextSize(15);
+            tv.setEms(1);
+            return tv;
+        };
+        mTextSwitcherRight.setFactory(viewFactory);
+        mTextSwitcherLeft.setFactory(viewFactory);
+    }
+
     class MonitorUIHandler extends Handler {
+        Bundle data;
+        MonitorInfo monitorInfo;
+
+        public MonitorUIHandler() {
+            monitorInfo = new MonitorInfo();
+            monitorInfo.setTaskBeginTime(mTask.getTaskStartAt());
+            monitorInfo.setTaskEndTime(mTask.getTaskEndIn());
+        }
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what) {
-                case 1: // 获取数据
-                    Bundle data = msg.getData();
-                    mTaskScreenOnTime.setText(data.getString(MonitorInfo.TASK_SCREEN_ON_TIME));
-                    mAttentionTime.setText(data.getString(MonitorInfo.ATTENTION_TIME));
-                    mPhoneUseCount.setText(data.getString(MonitorInfo.PHONE_USE_COUNT));
-                    mRemainingTime.setText(MonitorService.second2Time(data.getLong(MonitorInfo.TASK_REMANDING_TIME)));
-                    if (!hasSetTime && data.getLong(MonitorInfo.TASK_REMANDING_TIME) >= 0) {
-                        mView.setInitialSecond(data.getLong(MonitorInfo.TASK_REMANDING_TIME));
-                        mInitialRemainingTime = (int) data.getLong(MonitorInfo.TASK_REMANDING_TIME);
-                        hasSetTime = true;
-                    }
-                    mView.updateSecond(data.getLong(MonitorInfo.TASK_REMANDING_TIME));
-                    mView.invalidate();
-                    break;
-                case 2: // 获取日期时间
-                    Calendar calendar = Calendar.getInstance();
-                    int year = calendar.get(Calendar.YEAR);
-                    int month = calendar.get(Calendar.MONTH) + 1;
-                    int day = calendar.get(Calendar.DAY_OF_MONTH);
-                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                    int minute = calendar.get(Calendar.MINUTE);
-                    int second = calendar.get(Calendar.SECOND);
-                    mSystemTime.setText(String.format("%02d:%02d:%02d", hour, minute, second));
-                    mSystemCalender.setText(year + "/" + month + "/" + day);
-                    break;
-                case 3: // 任务成功结束
-                    stopService(mMonitorIntent);
-                    unbindService(mServiceConnection);
-                    MonitorInfo monitorInfo = new MonitorInfo();
-                    monitorInfo.setTaskBeginTime(mTask.getTaskStartAt());
-                    monitorInfo.setTaskEndTime(mTask.getTaskEndIn());
-                    monitorInfo.setMonitorTaskScreenOnTime(Integer.parseInt(mTaskScreenOnTime.getText().toString()));
-                    monitorInfo.setMonitorScreenOnAttentionSpan(Integer.parseInt(mAttentionTime.getText().toString()));
-                    monitorInfo.setMonitorPhoneUseCount(Integer.parseInt(mPhoneUseCount.getText().toString()));
 
-                    // 处理代码
-                    break;
-                case 4: // 脱离任务地点，或不在
-                    stopService(mMonitorIntent);
-                    unbindService(mServiceConnection);
-
-
-                    // 处理代码
-                    break;
+            data = msg.getData();
+            mTaskScreenOnTime.setText(TimeUtils.second2Time(data.getInt(MonitorInfo.TASK_SCREEN_ON_TIME)));
+            // 总专注时间=息屏时间+专注时间
+            mAttentionTime.setText(TimeUtils.second2Time(data.getInt(MonitorInfo.ATTENTION_TIME) + data.getInt(MonitorInfo.TASK_SCREEN_OFF_TIME)));
+            mPhoneUseCount.setText(data.getInt(MonitorInfo.PHONE_USE_COUNT) + "");
+            //mRemainingTime.setText(MonitorTaskAccomplishService.second2Time(data.getLong(MonitorInfo.TASK_REMANDING_TIME)));
+            int remandingTime = data.getInt(MonitorInfo.TASK_REMANDING_TIME);
+            if (!hasSetTime) {
+                mCountDownView.setInitialSecond(monitorInfo.getTaskTotalTime());
+                hasSetTime = true;
             }
+            mCountDownView.setCurrentSeconds(remandingTime);
+            mCountDownView.setTimeLabel(TimeUtils.second2Time(remandingTime));
+            mCountDownView.invalidate();
+
+            if (remandingTime > 0)
+                return;
+
+            unbindService(mServiceConnection);
+            stopService(mMonitorIntent);
+
+            monitorInfo.setMonitorTaskScreenOnTime(data.getInt(MonitorInfo.TASK_SCREEN_ON_TIME));
+            monitorInfo.setMonitorScreenOnAttentionSpan(data.getInt(MonitorInfo.ATTENTION_TIME));
+            monitorInfo.setMonitorPhoneUseCount(data.getInt(MonitorInfo.PHONE_USE_COUNT));
+            monitorInfo.setTaskOutOfRangeTime(data.getInt(MonitorInfo.TASK_OUT_OF_RANGE_TIME));
+            monitorInfo.setMonitorTaskScreenOffTime(data.getInt(MonitorInfo.TASK_SCREEN_OFF_TIME));
+            mCountDownView.setCurrentSeconds(0);
+            mCountDownView.setTimeLabel(TimeUtils.second2Time(0));
+            mCountDownView.invalidate();
+            Intent intent = new Intent(MonitorActivity.this, MissionAccomplishActivity.class);
+            intent.putExtra(MonitorInfo.MONITOR_INFO, monitorInfo);
+            startActivity(intent);
         }
     }
 
@@ -146,9 +188,9 @@ public class MonitorActivity extends AppCompatActivity {
     ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mMonitorService = ((MonitorService.MonitorBinder) service).getService();
-            mMonitorService.setTask(mTask);
-
+            mMonitorTaskAccomplishService = ((MonitorTaskAccomplishService.MonitorBinder) service).getService();
+            mMonitorTaskAccomplishService.setTask(mTask);
+            Log.d(TAG, "onServiceConnected: " + mTask.getTaskName());
         }
 
         @Override

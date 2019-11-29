@@ -126,7 +126,7 @@ public class MonitorService extends Service{
 //
 //                        Notification notification = null;
 //                       if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//                           notification = new Notification.Builder(MonitorService.this, CHANNEL_ID)
+//                           notification = new Notification.Builder(MonitorTaskAccomplishService.this, CHANNEL_ID)
 //                                   .setSmallIcon(R.drawable.ic_launcher_background)
 //                                   .setCustomContentView(mRemoteViews)
 //                                   .setOnlyAlertOnce(true)
@@ -134,7 +134,7 @@ public class MonitorService extends Service{
 //                           Log.d("channel","dssdssdfsaf");
 //                       }
 //                       else {
-////                           NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(MonitorService.this)
+////                           NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(MonitorTaskAccomplishService.this)
 ////                                   .setContentTitle("活动")
 ////                                   .setContentText("您有一项新活动")
 ////                                   .setSmallIcon(R.drawable.ic_launcher_background)
@@ -149,7 +149,7 @@ public class MonitorService extends Service{
 //                        Intent intent = new Intent(Intent.ACTION_MAIN);
 //                        intent.setAction(Intent.ACTION_MAIN);
 //                        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-//                        intent.setComponent(new ComponentName(MonitorService.this.getPackageName(), MonitorService.this.getPackageName() + ".MonitorModel.MonitorActivity"));
+//                        intent.setComponent(new ComponentName(MonitorTaskAccomplishService.this.getPackageName(), MonitorTaskAccomplishService.this.getPackageName() + ".MonitorModel.MonitorActivity"));
 //                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 //
 //                        // 点击跳转到主界面
@@ -263,7 +263,7 @@ public class MonitorService extends Service{
                             Log.d("channel","dssdssdfsaf");
                         }
                         else {
-//                           NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(MonitorService.this)
+//                           NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(MonitorTaskAccomplishService.this)
 //                                   .setContentTitle("活动")
 //                                   .setContentText("您有一项新活动")
 //                                   .setSmallIcon(R.drawable.ic_launcher_background)

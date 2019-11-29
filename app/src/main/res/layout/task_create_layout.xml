@@ -1,285 +1,279 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:orientation="vertical">
+            android:background="@drawable/myrect"
+            android:paddingLeft="14dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:id="@+id/label_name_create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="任务名称："
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/task_create_enter_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/label_name_create"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                android:hint="请输入任务名称" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <RelativeLayout
-                android:layout_width="421dp"
-                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@drawable/myrect"
+                android:elevation="10dp"
                 android:paddingLeft="14dp"
                 android:paddingTop="15dp">
 
                 <TextView
-                    android:id="@+id/label_name_create"
+                    android:id="@+id/task_create_choose_type_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="任务名称："
+                    android:text="任务发布类型："
+                    android:textSize="20dp" />
+
+                <CheckBox
+                    android:id="@+id/task_create_choose_ar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/task_create_choose_type_label"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="20dp"
+                    android:text="AR发布" />
+
+                <Spinner
+                    android:id="@+id/task_create_choose_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/task_create_choose_type_label"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:entries="@array/taskType" />
+
+                <FrameLayout
+                    android:id="@+id/layout_task_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/task_create_choose_type"
+                    android:layout_marginLeft="40dp"
+                    android:layout_toRightOf="@id/task_create_choose_type" />
+
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/myrect"
+            android:paddingLeft="14dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:id="@+id/task_create_start_time_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="任务开始时间："
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:id="@+id/task_create_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/task_create_start_time_label"
+                android:layout_alignStart="@id/task_create_start_time_label"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="25dp"
+                android:text="点击右侧按钮设定任务时间"
+                android:textColor="@android:color/black" />
+
+            <ImageView
+                android:id="@+id/task_create_set_start_date"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="70dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/riqi" />
+
+            <ImageView
+                android:id="@+id/task_create_set_start_time"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/shijian" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/myrect"
+                android:elevation="10dp"
+                android:paddingLeft="14dp"
+                android:paddingTop="15dp">
+
+                <TextView
+                    android:id="@+id/task_create_end_time_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="任务结束时间："
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/task_create_end_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/task_create_end_time_label"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="点击右侧按钮设定任务时间"
+                    android:layout_marginBottom="25dp"
+                    android:textColor="#000" />
+
+                <ImageView
+                    android:id="@+id/task_create_set_end_date"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="70dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/riqi" />
+
+                <ImageView
+                    android:id="@+id/task_create_set_end_time"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignBottom="@id/task_create_end_time"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/shijian" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/myrect"
+                android:elevation="10dp"
+                android:paddingLeft="14dp"
+                android:paddingTop="15dp">
+
+                <TextView
+                    android:id="@+id/create_task_location_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="任务执行地点："
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/task_create_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/create_task_location_label"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="请输入执行任务的地点"
+                    android:layout_marginBottom="25dp"
+                    android:textColor="@android:color/black" />
+
+                <ImageView
+                    android:id="@+id/task_create_set_location"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/map" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/myrect"
+                android:elevation="10dp"
+                android:paddingLeft="14dp"
+                android:paddingTop="15dp">
+
+                <TextView
+                    android:id="@+id/task_create_desc_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="任务要求："
                     android:textSize="20sp" />
 
                 <EditText
-                    android:id="@+id/task_create_enter_name"
+                    android:id="@+id/task_create_enter_task_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/label_name_create"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="50dp"
-                    android:hint="请输入任务名称" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_below="@id/task_create_desc_label"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginBottom="25dp"
                     android:background="@drawable/myrect"
-                    android:elevation="10dp"
-                    android:paddingLeft="14dp"
-                    android:paddingTop="15dp">
-
-                    <TextView
-                        android:id="@+id/task_create_choose_type_label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="任务发布类型："
-                        android:textSize="20dp" />
-
-                    <Spinner
-                        android:id="@+id/task_create_choose_type"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/task_create_choose_type_label"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:entries="@array/taskType" />
-
-                    <FrameLayout
-                        android:id="@+id/layout_task_type"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/task_create_choose_type"
-                        android:layout_marginLeft="40dp"
-                        android:layout_toRightOf="@id/task_create_choose_type" />
-
-                </RelativeLayout>
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:minLines="4"
+                    android:padding="10dp"
+                    android:textColor="@android:color/black" />
             </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <RelativeLayout
-
-                    android:layout_width="match_parent"
-
-                    android:layout_height="100dp"
-
-                    android:background="@drawable/myrect"
-
-                    android:elevation="10dp"
-                    android:paddingLeft="14dp"
-                    android:paddingTop="15dp">
-
-                    <TextView
-                        android:id="@+id/task_create_start_time_label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="任务开始时间："
-                        android:textSize="20sp" />
-
-
-                    <TextView
-                        android:id="@+id/task_create_start_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/task_create_start_time_label"
-                        android:layout_alignStart="@id/task_create_start_time_label"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="点击右侧按钮设定任务时间"
-                        android:textColor="@android:color/black" />
-
-                    <ImageView
-                        android:id="@+id/task_create_set_start_date"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="70dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/riqi" />
-
-                    <ImageView
-                        android:id="@+id/task_create_set_start_time"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="20dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/shijian" />
-
-
-                </RelativeLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <RelativeLayout
-
-                    android:layout_width="match_parent"
-
-                    android:layout_height="100dp"
-
-                    android:background="@drawable/myrect"
-
-                    android:elevation="10dp"
-                    android:paddingLeft="14dp"
-                    android:paddingTop="15dp">
-
-                    <TextView
-                        android:id="@+id/task_create_end_time_label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="任务结束时间："
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/task_create_end_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/task_create_end_time_label"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="点击右侧按钮设定任务时间"
-                        android:textColor="#000" />
-
-                    <ImageView
-                        android:id="@+id/task_create_set_end_date"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_alignParentEnd="true"
-
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="70dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/riqi" />
-
-                    <ImageView
-                        android:id="@+id/task_create_set_end_time"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_alignBottom="@id/task_create_end_time"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginEnd="20dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/shijian" />
-
-                </RelativeLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <RelativeLayout
-
-                    android:layout_width="match_parent"
-
-                    android:layout_height="100dp"
-
-                    android:background="@drawable/myrect"
-
-                    android:elevation="10dp"
-                    android:paddingLeft="14dp"
-                    android:paddingTop="15dp">
-
-                    <TextView
-                        android:id="@+id/create_task_location_label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="任务执行地点："
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/task_create_location"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/create_task_location_label"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="请输入执行任务的地点"
-                        android:textColor="@android:color/black" />
-
-                    <ImageView
-                        android:id="@+id/task_create_set_location"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="20dp"
-                        android:src="@drawable/map" />
-                </RelativeLayout>
-
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="170dp"
-                    android:background="@drawable/myrect"
-                    android:elevation="10dp"
-                    android:paddingLeft="14dp"
-                    android:paddingTop="15dp">
-
-                    <TextView
-                        android:id="@+id/task_create_desc_label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="任务要求："
-                        android:textSize="20sp" />
-
-                    <EditText
-                        android:id="@+id/task_create_enter_task_desc"
-                        android:layout_width="match_parent"
-                        android:layout_height="90dp"
-                        android:layout_below="@id/task_create_desc_label"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="25dp"
-                        android:background="@drawable/myrect"
-                        android:gravity="top"
-                        android:inputType="textMultiLine"
-                        android:padding="10dp"
-                        android:textColor="@android:color/black" />
-
-                </RelativeLayout>
-            </RelativeLayout>
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</ScrollView>

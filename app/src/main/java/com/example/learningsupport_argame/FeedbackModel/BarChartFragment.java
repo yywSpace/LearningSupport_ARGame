@@ -35,9 +35,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-//import android.support.annotation.NonNull;
-//import android.support.annotation.Nullable;
-//import android.support.v4.app.Fragment;
+
 
 public class BarChartFragment extends Fragment {
     private static String TAG = BarChartFragment.class.getSimpleName();

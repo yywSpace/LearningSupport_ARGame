@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,35 +7,29 @@
         android:id="@+id/feedback_accomplish_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="90dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
         android:text="@string/feedback_mission_success"
-        android:textSize="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="30dp" />
 
     <ImageView
         android:id="@+id/feedback_accomplish_state_image"
         android:layout_width="110dp"
         android:layout_height="110dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/ic_launcher_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/feedback_accomplish_result" />
+        android:layout_below="@+id/feedback_accomplish_result"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/task_accomplish_success" />
 
     <TableLayout
         android:id="@+id/DataTableLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/feedback_accomplish_state_image"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="40dp"
-        android:stretchColumns="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/feedback_accomplish_state_image">
+        android:stretchColumns="1">
 
         <TableRow
             android:layout_width="match_parent"
@@ -93,6 +85,32 @@
 
         <TableRow
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="超出范围时间:" />
+
+            <ProgressBar
+                android:id="@+id/feedback_out_of_range_progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:id="@+id/feedback_out_of_range_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="90%" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView
@@ -100,122 +118,120 @@
                 android:layout_height="wrap_content"
                 android:text="手机使用次数:" />
 
-            <ProgressBar
-                android:id="@+id/feedback_phone_use_count_progressBar"
-                style="?android:attr/progressBarStyleHorizontal"
+            <TextView
+                android:id="@+id/feedback_phone_use_count"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginLeft="10dp"
+                android:text="10" />
 
-            <TextView
-                android:id="@+id/feedback_phone_use_count_rate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="90%" />
+
         </TableRow>
 
     </TableLayout>
 
-    <TableLayout
-        android:id="@+id/RewardTableLayout"
+
+    <TextView
+        android:id="@+id/feedback_reward_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/DataTableLayout">
+        android:layout_below="@+id/DataTableLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="任务奖励"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/RewardLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/feedback_reward_label"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:id="@+id/feedback_reward_exp_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/task_reward_exp" />
+
+        <TextView
+            android:id="@+id/feedback_reward_exp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/feedback_reward_exp_image"
+            android:layout_alignBottom="@+id/feedback_reward_exp_image"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/feedback_reward_exp_image"
+            android:gravity="center"
+            android:text="x100"
+            android:textColor="@android:color/black"
+            android:textSize="20dp" />
+
+
+        <ImageView
+            android:id="@+id/feedback_reward_gold_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/feedback_reward_exp_image"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/task_reward_gold" />
 
 
         <TextView
+            android:id="@+id/feedback_reward_gold"
             android:layout_width="wrap_content"
-
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="任务奖励"
-            android:textAlignment="center"
-            android:textSize="20dp"
-            android:textStyle="bold" />
+            android:layout_alignTop="@+id/feedback_reward_gold_image"
+            android:layout_alignBottom="@+id/feedback_reward_gold_image"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/feedback_reward_gold_image"
+            android:gravity="center"
+            android:text="x100"
+            android:textColor="@android:color/black"
+            android:textSize="20dp" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="5dp">
+        <ImageView
+            android:id="@+id/feedback_reward_item_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/feedback_reward_gold_image"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/task_reward_potion_red" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="经验值: "
-                android:textAlignment="viewEnd" />
-
-            <TextView
-                android:id="@+id/feedback_exp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="200" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="积分: "
-                android:textAlignment="viewEnd" />
-
-            <TextView
-                android:id="@+id/feedback_points"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="200" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="物品: "
-                android:textAlignment="viewEnd" />
-
-            <TextView
-                android:id="@+id/feedback_item"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="零件" />
-
-        </TableRow>
-
-
-    </TableLayout>
+        <TextView
+            android:id="@+id/feedback_reward_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/feedback_reward_item_image"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/feedback_reward_item_image"
+            android:gravity="center"
+            android:text="x1"
+            android:textColor="@android:color/black"
+            android:textSize="20dp" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/feedback_rating_bar_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/RewardLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
         android:layout_marginBottom="10dp"
+        android:clickable="false"
         android:descendantFocusability="beforeDescendants"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/RewardTableLayout">
+        android:orientation="vertical">
 
-        <RatingBar
+        <com.example.learningsupport_argame.FeedbackModel.RatingBarView
             android:id="@+id/feedback_mission_rate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:isIndicator="true" />
+            android:layout_width="240dp"
+            android:layout_height="40dp" />
 
         <TextView
             android:id="@+id/feedback_details"
@@ -226,4 +242,4 @@
     </LinearLayout>
 
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
