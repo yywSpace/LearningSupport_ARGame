@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.TaskLab;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.util.List;
 
@@ -26,6 +27,18 @@ public class TaskCanAcceptListFragment extends TaskListFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        mSwipeRefreshLayout.setOnRefreshListener(()->{
+            new Thread(() -> {
+                List<Task> tasks = TaskLab.getCanAcceptTask();
+                Log.d(TAG, "onResume: " + tasks.size());
+                mTaskList.clear();
+                mTaskList.addAll(tasks);
+                getActivity().runOnUiThread(() -> {
+                    mTaskItemAdapter.notifyDataSetChanged();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                });
+            }).start();
+        });
         mTaskItemAdapter.setOnRecycleViewItemClick((v, position) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             View taskDetailView = getLayoutInflater().inflate(R.layout.task_current_fragment_layout, null);//获取自定义布局

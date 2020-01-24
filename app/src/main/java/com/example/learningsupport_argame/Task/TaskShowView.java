@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.baidu.mapapi.model.LatLng;
 import com.example.learningsupport_argame.Navi.Activity.ShowLocationPopWindow;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskShowView {
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private ImageButton mTaskStatusFaq;
     private ImageView mMapLocationBtn;
     private TextView mTaskStatusTextView;
@@ -49,6 +51,11 @@ public class TaskShowView {
     }
 
     public void initView(View view) {
+        mSwipeRefreshLayout = view.findViewById(R.id.task_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            updateData();
+            mSwipeRefreshLayout.setRefreshing(false);
+        });
         mTaskStatusFaq = view.findViewById(R.id.task_status_faq);
         mTaskStatusTextView = view.findViewById(R.id.task_status);
         mTaskNameTextView = view.findViewById(R.id.task_name);
@@ -109,13 +116,14 @@ public class TaskShowView {
 
     }
 
-    public void updateData(){
+    public void updateData() {
         new Thread(() -> {
             while (UserLab.getCurrentUser() == null) ;
             String mCurrentUserId = UserLab.getCurrentUser().getId() + "";
-            List<Task> tasks = TaskLab.getAllTask(mCurrentUserId);
-            mActivity.runOnUiThread(()->{
-                initData(tasks.get(0));
+            List<Task> tasks = TaskLab.getAcceptedTask(mCurrentUserId);
+            mActivity.runOnUiThread(() -> {
+                if (tasks.size() > 0)
+                    initData(tasks.get(0));
             });
         }).start();
     }

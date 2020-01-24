@@ -55,6 +55,7 @@ public class UserAccomplishTaskFragment extends TaskListFragment {
         super.onResume();
         // 获取数据
         new Thread(() -> {
+            mCurrentUserId = UserLab.getCurrentUser().getId() + "";
             List<Task> tasks = TaskLab.getAccomplishTask(mCurrentUserId);
             Log.d(TAG, "onResume: " + tasks.size());
             mTaskList.clear();

@@ -7,8 +7,14 @@ import com.example.learningsupport_argame.DbUtils;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TaskLab {
     private static String TAG = "TaskLab";
@@ -16,28 +22,58 @@ public class TaskLab {
     public static List<Task> mAcceptedTaskList;
     public static List<Task> mRunningTaskList = new ArrayList<>();
 
+    public static Task getTaskById(int id) {
+        String sql = "select * from task where task_id = ?;";
+        List<Task> tasks = getTasksWith(sql, id);
+        if (tasks.size() <= 0) {
+            return null;
+        } else {
+            return tasks.get(0);
+        }
+    }
 
     public static List<Task> getCanAcceptTask() {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         // 排除AR发布任务，和已接取任务
         List<Task> tasks = getTasksWith(
                 "select * from task where " +
                         "task_id not in (select task_id from task_ar_model)  and " +
                         "task_id not in (select task_id from task_participant where task_participant.participant_id = ?);",
                 UserLab.getCurrentUser().getId());
-
+        tasks = tasks.stream().sorted((task1, task2) -> {
+            try {
+                Date begin = df.parse(task1.getTaskStartAt());
+                Date end = df.parse(task2.getTaskEndIn());
+                return begin.before(end) ? 1 : -1;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return 0;
+        }).collect(Collectors.toList());
         return tasks;
     }
 
 
     /**
-     * 根据userId获取此人已完成任务的列表
+     * 根据userId获取此人已接受任务的列表
      *
      * @param userId
      * @return
      */
     public static List<Task> getAcceptedTask(String userId) {
-        String sql = "select * from task, task_participant where task_participant.participant_id = ? and task.task_id = task_participant.task_id;";
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String sql = "select * from task, task_participant where task_participant.participant_id = ? and task.task_id = task_participant.task_id and task_participant.task_accomplish_status = '进行中';";
         mAcceptedTaskList = getTasksWith(sql, userId);
+        mAcceptedTaskList = mAcceptedTaskList.stream().sorted((task1, task2) -> {
+            try {
+                Date begin = df.parse(task1.getTaskStartAt());
+                Date end = df.parse(task2.getTaskEndIn());
+                return begin.before(end) ? 1 : -1;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return 0;
+        }).collect(Collectors.toList());
         return mAcceptedTaskList;
     }
 
@@ -176,6 +212,16 @@ public class TaskLab {
                 task.getTaskEndIn(),
                 task.getUserId(),
                 task.getTaskCreateTime());
+    }
+
+    // 根据user_id和task_create_time更新任务
+    public static void updateTaskParticipantStatus(String taskId, String userId, String status) {
+        String sql = "update task_participant set task_accomplish_status = ? where task_id = ? and participant_id = ?";
+        DbUtils.update(null, sql,
+                status,
+                taskId,
+                userId
+        );
     }
 
     public static void acceptTask(Task task) {

@@ -47,6 +47,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.example.learningsupport_argame.Task.TaskLab.mAcceptedTaskList;
+
 public class TaskListActivity extends AppCompatActivity {
     private static String TAG = "TaskListActivity";
     private static final int PUT_MODEL_ACCOMPLISH = 1;
@@ -233,7 +235,7 @@ public class TaskListActivity extends AppCompatActivity {
                         } else {
                             TaskLab.updateTask(task);
                         }
-
+                        mAcceptedTaskList.add(0,task);
                     }).start();
                     // 如果为用AR发布，放置模型
                     if (taskViewAdapter.mChooseTaskAR.isChecked()) {
@@ -243,8 +245,6 @@ public class TaskListActivity extends AppCompatActivity {
                     } else {
                         mCreateTaskDialog.dismiss();
                     }
-
-
                 });
             }
         });

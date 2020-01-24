@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.baidu.mapapi.model.LatLng;
 import com.example.learningsupport_argame.Navi.Activity.ShowLocationPopWindow;
@@ -32,6 +33,7 @@ import java.util.List;
 
 public class TaskListFragment extends Fragment {
     protected static String TAG = "TaskListFragment";
+    protected SwipeRefreshLayout mSwipeRefreshLayout;
     protected String mCurrentUserId;
     protected RecyclerView mTaskRecycleView;
     protected TaskItemAdapter mTaskItemAdapter;
@@ -57,6 +59,8 @@ public class TaskListFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tasklist_redo_layout, container, false);
         mTaskRecycleView = view.findViewById(R.id.list_task_redo);
+        mSwipeRefreshLayout = view.findViewById(R.id.task_refresh_layout);
+
         mTaskList = new ArrayList<>();
 
         mTaskItemAdapter = new TaskItemAdapter(mTaskList, getActivity());
@@ -87,6 +91,8 @@ public class TaskListFragment extends Fragment {
     }
 
     public void initView(View view) {
+        // 弹窗中让下拉刷新消失
+        view.findViewById(R.id.task_refresh_layout).setEnabled(false);
         mTaskStatusFaq = view.findViewById(R.id.task_status_faq);
         mTaskStatusTextView = view.findViewById(R.id.task_status);
         mTaskNameTextView = view.findViewById(R.id.task_name);

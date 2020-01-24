@@ -28,6 +28,20 @@ public class TaskAcceptedListFragment extends TaskListFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        mSwipeRefreshLayout.setOnRefreshListener(()->{
+            new Thread(() -> {
+                while (UserLab.getCurrentUser() == null) ;
+                mCurrentUserId = UserLab.getCurrentUser().getId() + "";
+                List<Task> tasks = TaskLab.getAcceptedTask(mCurrentUserId);
+                Log.d(TAG, "onResume: " + tasks.size());
+                mTaskList.clear();
+                mTaskList.addAll(tasks);
+                mActivity.runOnUiThread(() -> {
+                    mTaskItemAdapter.notifyDataSetChanged();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                });
+            }).start();
+        });
         mTaskItemAdapter.setOnRecycleViewItemClick((v, position) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             View taskDetailView = getLayoutInflater().inflate(R.layout.task_current_fragment_layout, null);//获取自定义布局

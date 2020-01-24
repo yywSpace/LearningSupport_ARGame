@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -59,7 +60,8 @@ public class MonitorTaskAccomplishService extends Service {
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mNotificationManager.createNotificationChannel(
                 new NotificationChannel(CHANNEL_ID, "channel notification", NotificationManager.IMPORTANCE_DEFAULT));
-
+        // 恢复监督数据（防止用户退出再进后监督信息消失）
+        restoreData();
         // 设备处于唤醒状态
         mPowerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mTimer = new Timer();
@@ -103,7 +105,9 @@ public class MonitorTaskAccomplishService extends Service {
                         mPhoneUseCount++;
                         hasAwake = true;
                     }
-
+                    // TODO: 20-1-14 通过任务名字保存监督数据，防止多个任务未完成时，只能处理一个的问题 或者不这样，在考虑
+                    // 实时储存信息，防止信息丢失
+                    saveData();
                     // 传输数据
                     Message message = new Message();
                     Bundle data = new Bundle();
@@ -146,6 +150,29 @@ public class MonitorTaskAccomplishService extends Service {
 
     }
 
+    // 将监督信息恢复
+    void restoreData() {
+        SharedPreferences monitorInfo = getSharedPreferences(MonitorInfo.MONITOR_INFO_PREFS_NAME, MODE_PRIVATE);
+        mTaskScreenOnTime =monitorInfo.getInt(MonitorInfo.TASK_SCREEN_ON_TIME, 0);
+        mTaskScreenOffTime =monitorInfo.getInt(MonitorInfo.TASK_SCREEN_OFF_TIME, 0);
+        mAttentionTime =monitorInfo.getInt(MonitorInfo.ATTENTION_TIME, 0);
+        mPhoneUseCount =monitorInfo.getInt(MonitorInfo.PHONE_USE_COUNT, 0);
+        mOutOfRangeTime =monitorInfo.getInt(MonitorInfo.TASK_OUT_OF_RANGE_TIME, 0);
+    }
+
+    // 将监督信息储存
+    void saveData() {
+        SharedPreferences monitorInfo = getSharedPreferences(MonitorInfo.MONITOR_INFO_PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = monitorInfo.edit();//获取Editor
+        //得到Editor后，写入需要保存的数据
+        editor.putInt(MonitorInfo.TASK_SCREEN_ON_TIME, mTaskScreenOnTime);
+        editor.putInt(MonitorInfo.TASK_SCREEN_OFF_TIME, mTaskScreenOffTime);
+        editor.putInt(MonitorInfo.ATTENTION_TIME, mAttentionTime);
+        editor.putInt(MonitorInfo.PHONE_USE_COUNT, mPhoneUseCount);
+        editor.putInt(MonitorInfo.TASK_OUT_OF_RANGE_TIME, mOutOfRangeTime);
+        editor.commit();//提交修改
+    }
+
     boolean isAttention() {
         return MonitorActivity.isActivityOn;
     }
@@ -155,10 +182,11 @@ public class MonitorTaskAccomplishService extends Service {
     }
 
 
-    public void setTask(Task task) {
+    public void setTask(Task task, String currentTime) {
         if (!hasSetTask) {
             mTask = task;
-            mRemainingTime = (int) TimeUtils.remainingTime(mTask.getTaskStartAt(), mTask.getTaskEndIn(), "yyyy-MM-dd HH:mm");
+
+            mRemainingTime = (int) TimeUtils.remainingTime(currentTime, mTask.getTaskEndIn(), "yyyy-MM-dd HH:mm");
             hasSetTask = true;
         }
     }

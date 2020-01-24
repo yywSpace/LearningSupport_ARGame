@@ -4,9 +4,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.example.learningsupport_argame.ARModel.Items.ModelInfo;
+import com.example.learningsupport_argame.ARModel.Items.ModelInfoLab;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.TaskLab;
@@ -14,6 +17,7 @@ import com.example.learningsupport_argame.Task.TaskLab;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Optional;
 
 
 /**
@@ -30,14 +34,8 @@ public class MonitorTaskStatusService extends Service {
         new Thread(() -> {
             while (UserLab.getCurrentUser() == null) ;
             TaskLab.getAcceptedTask(UserLab.getCurrentUser().getId() + "");
-            Task t = new Task();
-            t.setTaskName("之间");
-            t.setTaskStartAt("2019-11-27 20:30");
-            t.setTaskEndIn("2019-11-27 21:30");
-            TaskLab.mAcceptedTaskList.add(t);
         }).start();
         mTaskStatusThread = new Thread(() -> {
-
             Thread currentThread = Thread.currentThread();
             while (mTaskStatusThread == currentThread) {
                 if (TaskLab.mAcceptedTaskList == null) {
@@ -50,17 +48,58 @@ public class MonitorTaskStatusService extends Service {
                     e.printStackTrace();
                 }
                 Date now = new Date();
-
+                Log.d(TAG, "侦测任务-" + TaskLab.mAcceptedTaskList.size());
+                // TODO: 20-1-14 增加消息栏通知功能
                 for (Task task : TaskLab.mAcceptedTaskList) {
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                     try {
                         Date begin = df.parse(task.getTaskStartAt());
                         Date end = df.parse(task.getTaskEndIn());
+                        // 如果已经接受的任务开始结束在当前时间之后则，任务结束
+                        if (end.before(now)) {
+                            Log.d(TAG, "任务结束-" + task.getTaskName());
+                            MonitorInfo monitorInfo = MonitorInfoLab.getMonitorInfoByTaskId(task.getTaskId());
+                            // 设置此任务为结束状态
+                            task.setTaskStatus("已结束");
+                            TaskLab.updateTask(task);
+                            if (monitorInfo != null) {
+                                // 设置任务参与者完成状态
+                                if (MonitorInfoLab.testTaskSuccess(monitorInfo)) {
+                                    TaskLab.updateTaskParticipantStatus(
+                                            monitorInfo.getTaskId() + "",
+                                            UserLab.getCurrentUser().getId() + "",
+                                            "完成");
+                                } else {
+                                    TaskLab.updateTaskParticipantStatus(
+                                            monitorInfo.getTaskId() + "",
+                                            UserLab.getCurrentUser().getId() + "",
+                                            "失败");
+                                }
+                            } else {
+                                TaskLab.updateTaskParticipantStatus(
+                                        task.getTaskId() + "",
+                                        UserLab.getCurrentUser().getId() + "",
+                                        "失败");
+                            }
+
+                        }
                         // 如果begin--now--end(now在begin之后end之前)，任务开始
                         if (now.after(begin) && now.before(end)) {
+                            Log.d(TAG, "任务开始-" + task.getTaskName());
                             if (!TaskLab.mRunningTaskList.contains(task)) {
                                 TaskLab.mRunningTaskList.add(task);
-                                Log.d(TAG, "onCreate: " + task.getTaskStartAt() + task.getTaskEndIn());
+                                Log.d(TAG, "onCreate: " + task.getTaskStartAt() + " " + task.getTaskEndIn());
+                                Intent monitorIntent = new Intent(this, MonitorActivity.class);
+                                monitorIntent.putExtra("task", task);
+                                String currentTime = df.format(now);
+                                monitorIntent.putExtra("current_time", currentTime);
+                                monitorIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                getApplication().startActivity(monitorIntent);
+                                // 设置任务状态为正执行
+                                new Thread(() -> {
+                                    task.setTaskStatus("正执行");
+                                    TaskLab.updateTask(task);
+                                }).start();
                             }
                         }
                     } catch (ParseException e) {

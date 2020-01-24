@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -28,8 +29,8 @@ import java.util.List;
 
 /*
     任务时间到达自动执行此Activity
-    任务执行后如果不在执行地点，或走出执行地点见： MonitorUIHandler 中 case 4
-    任务顺利完成后各监督信息见： MonitorUIHandler 中 case 3
+    任务执行后如果不在执行地点,或不在此应用界面则记录相应时间
+    任务顺利完成后进入完成界面
 */
 // todo 引导用户将此应用加入白名单
 public class MonitorActivity extends AppCompatActivity {
@@ -47,6 +48,7 @@ public class MonitorActivity extends AppCompatActivity {
     public static boolean isActivityOn;
     private MonitorTaskAccomplishService mMonitorTaskAccomplishService;
     private Task mTask;
+    private String mCurrentTime;
     private boolean mIsUnBound = false;
     private TextSwitcher mTextSwitcherRight, mTextSwitcherLeft;
     // 诗词切换
@@ -75,12 +77,17 @@ public class MonitorActivity extends AppCompatActivity {
         // 诗歌列表
         mPoetryList = PoetryLab.get().getPoetryList();
         // 获取当前任务
-        mTask = new Task();
-        mTask.setAccomplishTaskLocation("I do flowers鲜花店,34.819612,114.321369");
-        mTask.setTaskName("任务测试");
-        mTask.setTaskContent("task content");
-        mTask.setTaskStartAt("2019-7-30 16:29");
-        mTask.setTaskEndIn("2019-7-30 16:30");
+        mTask = (Task) getIntent().getSerializableExtra("task");
+        mCurrentTime = getIntent().getStringExtra("current_time");
+        if (mTask == null) {
+            mTask = new Task();
+            mTask.setAccomplishTaskLocation("I do flowers鲜花店,34.819612,114.321369");
+            mTask.setTaskName("任务测试");
+            mTask.setTaskContent("task content");
+            mTask.setTaskStartAt("2019-7-30 16:29");
+            mTask.setTaskEndIn("2019-7-30 16:30");
+        }
+
         // 打开监督服务
         mMonitorIntent = new Intent(this, MonitorTaskAccomplishService.class);
         startService(mMonitorIntent);
@@ -148,7 +155,6 @@ public class MonitorActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-
             data = msg.getData();
             mTaskScreenOnTime.setText(TimeUtils.second2Time(data.getInt(MonitorInfo.TASK_SCREEN_ON_TIME)));
             // 总专注时间=息屏时间+专注时间
@@ -167,6 +173,11 @@ public class MonitorActivity extends AppCompatActivity {
             if (remandingTime > 0)
                 return;
 
+            // 任务完成后清空所报存的监督信息
+            SharedPreferences miSp = getSharedPreferences(MonitorInfo.MONITOR_INFO_PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = miSp.edit();//获取Editor
+            editor.clear();
+
             unbindService(mServiceConnection);
             stopService(mMonitorIntent);
 
@@ -178,6 +189,7 @@ public class MonitorActivity extends AppCompatActivity {
             mCountDownView.setCurrentSeconds(0);
             mCountDownView.setTimeLabel(TimeUtils.second2Time(0));
             mCountDownView.invalidate();
+            monitorInfo.setTask(mTask);
             Intent intent = new Intent(MonitorActivity.this, MissionAccomplishActivity.class);
             intent.putExtra(MonitorInfo.MONITOR_INFO, monitorInfo);
             startActivity(intent);
@@ -189,7 +201,8 @@ public class MonitorActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mMonitorTaskAccomplishService = ((MonitorTaskAccomplishService.MonitorBinder) service).getService();
-            mMonitorTaskAccomplishService.setTask(mTask);
+            // 若任务开始后一段时间用户才进入，则从当前时间开始计算
+            mMonitorTaskAccomplishService.setTask(mTask, mCurrentTime);
             Log.d(TAG, "onServiceConnected: " + mTask.getTaskName());
         }
 

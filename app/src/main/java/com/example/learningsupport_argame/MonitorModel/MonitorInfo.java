@@ -1,8 +1,11 @@
 package com.example.learningsupport_argame.MonitorModel;
 
+import com.example.learningsupport_argame.Task.Task;
+
 import java.io.Serializable;
 
 public class MonitorInfo implements Serializable {
+    public static final String MONITOR_INFO_PREFS_NAME = "mMonitorInfoPrefsName";
     public static final String MONITOR_INFO = "mMonitorInfo";
     public static final String TASK_SCREEN_ON_TIME = "mMonitorTaskScreenOnTime";
     public static final String TASK_SCREEN_OFF_TIME = "mMonitorTaskScreenOffTime";
@@ -11,6 +14,8 @@ public class MonitorInfo implements Serializable {
     public static final String TASK_REMANDING_TIME = "mRemainingTime";
     public static final String TASK_OUT_OF_RANGE_TIME = "mTaskOutOfRangeTime";
 
+    private int mId;
+    private int mTaskId;
     private String mTaskBeginTime;
     private String mTaskEndTime;
     private int mTaskOutOfRangeTime;
@@ -18,6 +23,7 @@ public class MonitorInfo implements Serializable {
     private int mMonitorTaskScreenOffTime;
     private float mMonitorScreenOnAttentionSpan;
     private float mMonitorPhoneUseCount;//任务过程手机使用次数
+    private Task mTask;
 
     /**
      * 亮屏时间
@@ -135,5 +141,29 @@ public class MonitorInfo implements Serializable {
 
     public void setTaskOutOfRangeTime(int taskOutOfRangeTime) {
         mTaskOutOfRangeTime = taskOutOfRangeTime;
+    }
+
+    public Task getTask() {
+        return mTask;
+    }
+
+    public void setTask(Task task) {
+        mTask = task;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        mId = id;
+    }
+
+    public int getTaskId() {
+        return mTaskId;
+    }
+
+    public void setTaskId(int taskId) {
+        mTaskId = taskId;
     }
 }
