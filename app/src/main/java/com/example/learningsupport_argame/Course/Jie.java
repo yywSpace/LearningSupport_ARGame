@@ -2,6 +2,8 @@ package com.example.learningsupport_argame.Course;
 
 import org.litepal.crud.LitePalSupport;
 
+import java.util.Objects;
+
 public class Jie extends LitePalSupport {
 
         private  int id;
@@ -50,6 +52,23 @@ public class Jie extends LitePalSupport {
 
         public void setEnd_jieshu(int end_jieshu) {
                 this.end_jieshu = end_jieshu;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+                if (this == o) return true;
+                if (!(o instanceof Jie)) return false;
+                Jie home = (Jie) o;
+                return Objects.equals(zhou, home.zhou) &&
+                        Objects.equals(start_jieshu, home.start_jieshu)&&
+                        Objects.equals(end_jieshu, home.end_jieshu)
+                        ;
+        }
+
+        @Override
+        public int hashCode() {
+
+                return Objects.hash(zhou,start_jieshu,end_jieshu);
         }
 
 }

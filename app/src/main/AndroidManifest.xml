@@ -61,6 +61,7 @@
         <activity android:name=".Course.AddCourseActivity"/>
         <activity android:name=".Course.CourseTimeActivity"/>
         <activity android:name=".Course.MonitorActivity"/>
+        <activity android:name=".Course.ListView.ListViewActivity"/>
         <service android:name=".Course.MonitorService"/>
 
     </application>
