@@ -7,21 +7,18 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.learningsupport_argame.MonitorModel.MonitorInfo;
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.TaskLab;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
 
-// 任务失败时，传入失败原因
+// todo 任务失败时，计算失败原因
 public class MissionAccomplishActivity extends AppCompatActivity {
     private String TAG = "MissionAccomplishActivity";
     private TextView mAccomplishResult, mPhoneUseRate, mOutOfRangeRate, mAttentionRate, mPhoneUseCount, mExp, mGold, mItem;
@@ -73,7 +70,6 @@ public class MissionAccomplishActivity extends AppCompatActivity {
     }
 
     void initData() {
-
         // 任务执行中手机使用时间
         mPhoneUseProgressBar.setMax(mMonitorInfo.getTaskTotalTime());
         mPhoneUseProgressBar.setProgress((int) mMonitorInfo.getMonitorTaskScreenOnTime());
@@ -91,6 +87,7 @@ public class MissionAccomplishActivity extends AppCompatActivity {
         mOutOfRangeRate.setText(String.format("%.2f%%", outOfRangeRate * 100));
         // 任务执行中手机使用次数
         mPhoneUseCount.setText(mMonitorInfo.getMonitorPhoneUseCount() + "次");
+        // TODO: 20-2-17 任务奖励的设置与应用
         // 奖励
         mExp.setText("x100");
         mGold.setText("x100");
@@ -127,13 +124,13 @@ public class MissionAccomplishActivity extends AppCompatActivity {
             // 设置任务参与者完成状态
             if (taskAccomplishSuccess) {
                 TaskLab.updateTaskParticipantStatus(
-                        mMonitorInfo.getTask().getTaskId()+"",
-                        UserLab.getCurrentUser().getId()+"",
-                "完成");
+                        mMonitorInfo.getTask().getTaskId() + "",
+                        UserLab.getCurrentUser().getId() + "",
+                        "完成");
             } else {
                 TaskLab.updateTaskParticipantStatus(
-                        mMonitorInfo.getTask().getTaskId()+"",
-                        UserLab.getCurrentUser().getId()+"",
+                        mMonitorInfo.getTask().getTaskId() + "",
+                        UserLab.getCurrentUser().getId() + "",
                         "失败");
             }
         }).start();

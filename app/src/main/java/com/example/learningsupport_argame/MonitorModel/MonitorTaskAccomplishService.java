@@ -17,6 +17,8 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import androidx.annotation.Nullable;
+
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.model.LatLng;
 import com.example.learningsupport_argame.Navi.Activity.LocationService;
@@ -36,13 +38,14 @@ import java.util.TimerTask;
 public class MonitorTaskAccomplishService extends Service {
     private static final String TAG = MonitorTaskAccomplishService.class.getSimpleName();
     private PowerManager mPowerManager;
-    private int mTaskScreenOnTime;
+    private int mTaskScreenOnTime = 0;
     private int mTaskScreenOffTime;
     private int mAttentionTime;
     private int mPhoneUseCount;
     private boolean mIsOutOfRange = false;
     private int mOutOfRangeTime = 0;
     private int mRemainingTime = -1;
+    private int mTaskDelayTime = 0;
     private String CHANNEL_ID = "change notification";
     private static final int NOTIFICATION_FOREGROUND_ID = 1;
     private NotificationManager mNotificationManager;
@@ -105,6 +108,8 @@ public class MonitorTaskAccomplishService extends Service {
                         mPhoneUseCount++;
                         hasAwake = true;
                     }
+                    Log.d(TAG, "mRemainingTime: " + mRemainingTime);
+
                     // TODO: 20-1-14 通过任务名字保存监督数据，防止多个任务未完成时，只能处理一个的问题 或者不这样，在考虑
                     // 实时储存信息，防止信息丢失
                     saveData();
@@ -117,8 +122,21 @@ public class MonitorTaskAccomplishService extends Service {
                     data.putInt(MonitorInfo.PHONE_USE_COUNT, mPhoneUseCount);
                     data.putInt(MonitorInfo.TASK_REMANDING_TIME, mRemainingTime);
                     data.putInt(MonitorInfo.TASK_OUT_OF_RANGE_TIME, mOutOfRangeTime);
+                    data.putInt(MonitorInfo.TASK_DELAY_TIME, mTaskDelayTime);
                     message.setData(data);
-                    MonitorActivity.mMonitorHandler.sendMessage(message);
+                    if (mRemainingTime <= 0) {
+                        // 任务完成后清空所报存的监督信息
+                        SharedPreferences miSp = getSharedPreferences(MonitorInfo.MONITOR_INFO_PREFS_NAME, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = miSp.edit();//获取Editor
+                        editor.clear();
+                        editor.commit();
+                        mTimer.cancel();
+                        MonitorTaskStatusService.alreadyBegan = false;
+                        stopSelf();
+                    }
+                    // 向界面发送监督信息
+                    if (MonitorActivity.mMonitorHandler != null)
+                        MonitorActivity.mMonitorHandler.sendMessage(message);
 
                     Notification notification = new Notification.Builder(MonitorTaskAccomplishService.this, CHANNEL_ID)
                             .setSmallIcon(R.drawable.map_task_icon)
@@ -153,11 +171,11 @@ public class MonitorTaskAccomplishService extends Service {
     // 将监督信息恢复
     void restoreData() {
         SharedPreferences monitorInfo = getSharedPreferences(MonitorInfo.MONITOR_INFO_PREFS_NAME, MODE_PRIVATE);
-        mTaskScreenOnTime =monitorInfo.getInt(MonitorInfo.TASK_SCREEN_ON_TIME, 0);
-        mTaskScreenOffTime =monitorInfo.getInt(MonitorInfo.TASK_SCREEN_OFF_TIME, 0);
-        mAttentionTime =monitorInfo.getInt(MonitorInfo.ATTENTION_TIME, 0);
-        mPhoneUseCount =monitorInfo.getInt(MonitorInfo.PHONE_USE_COUNT, 0);
-        mOutOfRangeTime =monitorInfo.getInt(MonitorInfo.TASK_OUT_OF_RANGE_TIME, 0);
+        mTaskScreenOnTime = monitorInfo.getInt(MonitorInfo.TASK_SCREEN_ON_TIME, 0);
+        mTaskScreenOffTime = monitorInfo.getInt(MonitorInfo.TASK_SCREEN_OFF_TIME, 0);
+        mAttentionTime = monitorInfo.getInt(MonitorInfo.ATTENTION_TIME, 0);
+        mPhoneUseCount = monitorInfo.getInt(MonitorInfo.PHONE_USE_COUNT, 0);
+        mOutOfRangeTime = monitorInfo.getInt(MonitorInfo.TASK_OUT_OF_RANGE_TIME, 0);
     }
 
     // 将监督信息储存
@@ -181,24 +199,16 @@ public class MonitorTaskAccomplishService extends Service {
         return mPowerManager.isInteractive();
     }
 
-
-    public void setTask(Task task, String currentTime) {
-        if (!hasSetTask) {
-            mTask = task;
-
-            mRemainingTime = (int) TimeUtils.remainingTime(currentTime, mTask.getTaskEndIn(), "yyyy-MM-dd HH:mm");
-            hasSetTask = true;
-        }
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            mTask = (Task) intent.getSerializableExtra("task");
+            Log.d(TAG, "onStartCommand-mTask:" + mTask);
+            String currentTime = intent.getStringExtra("current_time");
+            mTaskDelayTime = (int) TimeUtils.remainingTime(mTask.getTaskStartAt(), currentTime, "yyyy-MM-dd HH:mm");
+            mRemainingTime = (int) TimeUtils.remainingTime(currentTime, mTask.getTaskEndIn(), "yyyy-MM-dd HH:mm");
+        }
         return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return new MonitorBinder();
     }
 
     @Override
@@ -206,6 +216,12 @@ public class MonitorTaskAccomplishService extends Service {
         super.onDestroy();
         mTimer.cancel();
         Log.d(TAG, "onDestroy: ");
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     /**
@@ -220,9 +236,4 @@ public class MonitorTaskAccomplishService extends Service {
         return MapUtils.distance(self.latitude, self.longitude, task.latitude, task.longitude) >= distance;
     }
 
-    public class MonitorBinder extends Binder {
-        public MonitorTaskAccomplishService getService() {
-            return MonitorTaskAccomplishService.this;
-        }
-    }
 }

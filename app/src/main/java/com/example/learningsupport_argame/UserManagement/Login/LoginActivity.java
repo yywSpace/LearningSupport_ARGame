@@ -25,7 +25,7 @@ import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
-
+// TODO: 20-2-17 各个权限的获取可以全部获取或按需获取 
 public class LoginActivity extends AppCompatActivity {
     private static String TAG = "LoginActivity";
     public static String PREFS_NAME = "user_info";

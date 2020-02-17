@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.learningsupport_argame.DbUtils;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.nio.file.OpenOption;
 import java.util.Date;
@@ -20,7 +21,7 @@ public class MonitorInfoLab {
     private static MonitorInfoLab sMMonitorInfoLab;
     private static List<MonitorInfo> mMonitorInfoList;
     private static SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-    ;
+    private static int mEffectRow;
 
     private MonitorInfoLab() {
 
@@ -63,6 +64,27 @@ public class MonitorInfoLab {
             taskAccomplishSuccess = true;
         }
         return taskAccomplishSuccess;
+    }
+
+    public static boolean insertMonitorInfo(MonitorInfo monitorInfo) {
+        String sql = "INSERT INTO monitor_info (user_id, task_id, task_phone_use_count, task_begin_time, task_end_time, task_out_of_range_time, task_screen_on_time, task_screen_off_time, task_screen_on_attention_time,task_delay_time)" +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);\n";
+        DbUtils.update(effectRow -> mEffectRow = effectRow,
+                sql,
+                UserLab.getCurrentUser().getId(),
+                monitorInfo.getTaskId(),
+                monitorInfo.getMonitorPhoneUseCount(),
+                monitorInfo.getTaskBeginTime(),
+                monitorInfo.getTaskEndTime(),
+                monitorInfo.getTaskOutOfRangeTime(),
+                monitorInfo.getMonitorTaskScreenOnTime(),
+                monitorInfo.getMonitorTaskScreenOffTime(),
+                monitorInfo.getMonitorScreenOnAttentionSpan(),
+                monitorInfo.getTaskDelayTime());
+        if (mEffectRow <= 0)
+            return false;
+        else
+            return true;
     }
 
 

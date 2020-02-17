@@ -1,17 +1,11 @@
 package com.example.learningsupport_argame.MonitorModel;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -48,7 +42,6 @@ public class MonitorActivity extends AppCompatActivity {
     public static boolean isActivityOn;
     private MonitorTaskAccomplishService mMonitorTaskAccomplishService;
     private Task mTask;
-    private String mCurrentTime;
     private boolean mIsUnBound = false;
     private TextSwitcher mTextSwitcherRight, mTextSwitcherLeft;
     // 诗词切换
@@ -78,20 +71,19 @@ public class MonitorActivity extends AppCompatActivity {
         mPoetryList = PoetryLab.get().getPoetryList();
         // 获取当前任务
         mTask = (Task) getIntent().getSerializableExtra("task");
-        mCurrentTime = getIntent().getStringExtra("current_time");
-        if (mTask == null) {
-            mTask = new Task();
-            mTask.setAccomplishTaskLocation("I do flowers鲜花店,34.819612,114.321369");
-            mTask.setTaskName("任务测试");
-            mTask.setTaskContent("task content");
-            mTask.setTaskStartAt("2019-7-30 16:29");
-            mTask.setTaskEndIn("2019-7-30 16:30");
-        }
+//        if (mTask == null) {
+//            mTask = new Task();
+//            mTask.setAccomplishTaskLocation("I do flowers鲜花店,34.819612,114.321369");
+//            mTask.setTaskName("任务测试");
+//            mTask.setTaskContent("task content");
+//            mTask.setTaskStartAt("2019-7-30 16:29");
+//            mTask.setTaskEndIn("2019-7-30 16:30");
+//        }
 
         // 打开监督服务
-        mMonitorIntent = new Intent(this, MonitorTaskAccomplishService.class);
-        startService(mMonitorIntent);
-        bindService(mMonitorIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+//        mMonitorIntent = new Intent(this, MonitorTaskAccomplishService.class);
+//        startService(mMonitorIntent);
+//        bindService(mMonitorIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
         mMonitorHandler = new MonitorUIHandler();
     }
 
@@ -123,7 +115,12 @@ public class MonitorActivity extends AppCompatActivity {
 
     void initView() {
         mReturnImageView = findViewById(R.id.monitor_return);
-        mReturnImageView.setOnClickListener(v -> finish());
+        mReturnImageView.setOnClickListener(v -> {
+            Intent i = new Intent(Intent.ACTION_MAIN);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addCategory(Intent.CATEGORY_HOME);
+            startActivity(i);
+        });
         mTaskScreenOnTime = findViewById(R.id.monitor_phone_use_time);
         mAttentionTime = findViewById(R.id.monitor_task_attention_time);
         mPhoneUseCount = findViewById(R.id.monitor_phone_use_count);
@@ -150,6 +147,7 @@ public class MonitorActivity extends AppCompatActivity {
             monitorInfo = new MonitorInfo();
             monitorInfo.setTaskBeginTime(mTask.getTaskStartAt());
             monitorInfo.setTaskEndTime(mTask.getTaskEndIn());
+            monitorInfo.setTaskId(mTask.getTaskId());
         }
 
         @Override
@@ -173,42 +171,28 @@ public class MonitorActivity extends AppCompatActivity {
             if (remandingTime > 0)
                 return;
 
-            // 任务完成后清空所报存的监督信息
-            SharedPreferences miSp = getSharedPreferences(MonitorInfo.MONITOR_INFO_PREFS_NAME, MODE_PRIVATE);
-            SharedPreferences.Editor editor = miSp.edit();//获取Editor
-            editor.clear();
 
-            unbindService(mServiceConnection);
-            stopService(mMonitorIntent);
+//            unbindService(mServiceConnection);
+//            stopService(mMonitorIntent);
 
             monitorInfo.setMonitorTaskScreenOnTime(data.getInt(MonitorInfo.TASK_SCREEN_ON_TIME));
             monitorInfo.setMonitorScreenOnAttentionSpan(data.getInt(MonitorInfo.ATTENTION_TIME));
             monitorInfo.setMonitorPhoneUseCount(data.getInt(MonitorInfo.PHONE_USE_COUNT));
             monitorInfo.setTaskOutOfRangeTime(data.getInt(MonitorInfo.TASK_OUT_OF_RANGE_TIME));
             monitorInfo.setMonitorTaskScreenOffTime(data.getInt(MonitorInfo.TASK_SCREEN_OFF_TIME));
+            monitorInfo.setTaskDelayTime(data.getInt(MonitorInfo.TASK_DELAY_TIME));
             mCountDownView.setCurrentSeconds(0);
             mCountDownView.setTimeLabel(TimeUtils.second2Time(0));
             mCountDownView.invalidate();
             monitorInfo.setTask(mTask);
+            Log.d(TAG, "handleMessage: " + monitorInfo.getTaskId());
+            // 保存监督信息
+            new Thread(() -> MonitorInfoLab.insertMonitorInfo(monitorInfo)).start();
+
             Intent intent = new Intent(MonitorActivity.this, MissionAccomplishActivity.class);
             intent.putExtra(MonitorInfo.MONITOR_INFO, monitorInfo);
             startActivity(intent);
         }
     }
 
-
-    ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mMonitorTaskAccomplishService = ((MonitorTaskAccomplishService.MonitorBinder) service).getService();
-            // 若任务开始后一段时间用户才进入，则从当前时间开始计算
-            mMonitorTaskAccomplishService.setTask(mTask, mCurrentTime);
-            Log.d(TAG, "onServiceConnected: " + mTask.getTaskName());
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
 }

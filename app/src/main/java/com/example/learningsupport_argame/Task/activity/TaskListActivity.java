@@ -235,8 +235,10 @@ public class TaskListActivity extends AppCompatActivity {
                         } else {
                             TaskLab.updateTask(task);
                         }
-                        mAcceptedTaskList.add(0,task);
+                        // 更新已接受列表
+                        TaskLab.getAcceptedTask(UserLab.getCurrentUser().getId() + "");
                     }).start();
+
                     // 如果为用AR发布，放置模型
                     if (taskViewAdapter.mChooseTaskAR.isChecked()) {
                         Intent intent = new Intent(TaskListActivity.this, PutModelActivity.class);
@@ -245,6 +247,7 @@ public class TaskListActivity extends AppCompatActivity {
                     } else {
                         mCreateTaskDialog.dismiss();
                     }
+
                 });
             }
         });

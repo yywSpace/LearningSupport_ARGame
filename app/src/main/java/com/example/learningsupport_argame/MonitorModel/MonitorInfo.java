@@ -13,6 +13,7 @@ public class MonitorInfo implements Serializable {
     public static final String PHONE_USE_COUNT = "mMonitorPhoneUseCount";
     public static final String TASK_REMANDING_TIME = "mRemainingTime";
     public static final String TASK_OUT_OF_RANGE_TIME = "mTaskOutOfRangeTime";
+    public static final String TASK_DELAY_TIME = "mTaskDelayTime";
 
     private int mId;
     private int mTaskId;
@@ -23,6 +24,7 @@ public class MonitorInfo implements Serializable {
     private int mMonitorTaskScreenOffTime;
     private float mMonitorScreenOnAttentionSpan;
     private float mMonitorPhoneUseCount;//任务过程手机使用次数
+    private int mTaskDelayTime;
     private Task mTask;
 
     /**
@@ -165,5 +167,13 @@ public class MonitorInfo implements Serializable {
 
     public void setTaskId(int taskId) {
         mTaskId = taskId;
+    }
+
+    public int getTaskDelayTime() {
+        return mTaskDelayTime;
+    }
+
+    public void setTaskDelayTime(int taskDelayTime) {
+        mTaskDelayTime = taskDelayTime;
     }
 }
