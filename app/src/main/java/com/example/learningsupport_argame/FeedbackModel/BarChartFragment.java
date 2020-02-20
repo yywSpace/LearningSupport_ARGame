@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.learningsupport_argame.MonitorModel.MonitorInfo;
 import com.example.learningsupport_argame.MonitorModel.MonitorInfoLab;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.LimitLine;
@@ -51,14 +52,7 @@ public class BarChartFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMonitorInfoLab = MonitorInfoLab.get();
-        Calendar c = Calendar.getInstance();
-        String today = new SimpleDateFormat("yyyy/MM/dd").format(c.getTime());
-        mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(today);
-        mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(today);
-        mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(today);
-        Log.d(TAG, "mMonitorInfosDay: " + mMonitorInfosDay.size());
-        Log.d(TAG, "mMonitorInfosWeek: " + mMonitorInfosWeek.size());
-        Log.d(TAG, "mMonitorInfosMonth: " + mMonitorInfosMonth.size());
+
     }
 
     @Nullable
@@ -68,12 +62,12 @@ public class BarChartFragment extends Fragment {
         mTimeSelector = view.findViewById(R.id.feedback_bar_chart_time_selector);
         // 设置时间选择器
         Calendar calendar = Calendar.getInstance();
-        time = calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
+        time = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
         mTimeSelector.setText(new SimpleDateFormat("yyyy年MM月dd日").format(calendar.getTime()));
         mTimeSelector.setOnClickListener(v -> {
             new DatePickerDialog(getActivity(),
                     (view1, year, monthOfYear, dayOfMonth) -> {
-                        time = String.format("%d/%02d/%02d", year, (monthOfYear + 1), dayOfMonth);
+                        time = String.format("%d-%02d-%02d", year, (monthOfYear + 1), dayOfMonth);
 
                         mTimeSelector.setText(year + "年" + (monthOfYear + 1)
                                 + "月" + dayOfMonth + "日");
@@ -82,14 +76,25 @@ public class BarChartFragment extends Fragment {
                         mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(time);
                         setData();
                     },
-                    Integer.parseInt(time.split("/")[0]) + 0,
-                    Integer.parseInt(time.split("/")[1]) - 1,
-                    Integer.parseInt(time.split("/")[2]) + 0)
+                    Integer.parseInt(time.split("-")[0]) + 0,
+                    Integer.parseInt(time.split("-")[1]) - 1,
+                    Integer.parseInt(time.split("-")[2]) + 0)
                     .show();
         });
         mBarChart = view.findViewById(R.id.bar_chart);
         mBarChart.getDescription().setEnabled(false);
-        setData();
+
+        // 获取数据
+        Calendar c = Calendar.getInstance();
+        String today = new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
+        new Thread(()->{
+            MonitorInfoLab.getAllMonitorInfo(UserLab.getCurrentUser().getId());
+            mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(today);
+            mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(today);
+            mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(today);
+            setData();
+
+        }).start();
         return view;
     }
 
@@ -110,20 +115,19 @@ public class BarChartFragment extends Fragment {
 
         ArrayList<BarEntry> valuesTotalTime = new ArrayList<>();
         ArrayList<BarEntry> valuesAttentionTime = new ArrayList<>();
-        ArrayList<BarEntry> valuesUseCount = new ArrayList<>();
+        ArrayList<BarEntry> valuesDelayTime = new ArrayList<>();
 
-        getBarEntry(valuesTotalTime, valuesAttentionTime, valuesUseCount);
+        getBarEntry(valuesTotalTime, valuesAttentionTime, valuesDelayTime);
 
         BarDataSet setTotalTime, setAttentionTime, setUseCount;
 
         if (mBarChart.getData() != null && mBarChart.getData().getDataSetCount() > 0) {
-
             setTotalTime = (BarDataSet) mBarChart.getData().getDataSetByIndex(0);
             setAttentionTime = (BarDataSet) mBarChart.getData().getDataSetByIndex(1);
             setUseCount = (BarDataSet) mBarChart.getData().getDataSetByIndex(2);
             setTotalTime.setValues(valuesTotalTime);
             setAttentionTime.setValues(valuesAttentionTime);
-            setUseCount.setValues(valuesUseCount);
+            setUseCount.setValues(valuesDelayTime);
             mBarChart.getData().notifyDataChanged();
             mBarChart.notifyDataSetChanged();
 
@@ -133,7 +137,7 @@ public class BarChartFragment extends Fragment {
             setTotalTime.setColor(Color.rgb(104, 241, 175));
             setAttentionTime = new BarDataSet(valuesAttentionTime, "专注时间");
             setAttentionTime.setColor(Color.rgb(164, 228, 251));
-            setUseCount = new BarDataSet(valuesUseCount, "手机使用次数");
+            setUseCount = new BarDataSet(valuesDelayTime, "推迟时间");
             setUseCount.setColor(Color.rgb(242, 247, 158));
 
             BarData data = new BarData(setTotalTime, setAttentionTime, setUseCount);
@@ -141,10 +145,7 @@ public class BarChartFragment extends Fragment {
             data.setValueFormatter(new IValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                    if (dataSetIndex == 0 || dataSetIndex == 1)
                         return (int) value + "分钟";
-                    else
-                        return (int) value + "次";
                 }
             });
             mBarChart.setData(data);
@@ -154,42 +155,42 @@ public class BarChartFragment extends Fragment {
         mBarChart.invalidate();
     }
 
-    void getBarEntry(ArrayList<BarEntry> valuesTotalTime, ArrayList<BarEntry> valuesAttentionTime, ArrayList<BarEntry> valuesUseCount) {
-        float taskTotalTime, attentionTime, useCount;
+    void getBarEntry(ArrayList<BarEntry> valuesTotalTime, ArrayList<BarEntry> valuesAttentionTime, ArrayList<BarEntry> valuesDelayTime) {
+        float taskTotalTime, attentionTime, taskDelayTime;
         // mMonitorInfosDay mMonitorInfosWeek mMonitorInfosMonth
         taskTotalTime = 0;
         attentionTime = 0;
-        useCount = 0;
+        taskDelayTime = 0;
         for (MonitorInfo mi : mMonitorInfosDay) {
             taskTotalTime += mi.getTaskTotalTime();
             attentionTime += mi.getMonitorAttentionTime();
-            useCount += mi.getMonitorPhoneUseCount();
+            taskDelayTime += mi.getTaskDelayTime();
         }
         valuesTotalTime.add(new BarEntry(0, taskTotalTime / 60));
         valuesAttentionTime.add(new BarEntry(1, attentionTime / 60));
-        valuesUseCount.add(new BarEntry(2, useCount));
+        valuesDelayTime.add(new BarEntry(2, taskDelayTime));
         taskTotalTime = 0;
         attentionTime = 0;
-        useCount = 0;
+        taskDelayTime = 0;
         for (MonitorInfo mi : mMonitorInfosWeek) {
             taskTotalTime += mi.getTaskTotalTime();
             attentionTime += mi.getMonitorAttentionTime();
-            useCount += mi.getMonitorPhoneUseCount();
+            taskDelayTime += mi.getTaskDelayTime();
         }
         valuesTotalTime.add(new BarEntry(0, taskTotalTime / 60));
         valuesAttentionTime.add(new BarEntry(1, attentionTime / 60));
-        valuesUseCount.add(new BarEntry(2, useCount));
+        valuesDelayTime.add(new BarEntry(2, taskDelayTime));
         taskTotalTime = 0;
         attentionTime = 0;
-        useCount = 0;
+        taskDelayTime = 0;
         for (MonitorInfo mi : mMonitorInfosMonth) {
             taskTotalTime += mi.getTaskTotalTime();
             attentionTime += mi.getMonitorAttentionTime();
-            useCount += mi.getMonitorPhoneUseCount();
+            taskDelayTime += mi.getTaskDelayTime();
         }
         valuesTotalTime.add(new BarEntry(0, taskTotalTime / 60));
         valuesAttentionTime.add(new BarEntry(1, attentionTime / 60));
-        valuesUseCount.add(new BarEntry(2, useCount));
+        valuesDelayTime.add(new BarEntry(2, taskDelayTime));
 
 
     }

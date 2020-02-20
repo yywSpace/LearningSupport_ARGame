@@ -31,6 +31,7 @@ public class MonitorInfoLab {
     public static List<MonitorInfo> getAllMonitorInfo(int userId) {
         String sql = "SELECT * FROM monitor_info WHERE user_id = ?;";
         mMonitorInfoList = getMonitorInfoWith(sql, userId);
+        Log.d(TAG, "getAllMonitorInfo: "+mMonitorInfoList.size());
         return mMonitorInfoList;
     }
 
@@ -91,9 +92,9 @@ public class MonitorInfoLab {
     public static List<MonitorInfo> getMonitorInfoWith(String sql, Object... args) {
         List<MonitorInfo> monitorInfoList = new ArrayList<>();
         DbUtils.query(resultSet -> {
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 MonitorInfo monitorInfo = new MonitorInfo();
-                monitorInfo.setId(resultSet.getInt("info_id"));
+                monitorInfo.setId(resultSet.getInt("id"));
                 monitorInfo.setTaskId(resultSet.getInt("task_id"));
                 monitorInfo.setMonitorPhoneUseCount(resultSet.getInt("task_phone_use_count"));
                 monitorInfo.setTaskBeginTime(resultSet.getString("task_begin_time"));
@@ -109,19 +110,18 @@ public class MonitorInfoLab {
     }
 
     public List<MonitorInfo> getMonitorInfoListDay(String dataStr) {
-        Log.d(TAG, "dataStr: " + dataStr);
         List<MonitorInfo> infoList = new ArrayList<>();
+        Log.d(TAG, "dataStr: "+dataStr);
         int dayGiven = Integer.parseInt(dataStr.substring(8, 10));
-        Log.d(TAG, "dayGiven: " + dayGiven);
+        Log.d(TAG, "dayGiven: "+dayGiven);
         for (int i = 0; i < mMonitorInfoList.size(); i++) {
-            String day = mMonitorInfoList.get(i).getTaskBeginTime().substring(8, 10);
-            Log.d(TAG, "day: " + day);
-
+            Log.d(TAG, "getTaskBeginTime: "+mMonitorInfoList.get(i).getTaskBeginTime());
+            String day = mMonitorInfoList.get(i).getTaskBeginTime().substring(8, 10).trim();
+            Log.d(TAG, "day: "+day);
             if (Integer.parseInt(day) == dayGiven)
                 infoList.add(mMonitorInfoList.get(i));
         }
         Log.d(TAG, infoList.size() + "");
-
         return infoList;
     }
 

@@ -344,7 +344,7 @@ public class TaskListActivity extends AppCompatActivity {
 
             // 设置任务时间默认为当前时间
             Calendar calendar = Calendar.getInstance();
-            String currentTime = String.format("%s-%s-%s %s:%02d",
+            String currentTime = String.format("%s-%02s-%02s %s:%02d",
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH) + 1,
                     calendar.get(Calendar.DAY_OF_MONTH),
@@ -450,7 +450,7 @@ public class TaskListActivity extends AppCompatActivity {
                 //设置DateDialog为当前时间
                 DatePickerDialog date = new DatePickerDialog(
                         TaskListActivity.this, (view, year, month, dayOfMonth) -> {
-                    mStartTimes[0] = year + "-" + (month + 1) + "-" + dayOfMonth;
+                    mStartTimes[0] = String.format("%s-%02s-%02s %s:%02d", year, (month + 1), dayOfMonth);
                     mTaskStartTime.setText(mStartTimes[0] + " " + (mStartTimes[1] == null ? "" : mStartTimes[1]));
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 date.setTitle("选择开始日期");
@@ -458,7 +458,6 @@ public class TaskListActivity extends AppCompatActivity {
             });
 
             mChooseTaskStartTime.setOnClickListener(v -> {
-
                 TimePickerDialog timePicker = new TimePickerDialog(
                         TaskListActivity.this,
                         (view, hourOfDay, minute) -> {
@@ -477,7 +476,7 @@ public class TaskListActivity extends AppCompatActivity {
                 DatePickerDialog datePicker = new DatePickerDialog(
                         TaskListActivity.this,
                         (view, year, month, dayOfMonth) -> {
-                            mEndTimes[0] = year + "-" + (month + 1) + "-" + dayOfMonth;
+                            mEndTimes[0] =  String.format("%s-%02s-%02s %s:%02d", year, (month + 1), dayOfMonth);
                             Toast.makeText(TaskListActivity.this, mEndTimes[0], Toast.LENGTH_SHORT).show();
                             mTaskEndTime.setText(mEndTimes[0] + " " + (mEndTimes[1] == null ? "" : mEndTimes[1]));
                         },

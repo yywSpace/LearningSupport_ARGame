@@ -3,6 +3,7 @@ package com.example.learningsupport_argame.FeedbackModel;
 import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.learningsupport_argame.MonitorModel.MonitorInfo;
 import com.example.learningsupport_argame.MonitorModel.MonitorInfoLab;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
@@ -43,6 +45,7 @@ public class RadarChartFragment extends Fragment {
     private RadarChart mRadarChart;
     private TextView mTimeSelector;
     String time;
+    private static String TAG = "RadarChartFragment";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,32 +62,42 @@ public class RadarChartFragment extends Fragment {
         mTimeSelector = view.findViewById(R.id.feedback_radar_chart_time_selector);
         // 设置时间选择器
         Calendar calendar = Calendar.getInstance();
-        time = calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
+        time = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
         mTimeSelector.setText(new SimpleDateFormat("yyyy年MM月dd日").format(calendar.getTime()));
         mTimeSelector.setOnClickListener(v -> {
             new DatePickerDialog(getActivity(),
                     (view1, year, monthOfYear, dayOfMonth) -> {
-                        time = String.format("%d/%02d/%02d", year, (monthOfYear + 1), dayOfMonth);
+                        time = String.format("%d-%02d-%02d", year, (monthOfYear + 1), dayOfMonth);
 
                         mTimeSelector.setText(year + "年" + (monthOfYear + 1)
                                 + "月" + dayOfMonth + "日");
                         mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(time);
                         mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(time);
                         mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(time);
+                        Log.d(TAG, "onCreateView:mMonitorInfosDay "+mMonitorInfosDay.size());
                         setData();
                     },
-                    Integer.parseInt(time.split("/")[0]) + 0,
-                    Integer.parseInt(time.split("/")[1]) - 1,
-                    Integer.parseInt(time.split("/")[2]) + 0)
+                    Integer.parseInt(time.split("-")[0]) + 0,
+                    Integer.parseInt(time.split("-")[1]) - 1,
+                    Integer.parseInt(time.split("-")[2]) + 0)
                     .show();
         });
         mRadarChart = view.findViewById(R.id.radar_chart);
         Calendar c = Calendar.getInstance();
-        String today = new SimpleDateFormat("yyyy/MM/dd").format(c.getTime());
-        mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(today);
-        mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(today);
-        mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(today);
-        setData();
+        String today = new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
+
+        new Thread(()->{
+            while (UserLab.getCurrentUser() == null);
+            MonitorInfoLab.getAllMonitorInfo(UserLab.getCurrentUser().getId());
+            mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(today);
+            mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(today);
+            mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(today);
+            Log.d(TAG, "mMonitorInfosDay: "+mMonitorInfosDay.size());
+            Log.d(TAG, "mMonitorInfosWeek: "+mMonitorInfosWeek.size());
+            Log.d(TAG, "mMonitorInfosMonth: "+mMonitorInfosMonth.size());
+            setData();
+        }).start();
+
         radarSetting();
         return view;
 
@@ -116,7 +129,7 @@ public class RadarChartFragment extends Fragment {
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         XAxis xAxis = mRadarChart.getXAxis();
         xAxis.setValueFormatter(new IAxisValueFormatter() {
-            private final String[] mActivities = new String[]{"使用时间", "息屏时间", "专注时间", "失神时间", "使用次数"};
+            private final String[] mActivities = new String[]{"推迟时间", "息屏时间", "专注时间", "失神时间", "脱离范围"};
 
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
@@ -140,22 +153,22 @@ public class RadarChartFragment extends Fragment {
 
     private RadarDataSet getRadarEntries(List<MonitorInfo> monitorInfos, String label, int fillColor) {
         List<RadarEntry> radarEntries = new ArrayList<>();
-        float usePhoneTime = 0, unUsePhoneTime = 0, attentionTime = 0, inAttentionTime = 0, totalTime = 0, useCount = 0;
+        float delayTime = 0, unUsePhoneTime = 0, attentionTime = 0, inAttentionTime = 0, totalTime = 0, outOfRange = 0;
 
         for (MonitorInfo mi : monitorInfos) {
-            usePhoneTime += mi.getMonitorTaskScreenOnTime();
+            delayTime += mi.getTaskDelayTime();
             attentionTime += mi.getMonitorAttentionTime();
-            useCount += mi.getMonitorPhoneUseCount();
+            outOfRange += mi.getTaskOutOfRangeTime();
             totalTime += mi.getTaskTotalTime();
             unUsePhoneTime += mi.getMonitorTaskScreenOffTime();
             inAttentionTime += mi.getMonitorScreenOnInattentionSpan();
         }
         // 使用时间 专注时间 使用次数
-        radarEntries.add(new RadarEntry(usePhoneTime / totalTime));
+        radarEntries.add(new RadarEntry(delayTime / totalTime));
         radarEntries.add(new RadarEntry(unUsePhoneTime / totalTime));
         radarEntries.add(new RadarEntry(attentionTime / totalTime));
-        radarEntries.add(new RadarEntry(inAttentionTime / usePhoneTime));
-        radarEntries.add(new RadarEntry(useCount / 100));
+        radarEntries.add(new RadarEntry(inAttentionTime / totalTime));
+        radarEntries.add(new RadarEntry(outOfRange / totalTime));
 
 
         RadarDataSet dataSet = new RadarDataSet(radarEntries, label);

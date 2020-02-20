@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.learningsupport_argame.MonitorModel.MonitorInfo;
 import com.example.learningsupport_argame.MonitorModel.MonitorInfoLab;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
@@ -63,10 +64,7 @@ public class LineChartFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Calendar c = Calendar.getInstance();
-        String today = new SimpleDateFormat("yyyy/MM/dd").format(c.getTime());
-        mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(today);
-        mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(today);
-        mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(today);
+        String today = new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
 
         View view = inflater.inflate(R.layout.feedback_line_chart, container, false);
 
@@ -74,19 +72,26 @@ public class LineChartFragment extends Fragment {
 
         Description description = mLineChart.getDescription();
         description.setEnabled(false);
-        setDayData(mMonitorInfosDay);
         daySetting();
 
+        new Thread(()->{
+            while(UserLab.getCurrentUser() == null);
+            MonitorInfoLab.getAllMonitorInfo(UserLab.getCurrentUser().getId());
+            mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(today);
+            mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(today);
+            mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(today);
+            setDayData(mMonitorInfosDay);
+        }).start();
         // 设置时间选择器
         Calendar calendar = Calendar.getInstance();
-        time = calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
+        time = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
         mTimeSelector = view.findViewById(R.id.feedback_line_chart_time_selector);
         mTimeSelector.setText(new SimpleDateFormat("yyyy年MM月dd日").format(calendar.getTime()));
         mTimeSelector.setOnClickListener(v -> {
             new DatePickerDialog(getActivity(),
                     (view1, year, monthOfYear, dayOfMonth) -> {
                         mTimeSelector.setText(year + "年" + (monthOfYear + 1) + "月" + dayOfMonth + "日");
-                        time = String.format("%d/%02d/%02d", year, (monthOfYear + 1), dayOfMonth);
+                        time = String.format("%d-%02d-%02d", year, (monthOfYear + 1), dayOfMonth);
                         if (mDayButton.isChecked()) {
                             mLineChart.animateX(1000);
                             mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(time);
@@ -104,9 +109,9 @@ public class LineChartFragment extends Fragment {
                             monthSetting();
                         }
                     },
-                    Integer.parseInt(time.split("/")[0]),//year
-                    Integer.parseInt(time.split("/")[1]) - 1,//month
-                    Integer.parseInt(time.split("/")[2]))//day
+                    Integer.parseInt(time.split("-")[0]),//year
+                    Integer.parseInt(time.split("-")[1]) - 1,//month
+                    Integer.parseInt(time.split("-")[2]))//day
                     .show();
         });
 
@@ -137,7 +142,7 @@ public class LineChartFragment extends Fragment {
 
     private int getWeekNumber(String dataStr) {
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         try {
             date = sdf.parse(dataStr);
@@ -165,12 +170,12 @@ public class LineChartFragment extends Fragment {
             int hourBegin = Integer.parseInt(beginTime.split(":")[0]);
             int hourEnd = Integer.parseInt(endTime.split(":")[0]);
             for (int i = hourBegin; i <= hourEnd; i++) {
-                entries1.set(i, new Entry(i, monitorInfo.getMonitorPhoneUseCount()));
+                entries1.set(i, new Entry(i, monitorInfo.getTaskDelayTime() / 60));
                 entries2.set(i, new Entry(i, monitorInfo.getTaskTotalTime() / 60));
                 entries3.set(i, new Entry(i, monitorInfo.getMonitorAttentionTime() / 60));
             }
         }
-        LineDataSet dataSet1 = new LineDataSet(entries1, "手机使用次数");
+        LineDataSet dataSet1 = new LineDataSet(entries1, "使劲推迟时间");
         dataSet1.setColor(Color.RED);
 
         LineDataSet dataSet2 = new LineDataSet(entries2, "任务持续时间");
@@ -199,7 +204,7 @@ public class LineChartFragment extends Fragment {
         List<Entry> entries2 = new ArrayList<>();
         List<Entry> entries3 = new ArrayList<>();
         for (int i = 1; i <= cnt; i++) {
-            float totalTaskTime = 0, attentionTime = 0, useCount = 0;
+            float totalTaskTime = 0, attentionTime = 0, taskDelayTime = 0;
             for (int j = 0; j < monitorInfos.size(); j++) {
                 MonitorInfo monitorInfo = monitorInfos.get(j);
                 if (cnt == 24) {
@@ -224,17 +229,17 @@ public class LineChartFragment extends Fragment {
                     if (getWeekNumber(monitorInfo.getTaskBeginTime()) == i) {
                         totalTaskTime += monitorInfo.getTaskTotalTime();
                         attentionTime += monitorInfo.getMonitorAttentionTime();
-                        useCount += monitorInfo.getMonitorPhoneUseCount();
+                        taskDelayTime += monitorInfo.getTaskDelayTime();
                     }
                 } else if (cnt >= 28) {// 月的数据
-                    if (Integer.parseInt(monitorInfo.getTaskBeginTime().substring(8, 10)) == i) {
+                    if (Integer.parseInt(monitorInfo.getTaskBeginTime().substring(8, 10).trim()) == i) {
                         totalTaskTime += monitorInfo.getTaskTotalTime();
                         attentionTime += monitorInfo.getMonitorAttentionTime();
-                        useCount += monitorInfo.getMonitorPhoneUseCount();
+                        taskDelayTime += monitorInfo.getTaskDelayTime();
                     }
                 }
             }
-            entries1.add(new Entry(i - 1, useCount));
+            entries1.add(new Entry(i - 1, taskDelayTime / 60));
             entries2.add(new Entry(i - 1, totalTaskTime / 60));
             entries3.add(new Entry(i - 1, attentionTime / 60));
 
@@ -302,6 +307,4 @@ public class LineChartFragment extends Fragment {
         YAxis yAxis = mLineChart.getAxisLeft();
         yAxis.setAxisMinimum(0);
     }
-
-
 }

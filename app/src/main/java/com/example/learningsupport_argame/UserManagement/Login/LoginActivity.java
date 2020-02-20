@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.FeedbackModel.MissionAccomplishActivity;
 import com.example.learningsupport_argame.MonitorModel.MonitorActivity;
 import com.example.learningsupport_argame.MonitorModel.MonitorTaskStatusService;
@@ -25,7 +26,7 @@ import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
-// TODO: 20-2-17 各个权限的获取可以全部获取或按需获取 
+// TODO: 20-2-17 各个权限的获取可以全部获取或按需获取
 public class LoginActivity extends AppCompatActivity {
     private static String TAG = "LoginActivity";
     public static String PREFS_NAME = "user_info";
@@ -92,7 +93,9 @@ public class LoginActivity extends AppCompatActivity {
                         startService(LocationService.mLocationServiceIntent);
                         startService(MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
 //                        startActivity(new Intent(LoginActivity.this, MapActivity.class));
-                        startActivity(new Intent(this, TaskListActivity.class));
+//                        startActivity(new Intent(this, TaskListActivity.class));
+                        startActivity(new Intent(this, FeedbackDetailsActivity.class));
+
                         finish();
                     }
                 });
@@ -121,8 +124,9 @@ public class LoginActivity extends AppCompatActivity {
             startService(LocationService.mLocationServiceIntent);
             startService(MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
         }).start();
-        startActivity(new Intent(this, TaskListActivity.class));
+//        startActivity(new Intent(this, TaskListActivity.class));
 //        startActivity(new Intent(LoginActivity.this, MapActivity.class));
+        startActivity(new Intent(this, FeedbackDetailsActivity.class));
         finish();
     }
 

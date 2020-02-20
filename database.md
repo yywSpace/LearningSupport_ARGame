@@ -59,7 +59,24 @@
     - friend_id  
         其朋友Id，链接至User表
 
-
+- MonitorInfo
+    - id
+    - task_id  
+        外键，代表此监督所代表的任务
+    - task_phone_use_count
+        手机使用次数
+    - task_begin_time
+    - task_end_time
+    - task_out_of_range_time
+        任务过程中超出范围时间
+    - task_screen_on_time
+        亮屏时间
+    - task_screen_off_time
+        息屏时间
+    - task_screen_on_attention_time
+        亮屏时专注时间
+    - task_delay_time
+        任务开始后拖延的时间
 ---
 以下数据数据库中还未涉及，只供参考
 
@@ -83,26 +100,6 @@
         经验
     - reward_credits  
         积分
-
-
-- Monitor
-    - monitor_id
-    - monitor_task_id  
-        外键，代表此监督所代表的任务
-    - monitior_level  
-        监督等级:轻松, 严格
-    - monitior_phone_total_time  
-        手机使用总时间
-    - monitior_task_screenOn_time  
-        任务过程中手机亮屏时间
-    - monitior_task_screenOff_time  
-        任务过程中手机非亮屏时间
-    - monitior_screenOn_attention_span  
-        亮屏过程中专注时间
-    - monitior_screenOn_inattention_span  
-        亮屏过程中不专注时间
-    - monitior_phone_use_count  
-        手机使用次数
 
 
 - Location
