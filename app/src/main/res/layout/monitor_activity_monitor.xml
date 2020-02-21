@@ -142,3 +142,4 @@
             android:outAnimation="@anim/monitor_poetry_right_out" />
     </LinearLayout>
 </LinearLayout>
+

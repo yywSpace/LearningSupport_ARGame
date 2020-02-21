@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Toast;
+
+import com.example.learningsupport_argame.Course.CourseMainActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -18,8 +21,15 @@ public class DragFloatActionButton extends FloatingActionButton {
     private int statusHeight;
     private int virtualHeight;
 
+    int[] locationSta=new int[2];
+    int xSta;
+    int ySta;
+    int[] locationEnd=new int[2];
+    static int cHeight;
+
     public DragFloatActionButton(Context context) {
         super(context);
+        Log.d("aaaaaaaaaa",String.valueOf(cHeight));
         init();
     }
 
@@ -39,6 +49,7 @@ public class DragFloatActionButton extends FloatingActionButton {
         screenHeight = ScreenUtils.getScreenHeight(getContext());
         statusHeight = ScreenUtils.getStatusHeight(getContext());
         virtualHeight=ScreenUtils.getVirtualBarHeigh(getContext());
+
     }
 
     private int lastX;
@@ -48,8 +59,13 @@ public class DragFloatActionButton extends FloatingActionButton {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        cHeight=CourseMainActivity.cHeight;
+        Log.d("该函数","被处罚");
+
         int rawX = (int) event.getRawX();
         int rawY = (int) event.getRawY();
+        Log.d("getx,geyy",String.valueOf(rawX)+String.valueOf(rawY));
         int moveCount=0;
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
@@ -62,6 +78,9 @@ public class DragFloatActionButton extends FloatingActionButton {
             case MotionEvent.ACTION_MOVE:
                 setPressed(false);
                 isDrag = true;
+
+                //////////////////
+
                 moveCount++;
                 //计算手指移动了多少
                 int dx = rawX - lastX;
@@ -81,15 +100,17 @@ public class DragFloatActionButton extends FloatingActionButton {
 
                 //检测是否到达边缘 左上右下
                 x = x < 0 ? 0 : x > screenWidth - getWidth() ? screenWidth - getWidth() : x;
-                // y = y < statusHeight ? statusHeight : (y + getHeight() >= screenHeight ? screenHeight - getHeight() : y);
+               // y = y < statusHeight ? statusHeight : (y + getHeight() >= screenHeight ? screenHeight - getHeight() : y);
                 if (y<0){
                     y=0;
                 }
-                if (y>screenHeight-statusHeight-getHeight()){
-                    y=screenHeight-statusHeight-getHeight();
+                if (y>screenHeight-statusHeight-getHeight()-cHeight-5){
+                    y=screenHeight-statusHeight-getHeight()-cHeight-5;
                 }
+
                 setX(x);
                 setY(y);
+                Log.d("x,y",String.valueOf(x)+" "+String.valueOf(y));
 
                 lastX = rawX;
                 lastY = rawY;
@@ -116,10 +137,10 @@ public class DragFloatActionButton extends FloatingActionButton {
                 Log.e("up---->",isDrag+"");
                 break;
         }
+        //////////////////////////
+
         //如果是拖拽则消耗事件，否则正常传递即可。
         return isDrag || super.onTouchEvent(event);
         //return event.getAction() != MotionEvent.ACTION_UP && (isDrag|| super.onTouchEvent(event));
-        //return event.getAction() == 0   ? false : super.onTouchEvent(event);
-
     }
 }

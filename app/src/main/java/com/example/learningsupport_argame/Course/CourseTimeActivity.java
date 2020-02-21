@@ -1,6 +1,7 @@
 package com.example.learningsupport_argame.Course;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -22,7 +23,10 @@ import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
+import com.example.learningsupport_argame.Course.ListView.ListViewActivity;
 import com.example.learningsupport_argame.R;
+
+import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +56,8 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.course_time_layout);
 
+        LitePal.initialize(CourseTimeActivity.this);
+
         tvJieNum=findViewById(R.id.tvJieNum);
         ivReturnCourseTable=findViewById(R.id.course_return_coursetable);
         tvTimeSpan=findViewById(R.id.course_time_span);
@@ -64,6 +70,42 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
         //finish();
 
     }
+
+    public void dialog(final int jieNum){
+
+        PromptAdapter.Builder builder = new PromptAdapter.Builder(CourseTimeActivity.this);
+        builder.setTitle("提示");
+        builder.setContent("修改课程节数需要清空课程信息，是否确定修改");
+        builder.setRight("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                dialogInterface.dismiss();
+                tvJieNum.setText(String.valueOf(jieNum));
+                LitePal.deleteAll(Course.class);
+                showEveryJie();
+
+
+
+
+            }
+
+        });
+        builder.setLeft("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                dialogInterface.dismiss();
+            }
+        });
+        PromptAdapter dialog=builder.create();
+        dialog.show();
+
+
+    }
+
+
 
     public void tvJieNum_onClick(View view)
     {
@@ -136,9 +178,28 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
             public void onOptionsSelect(int options1, int option2, int options3, View v) {
 //               返回的是选中位置
 //              展示选中数据
-               tvJieNum.setText(listJieNum.get(options1));
+              // tvJieNum.setText(listJieNum.get(options1));
                jieNum=Integer.valueOf(listJieNum.get(options1));
-               showEveryJie();
+
+               ///////////////////////
+                SharedPreferences sharedPreferences=getSharedPreferences("course_time",Context.MODE_PRIVATE);
+                int jNum=sharedPreferences.getInt("jie_num", -1);
+                if(jNum!=-1)
+                {
+                    if(jieNum!=jNum){
+                        dialog(jieNum);
+                    }
+                    else{
+                        tvJieNum.setText(String.valueOf(jieNum));
+                        showEveryJie();
+                    }
+                }
+                else {
+
+                    //////////////////////////
+                    tvJieNum.setText(String.valueOf(jieNum));
+                     showEveryJie();
+                }
 
             }
         })

@@ -114,6 +114,11 @@ dependencies {
     // Alternatively, use ArSceneView without the UX dependency.
     implementation 'com.google.ar.sceneform:core:1.13.0'
 
+    implementation 'de.hdodenhof:circleimageview:2.0.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+
+
     implementation 'com.google.ar:core:1.13.0'
     implementation project(path: ':ARModel')
 }

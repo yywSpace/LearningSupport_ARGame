@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_layout"
     android:orientation="vertical">
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/course_top_height"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -23,6 +31,7 @@
             android:layout_marginTop="15dp"
             android:textSize="20sp"
             android:text="当前周"
+            android:onClick="course_showweek_onClick"
            android:textColor="@color/zi"
             android:background="@drawable/course_shapebtn"
             android:padding="3dp"
@@ -43,14 +52,12 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <LinearLayout android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_width="match_parent">
-    <FrameLayout
-        android:layout_width="match_parent"
+        android:id="@+id/course_framelayout"
         android:layout_height="match_parent">
    <ScrollView
         android:layout_width="match_parent"
@@ -79,18 +86,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
-            
-
+            android:backgroundTint="@color/zi"
+            android:outlineAmbientShadowColor="@color/zi"
+            android:outlineSpotShadowColor="@color/zi"
+            app:rippleColor="@color/zi"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"
+
+            app:backgroundTint="@color/zi"
             android:src="@drawable/course_ic_menu_plus"
             />
 
 
     </FrameLayout>
-    </LinearLayout>
-    </FrameLayout>
 </LinearLayout>
+
+</FrameLayout>
 
 
 

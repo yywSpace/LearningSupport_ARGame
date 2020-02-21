@@ -27,9 +27,9 @@
 
         <activity android:name=".MonitorModel.MonitorActivity" />
 
-        <activity android:name=".UserManagement.Login.LoginActivity">
-<!--                    <activity android:name=".TestActivity">-->
-
+<!--        <activity android:name=".UserManagement.Login.LoginActivity">-->
+            <!--                    <activity android:name=".TestActivity">-->
+        <activity android:name=".Course.CourseMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -45,7 +45,7 @@
         <activity android:name=".UserManagement.UserMessage.UserAcceptedTaskActivity" />
         <activity android:name=".UserManagement.UserMessage.UserReleasedTaskActivity" />
 
-        <activity android:name=".Course.CourseMainActivity" />
+<!--        <activity android:name=".Course.CourseMainActivity" />-->
 
 
         <activity android:name=".FeedbackModel.MissionAccomplishActivity" />
