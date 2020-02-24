@@ -21,15 +21,15 @@ public class DragFloatActionButton extends FloatingActionButton {
     private int statusHeight;
     private int virtualHeight;
 
-    int[] locationSta=new int[2];
+    int[] locationSta = new int[2];
     int xSta;
     int ySta;
-    int[] locationEnd=new int[2];
+    int[] locationEnd = new int[2];
     static int cHeight;
 
     public DragFloatActionButton(Context context) {
         super(context);
-        Log.d("aaaaaaaaaa",String.valueOf(cHeight));
+        Log.d("aaaaaaaaaa", String.valueOf(cHeight));
         init();
     }
 
@@ -48,7 +48,7 @@ public class DragFloatActionButton extends FloatingActionButton {
         screenWidthHalf = screenWidth / 2;
         screenHeight = ScreenUtils.getScreenHeight(getContext());
         statusHeight = ScreenUtils.getStatusHeight(getContext());
-        virtualHeight=ScreenUtils.getVirtualBarHeigh(getContext());
+        virtualHeight = ScreenUtils.getVirtualBarHeigh(getContext());
 
     }
 
@@ -60,13 +60,13 @@ public class DragFloatActionButton extends FloatingActionButton {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        cHeight=CourseMainActivity.cHeight;
-        Log.d("该函数","被处罚");
+        cHeight = CourseMainActivity.cHeight;
+        Log.d("该函数", "被触发");
 
         int rawX = (int) event.getRawX();
         int rawY = (int) event.getRawY();
-        Log.d("getx,geyy",String.valueOf(rawX)+String.valueOf(rawY));
-        int moveCount=0;
+        Log.d("getx,geyy", String.valueOf(rawX) + String.valueOf(rawY));
+        int moveCount = 0;
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 isDrag = false;
@@ -80,16 +80,15 @@ public class DragFloatActionButton extends FloatingActionButton {
                 isDrag = true;
 
                 //////////////////
-
                 moveCount++;
                 //计算手指移动了多少
                 int dx = rawX - lastX;
                 int dy = rawY - lastY;
                 //这里修复一些手机无法触发点击事件的问题
-                int distance= (int) Math.sqrt(dx*dx+dy*dy);
-                Log.e("distance---->",distance+"");
-                if(distance<3){//给个容错范围，不然有部分手机还是无法点击
-                    if(moveCount!=1) {
+                int distance = (int) Math.sqrt(dx * dx + dy * dy);
+                Log.e("distance---->", distance + "");
+                if (distance < 4) {//给个容错范围，不然有部分手机还是无法点击
+                    if (moveCount != 1) {
                         isDrag = false;
                         break;
                     }
@@ -100,21 +99,21 @@ public class DragFloatActionButton extends FloatingActionButton {
 
                 //检测是否到达边缘 左上右下
                 x = x < 0 ? 0 : x > screenWidth - getWidth() ? screenWidth - getWidth() : x;
-               // y = y < statusHeight ? statusHeight : (y + getHeight() >= screenHeight ? screenHeight - getHeight() : y);
-                if (y<0){
-                    y=0;
+                // y = y < statusHeight ? statusHeight : (y + getHeight() >= screenHeight ? screenHeight - getHeight() : y);
+                if (y < 0) {
+                    y = 0;
                 }
-                if (y>screenHeight-statusHeight-getHeight()-cHeight-5){
-                    y=screenHeight-statusHeight-getHeight()-cHeight-5;
+                if (y > screenHeight - statusHeight - getHeight() - cHeight - 5) {
+                    y = screenHeight - statusHeight - getHeight() - cHeight - 5;
                 }
 
                 setX(x);
                 setY(y);
-                Log.d("x,y",String.valueOf(x)+" "+String.valueOf(y));
+                Log.d("x,y", String.valueOf(x) + " " + String.valueOf(y));
 
                 lastX = rawX;
                 lastY = rawY;
-                Log.e("move---->", "getX=" + getX() + "；screenWidthHalf=" + screenWidthHalf + " " + isDrag+"  statusHeight="+statusHeight+ " virtualHeight"+virtualHeight+ " screenHeight"+ screenHeight+"  getHeight="+getHeight()+" y"+y);
+                Log.e("move---->", "getX=" + getX() + "；screenWidthHalf=" + screenWidthHalf + " " + isDrag + "  statusHeight=" + statusHeight + " virtualHeight" + virtualHeight + " screenHeight" + screenHeight + "  getHeight=" + getHeight() + " y" + y);
                 break;
             case MotionEvent.ACTION_UP:
                 if (isDrag) {
@@ -134,7 +133,7 @@ public class DragFloatActionButton extends FloatingActionButton {
 
                 }
 
-                Log.e("up---->",isDrag+"");
+                Log.e("up---->", isDrag + "");
                 break;
         }
         //////////////////////////

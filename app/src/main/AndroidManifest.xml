@@ -14,28 +14,28 @@
             android:name="com.google.ar.core"
             android:value="optional" />
 
-
         <activity android:name=".Community.activity.FriendListActivity" />
         <activity android:name=".Task.activity.TaskListActivity" />
-        <activity android:name=".Navi.Activity.MapActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ARModel.ScanModelActivity" />
         <activity android:name=".ARModel.PutModelActivity" />
 
         <service android:name=".MonitorModel.MonitorTaskStatusService" />
         <service android:name=".MonitorModel.MonitorTaskAccomplishService" />
-
         <activity android:name=".MonitorModel.MonitorActivity" />
 
-<!--        <activity android:name=".UserManagement.Login.LoginActivity">-->
+        <activity android:name=".UserManagement.Login.LoginActivity">
             <!--                    <activity android:name=".TestActivity">-->
-        <activity android:name=".Course.CourseMainActivity">
+            <!--        <activity android:name=".Course.CourseMainActivity">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
         </activity>
+
+        <activity android:name=".FeedbackModel.MissionAccomplishActivity" />
+        <activity android:name=".FeedbackModel.FeedbackDetailsActivity" />
 
         <activity android:name=".UserManagement.Login.RegisterActivity" />
         <activity android:name=".UserManagement.Login.ChangePasswordActivity" />
@@ -45,17 +45,13 @@
         <activity android:name=".UserManagement.UserMessage.UserAcceptedTaskActivity" />
         <activity android:name=".UserManagement.UserMessage.UserReleasedTaskActivity" />
 
-<!--        <activity android:name=".Course.CourseMainActivity" />-->
-
-
-        <activity android:name=".FeedbackModel.MissionAccomplishActivity" />
-
-        <activity android:name=".FeedbackModel.FeedbackDetailsActivity" />
-
-        <activity android:name=".Navi.Activity.YoudaoActivity" />
+        <activity android:name=".Course.CourseMainActivity" />
         <activity android:name=".Course.AddCourseActivity" />
         <activity android:name=".Course.CourseTimeActivity" />
         <activity android:name=".Course.MonitorActivity" />
+
+        <activity android:name=".Navi.Activity.YoudaoActivity" />
+        <activity android:name=".Navi.Activity.MapActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -69,6 +65,8 @@
                 <action android:name="com.baidu.location.service_v5_4_1" />
             </intent-filter>
         </service>
+
+
         <service android:name=".Navi.Utils.ForegroundService" />
         <service android:name=".Course.MonitorService" />
         <service android:name=".Navi.Activity.LocationService" />
@@ -83,7 +81,6 @@
                 android:resource="@xml/filepaths" />
         </provider>
     </application>
-
 
     <permission android:name="android.permission.WRITE_SETTINGS" />
 

@@ -49,8 +49,7 @@ import java.util.List;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 
-public class AddCourseActivity extends AppCompatActivity implements View.OnClickListener,View.OnLongClickListener,RadioButton.OnCheckedChangeListener {
-
+public class AddCourseActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener, RadioButton.OnCheckedChangeListener {
     EditText add_coursename;
     EditText add_classroom;
     TextView add_jieshu;
@@ -85,7 +84,7 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
     List<TextView> addtext_othertime = new ArrayList<>();
 
     String edittext_zhou;
-    boolean flag=false;
+    boolean flag = false;
 
     List<Course> list_courseInfo = new ArrayList<>();
 
@@ -132,9 +131,7 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-
         Toast.makeText(AddCourseActivity.this, String.valueOf(addtext_othertime.size()), Toast.LENGTH_SHORT).show();
-
         TextView textView = (TextView) v;
         if (isLoaded_jieshu) {
             showPickerView_jieshu(textView);
@@ -147,8 +144,6 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public boolean onLongClick(View v) {
-
-
 //        LinearLayout qitatime_layout = findViewById(R.id.qitatime_layout);
 //        View view=v.getRootView();
 //
@@ -330,35 +325,33 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
 
     private void showPickerView_jieshu(final TextView textView) {
         // 注意：自定义布局中，id为 optionspicker 或者 timepicker 的布局以及其子控件必须要有，否则会报空指针
-        if(textView==onlyView&&list_jie.size()!=0)
-        {
-            list_jie.remove(list_jie.size()-1);
-            Toast.makeText(AddCourseActivity.this,"list_jie的clear（1）被触发",Toast.LENGTH_SHORT).show();
+        if (textView == onlyView && list_jie.size() != 0) {
+            list_jie.remove(list_jie.size() - 1);
+            Toast.makeText(AddCourseActivity.this, "list_jie的clear（1）被触发", Toast.LENGTH_SHORT).show();
         }
-        if(textView==onlyView&&list_jie.size()>=1){
+        if (textView == onlyView && list_jie.size() >= 1) {
 
-            String str=add_jieshu.getText().toString();
-            Toast.makeText(AddCourseActivity.this,str,Toast.LENGTH_SHORT).show();
+            String str = add_jieshu.getText().toString();
+            Toast.makeText(AddCourseActivity.this, str, Toast.LENGTH_SHORT).show();
 
-            String[] str1=str.split("－");
-            String str2=str1[0].split("  ")[1];
-            String str3=str1[1].split("节")[0];
+            String[] str1 = str.split("－");
+            String str2 = str1[0].split("  ")[1];
+            String str3 = str1[1].split("节")[0];
 
             Jie jie = new Jie();
-            jie.setZhou(str.substring(0,2));
+            jie.setZhou(str.substring(0, 2));
             jie.setStart_jieshu(Integer.parseInt(str2));
             jie.setEnd_jieshu(Integer.parseInt(str3));
 
-                if(!list_jie.contains(jie)){
-                    list_jie.add(jie);
-                }
-                else{
-                    Toast.makeText(AddCourseActivity.this,"时间填写有误",Toast.LENGTH_SHORT).show();
-                }
+            if (!list_jie.contains(jie)) {
+                list_jie.add(jie);
+            } else {
+                Toast.makeText(AddCourseActivity.this, "时间填写有误", Toast.LENGTH_SHORT).show();
+            }
 
-            if(addtime_count<list_jie.size()){
-                for(int i=0;i<list_jie.size()-addtime_count;i++)
-                list_jie.remove(i);
+            if (addtime_count < list_jie.size()) {
+                for (int i = 0; i < list_jie.size() - addtime_count; i++)
+                    list_jie.remove(i);
             }
 
         }
@@ -378,10 +371,9 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
                         && options3Items_jieshu.get(options1).get(options2).size() > 0 ?
                         options3Items_jieshu.get(options1).get(options2).get(options3) : "";
 /////////////////////////////////
-                if(flag)
-                {
+                if (flag) {
                     list_jie.clear();
-                    Toast.makeText(AddCourseActivity.this,"list_jie的clear（2）被触发",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddCourseActivity.this, "list_jie的clear（2）被触发", Toast.LENGTH_SHORT).show();
                 }
                 String str2 = "";
                 if (Character.isDigit(opt2tx.charAt(2)) == true) {
@@ -406,7 +398,7 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
                     } else {
                         add_jieshu.setText("");
                         //////////////////////////////////
-                       // list_jie.clear();
+                        // list_jie.clear();
                     }
                 } else {
 
@@ -421,15 +413,14 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
                     jie.setZhou(opt1tx);
                     jie.setStart_jieshu(Integer.parseInt(str2));
                     jie.setEnd_jieshu(Integer.parseInt(str3));
-                    if(!list_jie.contains(jie)){
+                    if (!list_jie.contains(jie)) {
                         list_jie.add(jie);
-                    }
-                    else{
-                        Toast.makeText(AddCourseActivity.this,"时间填写有误",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(AddCourseActivity.this, "时间填写有误", Toast.LENGTH_SHORT).show();
                     }
                     //list_jie.add(jie);
-                    if(addtime_count<list_jie.size()){
-                        for(int i=0;i<list_jie.size()-addtime_count;i++)
+                    if (addtime_count < list_jie.size()) {
+                        for (int i = 0; i < list_jie.size() - addtime_count; i++)
                             list_jie.remove(i);
                     }
 
@@ -472,7 +463,7 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
             }
         });
 
-        onlyView=textView;
+        onlyView = textView;
 
         pvCustomOptions.setPicker(options1Items_jieshu, options2Items_jieshu, options3Items_jieshu);//三级选择器
         pvCustomOptions.show();
@@ -509,7 +500,6 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
 
                 String str_zhou = str1 + "－" + str2 + "周";
 
-
                 if (edittext_zhou == "(单周)")
                     weekstyle = "单周";
                 else if (edittext_zhou == "(双周)")
@@ -541,7 +531,6 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
                         radio_danshuang = v.findViewById(R.id.radio_danshuang);
 
                         RadioButton.OnCheckedChangeListener listener = new RadioButton.OnCheckedChangeListener() {
-
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
@@ -551,13 +540,11 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
                                     edittext_zhou = "(双周)";
                                 if (buttonView.getId() == R.id.radio_danshuang && buttonView.isChecked())
                                     edittext_zhou = "";
-
                             }
                         };
                         radio_dan.setOnCheckedChangeListener(listener);
                         radio_shuang.setOnCheckedChangeListener(listener);
                         radio_danshuang.setOnCheckedChangeListener(listener);
-
                     }
                 })
 
@@ -567,7 +554,6 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
                 .setCyclic(true, true, true)
                 .setTextColorCenter(Color.rgb(205, 104, 57))
                 .setDividerColor(Color.alpha(Color.BLACK))
-
                 .build();
 
 
@@ -575,7 +561,6 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View v) {
                 pvCustomOptions_zhoushu.returnData();
-
                 pvCustomOptions_zhoushu.dismiss();
             }
         });
@@ -583,7 +568,6 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View v) {
                 pvCustomOptions_zhoushu.dismiss();
-
             }
         });
 
@@ -627,7 +611,7 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
     }
 
     public boolean isInfoCompleted() {
-        teacher="";
+        teacher = "";
         coursename = add_coursename.getText().toString();
         classroom = add_classroom.getText().toString();
         teacher = add_teacher.getText().toString();
@@ -638,8 +622,6 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
                 flag = true;
                 break;
             }
-
-
         }
 
         if (add_coursename.getText().toString().equals("") || add_classroom.getText().toString().equals("") || add_jieshu.getText().toString().equals("") || flag ||
@@ -657,9 +639,8 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
             if (db == null)
                 db = Connector.getDatabase();
 
-
-            boolean boo=new_course(coursename, classroom, list_jie, teacher, startzhou, endzhou, weekstyle);
-            if(!boo) {
+            boolean boo = new_course(coursename, classroom, list_jie, teacher, startzhou, endzhou, weekstyle);
+            if (!boo) {
                 //Toast.makeText(AddCourseActivity.this,"boo被触发",Toast.LENGTH_SHORT).show();
                 clearContent();
 //                coursename = "";
@@ -668,7 +649,6 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
 //                endzhou = -1;
 //                weekstyle = "";
             }
-
 //            else{
 //                list_jie.clear();
 //            }
@@ -683,45 +663,40 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
         if (isInfoCompleted()) {
             if (db == null)
                 db = Connector.getDatabase();
-            String name=add_coursename.getText().toString();
+            String name = add_coursename.getText().toString();
+            List<Course> list1 = LitePal.where("course_name = ?", name).find(Course.class);
+            if (list1.size() == 0) {
+                final PromptAdapter.Builder builder = new PromptAdapter.Builder(AddCourseActivity.this);
+                builder.setTitle("提示");
+                builder.setContent("是否保存当前添加的课程");
+                builder.setRight("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
 
-
-                List<Course> list1 = LitePal.where("course_name = ?",name).find(Course.class);
-                if(list1.size()==0) {
-                    final PromptAdapter.Builder builder = new PromptAdapter.Builder(AddCourseActivity.this);
-                    builder.setTitle("提示");
-                    builder.setContent("是否保存当前添加的课程");
-                    builder.setRight("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                            dialogInterface.dismiss();
-
-
-
-                            boolean boo=new_course(coursename, classroom, list_jie, teacher, startzhou, endzhou, weekstyle);
-                            if(!boo) {
+                        boolean boo = new_course(coursename, classroom, list_jie, teacher, startzhou, endzhou, weekstyle);
+                        if (!boo) {
 //                                Toast.makeText(AddCourseActivity.this,"boo被触发",Toast.LENGTH_SHORT).show();
-                                clearContent();
-                            }
-                        }
-                    });
-                    builder.setLeft("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
                             clearContent();
+                        }
+                    }
+                });
+                builder.setLeft("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        clearContent();
 //                            coursename = "";
 //                            classroom = "";
 //                            startzhou = -1;
 //                            endzhou = -1;
 //                            weekstyle = "";
-                            dialogInterface.dismiss();
+                        dialogInterface.dismiss();
 
 
-                        }
-                    });
-                    builder.create().show();
+                    }
+                });
+                builder.create().show();
 
             }
 
@@ -730,7 +705,7 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
 //            classroom="";
 //            startzhou=-1;
 //            weekstyle="";
-           // new_course(coursename, classroom, list_jie, teacher, startzhou, endzhou, weekstyle);
+            // new_course(coursename, classroom, list_jie, teacher, startzhou, endzhou, weekstyle);
 //            Intent intent=new Intent(AddCourseActivity.this,AddCourseActivity.class);
 //            startActivity(intent);
 //            AddCourseActivity.this.finish();
@@ -843,34 +818,27 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
 
     public boolean new_course(final String coursename, final String classroom, final List<Jie> jieList1, final String teacher, final int startzhou, final int endzhou, final String weekstyle) {
         //Toast.makeText(AddCourseActivity.this,"new Course()被执行",Toast.LENGTH_SHORT).show();
-
-
-
-        for(Jie jie:jieList1)
-        {
-            Log.e("listlist",String.valueOf(jie.getZhou()+" "+jie.getStart_jieshu()+" "+jie.getEnd_jieshu()));
+        for (Jie jie : jieList1) {
+            Log.e("listlist", String.valueOf(jie.getZhou() + " " + jie.getStart_jieshu() + " " + jie.getEnd_jieshu()));
         }
-
 
         List<Course> list = LitePal.findAll(Course.class, true);
         boolean haveSamename = false;
-        Course mixedCourse=null;
+        Course mixedCourse = null;
         boolean isMix = false;
         if (list.size() != 0) {
             for (Course course : list) {
                 //Toast.makeText(AddCourseActivity.this, "for ()被执行", Toast.LENGTH_SHORT).show();
                 if (course.getCourse_name().equals(coursename)) {
-
                     Toast.makeText(AddCourseActivity.this, "数据库中已有同名课程", Toast.LENGTH_SHORT).show();
-
                     final PromptAdapter.Builder builder = new PromptAdapter.Builder(AddCourseActivity.this);
                     builder.setTitle("提示");
                     builder.setContent("数据库中已有同名课程记录");
                     builder.setRight("查看", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            Intent intent=new Intent(AddCourseActivity.this,ListViewActivity.class);
-                            intent.putExtra("flag","AddCourseActivity");
+                            Intent intent = new Intent(AddCourseActivity.this, ListViewActivity.class);
+                            intent.putExtra("flag", "AddCourseActivity");
                             startActivity(intent);
                             dialogInterface.dismiss();
                         }
@@ -882,60 +850,55 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
                             dialogInterface.dismiss();
 //                            Intent intent = new Intent(AddCourseActivity.this, AddCourseActivity.class);
 //                            startActivity(intent);
-
-
                         }
                     });
                     builder.create().show();
                     haveSamename = true;
                     break;
-
                 }
             }
         }
         if (list.size() != 0 && !haveSamename) {
 //            for (Course course : list) {
-                List<Jie> jieList2 = LitePal.findAll(Jie.class, true);
-                for(Jie jie1:jieList1)
-                {
-                    Log.e("listlist111",String.valueOf(jie1.getZhou()+" "+jie1.getStart_jieshu()+" "+jie1.getEnd_jieshu()));
-                }
-                for(Jie jie2:jieList2)
-                {
-                    Log.e("listlist222",String.valueOf(jie2.getZhou()+" "+jie2.getStart_jieshu()+" "+jie2.getEnd_jieshu()));
-                }
-                for (Jie jie1 : jieList1) {
-                    for (Jie jie2 : jieList2) {
-                        if ((!(jie1.getStart_jieshu() > jie2.getEnd_jieshu() || jie1.getEnd_jieshu() < jie2.getStart_jieshu())) && jie1.getZhou().equals(jie2.getZhou())) {
-                            Toast.makeText(AddCourseActivity.this, "else(222)被执行", Toast.LENGTH_SHORT).show();
-                            List a = judgeMix(startzhou, endzhou, weekstyle);
-                            List b = judgeMixIndb(jie2);
-                            String sssss="";
-                            String sssss1="";
-                            for(int i=0;i<a.size();i++)
-                                sssss+=a.get(i);
-                            for(int i=0;i<b.size();i++)
-                                sssss1+=b.get(i);
-                            Toast.makeText(AddCourseActivity.this, sssss+"         "+sssss1, Toast.LENGTH_SHORT).show();
-                            for (int i = 0; i < a.size(); i++) {
-                                for (int j = 0; j < b.size(); j++) {
-                                    if (a.get(i) == b.get(j)) {
-                                        isMix = true;
-                                        mixedCourse=jie2.getCourse();
-                                       // Toast.makeText(AddCourseActivity.this,mixedCourse.getCourse_name(),Toast.LENGTH_SHORT).show();
-                                        break;
-                                    }
-                                }
-                                if(isMix)
+            List<Jie> jieList2 = LitePal.findAll(Jie.class, true);
+            for (Jie jie1 : jieList1) {
+                Log.e("listlist111", String.valueOf(jie1.getZhou() + " " + jie1.getStart_jieshu() + " " + jie1.getEnd_jieshu()));
+            }
+            for (Jie jie2 : jieList2) {
+                Log.e("listlist222", String.valueOf(jie2.getZhou() + " " + jie2.getStart_jieshu() + " " + jie2.getEnd_jieshu()));
+            }
+            for (Jie jie1 : jieList1) {
+                for (Jie jie2 : jieList2) {
+                    if ((!(jie1.getStart_jieshu() > jie2.getEnd_jieshu() || jie1.getEnd_jieshu() < jie2.getStart_jieshu())) && jie1.getZhou().equals(jie2.getZhou())) {
+                        Toast.makeText(AddCourseActivity.this, "else(222)被执行", Toast.LENGTH_SHORT).show();
+                        List a = judgeMix(startzhou, endzhou, weekstyle);
+                        List b = judgeMixIndb(jie2);
+                        String sssss = "";
+                        String sssss1 = "";
+                        for (int i = 0; i < a.size(); i++)
+                            sssss += a.get(i);
+                        for (int i = 0; i < b.size(); i++)
+                            sssss1 += b.get(i);
+                        Toast.makeText(AddCourseActivity.this, sssss + "         " + sssss1, Toast.LENGTH_SHORT).show();
+                        for (int i = 0; i < a.size(); i++) {
+                            for (int j = 0; j < b.size(); j++) {
+                                if (a.get(i) == b.get(j)) {
+                                    isMix = true;
+                                    mixedCourse = jie2.getCourse();
+                                    // Toast.makeText(AddCourseActivity.this,mixedCourse.getCourse_name(),Toast.LENGTH_SHORT).show();
                                     break;
+                                }
                             }
+                            if (isMix)
+                                break;
                         }
-                        if(isMix)
-                            break;
                     }
-                    if(isMix)
+                    if (isMix)
                         break;
                 }
+                if (isMix)
+                    break;
+            }
 //                if(isMix)
 //                    break;
 //            }
@@ -948,7 +911,7 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
 //                    ss += jie.getZhou() + " " + jie.getStart_jieshu() + "-" + jie.getEnd_jieshu() + "节,";
 //                }
 //                ss.substring(0, ss.length() - 1);
-               // String str = mixedCourse.getCourse_name() + ":" + ss + "  " + mixedCourse.getStart_zhoushu() + "-" + mixedCourse.getEnd_zhoushu() + "周(" + mixedCourse.getWeekstyle() + ")";
+                // String str = mixedCourse.getCourse_name() + ":" + ss + "  " + mixedCourse.getStart_zhoushu() + "-" + mixedCourse.getEnd_zhoushu() + "周(" + mixedCourse.getWeekstyle() + ")";
 
                 final String conflictedCoursename = mixedCourse.getCourse_name();
                 PromptAdapter.Builder builder = new PromptAdapter.Builder(AddCourseActivity.this);
@@ -958,30 +921,25 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        Intent intent=new Intent(AddCourseActivity.this,ListViewActivity.class);
-                        intent.putExtra("flag","AddCourseActivity");
+                        Intent intent = new Intent(AddCourseActivity.this, ListViewActivity.class);
+                        intent.putExtra("flag", "AddCourseActivity");
                         startActivity(intent);
                         dialog.dismiss();
-
                     }
                 });
                 builder.setLeft("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         dialog.dismiss();
 
 //                        Intent intent=new Intent(AddCourseActivity.this,ListViewActivity.class);
 //                        startActivity(intent);
-
                     }
                 });
                 builder.create().show();
-
-
             }
         }
-        if ( !isMix && !haveSamename) {
+        if (!isMix && !haveSamename) {
             LitePal.saveAll(jieList1);
             Course course11 = new Course();
             course11.setCourse_name(coursename);
@@ -995,11 +953,11 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
             if (course11.save()) {
 
                 Toast.makeText(AddCourseActivity.this, "课程保存成功", Toast.LENGTH_SHORT).show();
-                String strii="";
-                for(Jie jie1:list_jie){
-                    strii+=jie1.getZhou();
+                String strii = "";
+                for (Jie jie1 : list_jie) {
+                    strii += jie1.getZhou();
                 }
-                Toast.makeText(AddCourseActivity.this,strii,Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddCourseActivity.this, strii, Toast.LENGTH_SHORT).show();
 
             } else {
 
@@ -1010,71 +968,33 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
 
         }
         //Toast.makeText(AddCourseActivity.this,"have isMix"+String.valueOf(haveSamename||isMix),Toast.LENGTH_SHORT).show();
-        flag=haveSamename||isMix;
-        return haveSamename||isMix;
+        flag = haveSamename || isMix;
+        return haveSamename || isMix;
 
     }
 
 
+    public List judgeMixIndb(Jie jie) {
+        List list = new ArrayList();
 
-    public List judgeMixIndb(Jie jie)
-    {
-        List list=new ArrayList();
-
-        if(jie.getCourse().getWeekstyle().equals("单周")) {
+        if (jie.getCourse().getWeekstyle().equals("单周")) {
             for (int i = jie.getCourse().getStart_zhoushu(); i <= jie.getCourse().getEnd_zhoushu(); i = i + 1) {
-                if(i%2!=0){
+                if (i % 2 != 0) {
                     list.add(i);
                 }
-
             }
         }
-        if(jie.getCourse().getWeekstyle().equals("双周")) {
+        if (jie.getCourse().getWeekstyle().equals("双周")) {
             for (int i = jie.getCourse().getStart_zhoushu(); i <= jie.getCourse().getEnd_zhoushu(); i = i + 1) {
-                if(i%2==0){
+                if (i % 2 == 0) {
                     list.add(i);
                 }
 
             }
         }
 
-
-        if(jie.getCourse().getWeekstyle().equals("单双周"))
-        {
-            for(int i=jie.getCourse().getStart_zhoushu();i<=jie.getCourse().getEnd_zhoushu();i=i+1)
-            {
-                list.add(i);
-            }
-        }
-        return list;
-
-
-    }
-    public List judgeMix(int startzhou,int endzhou,String weekstyle)
-    {
-        List list=new ArrayList();
-        if(weekstyle.equals("单周"))
-        {
-            for(int i=startzhou;i<=endzhou;i=i+1)
-            {
-                if(i%2!=0) {
-                    list.add(i);
-                }
-            }
-        }
-        if(weekstyle.equals("双周")){
-            for(int i=startzhou;i<=endzhou;i=i+1)
-            {
-                if(i%2==0) {
-                    list.add(i);
-                }
-            }
-
-        }
-        if(weekstyle.equals("单双周"))
-        {
-            for(int i=startzhou;i<=endzhou;i=i+1)
-            {
+        if (jie.getCourse().getWeekstyle().equals("单双周")) {
+            for (int i = jie.getCourse().getStart_zhoushu(); i <= jie.getCourse().getEnd_zhoushu(); i = i + 1) {
                 list.add(i);
             }
         }
@@ -1083,5 +1003,29 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    public List judgeMix(int startzhou, int endzhou, String weekstyle) {
+        List list = new ArrayList();
+        if (weekstyle.equals("单周")) {
+            for (int i = startzhou; i <= endzhou; i = i + 1) {
+                if (i % 2 != 0) {
+                    list.add(i);
+                }
+            }
+        }
+        if (weekstyle.equals("双周")) {
+            for (int i = startzhou; i <= endzhou; i = i + 1) {
+                if (i % 2 == 0) {
+                    list.add(i);
+                }
+            }
+
+        }
+        if (weekstyle.equals("单双周")) {
+            for (int i = startzhou; i <= endzhou; i = i + 1) {
+                list.add(i);
+            }
+        }
+        return list;
+    }
 }
 

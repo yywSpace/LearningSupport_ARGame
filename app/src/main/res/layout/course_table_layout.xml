@@ -1,113 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_layout"
-    android:orientation="vertical">
-<LinearLayout
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:id="@+id/course_top_height"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageButton
-            android:id="@+id/navigation_button"
-            android:src="@drawable/course_ic_home"
-            android:background="@android:color/transparent"
-            android:layout_margin="15dp"
-            android:onClick="btn_returnhome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/tv_currentweek"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:textSize="20sp"
-            android:text="当前周"
-            android:onClick="course_showweek_onClick"
-           android:textColor="@color/zi"
-            android:background="@drawable/course_shapebtn"
-            android:padding="3dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <ImageButton
-            android:id="@+id/edit_btn"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="15dp"
-            android:background="@drawable/course_ic_menu_plus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/days_layout"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:id="@+id/course_framelayout"
-        android:layout_height="match_parent">
-   <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        >
         <LinearLayout
+            android:id="@+id/course_top_height"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <GridLayout
-                android:id="@+id/course_layout"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:columnCount="8"
-                android:orientation="horizontal"
-                android:rowCount="13">
-            </GridLayout>
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/navigation_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/navigation" />
+
+                <TextView
+                    android:id="@+id/course_current_week"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="15dp"
+                    android:text="第1周"
+                    android:textColor="@color/purple"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:id="@+id/course_menu_add_button"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/course_menu_more_button"
+                    android:background="@drawable/course_menu_plus" />
+                <ImageButton
+                    android:id="@+id/course_menu_more_button"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/course_menu_more" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/course_week_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+
         </LinearLayout>
-   </ScrollView>
 
-        <com.example.learningsupport_argame.Course.FloatingDragActionBtn.DragFloatActionButton
-            android:id="@+id/dragFloatBtn"
-            android:onClick="dragFloatBtn_onClick"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
-            android:backgroundTint="@color/zi"
-            android:outlineAmbientShadowColor="@color/zi"
-            android:outlineSpotShadowColor="@color/zi"
-            app:rippleColor="@color/zi"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            app:backgroundTint="@color/zi"
-            android:src="@drawable/course_ic_menu_plus"
-            />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-    </FrameLayout>
-</LinearLayout>
+                    <GridLayout
+                        android:id="@+id/course_list_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:columnCount="8"
+                        android:orientation="horizontal"
+                        android:rowCount="13" />
+                </LinearLayout>
+            </ScrollView>
 
+            <com.example.learningsupport_argame.Course.FloatingDragActionBtn.DragFloatActionButton
+                android:id="@+id/course_add_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="100dp"
+                android:backgroundTint="@color/purple"
+                android:src="@drawable/course_menu_plus"/>
+        </FrameLayout>
+    </LinearLayout>
 </FrameLayout>
-
-
-
-
-
-
-
-
-

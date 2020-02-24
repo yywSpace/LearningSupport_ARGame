@@ -67,7 +67,7 @@ public class TaskListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tasklist_navigation_layout);
         // 初始化导航栏信息
-        new NavigationController(this, getWindow().getDecorView());
+        new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.TASK);
 //        mReturnButton = findViewById(R.id.navigation_button);
 //        mReturnButton.setOnClickListener(new View.OnClickListener() {
 //            @Override

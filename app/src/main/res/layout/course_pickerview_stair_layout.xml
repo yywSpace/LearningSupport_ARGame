@@ -6,7 +6,6 @@
     android:orientation="vertical">
 
     <TextView
-
         android:id="@+id/course_picker_title"
         android:text="修改当前周"
         android:padding="8dp"
@@ -64,23 +63,21 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/course_pickerview_cancel_btn"
+            android:id="@+id/course_picker_view_cancel_button"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:textColor="@color/blue1"
             android:text="取消"
             android:textSize="17sp"
-            android:padding="8dp"
-
-            />
+            android:padding="8dp"/>
         <View
             android:layout_width="0.5dip"
             android:layout_height="match_parent"
             android:background="@color/colorGray" />
 
         <Button
-            android:id="@+id/course_pickerview_commit_btn"
+            android:id="@+id/course_picker_view_commit_button"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="确定"

@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.FeedbackModel.MissionAccomplishActivity;
 import com.example.learningsupport_argame.MonitorModel.MonitorActivity;
@@ -94,7 +95,8 @@ public class LoginActivity extends AppCompatActivity {
                         startService(MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
 //                        startActivity(new Intent(LoginActivity.this, MapActivity.class));
 //                        startActivity(new Intent(this, TaskListActivity.class));
-                        startActivity(new Intent(this, FeedbackDetailsActivity.class));
+//                        startActivity(new Intent(this, FeedbackDetailsActivity.class));
+                        startActivity(new Intent(this, CourseMainActivity.class));
 
                         finish();
                     }
@@ -126,7 +128,8 @@ public class LoginActivity extends AppCompatActivity {
         }).start();
 //        startActivity(new Intent(this, TaskListActivity.class));
 //        startActivity(new Intent(LoginActivity.this, MapActivity.class));
-        startActivity(new Intent(this, FeedbackDetailsActivity.class));
+//        startActivity(new Intent(this, FeedbackDetailsActivity.class));
+        startActivity(new Intent(this, CourseMainActivity.class));
         finish();
     }
 

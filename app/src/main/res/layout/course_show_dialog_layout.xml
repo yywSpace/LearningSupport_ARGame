@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
@@ -19,7 +18,7 @@
             android:layout_height="wrap_content" />
         <TextView
             android:text=""
-            android:id="@+id/show_classroom"
+            android:id="@+id/show_course_classroom"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:textColor="@android:color/black"
@@ -37,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
-                android:id="@+id/show_jieshu"
+                android:id="@+id/show_course_number"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:textColor="@android:color/black"
@@ -55,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
-                android:id="@+id/show_teacher"
+                android:id="@+id/show_course_teacher"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:textColor="@android:color/black"
@@ -77,18 +76,12 @@
                 android:src="@drawable/course_ic_week" />
 
             <TextView
-                android:id="@+id/show_zhoushu"
+                android:id="@+id/show_course_week_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="asdds"
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="10dp"
                 android:textColor="@android:color/black" />
         </LinearLayout>
-
-
-
     </LinearLayout>
-
-
 </LinearLayout>

@@ -37,7 +37,7 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
     TextView tvTimeSpan;
     LinearLayout courseTimeLayout;
     int jieNum;
-    int flag=0;
+    int flag = 0;
 
     Button btnJieNumCancel;
     Button btnJieNumCommit;
@@ -51,6 +51,7 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
     TextView textView;
 
     ImageView ivReturnCourseTable;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,10 +59,10 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
 
         LitePal.initialize(CourseTimeActivity.this);
 
-        tvJieNum=findViewById(R.id.tvJieNum);
-        ivReturnCourseTable=findViewById(R.id.course_return_coursetable);
-        tvTimeSpan=findViewById(R.id.course_time_span);
-        courseTimeLayout=findViewById(R.id.course_time_linearlayout);
+        tvJieNum = findViewById(R.id.tvJieNum);
+        ivReturnCourseTable = findViewById(R.id.course_return_coursetable);
+        tvTimeSpan = findViewById(R.id.course_time_span);
+        courseTimeLayout = findViewById(R.id.course_time_linearlayout);
 
 
 //        Intent intent=new Intent(CourseTimeActivity.this,CourseMainActivity.class);
@@ -71,7 +72,7 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    public void dialog(final int jieNum){
+    public void dialog(final int jieNum) {
 
         PromptAdapter.Builder builder = new PromptAdapter.Builder(CourseTimeActivity.this);
         builder.setTitle("提示");
@@ -87,8 +88,6 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
                 showEveryJie();
 
 
-
-
             }
 
         });
@@ -99,45 +98,43 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
                 dialogInterface.dismiss();
             }
         });
-        PromptAdapter dialog=builder.create();
+        PromptAdapter dialog = builder.create();
         dialog.show();
 
 
     }
 
 
-
-    public void tvJieNum_onClick(View view)
-    {
+    public void tvJieNum_onClick(View view) {
         showPickerViewJieNum();
 
     }
-    public void showEveryJie()
-    {
 
-            new Handler(CourseTimeActivity.this.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    // 在这里执行你要想的操作 比如直接在这里更新ui或者调用回调在 在回调中更新ui
-                   // Toast.makeText(CourseTimeActivity.this,String.valueOf(jieNum),Toast.LENGTH_SHORT).show();
+    public void showEveryJie() {
+
+        new Handler(CourseTimeActivity.this.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                // 在这里执行你要想的操作 比如直接在这里更新ui或者调用回调在 在回调中更新ui
+                // Toast.makeText(CourseTimeActivity.this,String.valueOf(jieNum),Toast.LENGTH_SHORT).show();
 //                    textView1=new TextView[jieNum+1];
-                    textViews=new TextView[jieNum+1];
+                textViews = new TextView[jieNum + 1];
 //                    textView=new TextView(CourseTimeActivity.this);
 //                    textView.setText("你好");
 //                    linearLayout.addView(textView);
 //                    courseTimeLayout.addView(linearLayout);
 
-                    courseTimeLayout.removeAllViews();
-                    for( int i=1;i<=jieNum;i++) {
+                courseTimeLayout.removeAllViews();
+                for (int i = 1; i <= jieNum; i++) {
 
 //                        textView1[i]=new TextView(CourseTimeActivity.this);
-                        textViews[i]=new TextView(CourseTimeActivity.this);
+                    textViews[i] = new TextView(CourseTimeActivity.this);
 //                        textView1[i].setText("第" + String.valueOf(i) + "节");
-                        textViews[i].setHint("未填写");
-                        textViews[i].setId(i);
-                        textViews[i].setClickable(true);
-                        textViews[i].setTextColor(getResources().getColor(R.color.colorBlack));
-                        textViews[i].setTextSize(18);
+                    textViews[i].setHint("未填写");
+                    textViews[i].setId(i);
+                    textViews[i].setClickable(true);
+                    textViews[i].setTextColor(getResources().getColor(R.color.colorBlack));
+                    textViews[i].setTextSize(18);
 //                        textView1[i].setTextColor(getResources().getColor(R.color.colorBlack));
 
 //                        LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -147,25 +144,25 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
 //                        linearLayout.setLayoutParams(layoutParams);
 
 
-                        LayoutInflater inflater = (LayoutInflater) CourseTimeActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View layout = inflater.inflate(R.layout.course_every_time_layout, null);
-                        LinearLayout everyTimeLayout=layout.findViewById(R.id.course_every_time_linearlayout);
+                    LayoutInflater inflater = (LayoutInflater) CourseTimeActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View layout = inflater.inflate(R.layout.course_every_time_layout, null);
+                    LinearLayout everyTimeLayout = layout.findViewById(R.id.course_every_time_linearlayout);
 
-                        TextView textView=layout.findViewById(R.id.tvEveryTime);
-                        textView.setText("第"+i+"节:  ");
+                    TextView textView = layout.findViewById(R.id.tvEveryTime);
+                    textView.setText("第" + i + "节:  ");
 
-                        everyTimeLayout.addView(textViews[i]);
+                    everyTimeLayout.addView(textViews[i]);
 
-                        courseTimeLayout.addView(layout);
-                        }
-                    for(int i=1;i<=jieNum;i++)
-                    {
-                        textViews[i].setOnClickListener(CourseTimeActivity.this);
-                    }
+                    courseTimeLayout.addView(layout);
+                }
+                for (int i = 1; i <= jieNum; i++) {
+                    textViews[i].setOnClickListener(CourseTimeActivity.this);
+                }
+            }
+        });
+
     }
-});
 
-        }
     private void showPickerViewJieNum() {
 //      要展示的数据
         final List<String> listJieNum = new ArrayList<>();
@@ -178,27 +175,24 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
             public void onOptionsSelect(int options1, int option2, int options3, View v) {
 //               返回的是选中位置
 //              展示选中数据
-              // tvJieNum.setText(listJieNum.get(options1));
-               jieNum=Integer.valueOf(listJieNum.get(options1));
+                // tvJieNum.setText(listJieNum.get(options1));
+                jieNum = Integer.valueOf(listJieNum.get(options1));
 
-               ///////////////////////
-                SharedPreferences sharedPreferences=getSharedPreferences("course_time",Context.MODE_PRIVATE);
-                int jNum=sharedPreferences.getInt("jie_num", -1);
-                if(jNum!=-1)
-                {
-                    if(jieNum!=jNum){
+                ///////////////////////
+                SharedPreferences sharedPreferences = getSharedPreferences("course_time", Context.MODE_PRIVATE);
+                int jNum = sharedPreferences.getInt("jie_num", -1);
+                if (jNum != -1) {
+                    if (jieNum != jNum) {
                         dialog(jieNum);
-                    }
-                    else{
+                    } else {
                         tvJieNum.setText(String.valueOf(jieNum));
                         showEveryJie();
                     }
-                }
-                else {
+                } else {
 
                     //////////////////////////
                     tvJieNum.setText(String.valueOf(jieNum));
-                     showEveryJie();
+                    showEveryJie();
                 }
 
             }
@@ -207,11 +201,11 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void customLayout(View v) {
 
-                        TextView textView=v.findViewById(R.id.course_picker_title);
+                        TextView textView = v.findViewById(R.id.course_picker_title);
                         textView.setText("每日课程节数");
 
-                        btnJieNumCancel = v.findViewById(R.id.course_pickerview_cancel_btn);
-                        btnJieNumCommit = v.findViewById(R.id.course_pickerview_commit_btn);
+                        btnJieNumCancel = v.findViewById(R.id.course_picker_view_cancel_button);
+                        btnJieNumCommit = v.findViewById(R.id.course_picker_view_commit_button);
 
                     }
                 })
@@ -250,20 +244,19 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    public void showTimePicker(final View view)
-    {
+    public void showTimePicker(final View view) {
         //      要展示的数据
         final List<String> listStartMinute = new ArrayList<>();
         final List<String> listStartSecond = new ArrayList<>();
         for (int i = 0; i <= 23; i++) {
-            if(i<=9)
-                listStartMinute.add("0"+String.valueOf(i));
+            if (i <= 9)
+                listStartMinute.add("0" + String.valueOf(i));
             else
-            listStartMinute.add(String.valueOf(i));
+                listStartMinute.add(String.valueOf(i));
         }
         for (int i = 0; i <= 59; i++) {
-            if(i<=9)
-                listStartSecond.add("0"+String.valueOf(i));
+            if (i <= 9)
+                listStartSecond.add("0" + String.valueOf(i));
             else
                 listStartSecond.add(String.valueOf(i));
         }
@@ -273,19 +266,19 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
             public void onOptionsSelect(int options1, int option2, int options3, View v) {
 //               返回的是选中位置
 //              展示选中数据
-            TextView textView=(TextView)view;
-                        textView.setText(listStartMinute.get(options1)+":"+listStartSecond.get(option2));
+                TextView textView = (TextView) view;
+                textView.setText(listStartMinute.get(options1) + ":" + listStartSecond.get(option2));
             }
         })
                 .setLayoutRes(R.layout.course_pickerview_stair_layout, new CustomListener() {
                     @Override
                     public void customLayout(View v) {
 
-                        TextView textView=v.findViewById(R.id.course_picker_title);
+                        TextView textView = v.findViewById(R.id.course_picker_title);
                         textView.setText("课程开始时间");
 
-                        btnTimeStartCancel = v.findViewById(R.id.course_pickerview_cancel_btn);
-                        btnTimeStartCommit = v.findViewById(R.id.course_pickerview_commit_btn);
+                        btnTimeStartCancel = v.findViewById(R.id.course_picker_view_cancel_button);
+                        btnTimeStartCommit = v.findViewById(R.id.course_picker_view_commit_button);
 
                     }
                 })
@@ -317,39 +310,37 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
             }
         });
 //      把数据绑定到控件上面
-       // pvOptions.setPicker(listStartMinute,listStartSecond);
-        pvOptions.setNPicker(listStartMinute,listStartSecond,null);
+        // pvOptions.setPicker(listStartMinute,listStartSecond);
+        pvOptions.setNPicker(listStartMinute, listStartSecond, null);
 //      展示
         pvOptions.show();
     }
 
-    public void onClick(View view)
-    {
+    public void onClick(View view) {
         showTimePicker(view);
     }
-    public void return_coursetable_onClick(View view)
-    {
-        Intent intent=new Intent(CourseTimeActivity.this,CourseMainActivity.class);
+
+    public void return_coursetable_onClick(View view) {
+        Intent intent = new Intent(CourseTimeActivity.this, CourseMainActivity.class);
         startActivity(intent);
         CourseTimeActivity.this.finish();
     }
-    public void time_commit_onClick(View view)
-    {
-        int flag=0;
-        for(int i=1;i<=jieNum;i++)
-        {
-            TextView tv=findViewById(i);
-            if(tv.getText().toString().equals("")){
-                flag=1;
+
+    public void time_commit_onClick(View view) {
+        int flag = 0;
+        for (int i = 1; i <= jieNum; i++) {
+            TextView tv = findViewById(i);
+            if (tv.getText().toString().equals("")) {
+                flag = 1;
                 break;
             }
         }
-        if(tvJieNum.getText().toString().equals("")||tvTimeSpan.getText().toString().equals("")||flag==1)
-            Toast.makeText(CourseTimeActivity.this,"请填写完整信息",Toast.LENGTH_SHORT).show();
+        if (tvJieNum.getText().toString().equals("") || tvTimeSpan.getText().toString().equals("") || flag == 1)
+            Toast.makeText(CourseTimeActivity.this, "请填写完整信息", Toast.LENGTH_SHORT).show();
         else {
             SharedPreferences sharedPreferences = getSharedPreferences("course_time", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt("jie_num",jieNum);
+            editor.putInt("jie_num", jieNum);
             editor.putInt("time_span", Integer.valueOf(tvTimeSpan.getText().toString()));
             for (int i = 1; i <= jieNum; i++) {
                 TextView textView = findViewById(i);
@@ -358,15 +349,15 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
             editor.commit();
             Toast.makeText(CourseTimeActivity.this, "时间设置成功", Toast.LENGTH_SHORT).show();
 
-            Intent intent=new Intent(CourseTimeActivity.this,CourseMainActivity.class);
+            Intent intent = new Intent(CourseTimeActivity.this, CourseMainActivity.class);
             startActivity(intent);
 //            intent.putExtra("每日课程节数",tvJieNum.getText().toString());
 //            setResult(RESULT_OK,intent);
 //            CourseTimeActivity.this.finish();
         }
     }
-    public void tvTime_span_onClick(View view)
-    {
+
+    public void tvTime_span_onClick(View view) {
         //      要展示的数据
         final List<String> listTimeStart = new ArrayList<>();
         for (int i = 1; i <= 60; i++) {
@@ -385,24 +376,20 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void customLayout(View v) {
 
-                        TextView textView=v.findViewById(R.id.course_picker_title);
+                        TextView textView = v.findViewById(R.id.course_picker_title);
                         textView.setText("每节课的时间跨度(分)");
 
-                        btnTimeSpanCancel = v.findViewById(R.id.course_pickerview_cancel_btn);
-                        btnTimeSpanCommit = v.findViewById(R.id.course_pickerview_commit_btn);
+                        btnTimeSpanCancel = v.findViewById(R.id.course_picker_view_cancel_button);
+                        btnTimeSpanCommit = v.findViewById(R.id.course_picker_view_commit_button);
 
                     }
                 })
 //                .setSelectOptions(0)//设置选择第一个
-
                 .setDividerColor(Color.BLACK)
                 .setContentTextSize(18)
                 .setCyclic(true, true, true)
                 .setTextColorCenter(Color.rgb(205, 104, 57))
                 .setDividerColor(Color.alpha(Color.BLACK))
-
-//
-                .isDialog(true)
                 .build();//创建
 
         btnTimeSpanCommit.setOnClickListener(new View.OnClickListener() {

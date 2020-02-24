@@ -1,6 +1,7 @@
 package com.example.learningsupport_argame;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.Navi.Activity.MapActivity;
+import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.UserMessageActivity;
@@ -26,11 +28,12 @@ public class NavigationController {
     private NavigationView navigationView;
     private ImageButton navigationButton;
     private String TAG = "NavigationController";
-
-    public NavigationController(AppCompatActivity context, View view) {
+    private NavigationItem mNavigationItem;
+    public NavigationController(AppCompatActivity context, View view,NavigationItem navigationItem) {
+        mNavigationItem = navigationItem;
         new Thread(() -> {
             while (UserLab.getCurrentUser() == null) ;
-            context.runOnUiThread(()->{
+            context.runOnUiThread(() -> {
                 initView(view, context);
             });
         }).start();
@@ -53,6 +56,7 @@ public class NavigationController {
             Intent intent = new Intent(context, UserMessageActivity.class);
             context.startActivity(intent);
         });
+
         navigationButton.setOnClickListener(v -> {
             if (drawerLayout.isDrawerOpen(navigationView)) {
                 drawerLayout.closeDrawer(navigationView);
@@ -63,19 +67,17 @@ public class NavigationController {
 
         navigationView.setNavigationItemSelectedListener(item -> {
             Toast.makeText(context, item.getTitle().toString(), Toast.LENGTH_SHORT).show();
-            if (item.getItemId() == R.id.navigation_menu_friend) {
+            if (item.getItemId() == R.id.navigation_menu_friend && mNavigationItem != NavigationItem.FRIEND) {
                 FriendListDialog fld = new FriendListDialog(context, UserLab.getCurrentUser().getId() + "", null);
 //                context.startActivity(new Intent(context, FriendListActivity.class));
             }
-            if (item.getItemId() == R.id.navigation_menu_task) {
-                drawerLayout.closeDrawer(navigationView);
-                // context.startActivity(new Intent(context, TaskListActivity.class));
-            }
-            if (item.getItemId() == R.id.navigation_menu_course)
+            if (item.getItemId() == R.id.navigation_menu_task && mNavigationItem != NavigationItem.TASK)
+                context.startActivity(new Intent(context, TaskListActivity.class));
+            if (item.getItemId() == R.id.navigation_menu_course && mNavigationItem != NavigationItem.COURSE)
                 context.startActivity(new Intent(context, CourseMainActivity.class));
-            if (item.getItemId() == R.id.navigation_menu_feedback)
+            if (item.getItemId() == R.id.navigation_menu_feedback && mNavigationItem != NavigationItem.FEEDBACK)
                 context.startActivity(new Intent(context, FeedbackDetailsActivity.class));
-            if (item.getItemId() == R.id.navigation_menu_map)
+            if (item.getItemId() == R.id.navigation_menu_map && mNavigationItem != NavigationItem.MAP)
                 context.startActivity(new Intent(context, MapActivity.class));
 //            if (item.getItemId() == R.id.navigation_menu_put)
 //                context.startActivity(new Intent(context, ModelPutActivity.class));
@@ -84,5 +86,13 @@ public class NavigationController {
             drawerLayout.closeDrawer(navigationView);
             return true;
         });
+    }
+
+    public enum NavigationItem {
+        FRIEND,
+        TASK,
+        COURSE,
+        FEEDBACK,
+        MAP
     }
 }

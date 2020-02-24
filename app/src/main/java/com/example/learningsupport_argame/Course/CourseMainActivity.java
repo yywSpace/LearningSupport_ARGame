@@ -2,7 +2,6 @@ package com.example.learningsupport_argame.Course;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,7 +18,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -34,13 +32,12 @@ import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
-import com.example.learningsupport_argame.NavigationController;
 
 import com.example.learningsupport_argame.Course.FloatingDragActionBtn.DragFloatActionButton;
 
 import com.example.learningsupport_argame.Course.ListView.ListViewActivity;
+import com.example.learningsupport_argame.NavigationController;
 import com.example.learningsupport_argame.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.litepal.LitePal;
 import org.litepal.tablemanager.Connector;
@@ -57,69 +54,55 @@ import java.util.Random;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 public class CourseMainActivity extends AppCompatActivity implements OnClickListener, TextView.OnLongClickListener {
-
+    private final static String TAG = "CourseMainActivity";
     final static int requestCode1 = 1;
-    int jieNum;
-    String[] daysArray = new String[]{"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
-    String[] numArray;
+    int mCoursesNumber;
+    String[] weeks = new String[]{"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
     int[] background = new int[]{R.drawable.course_course1, R.drawable.course_course2,
             R.drawable.course_course3, R.drawable.course_course4,
             R.drawable.course_course5};
-    TextView[][] textViews;
-    LinearLayout dayslayout;
-    GridLayout course_layout;
+    TextView[][] mCourseTVTable;
+    LinearLayout mWeekListLayout;
+    GridLayout mCourseListLayout;
 
     private Context context;
 
     String kaixue_date = "";
     // 定义标题栏上的按钮
-    private ImageButton menuBtn;
-
-    private TextView tv_currentweek;
+    private ImageButton mMenuMoreButton;
+    private ImageButton mCourseAddButton;
+    private TextView mCurrentWeekTV;
 
     private Calendar cal;
 
     private int year_current, month_current, day_current, week_current;
     String string_date;
 
-    Button btn_editweek_commit;
-    Button btn_editweek_cancel;
+    private Button mEditWeekCommit;
+    private Button mEditWeekCancel;
 
-    int edited_week;
-    int textview_height = 200;
+    int mCourseTableItemHeight = 200;
 
-    List<TextView> textview_list = new ArrayList<>();
+    List<TextView> mCourseItemList = new ArrayList<>();
     List<Course> courseList = new ArrayList<>();
 
     // 定义标题栏弹窗按钮
-    private PopupMenuAdapter popupMenu;
+    private PopupMenuAdapter mMorePopupMenu;
 
     public static int cHeight;
 
     int flag = 0;
-
-    ImageButton mReturnButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.course_table_navigation_layout);
         // 添加侧边栏
-//        new NavigationController(this, getWindow().getDecorView());
-        mReturnButton = findViewById(R.id.navigation_button);
-        mReturnButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.COURSE);
+
         SQLiteStudioService.instance().start(this);
 
         LitePal.initialize(CourseMainActivity.this);
-
-        dayslayout = findViewById(R.id.days_layout);
-        course_layout = findViewById(R.id.course_layout);
-        tv_currentweek = findViewById(R.id.tv_currentweek);
 
         string_date = getDate()[0];
         String[] str = getDate()[0].split("/");
@@ -128,15 +111,13 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
         day_current = Integer.valueOf(str[2]);
         week_current = Integer.valueOf(getDate()[1]);
 
-        // dragFloatActionButton=new DragFloatActionButton(CourseMainActivity.this);
-
-        init();
+        initView();
         initData();
         //清除所有课程格子，并重新添加
 //        for (TextView textView : textview_list) {
-//            course_layout.removeView(textView);
+//            mCourseListLayout.removeView(textView);
 //        }
-        tableInit();
+        courseTableInit();
 
         getCurrentWeek();
         clearTable();
@@ -150,58 +131,73 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
         String ss2 = "周使用时间" + m.getWeekInfo()[0] + " 周专注时间" + m.getWeekInfo()[1] + " 周使用次数" + m.getWeekInfo()[2];
 //        String ss3="月使用时间"+m.getMonthInfo()[0]+" 月专注时间"+m.getMonthInfo()[1]+" 月使用次数"+m.getMonthInfo()[2];
         Toast.makeText(CourseMainActivity.this, ss1 + ss2, Toast.LENGTH_SHORT).show();
-
-    }
-
-
-    public void dragFloatBtn_onClick(View view) {
-        SharedPreferences sharedPreferences = getSharedPreferences("kaixue_date", Context.MODE_PRIVATE);
-        SharedPreferences sharedPreferences1 = getSharedPreferences("course_time", Context.MODE_PRIVATE);
-        if (sharedPreferences.getString("kaixue_date", "没有开学日期记录").equals("没有开学日期记录"))
-            Toast.makeText(CourseMainActivity.this, "请先设置开学日期", Toast.LENGTH_SHORT).show();
-        else if (sharedPreferences1.getInt("jie_num", -1) == -1)
-            Toast.makeText(CourseMainActivity.this, "请先设置课程时间", Toast.LENGTH_SHORT).show();
-        else {
-
-            Intent intent = new Intent(CourseMainActivity.this, AddCourseActivity.class);
-            startActivity(intent);
-            CourseMainActivity.this.finish();
-        }
     }
 
     public void setClickListener() {
-        for (TextView textView : textview_list) {
+        for (TextView textView : mCourseItemList) {
             textView.setOnClickListener(this);
             textView.setOnLongClickListener(this);
         }
-
     }
 
-    private void init() {
-        //实例化标题栏按钮并设置监听
-        menuBtn = findViewById(R.id.edit_btn);
-        menuBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupMenu.show(v);
-            }
-        });
-
+    private void initView() {
+        mWeekListLayout = findViewById(R.id.course_week_list);
+        mCourseListLayout = findViewById(R.id.course_list_layout);
+        mCurrentWeekTV = findViewById(R.id.course_current_week);
 
         //实例化标题栏弹窗
-        popupMenu = new PopupMenuAdapter(this, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        mMorePopupMenu = new PopupMenuAdapter(this, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
+        //实例化标题栏按钮并设置监听
+        mMenuMoreButton = findViewById(R.id.course_menu_more_button);
+        mMenuMoreButton.setOnClickListener(v -> mMorePopupMenu.show(v));
+        mCourseAddButton = findViewById(R.id.course_menu_add_button);
+        mCourseAddButton.setOnClickListener((v) -> {
+            SharedPreferences sharedPreferences = getSharedPreferences("kaixue_date", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences1 = getSharedPreferences("course_time", Context.MODE_PRIVATE);
+            if (sharedPreferences.getString("kaixue_date", "没有开学日期记录").equals("没有开学日期记录"))
+                Toast.makeText(CourseMainActivity.this, "请先设置开学日期", Toast.LENGTH_SHORT).show();
+            else if (sharedPreferences1.getInt("jie_num", -1) == -1)
+                Toast.makeText(CourseMainActivity.this, "请先设置课程时间", Toast.LENGTH_SHORT).show();
+            else {
+                Intent intent = new Intent(CourseMainActivity.this, AddCourseActivity.class);
+                startActivity(intent);
+                CourseMainActivity.this.finish();
+            }
+        });
+        mCurrentWeekTV.setOnClickListener(v -> {
+            editCurrentWeek();
+        });
+
+        DragFloatActionButton dragFloatActionButton = findViewById(R.id.course_add_button);
+        dragFloatActionButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "DragFloatActionButton:onClick");
+                SharedPreferences sharedPreferences = getSharedPreferences("kaixue_date", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences1 = getSharedPreferences("course_time", Context.MODE_PRIVATE);
+                if (sharedPreferences.getString("kaixue_date", "没有开学日期记录").equals("没有开学日期记录"))
+                    Toast.makeText(CourseMainActivity.this, "请先设置开学日期", Toast.LENGTH_SHORT).show();
+                else if (sharedPreferences1.getInt("jie_num", -1) == -1)
+                    Toast.makeText(CourseMainActivity.this, "请先设置课程时间", Toast.LENGTH_SHORT).show();
+                else {
+                    Intent intent = new Intent(CourseMainActivity.this, AddCourseActivity.class);
+                    startActivity(intent);
+                    CourseMainActivity.this.finish();
+                }
+            }
+        });
     }
 
     //清除课程格子
     public void clearTable() {
-        for (TextView textView : textview_list) {
-            for (int i = 1; i <= jieNum; i++) {
+        for (TextView textView : mCourseItemList) {
+            for (int i = 1; i <= mCoursesNumber; i++) {
                 for (int j = 1; j <= 7; j++) {
                     if (textView.getTag() != null)
-                        course_layout.removeView(textView);
+                        mCourseListLayout.removeView(textView);
                 }
             }
-
         }
     }
 
@@ -210,21 +206,19 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
      */
     private void initData() {
         //给标题栏弹窗添加子类
-
         final PopupMenuActionItem editKaixueDate = new PopupMenuActionItem(this, "设置开学日期", R.drawable.course_ic_calendar);
         final PopupMenuActionItem editCourseTime = new PopupMenuActionItem(this, "设置课程时间", R.drawable.course_ic_time);
         final PopupMenuActionItem courseListTable = new PopupMenuActionItem(this, "查看课程列表", R.drawable.course_ic_edit_week);
 
-        popupMenu.addAction(editKaixueDate);
-        popupMenu.addAction(editCourseTime);
-        popupMenu.addAction(courseListTable);
+        mMorePopupMenu.addAction(editKaixueDate);
+        mMorePopupMenu.addAction(editCourseTime);
+        mMorePopupMenu.addAction(courseListTable);
         // popupMenu.addAction(editCurrentWeek);
 
-        popupMenu.setItemOnClickListener(new PopupMenuAdapter.OnItemOnClickListener() {
+        mMorePopupMenu.setItemOnClickListener(new PopupMenuAdapter.OnItemOnClickListener() {
             @Override
             public void onItemClick(PopupMenuActionItem item, int position) {
                 if (item.mTitle == "设置开学日期") {
-
                     OnDateSetListener listener = new OnDateSetListener() {
                         public void onDateSet(DatePicker arg0, int year, int month, int day) {
 
@@ -235,25 +229,18 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
                             editor.putString("kaixue_date", kaixue_date);
                             editor.commit();
 
-
                             getCurrentWeek();
                             clearTable();
                             query_db();
                             setClickListener();
-
                         }
-
                     };
-
 
                     DatePickerDialog dialog = new DatePickerDialog(CourseMainActivity.this, DatePickerDialog.BUTTON_POSITIVE, listener, year_current, month_current - 1, day_current);//主题在这里！后边三个参数为显示dialog时默认的日期，月份从0开始，0-11对应1-12个月
 
                     //设置日期的范围
-
                     DatePicker datePicker = dialog.getDatePicker();
-
 //                    datePicker.setMaxDate(new Date().getTime());//设置日期的上限日期
-
 //                    datePicker.setMinDate(new Date().getTime());//设置日期的下限日期，其中是参数类型是long型，为日期的时间戳
 
                     dialog.setCanceledOnTouchOutside(true);
@@ -292,18 +279,10 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
 
                     startActivity(intent);
                     CourseMainActivity.this.finish();
-
                 }
-
-
             }
         });
     }
-
-    public void course_showweek_onClick(View view) {
-        showPickerView();
-    }
-
 
     public int getZhouJi(int week) {
         int num;
@@ -334,49 +313,45 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
                 break;
         }
         return num;
-
     }
 
-    private void showPickerView() {
-//      要展示的数据
-        final List<String> listData = getData();
-
-//      监听选中
+    private void editCurrentWeek() {
+        // 要展示的数据
+        List<String> weekNumberList = new ArrayList<>();
+        for (int i = 1; i <= 20; i++) {
+            weekNumberList.add(String.valueOf(i));
+        }
+        // 监听选中
         final OptionsPickerView pvOptions = new OptionsPickerBuilder(CourseMainActivity.this, new OnOptionsSelectListener() {
             @Override
             public void onOptionsSelect(int options1, int option2, int options3, View v) {
-//               返回的是选中位置
-//              展示选中数据
-                tv_currentweek.setText("第" + listData.get(options1) + "周");
-                edited_week = Integer.valueOf(listData.get(options1));
-
+                // 返回的是选中位置
+                // 展示选中数据
+                mCurrentWeekTV.setText("第" + weekNumberList.get(options1) + "周");
                 clearTable();
                 query_db();
                 setClickListener();
-
-
-                //Toast.makeText(CourseMainActivity.this,"edited_week"+edited_week,Toast.LENGTH_SHORT).show();
             }
-        })
-                .setLayoutRes(R.layout.course_pickerview_stair_layout, new CustomListener() {
-                    @Override
-                    public void customLayout(View v) {
-
-                        btn_editweek_cancel = v.findViewById(R.id.course_pickerview_cancel_btn);
-                        btn_editweek_commit = v.findViewById(R.id.course_pickerview_commit_btn);
-
-                    }
-                })
-//                .setSelectOptions(0)//设置选择第一个
-                .setDividerColor(Color.BLACK)
+        }).setLayoutRes(R.layout.course_pickerview_stair_layout, new CustomListener() {
+            @Override
+            public void customLayout(View v) {
+                mEditWeekCancel = v.findViewById(R.id.course_picker_view_cancel_button);
+                mEditWeekCommit = v.findViewById(R.id.course_picker_view_commit_button);
+            }
+        }).setDividerColor(Color.BLACK)
                 .setContentTextSize(18)
                 .setCyclic(true, true, true)
                 .setTextColorCenter(Color.rgb(205, 104, 57))
                 .setDividerColor(Color.alpha(Color.BLACK))
                 .isDialog(true)
                 .build();//创建
-
-        btn_editweek_commit.setOnClickListener(new OnClickListener() {
+        mEditWeekCancel.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pvOptions.dismiss();
+            }
+        });
+        mEditWeekCommit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 pvOptions.returnData();
@@ -384,40 +359,20 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
 
             }
         });
-        btn_editweek_cancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pvOptions.dismiss();
 
-            }
-        });
-//      把数据绑定到控件上面
-        pvOptions.setPicker(listData);
+        // 把数据绑定到控件上面
+        pvOptions.setPicker(weekNumberList);
         pvOptions.show();
 
-
-//        for (TextView textView : textview_list) {
-//            course_layout.removeView(textView);
-//        }
+        // for (TextView textView : textview_list) {
+        //    mCourseListLayout.removeView(textView);
+        // }
         //clearTable();
         //tableInit();
-
-
     }
-
-    private List<String> getData() {
-        List<String> list = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
-            list.add(String.valueOf(i));
-        }
-        return list;
-
-    }
-
 
     //从数据库提取数据
     public void query_db() {
-
         SQLiteDatabase db = Connector.getDatabase();
         if (db != null) {
             List<Course> list = LitePal.findAll(Course.class, true);
@@ -431,7 +386,6 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
                 int end_zhou = course.getEnd_zhoushu();
                 String dan_shuang_week = course.getWeekstyle();
                 String teacher = course.getTeacher();
-
 
                 List<Jie> list_jie = new ArrayList<>();
                 list_jie = course.getJie();
@@ -479,7 +433,7 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
                     int jie_span = end_jie - start_jie + 1;
                     TextView textView = new TextView(CourseMainActivity.this);
                     textView.setWidth(aveWidth);
-                    textView.setHeight(textview_height * jie_span);
+                    textView.setHeight(mCourseTableItemHeight * jie_span);
                     textView.setTextSize(15);
                     textView.isClickable();
                     textView.isLongClickable();
@@ -489,13 +443,13 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
 
                     //Toast.makeText(CourseMainActivity.this, String.valueOf(textview_list.size()), Toast.LENGTH_SHORT).show();
 
-                    for (TextView tv : textview_list) {
+                    for (TextView tv : mCourseItemList) {
                         if (tv.getTag() == start_jie + "," + end_jie + "," + zhou_num) {
                             //Toast.makeText(CourseMainActivity.this,tv.getText().toString(),Toast.LENGTH_LONG).show();
                             Log.d("KKKKKKKKKKK", "kkkkkkkkkk");
 
-                            course_layout.removeView(tv);
-                            textview_list.remove(tv);
+                            mCourseListLayout.removeView(tv);
+                            mCourseItemList.remove(tv);
 
                         }
                     }
@@ -506,49 +460,44 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
                     GridLayout.LayoutParams params = new GridLayout.LayoutParams(rowSpec, columnSpec);
                     params.setGravity(Gravity.TOP);
 
-//                       course_layout.addView(textView, params);
+//                       mCourseListLayout.addView(textView, params);
 //                       textview_list.add(textView);
 
                     int week = -1;
 
-                    if (tv_currentweek.getText().toString().equals("假期中") == true) {
-
+                    if (mCurrentWeekTV.getText().toString().equals("假期中") == true) {
                         Toast.makeText(CourseMainActivity.this, "当前没有课程要上", Toast.LENGTH_SHORT).show();
-
 
                     } else {
 
-                        if (Character.isDigit(tv_currentweek.getText().toString().charAt(2)) == true)
-                            week = Integer.valueOf(tv_currentweek.getText().toString().substring(1, 3));
-                        else if (tv_currentweek.getText().toString().equals("当前周")) {
+                        if (Character.isDigit(mCurrentWeekTV.getText().toString().charAt(2)) == true)
+                            week = Integer.valueOf(mCurrentWeekTV.getText().toString().substring(1, 3));
+                        else if (mCurrentWeekTV.getText().toString().equals("当前周")) {
                             Toast.makeText(CourseMainActivity.this, "请先设置开学日期或当前周", Toast.LENGTH_SHORT).show();
                             return;
                         } else
-                            week = Integer.valueOf(tv_currentweek.getText().toString().substring(1, 2));
+                            week = Integer.valueOf(mCurrentWeekTV.getText().toString().substring(1, 2));
                         if (start_zhou <= week && end_zhou >= week) {
-
                             //textView.setText(course_name + "\n" + "@" + classroom);
                             switch (dan_shuang_week) {
                                 case "单周":
-
                                     if (week % 2 != 0) {
                                         Random random = new Random();
                                         int ran = random.nextInt(5);
                                         textView.setBackgroundResource(background[ran]);
                                         textView.setText(course_name + "\n" + "@" + classroom);
-                                        course_layout.addView(textView, params);
-                                        textview_list.add(textView);
+                                        mCourseListLayout.addView(textView, params);
+                                        mCourseItemList.add(textView);
                                     }
                                     break;
                                 case "双周":
-
                                     if (week % 2 == 0) {
                                         Random random = new Random();
                                         int ran = random.nextInt(5);
                                         textView.setBackgroundResource(background[ran]);
                                         textView.setText(course_name + "\n" + "@" + classroom);
-                                        course_layout.addView(textView, params);
-                                        textview_list.add(textView);
+                                        mCourseListLayout.addView(textView, params);
+                                        mCourseItemList.add(textView);
                                     }
                                     break;
                                 case "单双周":
@@ -556,16 +505,14 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
                                     int ran = random.nextInt(5);
                                     textView.setBackgroundResource(background[ran]);
                                     textView.setText(course_name + "\n" + "@" + classroom);
-                                    course_layout.addView(textView, params);
-                                    textview_list.add(textView);
+                                    mCourseListLayout.addView(textView, params);
+                                    mCourseItemList.add(textView);
                                     break;
                                 default:
-                                    course_layout.removeView(textView);
-                                    textview_list.remove(textView);
+                                    mCourseListLayout.removeView(textView);
+                                    mCourseItemList.remove(textView);
                                     break;
-
                             }
-
                         }
                     }
                 }
@@ -574,95 +521,72 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
         } else {
             Toast.makeText(CourseMainActivity.this, "当前没有课程信息", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     //初始化课程表格
-
-    public void tableInit() {
-
-
-        //textview_list.clear();
-
+    public void courseTableInit() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         //屏幕宽度
-        int width = dm.widthPixels;
+        int screenWidth = dm.widthPixels;
         //平均宽度
-        int aveWidth = (width - 100) / 7;
+        int aveWidth = (screenWidth - 100) / 7;
         //Text(CourseMainActivity.this, String.valueOf(aveWidth), Toast.LENGTH_SHORT).show();
         //屏幕高度
-        int height = dm.heightPixels;
-        //     int aveHeight = height / numArray.length;
-
-        jieNum = getSharedPreferences("course_time", MODE_PRIVATE).getInt("jie_num", -1);
-        if (jieNum == -1) {
+        // int height = dm.heightPixels;
+        // int aveHeight = height / numArray.length;
+        mCoursesNumber = getSharedPreferences("course_time", MODE_PRIVATE).getInt("jie_num", -1);
+        if (mCoursesNumber == -1) {
             Toast.makeText(CourseMainActivity.this, "没有每日课程节数信息，请先添加", Toast.LENGTH_SHORT).show();
-            jieNum = 12;
+            mCoursesNumber = 12;
         }
+        // 课程表
+        mCourseTVTable = new TextView[mCoursesNumber + 1][8];
 
-        textViews = new TextView[jieNum + 1][8];
-
-        numArray = new String[jieNum + 1];
-        for (int i = 0; i <= jieNum; i++) {
-            numArray[i] = String.valueOf(i);
-        }
+        // 初始化课表上方星期列表
         for (int i = 0; i < 8; i++) {
-            TextView textView = new TextView(CourseMainActivity.this);
-            textView.setHeight(100);
-            textView.setGravity(Gravity.CENTER);
-
+            TextView week = new TextView(CourseMainActivity.this);
+            week.setHeight(100);
+            week.setGravity(Gravity.CENTER);
             if (i == 0) {
-                textView.setText("");
-                textView.setWidth(100);
+                week.setText("");
+                week.setWidth(100);
             } else {
-                textView.setWidth(aveWidth);
-                textView.setText(daysArray[i - 1]);
-
+                week.setWidth(aveWidth);
+                week.setText(weeks[i - 1]);
             }
-            dayslayout.addView(textView);
-
+            mWeekListLayout.addView(week);
         }
-        for (int i = 1; i <= jieNum; i++) {
-            for (int j = 0; j <= 7; j++) {
-
-                if (j == 0) {
-                    TextView textView = new TextView(CourseMainActivity.this);
-                    textView.setGravity(Gravity.CENTER);
+        // 初始化课程表表项
+        for (int courseNum = 1; courseNum <= mCoursesNumber; courseNum++) {
+            for (int week = 0; week <= 7; week++) {
+                TextView textView = new TextView(CourseMainActivity.this);
+                textView.setGravity(Gravity.CENTER);
+                textView.setHeight(mCourseTableItemHeight);
+                textView.setTextSize(15);
+                if (week == 0) {
                     textView.setWidth(100);
-                    textView.setTextSize(15);
-                    textView.setHeight(textview_height);
-                    textView.setText(numArray[i]);
-                    course_layout.addView(textView);
+                    textView.setText(String.valueOf(courseNum));
+                    mCourseListLayout.addView(textView);
                 } else {
-                    textViews[i][j] = new TextView(CourseMainActivity.this);
-                    textViews[i][j].setWidth(aveWidth);
-                    textViews[i][j].setHeight(textview_height);
-                    textViews[i][j].setTextSize(15);
-                    textViews[i][j].isClickable();
-                    textViews[i][j].isLongClickable();
-                    textViews[i][j].setId(Integer.valueOf((String.valueOf(i) + String.valueOf(j))));
-                    textViews[i][j].setGravity(Gravity.CENTER);
-                    course_layout.addView(textViews[i][j]);
-                    textViews[i][j].setText("");
-                    textview_list.add(textViews[i][j]);
-
+                    mCourseTVTable[courseNum][week] = new TextView(CourseMainActivity.this);
+                    textView.setWidth(aveWidth);
+                    textView.setId(Integer.valueOf((String.valueOf(courseNum) + week)));
+                    textView.setText("");
+                    mCourseListLayout.addView(textView);
+                    mCourseItemList.add(textView);
+                    mCourseTVTable[courseNum][week] = textView;
                 }
-
             }
         }
-
-
         LinearLayout linearLayout = findViewById(R.id.course_top_height);
         linearLayout.measure(0, 0);
         cHeight = linearLayout.getMeasuredHeight();
-        Log.d("abcd", String.valueOf(cHeight));
-        DragFloatActionButton dragFloatActionButton = findViewById(R.id.dragFloatBtn);
+        Log.d(TAG, String.valueOf(cHeight));
+
     }
 
     public void onClick(View view) {
-
-
         TextView textView = (TextView) view;
         Toast.makeText(CourseMainActivity.this, textView.getText().toString(), Toast.LENGTH_SHORT).show();
         int color = textView.getSolidColor();
@@ -681,9 +605,8 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
 
         if (textView.getText() != "") {
             Toast.makeText(CourseMainActivity.this, "dialogdialoag", Toast.LENGTH_SHORT).show();
-            courseInfo_dialog(textView);
+            courseInfoDialog(textView);
         }
-
     }
 
     public boolean onLongClick(View view) {
@@ -692,7 +615,6 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
             String start_tag = textView.getTag().toString().split(",")[0];
             String end_tag = textView.getTag().toString().split(",")[1];
             String zhou_tag = textView.getTag().toString().split(",")[2];
-
 //            Toast.makeText(CourseMainActivity.this,zhou_tag,Toast.LENGTH_SHORT).show();
 
             int startJie = Integer.valueOf(start_tag);
@@ -752,7 +674,6 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
 
 
     public void enter_jiandu_dialog(final String courseEndTimeStr, final String courseStartTimeStr) {
-
         PromptAdapter.Builder builder = new PromptAdapter.Builder(CourseMainActivity.this);
         builder.setTitle("提示");
         builder.setContent("确定要进入监督界面吗?");
@@ -776,16 +697,12 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
                 }
                 Toast.makeText(CourseMainActivity.this, String.valueOf(time), Toast.LENGTH_SHORT).show();
 
-
                 intent.putExtra("courseStartTimeStr", courseStartTimeStr);
                 intent.putExtra("courseEndTimeStr", courseEndTimeStr);
-
 
                 startActivity(intent);
 //                       CourseMainActivity.this.finish();
                 dialogInterface.dismiss();
-
-
             }
 
         });
@@ -801,82 +718,48 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
         PromptAdapter dialog = builder.create();
         dialog.show();
         //CourseMainActivity.this.finish();
-
-
     }
 
 
-    public void courseInfo_dialog(TextView textView) {
+    public void courseInfoDialog(TextView textView) {
         View v = View.inflate(CourseMainActivity.this, R.layout.course_show_dialog_layout, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(CourseMainActivity.this);
 
-        TextView show_classroom = v.findViewById(R.id.show_classroom);
-        TextView show_jieshu = v.findViewById(R.id.show_jieshu);
-        TextView show_teacher = v.findViewById(R.id.show_teacher);
-        TextView show_zhoushu = v.findViewById(R.id.show_zhoushu);
+        TextView course_classroom = v.findViewById(R.id.show_course_classroom);
+        TextView course_number = v.findViewById(R.id.show_course_number);
+        TextView course_teacher = v.findViewById(R.id.show_course_teacher);
+        TextView course_week_number = v.findViewById(R.id.show_course_week_number);
 
         String course_name = "";
         String classroom = "";
-        int start_zhou = -1;
-        int end_zhou = -1;
-        String dan_shuang_week = "";
+        int start_week = -1;
+        int end_week = -1;
+        String single_or_biweekly = "";
         String teacher = "";
 
-        int flag = 0;
-        String start_tag = textView.getTag().toString().split(",")[0];
-        String end_tag = textView.getTag().toString().split(",")[1];
-        String zhou_tag = textView.getTag().toString().split(",")[2];
-
-        String strZhou = "";
-        switch (zhou_tag) {
-            case "1":
-                strZhou = "周一";
-                break;
-            case "2":
-                strZhou = "周二";
-                break;
-            case "3":
-                strZhou = "周三";
-                break;
-            case "4":
-                strZhou = "周四";
-                break;
-            case "5":
-                strZhou = "周五";
-                break;
-            case "6":
-                strZhou = "周六";
-                break;
-            case "7":
-                strZhou = "周日";
-                break;
-            default:
-                strZhou = "所在周几有误";
-                break;
-        }
-
+        String tag = textView.getTag().toString();
+        String start_time = tag.split(",")[0];
+        String end_time = tag.split(",")[1];
+        String week_tag = tag.split(",")[2];
+        Integer week_num = Integer.parseInt(week_tag);
+        String weekStr = week_num > 0 && week_num < 8 ? weeks[week_num - 1] : "所在周几有误";
 
         String str = textView.getText().toString().split("@")[0].trim();
         //Toast.makeText(CourseMainActivity.this,str,Toast.LENGTH_SHORT).show();
         SQLiteDatabase db = Connector.getDatabase();
         if (db != null) {
-
             List<Course> courseList = LitePal.where("course_name = ?", str).find(Course.class);
-
             if (courseList == null) {
                 Toast.makeText(CourseMainActivity.this, "null", Toast.LENGTH_SHORT).show();
             } else {
                 for (Course course : courseList) {
-
-                    Toast.makeText(CourseMainActivity.this, start_tag + end_tag, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CourseMainActivity.this, start_time + end_time, Toast.LENGTH_SHORT).show();
                     course_name = course.getCourse_name();
                     classroom = course.getClassroom();
-                    start_zhou = course.getStart_zhoushu();
-                    end_zhou = course.getEnd_zhoushu();
-                    dan_shuang_week = course.getWeekstyle();
+                    start_week = course.getStart_zhoushu();
+                    end_week = course.getEnd_zhoushu();
+                    single_or_biweekly = course.getWeekstyle();
                     teacher = course.getTeacher();
-
-
                 }
 
             }
@@ -889,41 +772,32 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
                     startActivity(intent);
                 }
             });
-            show_classroom.setText(classroom);
-            show_jieshu.setText(strZhou + " " + start_tag + "－" + end_tag + "节");
-            show_teacher.setText(teacher);
+            course_classroom.setText(classroom);
+            course_number.setText(weekStr + " " + start_time + "－" + end_time + "节");
+            course_teacher.setText(teacher);
 
-            if (dan_shuang_week.equals("单周") || dan_shuang_week.equals("双周")) {
-                String string = String.valueOf(start_zhou) + "-" + String.valueOf(end_zhou) + "周" + "(" + dan_shuang_week + ")";
-                show_zhoushu.setText(string);
-            } else if (dan_shuang_week.equals("单双周")) {
-                show_zhoushu.setText(String.valueOf(start_zhou) + "-" + String.valueOf(end_zhou) + "周");
+            if (single_or_biweekly.equals("单周") || single_or_biweekly.equals("双周")) {
+                String string = start_week + "-" + end_week + "周" + "(" + single_or_biweekly + ")";
+                course_week_number.setText(string);
+            } else if (single_or_biweekly.equals("单双周")) {
+                course_week_number.setText(start_week + "-" + end_week + "周");
             }
             builder.create().show();
         }
-
     }
-//获取当前日期
 
+    //获取当前日期
     private String[] getDate() {
-
         Calendar cal = Calendar.getInstance();
-
         int year_current = cal.get(Calendar.YEAR);       //获取年月日时分秒
-
         Log.i("wxy", "year" + year_current);
-
         int month_current = cal.get(Calendar.MONTH) + 1;   //获取到的月份是从0开始计数
-
         int day_current = cal.get(Calendar.DAY_OF_MONTH);
-
         String date = year_current + "/" + month_current + "/" + day_current;
         String[] str = new String[2];
         str[0] = date;
         str[1] = String.valueOf(cal.get(Calendar.DAY_OF_WEEK));
-
         return str;
-
     }
 
     public void getCurrentWeek() {
@@ -935,13 +809,10 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
         } else {
             String kaixue_date = sharedPreferences.getString("kaixue_date", "没有开学日期记录");
 
-
             if (kaixue_date == "没有开学日期记录") {
                 Toast.makeText(CourseMainActivity.this, "请先添加开学日期并添加课程", Toast.LENGTH_SHORT).show();
                 return;
-
             } else {
-
                 String[] str = getDate();
                 String current_date = str[0];
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -974,14 +845,14 @@ public class CourseMainActivity extends AppCompatActivity implements OnClickList
                 int day = (int) (time / 1000 / 60 / 60 / 24);
 
                 if (time < 0)
-                    tv_currentweek.setText("假期中");
+                    mCurrentWeekTV.setText("假期中");
                 else {
 
                     int k = (day - (7 - num + 1));
                     if (k >= 1) {
-                        tv_currentweek.setText("第" + ((k / 7) + 2) + "周");
+                        mCurrentWeekTV.setText("第" + ((k / 7) + 2) + "周");
                     } else if (k < 1) {
-                        tv_currentweek.setText("第1周");
+                        mCurrentWeekTV.setText("第1周");
                     }
                 }
 

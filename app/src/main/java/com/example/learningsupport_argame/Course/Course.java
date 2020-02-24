@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Course extends LitePalSupport {
-
     private int id;
     private String course_name;
     private String classroom;
