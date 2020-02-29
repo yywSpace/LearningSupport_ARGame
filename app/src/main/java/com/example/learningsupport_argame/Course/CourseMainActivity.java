@@ -93,7 +93,7 @@ public class CourseMainActivity extends AppCompatActivity {
                 String start_tag = textView.getTag().toString().split(",")[0];
                 String end_tag = textView.getTag().toString().split(",")[1];
                 String zhou_tag = textView.getTag().toString().split(",")[2];
-//            Toast.makeText(CourseMainActivity.this,zhou_tag,Toast.LENGTH_SHORT).show();
+                //            Toast.makeText(CourseMainActivity.this,zhou_tag,Toast.LENGTH_SHORT).show();
 
                 int startJie = Integer.valueOf(start_tag);
                 int endJie = Integer.valueOf(end_tag);
@@ -187,7 +187,7 @@ public class CourseMainActivity extends AppCompatActivity {
         LitePal.initialize(CourseMainActivity.this);
 
         string_date = getDate()[0];
-        week_current = Integer.valueOf(getDate()[1]);
+        week_current = Integer.parseInt(getDate()[1]);
 
         initView();
         initData();

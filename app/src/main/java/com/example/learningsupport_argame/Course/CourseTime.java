@@ -2,13 +2,9 @@ package com.example.learningsupport_argame.Course;
 
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import androidx.annotation.NonNull;
 
 class CourseTime {
-
-    private int mId;
-    // 课程ID
-    private int mCourseId;
     // 周几的课程
     private String mWeek;
     // 开始的节数
@@ -18,30 +14,10 @@ class CourseTime {
 
     private TextView mTimeTextView;
 
-    public CourseTime() {
-
-    }
-
-    public CourseTime(String week, int startTime, int endTime) {
-        mWeek = week;
-        mStartTime = startTime;
-        mEndTime = endTime;
-    }
-
-    public int getId() {
-        return mId;
-    }
-
-    public void setId(int id) {
-        mId = id;
-    }
-
-    public int getCourseId() {
-        return mCourseId;
-    }
-
-    public void setCourseId(int courseId) {
-        mCourseId = courseId;
+    @NonNull
+    @Override
+    public String toString() {
+        return String.format("%s-%d-%d", mWeek, mStartTime, mEndTime);
     }
 
     public String getWeek() {
