@@ -179,7 +179,7 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
                 jieNum = Integer.valueOf(listJieNum.get(options1));
 
                 ///////////////////////
-                SharedPreferences sharedPreferences = getSharedPreferences("course_time", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences(CourseMainActivity.COURSE_INFO_PREF, Context.MODE_PRIVATE);
                 int jNum = sharedPreferences.getInt("jie_num", -1);
                 if (jNum != -1) {
                     if (jieNum != jNum) {
@@ -338,7 +338,7 @@ public class CourseTimeActivity extends AppCompatActivity implements View.OnClic
         if (tvJieNum.getText().toString().equals("") || tvTimeSpan.getText().toString().equals("") || flag == 1)
             Toast.makeText(CourseTimeActivity.this, "请填写完整信息", Toast.LENGTH_SHORT).show();
         else {
-            SharedPreferences sharedPreferences = getSharedPreferences("course_time", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences(CourseMainActivity.COURSE_INFO_PREF, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt("jie_num", jieNum);
             editor.putInt("time_span", Integer.valueOf(tvTimeSpan.getText().toString()));

@@ -62,8 +62,6 @@ public class Course extends LitePalSupport {
         this.end_zhoushu = end_zhoushu;
     }
 
-
-
     public String getClassroom() {
         return classroom;
     }
@@ -72,7 +70,6 @@ public class Course extends LitePalSupport {
         this.classroom = classroom;
     }
 
-
     public String getTeacher() {
         return teacher;
     }
@@ -80,6 +77,5 @@ public class Course extends LitePalSupport {
     public void setTeacher(String teacher) {
         this.teacher = teacher;
     }
-
 
 }
