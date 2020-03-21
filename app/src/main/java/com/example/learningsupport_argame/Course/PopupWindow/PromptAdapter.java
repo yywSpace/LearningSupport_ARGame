@@ -1,4 +1,4 @@
-package com.example.learningsupport_argame.Course;
+package com.example.learningsupport_argame.Course.PopupWindow;
 
 import android.app.Dialog;
 import android.content.Context;

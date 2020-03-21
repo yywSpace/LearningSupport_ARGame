@@ -1,61 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_height="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/return_addcourse"
-            android:src="@drawable/course_ic_return"
-            android:onClick="return_addCourse_onClick"
+            android:id="@+id/course_list_return"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="17dp"
-            android:layout_marginLeft="12dp"
             android:layout_marginBottom="2dp"
             android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:src="@drawable/course_ic_return" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="课程列表"
-            android:gravity="center"
             android:layout_weight="24"
+            android:gravity="center"
+            android:text="课程列表"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
+
         <ImageView
-            android:id="@+id/delete_allcourse"
-            android:src="@drawable/course_ic_shanchu"
-            android:onClick="delete_allcourse_onClick"
-            android:layout_marginTop="15dp"
-            android:layout_weight="1"
-            android:layout_marginRight="12dp"
-            android:layout_marginBottom="2dp"
+            android:id="@+id/course_list_clear_all"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:src="@drawable/course_ic_shanchu" />
     </LinearLayout>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Course.ListView.ListViewActivity"
-    tools:showIn="@layout/course_listview_main_activity">
-
-    <com.example.learningsupport_argame.Course.ListView.MyListView
-        android:id="@+id/my_list"
+    <RelativeLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true" />
-</RelativeLayout>
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".Course.ListView.ListViewActivity"
+        tools:showIn="@layout/course_listview_main_activity">
+
+        <com.example.learningsupport_argame.Course.ListView.MyListView
+            android:id="@+id/my_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true" />
+    </RelativeLayout>
 </LinearLayout>

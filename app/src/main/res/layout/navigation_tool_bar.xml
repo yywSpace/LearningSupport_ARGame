@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -7,7 +8,16 @@
         android:id="@+id/navigation_button"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_gravity="left"
-        android:background="@drawable/navigation" />
+        android:layout_gravity="start"
+        android:background="@drawable/navigation"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/navigation_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
 
 </androidx.appcompat.widget.Toolbar>

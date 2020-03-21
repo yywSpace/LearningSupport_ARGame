@@ -4,7 +4,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-class CourseTime {
+import java.io.Serializable;
+
+public class CourseTime implements Serializable {
     // 周几的课程
     private String mWeek;
     // 开始的节数

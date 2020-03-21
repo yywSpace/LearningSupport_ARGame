@@ -18,8 +18,10 @@ import java.util.stream.Collectors;
 
 public class TaskLab {
     private static String TAG = "TaskLab";
-
     public static List<Task> mAcceptedTaskList;
+    public static List<Task> mAccomplishTaskList;
+    public static List<Task> mCanAcceptedTaskList;
+    public static List<Task> mReleasedTaskList;
     public static List<Task> mRunningTaskList = new ArrayList<>();
 
     public static Task getTaskById(int id) {
@@ -50,6 +52,7 @@ public class TaskLab {
             }
             return 0;
         }).collect(Collectors.toList());
+        mCanAcceptedTaskList = tasks;
         return tasks;
     }
 
@@ -89,6 +92,7 @@ public class TaskLab {
                 "           where task_participant.participant_id = ? and task_accomplish_status = '完成');";
 
         List<Task> accomplishTasks = getTasksWith(sql, Integer.parseInt(userId));
+        mAccomplishTaskList = accomplishTasks;
         return accomplishTasks;
     }
 
@@ -102,7 +106,7 @@ public class TaskLab {
         List<Task> releasedTasks = getTasksWith(
                 "select * from task where user_id = ?",
                 userId);
-
+        mReleasedTaskList = releasedTasks;
         return releasedTasks;
     }
 

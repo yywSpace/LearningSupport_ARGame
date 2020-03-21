@@ -55,6 +55,7 @@ public class TaskListActivity extends AppCompatActivity {
     private VpAdapter mVpAdapter;
     private List<Fragment> mFragmentList;
     private ViewPager mViewPager;
+    private TextView mNavigationTitle;
     private FloatingActionButton mFloatingActionButton;
     private BottomNavigationViewEx mNavigationView;
     private AlertDialog mCreateTaskDialog;
@@ -75,13 +76,13 @@ public class TaskListActivity extends AppCompatActivity {
 //                finish();
 //            }
 //        });
-
+        mNavigationTitle = findViewById(R.id.navigation_title);
+        mNavigationTitle.setText("执行中");
 
         mNavigationView = findViewById(R.id.task_list_navigation_view);
 
         mFloatingActionButton = findViewById(R.id.task_list_add_task);
         mViewPager = findViewById(R.id.task_list_vp_content);
-
         mFragmentList = new ArrayList<>(Arrays.asList(
                 CurrentTaskFragment.getInstance(this),
                 TaskAcceptedListFragment.getInstance(this),
@@ -89,7 +90,6 @@ public class TaskListActivity extends AppCompatActivity {
         ));
 
         mViewPager.setCurrentItem(0);
-
         mVpAdapter = new VpAdapter(getSupportFragmentManager(), mFragmentList);
         mViewPager.setAdapter(mVpAdapter);
         ActivityUtil.addActivity(this);
@@ -116,13 +116,16 @@ public class TaskListActivity extends AppCompatActivity {
                 int position = -1;
                 switch (item.getItemId()) {
                     case R.id.menu_task_running:
+                        mNavigationTitle.setText("执行中");
                         item.setIcon(R.drawable.task_list_icon_running_sellected);
                         break;
                     case R.id.menu_task_accepted:
+                        mNavigationTitle.setText("已接受的任务");
                         position = 1;
                         item.setIcon(R.drawable.navigation_task);
                         break;
                     case R.id.menu_task_can_accept: {
+                        mNavigationTitle.setText("任务列表");
                         position = 2;
                         item.setIcon(R.drawable.task_list_icon_all_sellected);
                         // 此处return false且在FloatingActionButton没有自定义点击事件时 会屏蔽点击事件
@@ -344,7 +347,7 @@ public class TaskListActivity extends AppCompatActivity {
 
             // 设置任务时间默认为当前时间
             Calendar calendar = Calendar.getInstance();
-            String currentTime = String.format("%s-%02s-%02s %s:%02d",
+            String currentTime = String.format("%d-%02d-%02d %d:%02d",
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH) + 1,
                     calendar.get(Calendar.DAY_OF_MONTH),
@@ -450,7 +453,7 @@ public class TaskListActivity extends AppCompatActivity {
                 //设置DateDialog为当前时间
                 DatePickerDialog date = new DatePickerDialog(
                         TaskListActivity.this, (view, year, month, dayOfMonth) -> {
-                    mStartTimes[0] = String.format("%s-%02s-%02s %s:%02d", year, (month + 1), dayOfMonth);
+                    mStartTimes[0] = String.format("%d-%02d-%02d", year, (month + 1), dayOfMonth);
                     mTaskStartTime.setText(mStartTimes[0] + " " + (mStartTimes[1] == null ? "" : mStartTimes[1]));
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 date.setTitle("选择开始日期");
@@ -476,7 +479,7 @@ public class TaskListActivity extends AppCompatActivity {
                 DatePickerDialog datePicker = new DatePickerDialog(
                         TaskListActivity.this,
                         (view, year, month, dayOfMonth) -> {
-                            mEndTimes[0] =  String.format("%s-%02s-%02s %s:%02d", year, (month + 1), dayOfMonth);
+                            mEndTimes[0] = String.format("%d-%02d-%02d", year, (month + 1), dayOfMonth);
                             Toast.makeText(TaskListActivity.this, mEndTimes[0], Toast.LENGTH_SHORT).show();
                             mTaskEndTime.setText(mEndTimes[0] + " " + (mEndTimes[1] == null ? "" : mEndTimes[1]));
                         },

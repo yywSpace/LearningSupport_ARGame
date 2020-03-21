@@ -3,7 +3,6 @@ package com.example.learningsupport_argame.Course;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +30,7 @@ import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.example.learningsupport_argame.Course.ListView.ListViewActivity;
+import com.example.learningsupport_argame.Course.PopupWindow.PromptAdapter;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.google.gson.Gson;
@@ -95,6 +95,20 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.course_add_layout);
+        mHandler = new Handler();
+        CourseTime courseTime = new CourseTime();
+        courseTime.setTimeTextView(mCourseTimeTV);
+        mCourseTimeList.add(courseTime);
+        initView();
+        initData();
+        initEvent();
+
+        edittext_zhou = "";
+        mHandler_jieshu.sendEmptyMessage(MSG_LOAD_DATA);
+        mHandler_zhoushu.sendEmptyMessage(MSG_LOAD_DATA);
+    }
+
+    void initView() {
         mCourseAddSubmit = findViewById(R.id.course_add_commit);
         mCourseAddReturn = findViewById(R.id.course_add_return);
         mCourseAddNextBtn = findViewById(R.id.course_add_next);
@@ -105,23 +119,45 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
         mCourseTimeTV = findViewById(R.id.course_time_text_view);
         mCourseTeacherEditText = findViewById(R.id.course_teacher_edit_text);
         mCourseWeekStyleTV = findViewById(R.id.course_week_style_text_view);
-        mHandler = new Handler();
-        CourseTime courseTime = new CourseTime();
-        courseTime.setTimeTextView(mCourseTimeTV);
-        mCourseTimeList.add(courseTime);
-        initEvent();
-        edittext_zhou = "";
-        mHandler_jieshu.sendEmptyMessage(MSG_LOAD_DATA);
-        mHandler_zhoushu.sendEmptyMessage(MSG_LOAD_DATA);
+    }
+
+    void initData() {
+        Course course = (Course) getIntent().getSerializableExtra(CourseMainActivity.CURRENT_EDIT_COURSE);
+        if (course != null) {
+            mCourseNameEditText.setText(course.getName());
+            mClassroomEditText.setText(course.getClassroom());
+            mCourseTeacherEditText.setText(course.getTeacher());
+            mCourseWeekStyleTV.setText(course.getWeekStyle());
+
+            for (int i = 0; i < course.getTimes().size(); i++) {
+                CourseTime time = course.getTimes().get(i);
+                if (i == 0) {
+                    mCourseTimeTV.setText(String.format("%s %s－%s节", time.getWeek(), time.getStartTime(), time.getEndTime()));
+                    continue;
+                }
+                TextView otherTime = (TextView) LayoutInflater.from(AddCourseActivity.this).inflate(R.layout.course_other_time_text_view, null);
+                otherTime.setText(String.format("%s %s－%s节", time.getWeek(), time.getStartTime(), time.getEndTime()));
+                otherTime.setOnClickListener(timeView -> showCourseTimePickerViewN((TextView) timeView));
+                // 长按删除
+                otherTime.setOnLongClickListener(timeView -> {
+                    mOtherCourseTimeLayout.removeView(timeView);
+                    mCourseTimeList.removeIf(courseTime -> courseTime.getTimeTextView().equals(timeView));
+                    return true;
+                });
+                mOtherCourseTimeLayout.addView(otherTime);
+                // 在添加时先设置与此时间关联的TextView，在后续点击事件中根据此TextView找到CourseTime并设置数据
+                CourseTime courseTime = new CourseTime();
+                courseTime.setTimeTextView(otherTime);
+                mCourseTimeList.add(courseTime);
+            }
+        }
     }
 
     void initEvent() {
         mCourseAddReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AddCourseActivity.this, CourseMainActivity.class);
-                startActivity(intent);
-                AddCourseActivity.this.finish();
+                finish();
             }
         });
 
@@ -129,15 +165,17 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
             @Override
             public void onClick(View v) {
                 if (isInfoCompleted()) {
-                    NCourse currentCourse = new NCourse(UserLab.getCurrentUser().getId(), mCourseName, mClassroom,
+                    Course currentCourse = new Course(UserLab.getCurrentUser().getId(), mCourseName, mClassroom,
                             mCourseTimeList, mCourseTeacher, mCourseStartWeek, mCourseEndWeek, mCourseWeekStyle);
                     runOnUiThread(() -> new Thread(() -> {
-                        List<NCourse> allCourses = CourseLab.getAllCourse(currentCourse.getUserId());
+                        List<Course> allCourses = CourseLab.getAllCourse(currentCourse.getUserId());
                         boolean isMixed = judgeMixCourse(currentCourse, allCourses);
+                        CourseLab.sCourseList.add(currentCourse);
                         if (!isMixed) {
                             CourseLab.insertCourse(currentCourse);
                             Looper.prepare();
                             Toast.makeText(AddCourseActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
+                            setResult(RESULT_OK);
                             finish();
                             Looper.loop();
                         }
@@ -183,13 +221,15 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
-                            NCourse currentCourse = new NCourse(UserLab.getCurrentUser().getId(), mCourseName, mClassroom,
+                            Course currentCourse = new Course(UserLab.getCurrentUser().getId(), mCourseName, mClassroom,
                                     mCourseTimeList, mCourseTeacher, mCourseStartWeek, mCourseEndWeek, mCourseWeekStyle);
                             runOnUiThread(() -> new Thread(() -> {
-                                List<NCourse> allCourses = CourseLab.getAllCourse(currentCourse.getUserId());
+                                List<Course> allCourses = CourseLab.getAllCourse(currentCourse.getUserId());
                                 boolean isMixed = judgeMixCourse(currentCourse, allCourses);
                                 if (!isMixed) {
+                                    CourseLab.sCourseList.add(currentCourse);
                                     CourseLab.insertCourse(currentCourse);
+                                    setResult(RESULT_OK);
                                     Looper.prepare();
                                     Toast.makeText(AddCourseActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
                                     mHandler.post(AddCourseActivity.this::clearContent);
@@ -405,13 +445,14 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
                 String endTime = Character.isDigit(opt3endTime.charAt(3)) ?
                         opt3endTime.substring(2, 4) : opt3endTime.substring(2, 3);
 
-                SharedPreferences sharedPreferences = getSharedPreferences(CourseMainActivity.COURSE_INFO_PREF, MODE_PRIVATE);
-                int courseNum = sharedPreferences.getInt("jie_num", -1);
+//                SharedPreferences sharedPreferences = getSharedPreferences(CourseMainActivity.COURSE_INFO_PREF, MODE_PRIVATE);
+//                int courseNum = sharedPreferences.getInt("jie_num", -1);
+                int courseNum = CourseSetting.COURSE_NUMBER;
                 if (Integer.parseInt(endTime) > courseNum) {
                     Toast.makeText(AddCourseActivity.this, "所选节数与设置的每日节数不符", Toast.LENGTH_SHORT).show();
                     textView.setText("");
                 } else {
-                    String tx = opt1week + "  " + startTime + "－" + endTime + "节";
+                    String tx = opt1week + " " + startTime + "－" + endTime + "节";
                     boolean isMixed = mCourseTimeList.stream()
                             .filter((courseTime -> !courseTime.getTimeTextView().getText().toString().equals("")))
                             .anyMatch(courseTime -> {
@@ -608,6 +649,9 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
         mCourseTeacherEditText.setText("");
         mCourseWeekStyleTV.setText("");
         mCourseTimeList.clear();
+        CourseTime courseTime = new CourseTime();
+        courseTime.setTimeTextView(mCourseTimeTV);
+        mCourseTimeList.add(courseTime);
         mOtherCourseTimeLayout.removeAllViews();
         mOtherCourseTimeLayout.addView(mCourseTimeTV);
         mCourseName = "";
@@ -628,12 +672,12 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
 //    }
 
 
-    public boolean judgeMixCourse(NCourse currentCourse, List<NCourse> allCourses) {
+    public boolean judgeMixCourse(Course currentCourse, List<Course> allCourses) {
         // 获取所有课程
         boolean haveSameName = false;
-        NCourse mixedCourse = null;
+        Course mixedCourse = null;
         boolean isMix = false;
-        for (NCourse oldCourse : allCourses) {
+        for (Course oldCourse : allCourses) {
             // 判断课程名是否相同
             if (oldCourse.getName().equals(currentCourse.getName())) {
                 Looper.prepare();
@@ -656,8 +700,6 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-//                            Intent intent = new Intent(AddCourseActivity.this, AddCourseActivity.class);
-//                            startActivity(intent);
                     }
                 });
                 builder.create().show();

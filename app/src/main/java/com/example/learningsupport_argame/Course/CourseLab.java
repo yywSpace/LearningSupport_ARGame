@@ -3,11 +3,8 @@ package com.example.learningsupport_argame.Course;
 import android.util.Log;
 
 import com.example.learningsupport_argame.DbUtils;
-import com.example.learningsupport_argame.Task.Task;
-import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,12 +12,13 @@ import java.util.stream.Collectors;
 
 public class CourseLab {
     public static final String TAG = "CourseLab";
+    public static List<Course> sCourseList;
 
-    private static List<NCourse> getCourseWith(String sql, Object... args) {
-        List<NCourse> courses = new ArrayList<>();
+    private static List<Course> getCourseWith(String sql, Object... args) {
+        List<Course> courses = new ArrayList<>();
         DbUtils.query(resultSet -> {
             while (resultSet.next()) {
-                NCourse course = new NCourse();
+                Course course = new Course();
                 course.setId(resultSet.getInt("id"));
                 course.setUserId(resultSet.getInt("user_id"));
                 course.setName(resultSet.getString("name"));
@@ -49,21 +47,24 @@ public class CourseLab {
         return courses;
     }
 
-    public static List<NCourse> getAllCourse(int userId) {
-        return getCourseWith("SELECT * FROM course WHERE user_id = ?", userId);
+    public static List<Course> getAllCourse(int userId) {
+        sCourseList = getCourseWith("SELECT * FROM course WHERE user_id = ?", userId);
+        return sCourseList;
     }
 
     public static void insertCourseSetting() {
         DbUtils.update(null,
-                "INSERT INTO course_setting (user_id, course_number, course_time_span, all_course_start_times) " +
-                        "VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE course_number = ?,course_time_span = ?,all_course_start_times=?;",
+                "INSERT INTO course_setting (user_id, course_number, course_time_span, all_course_start_times,school_open_date) " +
+                        "VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE course_number = ?,course_time_span = ?,all_course_start_times=?,school_open_date=?;",
                 UserLab.getCurrentUser().getId(),
                 CourseSetting.COURSE_NUMBER,
                 CourseSetting.COURSE_TIME_SPAN,
                 CourseSetting.ALL_COURSE_START_TIME.toString(),
+                CourseSetting.SCHOOL_OPEN_DATE,
                 CourseSetting.COURSE_NUMBER,
                 CourseSetting.COURSE_TIME_SPAN,
-                CourseSetting.ALL_COURSE_START_TIME.toString()
+                CourseSetting.ALL_COURSE_START_TIME.toString(),
+                CourseSetting.SCHOOL_OPEN_DATE
         );
     }
 
@@ -75,7 +76,9 @@ public class CourseLab {
                 CourseSetting.COURSE_TIME_SPAN = resultSet.getInt("course_time_span");
                 String startTimes = resultSet.getString("all_course_start_times");
                 String[] startTimesArray = startTimes.substring(1, startTimes.length() - 1).split(",");
-                CourseSetting.ALL_COURSE_START_TIME = Arrays.asList(startTimesArray);
+                CourseSetting.ALL_COURSE_START_TIME.clear();
+                CourseSetting.ALL_COURSE_START_TIME.addAll(Arrays.asList(startTimesArray));
+                CourseSetting.SCHOOL_OPEN_DATE = resultSet.getString("school_open_date");
             }
         }, sql, UserLab.getCurrentUser().getId());
     }
@@ -86,7 +89,12 @@ public class CourseLab {
                 UserLab.getCurrentUser().getId());
     }
 
-    public static void insertCourse(NCourse course) {
+    public static void deleteCourseFromName(String courseName) {
+        DbUtils.update(null,
+                "DELETE FROM course WHERE name = ?;", courseName);
+    }
+
+    public static void insertCourse(Course course) {
         DbUtils.update(null,
                 "INSERT INTO course (`user_id`,`name`, `classroom`, `times`, `teacher`, `start_week`, `end_week`, `week_style`)"
                         + " VALUES (?,?,?,?,?,?,?,?);",

@@ -4,24 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="90dp"
     android:elevation="10dp"
-    android:paddingLeft="14dp"
+    android:paddingStart="14dp"
     android:paddingTop="15dp">
+
+    <ImageView
+        android:id="@+id/task_item_icon"
+        android:layout_width="70dp"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:src="@drawable/task_list_recycler_view_item_icon" />
 
     <TextView
         android:id="@+id/user_management_task_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/task_item_icon"
         android:text="任务名称"
         android:textColor="@android:color/black" />
 
     <ImageView
         android:id="@+id/task_item_image1"
         android:layout_width="15dp"
+
         android:layout_height="20dp"
         android:layout_below="@id/user_management_task_name"
         android:layout_alignBottom="@id/user_management_task_time"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/task_item_icon"
         android:src="@drawable/shijian" />
 
     <TextView
@@ -29,17 +39,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_management_task_name"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@id/task_item_image1"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/task_item_image1"
         android:text="时间" />
 
     <ImageView
         android:id="@+id/task_item_image2"
+
         android:layout_width="15dp"
         android:layout_height="20dp"
         android:layout_below="@id/user_management_task_time"
         android:layout_alignBottom="@id/user_management_task_location"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/task_item_icon"
         android:src="@drawable/gongzuodidian" />
 
     <TextView
@@ -47,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_management_task_time"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@id/task_item_image2"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/task_item_image2"
         android:text="地点" />
 </RelativeLayout>

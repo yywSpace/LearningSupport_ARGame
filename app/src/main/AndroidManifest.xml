@@ -48,7 +48,6 @@
         <activity android:name=".Course.CourseMainActivity" />
         <activity android:name=".Course.AddCourseActivity" />
         <activity android:name=".Course.CourseTimeActivity" />
-        <activity android:name=".Course.MonitorActivity" />
         <activity android:name=".Course.ListView.ListViewActivity" />
 
         <activity android:name=".Navi.Activity.YoudaoActivity" />
@@ -69,7 +68,6 @@
 
 
         <service android:name=".Navi.Utils.ForegroundService" />
-        <service android:name=".Course.MonitorService" />
         <service android:name=".Navi.Activity.LocationService" />
 
         <provider

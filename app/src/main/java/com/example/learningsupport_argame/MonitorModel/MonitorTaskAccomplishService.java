@@ -34,7 +34,7 @@ import java.util.TimerTask;
  * 用于向MonitorActivity传递各项信息
  * 手机使用时间为任务期间亮屏时间
  */
-
+// TODO: 20-3-21 更改扫描时间为1分钟
 public class MonitorTaskAccomplishService extends Service {
     private static final String TAG = MonitorTaskAccomplishService.class.getSimpleName();
     private PowerManager mPowerManager;

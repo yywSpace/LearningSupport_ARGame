@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.Task.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,20 +20,46 @@ import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.TaskLab;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class TaskAcceptedListFragment extends TaskListFragment {
+public class TaskAcceptedListFragment extends TaskListBasicFragment {
     private static AppCompatActivity mActivity;
-    private TextView mTaskTitle;
+    private String mCurrentUserId;
+    private String mCurrentType = "个人任务";
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        mSwipeRefreshLayout.setOnRefreshListener(()->{
+        mCurrentType = "个人任务";
+
+        mTypePersonBtn.setOnClickListener(v -> {
+            mCurrentType = "个人任务";
+            initListByType();
+            mTypePersonBtn.setBackgroundColor(Color.parseColor("#f0f0f0"));
+            mTypeGroupBtn.setBackgroundColor(Color.parseColor("#FFFAFAFA"));
+            mTypeFriendBtn.setBackgroundColor(Color.parseColor("#FFFAFAFA"));
+        });
+        mTypeGroupBtn.setOnClickListener(v -> {
+            mCurrentType = "社团任务";
+            initListByType();
+            mTypeGroupBtn.setBackgroundColor(Color.parseColor("#f0f0f0"));
+            mTypePersonBtn.setBackgroundColor(Color.parseColor("#FFFAFAFA"));
+            mTypeFriendBtn.setBackgroundColor(Color.parseColor("#FFFAFAFA"));
+        });
+        mTypeFriendBtn.setOnClickListener(v -> {
+            mCurrentType = "好友任务";
+            initListByType();
+            mTypeFriendBtn.setBackgroundColor(Color.parseColor("#f0f0f0"));
+            mTypeGroupBtn.setBackgroundColor(Color.parseColor("#FFFAFAFA"));
+            mTypePersonBtn.setBackgroundColor(Color.parseColor("#FFFAFAFA"));
+        });
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
             new Thread(() -> {
-                while (UserLab.getCurrentUser() == null) ;
                 mCurrentUserId = UserLab.getCurrentUser().getId() + "";
-                List<Task> tasks = TaskLab.getAcceptedTask(mCurrentUserId);
+                List<Task> tasks = TaskLab.getAcceptedTask(mCurrentUserId).stream()
+                        .filter(task -> task.getTaskType().equals(mCurrentType))
+                        .collect(Collectors.toList());
                 Log.d(TAG, "onResume: " + tasks.size());
                 mTaskList.clear();
                 mTaskList.addAll(tasks);
@@ -59,9 +86,16 @@ public class TaskAcceptedListFragment extends TaskListFragment {
             builder.setNegativeButton("取消", null);
             builder.show();
         });
-        mTaskTitle = view.findViewById(R.id.taskTitle);
-        mTaskTitle.setText("已接受的任务");
         return view;
+    }
+
+    private void initListByType() {
+        List<Task> tasks = TaskLab.mAcceptedTaskList.stream()
+                .filter(task -> task.getTaskType().equals(mCurrentType))
+                .collect(Collectors.toList());
+        mTaskList.clear();
+        mTaskList.addAll(tasks);
+        mTaskItemAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -71,7 +105,9 @@ public class TaskAcceptedListFragment extends TaskListFragment {
         new Thread(() -> {
             while (UserLab.getCurrentUser() == null) ;
             mCurrentUserId = UserLab.getCurrentUser().getId() + "";
-            List<Task> tasks = TaskLab.getAcceptedTask(mCurrentUserId);
+            List<Task> tasks = TaskLab.getAcceptedTask(mCurrentUserId).stream()
+                    .filter(task -> task.getTaskType().equals(mCurrentType))
+                    .collect(Collectors.toList());
             Log.d(TAG, "onResume: " + tasks.size());
             mTaskList.clear();
             mTaskList.addAll(tasks);

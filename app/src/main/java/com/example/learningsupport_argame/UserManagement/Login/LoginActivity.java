@@ -91,13 +91,13 @@ public class LoginActivity extends AppCompatActivity {
                         editor.commit();//提交修改
                         Toast.makeText(this, "LOGIN_SUCCESS" + UserLab.getCurrentUser().getName(), Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "onCreate: " + user.getName());
-                        startService(LocationService.mLocationServiceIntent);
-                        startService(MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
+//                        startService(LocationService.mLocationServiceIntent);
+//                        startService(MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
+
 //                        startActivity(new Intent(LoginActivity.this, MapActivity.class));
 //                        startActivity(new Intent(this, TaskListActivity.class));
 //                        startActivity(new Intent(this, FeedbackDetailsActivity.class));
                         startActivity(new Intent(this, CourseMainActivity.class));
-
                         finish();
                     }
                 });
@@ -134,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean changePromptMessage(boolean status, String promptMessage, TextView labelTextView, TextView statusTextView) {
-        if (status == true) {
+        if (status) {
             labelTextView.setTextColor(Color.parseColor("#d81c60"));
             statusTextView.setVisibility(View.VISIBLE);
             statusTextView.setTextColor(Color.parseColor("#d81c60"));

@@ -1,8 +1,6 @@
 package com.example.learningsupport_argame.Course.ListView;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.learningsupport_argame.Course.AddCourseActivity;
-import com.example.learningsupport_argame.Course.Course;
-import com.example.learningsupport_argame.Course.PromptAdapter;
+import com.example.learningsupport_argame.Course.CourseLab;
 import com.example.learningsupport_argame.R;
-
-import org.litepal.LitePal;
 
 import java.util.List;
 
@@ -58,8 +52,8 @@ public class MyAdapter extends BaseAdapter {
             //holder.imageView = (CircleImageView) contentView.findViewById(R.id.profile_image);
             holder.groupName = (TextView) contentView.findViewById(R.id.group_name);
             holder.content = (TextView) contentView.findViewById(R.id.qq_content);
-           // holder.toTop = (TextView) contentView.findViewById(R.id.to_top);
-           // holder.hadRead = (TextView) contentView.findViewById(R.id.had_read);
+            // holder.toTop = (TextView) contentView.findViewById(R.id.to_top);
+            // holder.hadRead = (TextView) contentView.findViewById(R.id.had_read);
             holder.delete = (TextView) contentView.findViewById(R.id.delete);
             contentView.setTag(holder);
         } else {
@@ -87,34 +81,27 @@ public class MyAdapter extends BaseAdapter {
 //                finalContentView.smoothCloseMenu();
 //            }
 //        });
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String coursename=data.get(position).getGroupName();
-                deleteFromDb(coursename);
-                data.remove(position);
-                finalContentView.smoothCloseMenu();
-                notifyDataSetChanged();
-                Toast.makeText(mContext, "已删除", Toast.LENGTH_SHORT).show();
-            }
+        holder.delete.setOnClickListener(v -> {
+            String courseName = data.get(position).getGroupName();
+            deleteFromDb(courseName);
+            data.remove(position);
+            finalContentView.smoothCloseMenu();
+            notifyDataSetChanged();
+            Toast.makeText(mContext, "已删除", Toast.LENGTH_SHORT).show();
         });
         return contentView;
     }
 
-    public void deleteFromDb(String coursename)
-    {
-        List<Course> list = LitePal.findAll(Course.class, true);
-        if (list.size() != 0) {
-            LitePal.deleteAll(Course.class,"course_name = ?",coursename);
-        }
+    public void deleteFromDb(String courseName) {
+        new Thread(() -> CourseLab.deleteCourseFromName(courseName)).start();
     }
 
     private static class ViewHolder {
-       // CircleImageView imageView;
+        // CircleImageView imageView;
         TextView groupName;
         TextView content;
-       // TextView toTop;
-       // TextView hadRead;
+        // TextView toTop;
+        // TextView hadRead;
         TextView delete;
     }
 }

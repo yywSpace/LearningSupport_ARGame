@@ -1,81 +1,107 @@
 package com.example.learningsupport_argame.Course;
 
-import org.litepal.crud.LitePalSupport;
+import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Course extends LitePalSupport {
-    private int id;
-    private String course_name;
-    private String classroom;
-    private List<Jie> jie=new ArrayList<>();
-    private String teacher;
-    private int start_zhoushu;
-    private int end_zhoushu;
-    private String weekstyle;
+public class Course implements Serializable {
+    private int mId;
+    private int mUserId;
+    private String mName;
+    private String mClassroom;
+    private List<CourseTime> mTimes = new ArrayList<>();
+    private String mTeacher;
+    private int mStartWeek;
+    private int mEndWeek;
+    private String mWeekStyle;
 
-    public List<Jie> getJie() {
-        return jie;
+    public Course() {
+
     }
 
-    public void setJie(List<Jie> jie) {
-        this.jie = jie;
-    }
-    public String getWeekstyle() {
-        return weekstyle;
-    }
-
-    public void setWeekstyle(String weekstyle) {
-        this.weekstyle = weekstyle;
+    public Course(int userId, String name, String classroom, List<CourseTime> courseTimes, String teacher, int startWeek, int endWeek, String weekStyle) {
+        mUserId = userId;
+        mName = name;
+        mClassroom = classroom;
+        mTimes = courseTimes;
+        mTeacher = teacher;
+        mStartWeek = startWeek;
+        mEndWeek = endWeek;
+        mWeekStyle = weekStyle;
     }
 
     public int getId() {
-        return id;
+        return mId;
     }
 
     public void setId(int id) {
-        this.id = id;
+        mId = id;
     }
 
-    public String getCourse_name() {
-        return course_name;
+    public int getUserId() {
+        return mUserId;
     }
 
-    public void setCourse_name(String course_name) {
-        this.course_name = course_name;
+    public void setUserId(int userId) {
+        mUserId = userId;
     }
 
-    public int getStart_zhoushu() {
-        return start_zhoushu;
+    public String getName() {
+        return mName;
     }
 
-    public void setStart_zhoushu(int start_zhoushu) {
-        this.start_zhoushu = start_zhoushu;
+    public void setName(String name) {
+        mName = name;
     }
 
-    public int getEnd_zhoushu() {
-        return end_zhoushu;
+    public List<CourseTime> getTimes() {
+        return mTimes;
     }
 
-    public void setEnd_zhoushu(int end_zhoushu) {
-        this.end_zhoushu = end_zhoushu;
-    }
-
-    public String getClassroom() {
-        return classroom;
-    }
-
-    public void setClassroom(String classroom) {
-        this.classroom = classroom;
+    public void setTimes(List<CourseTime> times) {
+        mTimes = times;
     }
 
     public String getTeacher() {
-        return teacher;
+        return mTeacher;
     }
 
     public void setTeacher(String teacher) {
-        this.teacher = teacher;
+        mTeacher = teacher;
     }
 
+    public String getClassroom() {
+        return mClassroom;
+    }
+
+    public void setClassroom(String classRoom) {
+        mClassroom = classRoom;
+    }
+
+
+    public int getStartWeek() {
+        return mStartWeek;
+    }
+
+    public void setStartWeek(int startWeek) {
+        mStartWeek = startWeek;
+    }
+
+    public int getEndWeek() {
+        return mEndWeek;
+    }
+
+    public void setEndWeek(int endWeek) {
+        mEndWeek = endWeek;
+    }
+
+    public String getWeekStyle() {
+        return mWeekStyle;
+    }
+
+    public void setWeekStyle(String weekStyle) {
+        mWeekStyle = weekStyle;
+    }
 }

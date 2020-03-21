@@ -1,12 +1,12 @@
 package com.example.learningsupport_argame.Course;
 
-import android.content.Context;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -22,10 +22,10 @@ import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
+import com.example.learningsupport_argame.Course.PopupWindow.PromptAdapter;
 import com.example.learningsupport_argame.R;
 
-import org.litepal.LitePal;
-
+import java.util.Calendar;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,8 +33,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CourseTimeActivity extends AppCompatActivity {
+    public final static String TAG = "CourseTimeActivity";
+    public final static int SCHOOL_OPEN_DATE_RESULT_CODE = 200;
     private ImageView mCourseTimeReturn;
     private TextView mCourseNumberTV;
+    private TextView mSchoolOpenDateTV;
     private TextView mCourseTimeSpanTV;
     private TextView mCourseSettingSubmit;
     private LinearLayout mCourseTimeListTV;
@@ -54,55 +57,103 @@ public class CourseTimeActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.course_time_layout);
+        initView();
+        initData();
+        initEvent();
+    }
+
+    void initView() {
+        mSchoolOpenDateTV = findViewById(R.id.course_school_open_date);
         mCourseNumberTV = findViewById(R.id.course_number);
         mCourseTimeReturn = findViewById(R.id.course_time_return);
         mCourseTimeSpanTV = findViewById(R.id.course_time_span);
         mCourseTimeListTV = findViewById(R.id.course_start_time_list);
         mCourseSettingSubmit = findViewById(R.id.course_time_commit);
-        initEvent();
+    }
+
+    void initData() {
+        if (CourseSetting.SCHOOL_OPEN_DATE != null)
+            mSchoolOpenDateTV.setText(CourseSetting.SCHOOL_OPEN_DATE);
+        if (CourseSetting.COURSE_NUMBER != 0)
+            mCourseNumberTV.setText(CourseSetting.COURSE_NUMBER + "");
+        if (CourseSetting.COURSE_TIME_SPAN != 0)
+            mCourseTimeSpanTV.setText(CourseSetting.COURSE_TIME_SPAN + "");
+        mCourseNum = CourseSetting.COURSE_NUMBER;
+        mCourseStartTimes = new TextView[mCourseNum];
+        for (int i = 0; i < CourseSetting.ALL_COURSE_START_TIME.size(); i++) {
+            // 在这里执行你要想的操作 比如直接在这里更新ui或者调用回调在 在回调中更新ui
+            mCourseStartTimes[i] = new TextView(CourseTimeActivity.this);
+            mCourseStartTimes[i].setText(CourseSetting.ALL_COURSE_START_TIME.get(i));
+            mCourseStartTimes[i].setTextColor(getResources().getColor(R.color.colorBlack));
+            mCourseStartTimes[i].setTextSize(18);
+            mCourseStartTimes[i].setOnClickListener(this::showTimePicker);
+            View layout = LayoutInflater.from(CourseTimeActivity.this).inflate(R.layout.course_every_time_layout, null);
+            LinearLayout everyTimeLayout = layout.findViewById(R.id.course_every_time_linear_layout);
+            TextView textView = layout.findViewById(R.id.course_time_label);
+            textView.setText("第" + (i + 1) + "节:  ");
+            everyTimeLayout.addView(mCourseStartTimes[i]);
+            mCourseTimeListTV.addView(layout);
+        }
     }
 
     void initEvent() {
-        mCourseSettingSubmit.setOnClickListener(new View.OnClickListener() {
+        mSchoolOpenDateTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < mCourseNum; i++) {
-                    if (mCourseStartTimes[i].getText().toString().equals("")) {
-                        Toast.makeText(CourseTimeActivity.this, "请填写完整信息", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                }
-                if (mCourseNumberTV.getText().toString().equals("") || mCourseTimeSpanTV.getText().toString().equals(""))
+                // 获取当前时间
+                Calendar cTime = Calendar.getInstance();
+                //主题在这里！后边三个参数为显示dialog时默认的日期，月份从0开始，0-11对应1-12个月
+                DatePickerDialog dialog = new DatePickerDialog(CourseTimeActivity.this,
+                        DatePickerDialog.BUTTON_POSITIVE,
+                        (arg0, year, month, day) -> {
+                            CourseSetting.SCHOOL_OPEN_DATE = year + "/" + (month + 1) + "/" + day;
+                            setResult(SCHOOL_OPEN_DATE_RESULT_CODE);
+                        }, cTime.get(Calendar.YEAR), cTime.get(Calendar.MONTH), cTime.get(Calendar.DAY_OF_MONTH));
+
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.setTitle("");
+                dialog.show();
+            }
+        });
+        mCourseSettingSubmit.setOnClickListener(v -> {
+            for (int i = 0; i < mCourseNum; i++) {
+                if (mCourseStartTimes[i].getText().toString().equals("")) {
                     Toast.makeText(CourseTimeActivity.this, "请填写完整信息", Toast.LENGTH_SHORT).show();
-                else {
-                    CourseSetting.ALL_COURSE_START_TIME.clear();
-                    CourseSetting.COURSE_NUMBER = mCourseNum;
-                    CourseSetting.COURSE_TIME_SPAN = Integer.parseInt(mCourseTimeSpanTV.getText().toString());
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-                    List<Date> dateList = new ArrayList<>();
-                    for (int i = 0; i < mCourseNum; i++) {
-                        String time = mCourseStartTimes[i].getText().toString();
-                        try {
-                            dateList.add(dateFormat.parse(time));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        CourseSetting.ALL_COURSE_START_TIME.add(i, time);
-                    }
-                    for (int i = 1; i < mCourseNum; i++) {
-                        int m = (int) ((dateList.get(i).getTime() - dateList.get(i - 1).getTime()) / 1000 / 60);
-                        if (m < CourseSetting.COURSE_TIME_SPAN) {
-                            Toast.makeText(CourseTimeActivity.this,
-                                    String.format("第%d,%d节课上课时间间隔小于所设置间隔", i, i + 1),
-                                    Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }
-                    new Thread(CourseLab::insertCourseSetting).start();
-                    Toast.makeText(CourseTimeActivity.this, "时间设置成功", Toast.LENGTH_SHORT).show();
-                    finish();
+                    Log.d(TAG, "请填写完整信息: ");
+                    return;
                 }
             }
+            if (mCourseNumberTV.getText().toString().equals("") || mCourseTimeSpanTV.getText().toString().equals("")) {
+                Toast.makeText(CourseTimeActivity.this, "请填写完整信息", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            CourseSetting.ALL_COURSE_START_TIME.clear();
+            CourseSetting.COURSE_NUMBER = mCourseNum;
+            CourseSetting.COURSE_TIME_SPAN = Integer.parseInt(mCourseTimeSpanTV.getText().toString());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+            List<Date> dateList = new ArrayList<>();
+            for (int i = 0; i < mCourseNum; i++) {
+                String time = mCourseStartTimes[i].getText().toString();
+                try {
+                    dateList.add(dateFormat.parse(time));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                CourseSetting.ALL_COURSE_START_TIME.add(i, time);
+            }
+            for (int i = 1; i < mCourseNum; i++) {
+                int m = (int) ((dateList.get(i).getTime() - dateList.get(i - 1).getTime()) / 1000 / 60);
+                if (m < CourseSetting.COURSE_TIME_SPAN) {
+                    Toast.makeText(CourseTimeActivity.this,
+                            String.format("第%d,%d节课上课时间间隔小于所设置间隔", i, i + 1),
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+            new Thread(CourseLab::insertCourseSetting).start();
+            Toast.makeText(CourseTimeActivity.this, "时间设置成功", Toast.LENGTH_SHORT).show();
+            setResult(RESULT_OK);
+            finish();
         });
         mCourseNumberTV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,7 +224,8 @@ public class CourseTimeActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
                 mCourseNumberTV.setText(String.valueOf(courseNum));
-                CourseLab.deleteAllCourse();
+                CourseLab.sCourseList.clear();
+                runOnUiThread(() -> new Thread(CourseLab::deleteAllCourse).start());
                 showEveryCourse();
             }
         });
@@ -181,7 +233,6 @@ public class CourseTimeActivity extends AppCompatActivity {
         PromptAdapter dialog = builder.create();
         dialog.show();
     }
-
 
     public void showEveryCourse() {
         new Handler(CourseTimeActivity.this.getMainLooper()).post(new Runnable() {
@@ -193,8 +244,6 @@ public class CourseTimeActivity extends AppCompatActivity {
                 for (int i = 0; i < mCourseNum; i++) {
                     mCourseStartTimes[i] = new TextView(CourseTimeActivity.this);
                     mCourseStartTimes[i].setHint("未填写");
-                    mCourseStartTimes[i].setId(i);
-                    mCourseStartTimes[i].setClickable(true);
                     mCourseStartTimes[i].setTextColor(getResources().getColor(R.color.colorBlack));
                     mCourseStartTimes[i].setTextSize(18);
                     mCourseStartTimes[i].setOnClickListener(new View.OnClickListener() {
@@ -227,9 +276,7 @@ public class CourseTimeActivity extends AppCompatActivity {
                 // 返回的是选中位置
                 // 展示选中数据
                 mCourseNum = Integer.parseInt(courseNumberList.get(options1));
-
-                SharedPreferences sharedPreferences = getSharedPreferences(CourseMainActivity.COURSE_INFO_PREF, Context.MODE_PRIVATE);
-                int courseNumber = sharedPreferences.getInt("course_number", -1);
+                int courseNumber = CourseSetting.COURSE_NUMBER;
                 if (courseNumber != -1) {
                     if (mCourseNum != courseNumber) {
                         // 更改课程数时提示将清除信息

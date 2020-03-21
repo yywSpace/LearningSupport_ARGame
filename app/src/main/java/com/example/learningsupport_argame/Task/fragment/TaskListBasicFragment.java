@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextClock;
@@ -22,23 +23,31 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.baidu.mapapi.model.LatLng;
 import com.example.learningsupport_argame.Navi.Activity.ShowLocationPopWindow;
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.TaskLab;
 import com.example.learningsupport_argame.Task.adapter.ParticipantItemAdapter;
 import com.example.learningsupport_argame.Task.adapter.TaskItemAdapter;
+import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskListFragment extends Fragment {
-    protected static String TAG = "TaskListFragment";
-    protected SwipeRefreshLayout mSwipeRefreshLayout;
+/**
+ * AR任务只能在地图上显示，并不在这里显示
+ */
+public class TaskListBasicFragment extends Fragment {
+    protected static final String TAG = "TaskListBasicFragment";
     protected String mCurrentUserId;
-    protected RecyclerView mTaskRecycleView;
+    protected Button mTypePersonBtn;
+    protected Button mTypeFriendBtn;
+    protected Button mTypeGroupBtn;
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    private String mTaskFragmentType;
+    private RecyclerView mTaskRecycleView;
     protected TaskItemAdapter mTaskItemAdapter;
-    protected ImageButton mTaskStatusFaq;
-    protected ImageView mMapLocationBtn;
+    private ImageButton mTaskStatusFaq;
+    private ImageView mMapLocationBtn;
     protected List<Task> mTaskList;
 
     private TextView mTaskStatusTextView;
@@ -52,18 +61,21 @@ public class TaskListFragment extends Fragment {
     private List<User> mUserList;
     private LatLng mAccomplishTaskLatLng;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.tasklist_redo_layout, container, false);
+        mCurrentUserId = UserLab.getCurrentUser().getId() + "";
+        View view = inflater.inflate(R.layout.task_list_basic_layout, container, false);
+        mTypePersonBtn = view.findViewById(R.id.tab_type_person);
+        mTypeFriendBtn = view.findViewById(R.id.tab_type_friend);
+        mTypeGroupBtn = view.findViewById(R.id.tab_type_group);
+
         mTaskRecycleView = view.findViewById(R.id.list_task_redo);
         mSwipeRefreshLayout = view.findViewById(R.id.task_refresh_layout);
-
         mTaskList = new ArrayList<>();
-
         mTaskItemAdapter = new TaskItemAdapter(mTaskList, getActivity());
+
         mTaskItemAdapter.setOnRecycleViewItemClick((v, position) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             View taskDetailView = getLayoutInflater().inflate(R.layout.task_current_fragment_layout, null);//获取自定义布局
@@ -81,11 +93,16 @@ public class TaskListFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
-    public static TaskListFragment getInstance(String userId) {
-        TaskListFragment fragment = new TaskListFragment();
+    public static TaskListBasicFragment getInstance(String userId, String taskType) {
+        TaskListBasicFragment fragment = new TaskListBasicFragment();
         Bundle args = new Bundle();
         args.putString(User.CURRENT_USER_ID, userId);
+        args.putString("task_type", taskType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -121,7 +138,7 @@ public class TaskListFragment extends Fragment {
         mMapLocationBtn.setOnClickListener((v) -> {
             if (mAccomplishTaskLatLng != null)
                 new ShowLocationPopWindow(getActivity(), (float) mAccomplishTaskLatLng.latitude, (float) mAccomplishTaskLatLng.longitude);
-         });
+        });
     }
 
 
@@ -148,4 +165,24 @@ public class TaskListFragment extends Fragment {
 
     }
 
+    public SwipeRefreshLayout getSwipeRefreshLayout() {
+        return mSwipeRefreshLayout;
+    }
+
+    public TaskItemAdapter getTaskItemAdapter() {
+        return mTaskItemAdapter;
+    }
+
+
+    public List<Task> getTaskList() {
+        return mTaskList;
+    }
+
+    public String getTaskFragmentType() {
+        return mTaskFragmentType;
+    }
+
+    public void setTaskFragmentType(String taskFragmentType) {
+        mTaskFragmentType = taskFragmentType;
+    }
 }

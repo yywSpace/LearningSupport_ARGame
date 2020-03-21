@@ -1,14 +1,11 @@
 package com.example.learningsupport_argame.Course;
 
-import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,14 +29,14 @@ import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 
-import com.example.learningsupport_argame.Course.FloatingDragActionBtn.DragFloatActionButton;
-
 import com.example.learningsupport_argame.Course.ListView.ListViewActivity;
+import com.example.learningsupport_argame.Course.PopupWindow.PopupMenuActionItem;
+import com.example.learningsupport_argame.Course.PopupWindow.PopupMenuAdapter;
+import com.example.learningsupport_argame.Course.PopupWindow.PromptAdapter;
+import com.example.learningsupport_argame.MonitorModel.MonitorActivity;
 import com.example.learningsupport_argame.NavigationController;
 import com.example.learningsupport_argame.R;
-
-import org.litepal.LitePal;
-import org.litepal.tablemanager.Connector;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -47,133 +45,40 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 public class CourseMainActivity extends AppCompatActivity {
-    public final static String COURSE_INFO_PREF = "course_info_shared_preferences";
+    public static final String CURRENT_EDIT_COURSE = "curent_edit_course";
     private final static String TAG = "CourseMainActivity";
-    final static int requestCode1 = 1;
-    int mCoursesNumber;
-    String[] weeks = new String[]{"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
-    int[] background = new int[]{R.drawable.course_course1, R.drawable.course_course2,
+    public static final int COURSE_TIME_REQUEST_CODE = 100;
+    public static final int COURSE_ADD_REQUEST_CODE = 101;
+    private String[] weeks = new String[]{"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
+    private int[] background = new int[]{R.drawable.course_course1, R.drawable.course_course2,
             R.drawable.course_course3, R.drawable.course_course4,
             R.drawable.course_course5};
-    TextView[][] mCourseTVTable;
-    LinearLayout mWeekListLayout;
-    GridLayout mCourseListLayout;
-
+    private TextView[][] mCourseTVTable;
+    private LinearLayout mWeekListLayout;
+    private GridLayout mCourseListLayout;
     // 定义标题栏上的按钮
     private ImageButton mMenuMoreButton;
     private ImageButton mCourseAddButton;
     private TextView mCurrentWeekTV;
-
-    private int week_current;
-    String string_date;
-
     private Button mEditWeekCommit;
     private Button mEditWeekCancel;
+    private int week_current;
 
+    private Handler mHandler;
+    private boolean isDataLoaded = false;
     int mCourseTableItemHeight = 200;
 
     List<TextView> mCourseItemList = new ArrayList<>();
-    List<Course> courseList = new ArrayList<>();
 
     // 定义标题栏弹窗按钮
     private PopupMenuAdapter mMorePopupMenu;
-
     public static int cHeight;
-
-    TextView.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-            TextView textView = (TextView) v;
-            if (textView.getText() != "") {
-                String start_tag = textView.getTag().toString().split(",")[0];
-                String end_tag = textView.getTag().toString().split(",")[1];
-                String zhou_tag = textView.getTag().toString().split(",")[2];
-                //            Toast.makeText(CourseMainActivity.this,zhou_tag,Toast.LENGTH_SHORT).show();
-
-                int startJie = Integer.valueOf(start_tag);
-                int endJie = Integer.valueOf(end_tag);
-                int belongColumnJie = Integer.valueOf(zhou_tag);
-
-                int belongWeek = -1;
-                if ((week_current - 1) % 7 != 0)
-                    belongWeek = (week_current - 1) % 7;
-                else
-                    belongWeek = 7;
-
-                DateFormat dateFormat = new SimpleDateFormat("HH:mm");
-                String currentTimeStr = dateFormat.format(new Date());
-
-                Toast.makeText(CourseMainActivity.this, "长按事件", Toast.LENGTH_SHORT).show();
-                Toast.makeText(CourseMainActivity.this, currentTimeStr, Toast.LENGTH_SHORT).show();
-                Date currentTime = null;
-                try {
-                    currentTime = dateFormat.parse(currentTimeStr);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    Toast.makeText(CourseMainActivity.this, "当前时间转化失败", Toast.LENGTH_SHORT).show();
-                }
-
-                SharedPreferences sharedPreferences = getSharedPreferences("course_time", MODE_PRIVATE);
-                int courseTimeSpan = sharedPreferences.getInt("time_span", -1);
-
-                for (int i = startJie; i <= endJie; i++) {
-                    String courseBeginTimeStr = sharedPreferences.getString("第" + i + "节", "没有上课时间的记录，请先添加上课时间");
-                    Date courseBeginTime = null;
-                    try {
-                        courseBeginTime = dateFormat.parse(courseBeginTimeStr);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        Toast.makeText(CourseMainActivity.this, "上课时间转化失败", Toast.LENGTH_SHORT).show();
-                    }
-                    long end = courseBeginTime.getTime() + courseTimeSpan * 60 * 1000;
-                    Date courseEndTime = new Date(end);
-                    String courseEndTimeStr = dateFormat.format(courseEndTime);
-
-                    // Toast.makeText(CourseMainActivity.this, belongColumnJie+" "+belongWeek, Toast.LENGTH_SHORT).show();
-
-                    if (((currentTime.after(courseBeginTime) || currentTime.equals(courseBeginTime))) && currentTime.before(courseEndTime) && belongColumnJie == belongWeek) {
-                        //long monitorTimeSpan=courseEndTime.getTime()-currentTime.getTime();
-
-                        //Toast.makeText(CourseMainActivity.this,courseEndTimeStr, Toast.LENGTH_SHORT).show();
-                        enter_jiandu_dialog(courseEndTimeStr, currentTimeStr);
-                        break;
-                    }
-                }
-                return true;
-            } else
-                return false;
-        }
-    };
-    OnClickListener mOnClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            TextView course = (TextView) v;
-            Toast.makeText(CourseMainActivity.this, course.getText().toString(), Toast.LENGTH_SHORT).show();
-            int color = course.getSolidColor();
-            //        if (textView.getText() == "" && color != R.drawable.course_course1 && color != R.drawable.course_course2 && color != R.drawable.course_course3 && color != R.drawable.course_course4 && color != R.drawable.course_course5 && color != R.drawable.course_shapetv) {
-            //            // textView.setBackgroundResource(R.drawable.ic_tianjia);
-            //            textView.setBackgroundResource(R.drawable.course_shapetv);
-            //
-            //            return;
-            //        }
-            //        if (textView.getText() == "" && textView.getSolidColor() == R.drawable.course_shapetv) {
-            //            textView.setBackgroundResource(R.drawable.course_ic_add_edit);
-            //
-            //            //编辑课程界面
-            //            Toast.makeText(CourseMainActivity.this, "进入编辑课程界面", Toast.LENGTH_SHORT).show();
-            //        }
-
-            if (course.getText() != "") {
-                Toast.makeText(CourseMainActivity.this, "dialogdialoag", Toast.LENGTH_SHORT).show();
-                courseInfoDialog(course);
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,26 +87,54 @@ public class CourseMainActivity extends AppCompatActivity {
         // 添加侧边栏
         new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.COURSE);
 
-        SQLiteStudioService.instance().start(this);
-
-        LitePal.initialize(CourseMainActivity.this);
-
-        string_date = getDate()[0];
         week_current = Integer.parseInt(getDate()[1]);
-
         initView();
-        initData();
-        initCourseTable();
-        setCurrentWeek();
-        clearTable();
-        query_db();
+        initEvent();
+        initCourseTable(12);
+        initPopupMenu();
+        runOnUiThread(() -> new Thread(() -> {
+            while (UserLab.getCurrentUser() == null) ;
+            // 获取设置信息后初始化主页面
+            CourseLab.getCourseSetting();
+            CourseLab.sCourseList = CourseLab.getAllCourse(UserLab.getCurrentUser().getId());
+            mHandler.post(() -> {
+                initCourseTable(CourseSetting.COURSE_NUMBER);
+                setCurrentWeek();
+                clearTable();
+                query_db(CourseLab.sCourseList);
+                isDataLoaded = true;
+            });
+        }).start());
+        mHandler = new Handler();
 
-        GetMonitorInfo m = new GetMonitorInfo();
-        m.get();
-        String ss1 = "日使用时间" + m.getDayInfo()[0] + " 日专注时间" + m.getDayInfo()[1] + " 日使用次数" + m.getDayInfo()[2];
-        String ss2 = "周使用时间" + m.getWeekInfo()[0] + " 周专注时间" + m.getWeekInfo()[1] + " 周使用次数" + m.getWeekInfo()[2];
-//        String ss3="月使用时间"+m.getMonthInfo()[0]+" 月专注时间"+m.getMonthInfo()[1]+" 月使用次数"+m.getMonthInfo()[2];
-        Toast.makeText(CourseMainActivity.this, ss1 + ss2, Toast.LENGTH_SHORT).show();
+//        GetMonitorInfo m = new GetMonitorInfo();
+//        m.get();
+//        String ss1 = "日使用时间" + m.getDayInfo()[0] + " 日专注时间" + m.getDayInfo()[1] + " 日使用次数" + m.getDayInfo()[2];
+//        String ss2 = "周使用时间" + m.getWeekInfo()[0] + " 周专注时间" + m.getWeekInfo()[1] + " 周使用次数" + m.getWeekInfo()[2];
+////        String ss3="月使用时间"+m.getMonthInfo()[0]+" 月专注时间"+m.getMonthInfo()[1]+" 月使用次数"+m.getMonthInfo()[2];
+//        Toast.makeText(CourseMainActivity.this, ss1 + ss2, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // 其他
+        if (resultCode != RESULT_OK) {
+            if (requestCode == COURSE_TIME_REQUEST_CODE) {
+                initCourseTable(CourseSetting.COURSE_NUMBER);
+            } else if (requestCode == COURSE_ADD_REQUEST_CODE) {
+                clearTable();
+                query_db(CourseLab.sCourseList);
+            }
+        }
+        // 如果修改了开学日期
+        if (resultCode != CourseTimeActivity.SCHOOL_OPEN_DATE_RESULT_CODE) {
+            if (requestCode == COURSE_TIME_REQUEST_CODE) {
+                setCurrentWeek();
+                clearTable();
+                query_db(CourseLab.sCourseList);
+            }
+        }
     }
 
     private void initView() {
@@ -211,44 +144,34 @@ public class CourseMainActivity extends AppCompatActivity {
 
         //实例化标题栏弹窗
         mMorePopupMenu = new PopupMenuAdapter(this, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
         //实例化标题栏按钮并设置监听
         mMenuMoreButton = findViewById(R.id.course_menu_more_button);
-        mMenuMoreButton.setOnClickListener(v -> mMorePopupMenu.show(v));
         mCourseAddButton = findViewById(R.id.course_menu_add_button);
+    }
+
+    void initEvent() {
+        mMenuMoreButton.setOnClickListener(v -> mMorePopupMenu.show(v));
+
         mCourseAddButton.setOnClickListener((v) -> {
-            SharedPreferences sharedPreferences = getSharedPreferences(COURSE_INFO_PREF, Context.MODE_PRIVATE);
-            SharedPreferences sharedPreferences1 = getSharedPreferences(COURSE_INFO_PREF, Context.MODE_PRIVATE);
-            if (sharedPreferences.getString("school_opens_date", "没有开学日期记录").equals("没有开学日期记录"))
+            if (!isDataLoaded) {
+                Toast.makeText(CourseMainActivity.this, "正在加载数据请稍后重试", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (CourseSetting.SCHOOL_OPEN_DATE == null)
                 Toast.makeText(CourseMainActivity.this, "请先设置开学日期", Toast.LENGTH_SHORT).show();
-            else if (sharedPreferences1.getInt("jie_num", -1) == -1)
+            else if (CourseSetting.COURSE_NUMBER == -1)
                 Toast.makeText(CourseMainActivity.this, "请先设置课程时间", Toast.LENGTH_SHORT).show();
             else {
                 Intent intent = new Intent(CourseMainActivity.this, AddCourseActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, COURSE_ADD_REQUEST_CODE);
             }
         });
         mCurrentWeekTV.setOnClickListener(v -> {
-            editCurrentWeek();
-        });
-
-        DragFloatActionButton dragFloatActionButton = findViewById(R.id.course_add_button);
-        dragFloatActionButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "DragFloatActionButton:onClick");
-                SharedPreferences sharedPreferences = getSharedPreferences(COURSE_INFO_PREF, Context.MODE_PRIVATE);
-                SharedPreferences sharedPreferences1 = getSharedPreferences("course_time", Context.MODE_PRIVATE);
-                if (sharedPreferences.getString("school_opens_date", "没有开学日期记录").equals("没有开学日期记录"))
-                    Toast.makeText(CourseMainActivity.this, "请先设置开学日期", Toast.LENGTH_SHORT).show();
-                else if (sharedPreferences1.getInt("jie_num", -1) == -1)
-                    Toast.makeText(CourseMainActivity.this, "请先设置课程时间", Toast.LENGTH_SHORT).show();
-                else {
-                    Intent intent = new Intent(CourseMainActivity.this, AddCourseActivity.class);
-                    startActivity(intent);
-                    CourseMainActivity.this.finish();
-                }
+            if (!isDataLoaded) {
+                Toast.makeText(CourseMainActivity.this, "正在加载数据请稍后重试", Toast.LENGTH_SHORT).show();
+                return;
             }
+            editCurrentWeek();
         });
     }
 
@@ -263,73 +186,32 @@ public class CourseMainActivity extends AppCompatActivity {
     /**
      * 初始化数据
      */
-    private void initData() {
+    private void initPopupMenu() {
         //给标题栏弹窗添加子类
-        final PopupMenuActionItem schoolOpensDate = new PopupMenuActionItem(this, "设置开学日期", R.drawable.course_ic_calendar);
         final PopupMenuActionItem courseTime = new PopupMenuActionItem(this, "设置课程时间", R.drawable.course_ic_time);
         final PopupMenuActionItem courseListTable = new PopupMenuActionItem(this, "查看课程列表", R.drawable.course_ic_edit_week);
 
-        mMorePopupMenu.addAction(schoolOpensDate);
         mMorePopupMenu.addAction(courseTime);
         mMorePopupMenu.addAction(courseListTable);
 
         mMorePopupMenu.setItemOnClickListener(new PopupMenuAdapter.OnItemOnClickListener() {
             @Override
             public void onItemClick(PopupMenuActionItem item, int position) {
-                if (item.mTitle == "设置开学日期") {
-                    // 获取当前时间
-                    Calendar cTime = Calendar.getInstance();
-                    //主题在这里！后边三个参数为显示dialog时默认的日期，月份从0开始，0-11对应1-12个月
-                    DatePickerDialog dialog = new DatePickerDialog(CourseMainActivity.this,
-                            DatePickerDialog.BUTTON_POSITIVE,
-                            (arg0, year, month, day) -> {
-                                String schoolOpenData = year + "/" + (month + 1) + "/" + day;
-                                SharedPreferences sharedPreferences = getSharedPreferences(COURSE_INFO_PREF, Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("school_opens_date", schoolOpenData);
-                                editor.commit();
-                                setCurrentWeek();
-                                clearTable();
-                                query_db();
-                            }, cTime.get(Calendar.YEAR), cTime.get(Calendar.MONTH), cTime.get(Calendar.DAY_OF_MONTH));
-
-                    //设置日期的范围
-//                    DatePicker datePicker = dialog.getDatePicker();
-//                    datePicker.setMaxDate(new Date().getTime());//设置日期的上限日期
-//                    datePicker.setMinDate(new Date().getTime());//设置日期的下限日期，其中是参数类型是long型，为日期的时间戳
-
-                    dialog.setCanceledOnTouchOutside(true);
-
-                    dialog.setTitle("");
-
-//                    dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//
-//                        }
-//                    });
-//
-//                    dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//
-//                        }
-//                    });
-
-                    dialog.show();
-                } else if (item.mTitle == "查看课程列表") {
-                    List<Course> list = LitePal.findAll(Course.class, true);
-                    if (list.size() == 0) {
+                if (!isDataLoaded) {
+                    Toast.makeText(CourseMainActivity.this, "正在加载数据请稍后重试", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (item.mTitle == "查看课程列表") {
+                    if (CourseLab.sCourseList.size() == 0) {
                         Toast.makeText(CourseMainActivity.this, "还未添加课程", Toast.LENGTH_SHORT).show();
                     } else {
                         Intent intent = new Intent(CourseMainActivity.this, ListViewActivity.class);
                         intent.putExtra("flag", "CourseMainActivity");
                         startActivity(intent);
-                        CourseMainActivity.this.finish();
                     }
                 } else {
                     Intent intent = new Intent(CourseMainActivity.this, CourseTimeActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, COURSE_TIME_REQUEST_CODE);
                 }
             }
         });
@@ -349,7 +231,7 @@ public class CourseMainActivity extends AppCompatActivity {
                 // 展示选中数据
                 mCurrentWeekTV.setText("第" + weekNumberList.get(options1) + "周");
                 clearTable();
-                query_db();
+                query_db(CourseLab.sCourseList);
             }
         }).setLayoutRes(R.layout.course_pickerview_stair_layout, new CustomListener() {
             @Override
@@ -391,149 +273,140 @@ public class CourseMainActivity extends AppCompatActivity {
     }
 
     //从数据库提取数据
-    public void query_db() {
-        SQLiteDatabase db = Connector.getDatabase();
-        if (db != null) {
-            List<Course> list = LitePal.findAll(Course.class, true);
+    public void query_db(List<Course> courseList) {
+        for (Course course : courseList) {
+            int course_id = course.getId();
+            String courseName = course.getName();
+            String classroom = course.getClassroom();
+            int startWeek = course.getStartWeek();
+            int endWeek = course.getEndWeek();
+            String weekStyle = course.getWeekStyle();
+            String teacher = course.getTeacher();
 
-            for (Course course : list) {
-                int course_id = course.getId();
-                String course_name = course.getCourse_name();
-                String classroom = course.getClassroom();
-                int start_zhou = course.getStart_zhoushu();
-                int end_zhou = course.getEnd_zhoushu();
-                String dan_shuang_week = course.getWeekstyle();
-                String teacher = course.getTeacher();
+            List<CourseTime> courseTimeList = course.getTimes();
+            for (CourseTime courseTime : courseTimeList) {
+                String weekStr = courseTime.getWeek().trim();
+                int startTime = courseTime.getStartTime();
+                int endTime = courseTime.getEndTime();
+                int weekNum = -1;
+                Log.d(TAG, "query_db: " + weekStr);
+                switch (weekStr) {
+                    case "周一":
+                        weekNum = 1;
+                        break;
+                    case "周二":
+                        weekNum = 2;
+                        break;
+                    case "周三":
+                        weekNum = 3;
+                        break;
+                    case "周四":
+                        weekNum = 4;
+                        break;
+                    case "周五":
+                        weekNum = 5;
+                        break;
+                    case "周六":
+                        weekNum = 6;
+                        break;
+                    case "周日":
+                        weekNum = 7;
+                        break;
+                    default:
+                        Toast.makeText(CourseMainActivity.this, "周获取失败", Toast.LENGTH_SHORT).show();
+                        break;
+                }
 
-                List<Jie> list_jie = new ArrayList<>();
-                list_jie = course.getJie();
-                for (Jie jie : list_jie) {
-                    String zhou = jie.getZhou();
-                    int start_jie = jie.getStart_jieshu();
-                    int end_jie = jie.getEnd_jieshu();
+                DisplayMetrics dm = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(dm);
+                //屏幕宽度
+                int width = dm.widthPixels;
+                //平均宽度
+                int aveWidth = (width - 100) / 7;
 
-                    int zhou_num = -1;
-                    switch (zhou) {
-                        case "周一":
-                            zhou_num = 1;
-                            break;
-                        case "周二":
-                            zhou_num = 2;
-                            break;
-                        case "周三":
-                            zhou_num = 3;
-                            break;
-                        case "周四":
-                            zhou_num = 4;
-                            break;
-                        case "周五":
-                            zhou_num = 5;
-                            break;
-                        case "周六":
-                            zhou_num = 6;
-                            break;
-                        case "周日":
-                            zhou_num = 7;
-                            break;
-                        default:
-                            Toast.makeText(CourseMainActivity.this, "周获取失败", Toast.LENGTH_SHORT).show();
-                            break;
+                int timeSpan = endTime - startTime + 1;
+                TextView textView = new TextView(CourseMainActivity.this);
+                textView.setWidth(aveWidth);
+                textView.setHeight(mCourseTableItemHeight * timeSpan);
+                textView.setTextSize(15);
+                textView.isClickable();
+                textView.isLongClickable();
+                textView.setIncludeFontPadding(true);
+                textView.setPadding(1, 1, 1, 1);
+                textView.setGravity(Gravity.CENTER);
+                textView.setOnClickListener(mOnClickListener);
+                textView.setOnLongClickListener(mOnLongClickListener);
+                //Toast.makeText(CourseMainActivity.this, String.valueOf(textview_list.size()), Toast.LENGTH_SHORT).show();
+
+                for (TextView tv : mCourseItemList) {
+                    if (tv.getTag() == startTime + "," + endTime + "," + weekNum) {
+                        //Toast.makeText(CourseMainActivity.this,tv.getText().toString(),Toast.LENGTH_LONG).show();
+                        mCourseListLayout.removeView(tv);
+                        mCourseItemList.remove(tv);
                     }
+                }
+                textView.setTag(startTime + "," + endTime + "," + weekNum);
+                Log.d(TAG, "course time: " + startTime + "," + endTime + "," + weekNum);
+                //GridLayout.spec(start, span) start:开始的行或列 span:合并的单元格个数
+                GridLayout.Spec rowSpec = GridLayout.spec(startTime - 1, timeSpan);
+                GridLayout.Spec columnSpec = GridLayout.spec(weekNum);
+                GridLayout.LayoutParams params = new GridLayout.LayoutParams(rowSpec, columnSpec);
+                params.setGravity(Gravity.TOP);
 
-                    DisplayMetrics dm = new DisplayMetrics();
-                    getWindowManager().getDefaultDisplay().getMetrics(dm);
-                    //屏幕宽度
-                    int width = dm.widthPixels;
-                    //平均宽度
-                    int aveWidth = (width - 100) / 7;
-
-                    int jie_span = end_jie - start_jie + 1;
-                    TextView textView = new TextView(CourseMainActivity.this);
-                    textView.setWidth(aveWidth);
-                    textView.setHeight(mCourseTableItemHeight * jie_span);
-                    textView.setTextSize(15);
-                    textView.isClickable();
-                    textView.isLongClickable();
-                    textView.setIncludeFontPadding(true);
-                    textView.setPadding(1, 1, 1, 1);
-                    textView.setGravity(Gravity.CENTER);
-                    textView.setOnClickListener(mOnClickListener);
-                    textView.setOnLongClickListener(mOnLongClickListener);
-                    //Toast.makeText(CourseMainActivity.this, String.valueOf(textview_list.size()), Toast.LENGTH_SHORT).show();
-
-                    for (TextView tv : mCourseItemList) {
-                        if (tv.getTag() == start_jie + "," + end_jie + "," + zhou_num) {
-                            //Toast.makeText(CourseMainActivity.this,tv.getText().toString(),Toast.LENGTH_LONG).show();
-                            Log.d("KKKKKKKKKKK", "kkkkkkkkkk");
-                            mCourseListLayout.removeView(tv);
-                            mCourseItemList.remove(tv);
-
-                        }
-                    }
-                    textView.setTag(start_jie + "," + end_jie + "," + zhou_num);
-
-                    //GridLayout.spec(start, span) start:开始的行或列 span:合并的单元格个数
-                    GridLayout.Spec rowSpec = GridLayout.spec(start_jie - 1, jie_span);
-                    GridLayout.Spec columnSpec = GridLayout.spec(zhou_num);
-                    GridLayout.LayoutParams params = new GridLayout.LayoutParams(rowSpec, columnSpec);
-                    params.setGravity(Gravity.TOP);
-
-                    int week;
-
-                    if (mCurrentWeekTV.getText().toString().equals("假期中")) {
-                        Toast.makeText(CourseMainActivity.this, "当前没有课程要上", Toast.LENGTH_SHORT).show();
-                    } else {
-                        if (Character.isDigit(mCurrentWeekTV.getText().toString().charAt(2)))
-                            week = Integer.valueOf(mCurrentWeekTV.getText().toString().substring(1, 3));
-                        else if (mCurrentWeekTV.getText().toString().equals("当前周")) {
-                            Toast.makeText(CourseMainActivity.this, "请先设置开学日期或当前周", Toast.LENGTH_SHORT).show();
+                int week;
+                if (mCurrentWeekTV.getText().toString().equals("假期中")) {
+                    Toast.makeText(CourseMainActivity.this, "当前没有课程要上", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (Character.isDigit(mCurrentWeekTV.getText().toString().charAt(2)))
+                        week = Integer.parseInt(mCurrentWeekTV.getText().toString().substring(1, 3));
+                    else if (mCurrentWeekTV.getText().toString().equals("当前周")) {
+                        if (CourseSetting.SCHOOL_OPEN_DATE == null)
                             return;
-                        } else
-                            week = Integer.valueOf(mCurrentWeekTV.getText().toString().substring(1, 2));
-                        if (start_zhou <= week && end_zhou >= week) {
-                            //textView.setText(course_name + "\n" + "@" + mClassroom);
-                            switch (dan_shuang_week) {
-                                case "单周":
-                                    if (week % 2 != 0) {
-                                        Random random = new Random();
-                                        int ran = random.nextInt(5);
-                                        textView.setBackgroundResource(background[ran]);
-                                        textView.setText(course_name + "\n" + "@" + classroom);
-                                        mCourseListLayout.addView(textView, params);
-                                        mCourseItemList.add(textView);
-                                    }
-                                    break;
-                                case "双周":
-                                    if (week % 2 == 0) {
-                                        Random random = new Random();
-                                        int ran = random.nextInt(5);
-                                        textView.setBackgroundResource(background[ran]);
-                                        textView.setText(course_name + "\n" + "@" + classroom);
-                                        mCourseListLayout.addView(textView, params);
-                                        mCourseItemList.add(textView);
-                                    }
-                                    break;
-                                case "单双周":
+                        // 当前周为第一周
+                        week = 1;
+                    } else
+                        week = Integer.parseInt(mCurrentWeekTV.getText().toString().substring(1, 2));
+                    if (startWeek <= week && endWeek >= week) {
+                        //textView.setText(course_name + "\n" + "@" + mClassroom);
+                        switch (weekStyle) {
+                            case "单周":
+                                if (week % 2 != 0) {
                                     Random random = new Random();
                                     int ran = random.nextInt(5);
                                     textView.setBackgroundResource(background[ran]);
-                                    textView.setText(course_name + "\n" + "@" + classroom);
+                                    textView.setText(courseName + "\n" + "@" + classroom);
                                     mCourseListLayout.addView(textView, params);
                                     mCourseItemList.add(textView);
-                                    break;
-                            }
+                                }
+                                break;
+                            case "双周":
+                                if (week % 2 == 0) {
+                                    Random random = new Random();
+                                    int ran = random.nextInt(5);
+                                    textView.setBackgroundResource(background[ran]);
+                                    textView.setText(courseName + "\n" + "@" + classroom);
+                                    mCourseListLayout.addView(textView, params);
+                                    mCourseItemList.add(textView);
+                                }
+                                break;
+                            case "单双周":
+                                Random random = new Random();
+                                int ran = random.nextInt(5);
+                                textView.setBackgroundResource(background[ran]);
+                                textView.setText(courseName + "\n" + "@" + classroom);
+                                mCourseListLayout.addView(textView, params);
+                                mCourseItemList.add(textView);
+                                break;
                         }
                     }
                 }
             }
-
-        } else {
-            Toast.makeText(CourseMainActivity.this, "当前没有课程信息", Toast.LENGTH_SHORT).show();
         }
     }
 
     //初始化课程表格
-    public void initCourseTable() {
+    public void initCourseTable(int coursesNumber) {
+        mCourseListLayout.removeAllViews();
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         //屏幕宽度
@@ -544,13 +417,8 @@ public class CourseMainActivity extends AppCompatActivity {
         //屏幕高度
         // int height = dm.heightPixels;
         // int aveHeight = height / numArray.length;
-        mCoursesNumber = getSharedPreferences("course_time", MODE_PRIVATE).getInt("jie_num", -1);
-        if (mCoursesNumber == -1) {
-            Toast.makeText(CourseMainActivity.this, "没有每日课程节数信息，请先添加", Toast.LENGTH_SHORT).show();
-            mCoursesNumber = 12;
-        }
         // 课程表
-        mCourseTVTable = new TextView[mCoursesNumber + 1][8];
+        mCourseTVTable = new TextView[coursesNumber + 1][8];
 
         // 初始化课表上方星期列表
         for (int i = 0; i < 8; i++) {
@@ -567,10 +435,10 @@ public class CourseMainActivity extends AppCompatActivity {
             mWeekListLayout.addView(week);
         }
         // 初始化课程表表项
-        for (int courseNum = 1; courseNum <= mCoursesNumber; courseNum++) {
+        for (int courseNum = 1; courseNum <= coursesNumber; courseNum++) {
             for (int week = 0; week <= 7; week++) {
                 TextView textView = new TextView(CourseMainActivity.this);
-                textView.setGravity(Gravity.CENTER);
+                textView.setGravity(Gravity.TOP | Gravity.CENTER);
                 textView.setHeight(mCourseTableItemHeight);
                 textView.setTextSize(15);
                 textView.setOnClickListener(mOnClickListener);
@@ -582,7 +450,7 @@ public class CourseMainActivity extends AppCompatActivity {
                 } else {
                     mCourseTVTable[courseNum][week] = new TextView(CourseMainActivity.this);
                     textView.setWidth(aveWidth);
-                    textView.setId(Integer.valueOf((String.valueOf(courseNum) + week)));
+                    textView.setId(Integer.parseInt((String.valueOf(courseNum) + week)));
                     textView.setText("");
                     mCourseListLayout.addView(textView);
                     mCourseItemList.add(textView);
@@ -594,7 +462,6 @@ public class CourseMainActivity extends AppCompatActivity {
         linearLayout.measure(0, 0);
         cHeight = linearLayout.getMeasuredHeight();
         Log.d(TAG, String.valueOf(cHeight));
-
     }
 
     public void enter_jiandu_dialog(final String courseEndTimeStr, final String courseStartTimeStr) {
@@ -607,10 +474,6 @@ public class CourseMainActivity extends AppCompatActivity {
                 //跳转到监督界面
                 //Toast.makeText(CourseMainActivity.this, "进入监督界面++"+courseStartTimeStr+"++"+courseEndTimeStr, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(CourseMainActivity.this, MonitorActivity.class);
-
-                /**
-
-                 intent.putExtra("openActivity","CourseMainActivity");          **/
 
                 DateFormat dateFormat = new SimpleDateFormat("HH:mm");
                 long time = 0;
@@ -649,12 +512,8 @@ public class CourseMainActivity extends AppCompatActivity {
         TextView course_teacher = v.findViewById(R.id.show_course_teacher);
         TextView course_week_number = v.findViewById(R.id.show_course_week_number);
 
-        String course_name = "";
-        String classroom = "";
-        int start_week = -1;
-        int end_week = -1;
-        String single_or_biweekly = "";
-        String teacher = "";
+        String classroom = "", single_or_biweekly = "", teacher = "";
+        int start_week = -1, end_week = -1;
         if (textView.getTag() == null)
             return;
         String tag = textView.getTag().toString();
@@ -663,47 +522,39 @@ public class CourseMainActivity extends AppCompatActivity {
         String week_tag = tag.split(",")[2];
         int week_num = Integer.parseInt(week_tag);
         String weekStr = week_num > 0 && week_num < 8 ? weeks[week_num - 1] : "所在周几有误";
-
-        String str = textView.getText().toString().split("@")[0].trim();
-        //Toast.makeText(CourseMainActivity.this,str,Toast.LENGTH_SHORT).show();
-        SQLiteDatabase db = Connector.getDatabase();
-        if (db != null) {
-            List<Course> courseList = LitePal.where("course_name = ?", str).find(Course.class);
-            if (courseList == null) {
-                Toast.makeText(CourseMainActivity.this, "null", Toast.LENGTH_SHORT).show();
-            } else {
-                for (Course course : courseList) {
-                    Toast.makeText(CourseMainActivity.this, start_time + end_time, Toast.LENGTH_SHORT).show();
-                    course_name = course.getCourse_name();
-                    classroom = course.getClassroom();
-                    start_week = course.getStart_zhoushu();
-                    end_week = course.getEnd_zhoushu();
-                    single_or_biweekly = course.getWeekstyle();
-                    teacher = course.getTeacher();
-                }
-
-            }
-            builder.setTitle(course_name);
-            builder.setView(v);
-            builder.setPositiveButton("编辑", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(CourseMainActivity.this, AddCourseActivity.class);
-                    startActivity(intent);
-                }
-            });
-            course_classroom.setText(classroom);
-            course_number.setText(weekStr + " " + start_time + "－" + end_time + "节");
-            course_teacher.setText(teacher);
-
-            if (single_or_biweekly.equals("单周") || single_or_biweekly.equals("双周")) {
-                String string = start_week + "-" + end_week + "周" + "(" + single_or_biweekly + ")";
-                course_week_number.setText(string);
-            } else if (single_or_biweekly.equals("单双周")) {
-                course_week_number.setText(start_week + "-" + end_week + "周");
-            }
-            builder.create().show();
+        // 根据课程名获取课程实例
+        String course_name = textView.getText().toString().split("@")[0].trim();
+        Optional<Course> courseOptional = CourseLab.sCourseList.stream().filter(course -> course.getName().equals(course_name)).findFirst();
+        if (courseOptional.isPresent()) {
+            Course course = courseOptional.get();
+            classroom = course.getClassroom();
+            start_week = course.getStartWeek();
+            end_week = course.getEndWeek();
+            single_or_biweekly = course.getWeekStyle();
+            teacher = course.getTeacher();
         }
+
+        builder.setTitle(course_name);
+        builder.setView(v);
+        builder.setPositiveButton("编辑", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(CourseMainActivity.this, AddCourseActivity.class);
+                courseOptional.ifPresent(course -> intent.putExtra(CURRENT_EDIT_COURSE, course));
+                startActivity(intent);
+            }
+        });
+        course_classroom.setText(classroom);
+        course_number.setText(weekStr + " " + start_time + "－" + end_time + "节");
+        course_teacher.setText(teacher);
+
+        if (single_or_biweekly.equals("单周") || single_or_biweekly.equals("双周")) {
+            String string = start_week + "-" + end_week + "周" + "(" + single_or_biweekly + ")";
+            course_week_number.setText(string);
+        } else if (single_or_biweekly.equals("单双周")) {
+            course_week_number.setText(start_week + "-" + end_week + "周");
+        }
+        builder.create().show();
     }
 
     //获取当前日期
@@ -721,45 +572,114 @@ public class CourseMainActivity extends AppCompatActivity {
     }
 
     public void setCurrentWeek() {
-        //没有则直接创建
-        SharedPreferences sharedPreferences = getSharedPreferences(COURSE_INFO_PREF, MODE_PRIVATE);
-        if (sharedPreferences == null) {
-            Toast.makeText(CourseMainActivity.this, "SharedPreferences对象不存在", Toast.LENGTH_SHORT).show();
+        String schoolOpenDate = CourseSetting.SCHOOL_OPEN_DATE;
+        if (schoolOpenDate == null) {
+            Toast.makeText(CourseMainActivity.this, "请先添加开学日期并添加课程", Toast.LENGTH_SHORT).show();
         } else {
-            String schoolOpenDate = sharedPreferences.getString("school_opens_date", "");
-            if (schoolOpenDate.equals("")) {
-                Toast.makeText(CourseMainActivity.this, "请先添加开学日期并添加课程", Toast.LENGTH_SHORT).show();
-            } else {
-                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                Date schoolOpensDate = null;
-                try {
-                    schoolOpensDate = dateFormat.parse(schoolOpenDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            Date schoolOpensDate = null;
+            try {
+                schoolOpensDate = dateFormat.parse(schoolOpenDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-                Calendar currentDate = Calendar.getInstance();
-                long currentTime = currentDate.getTime().getTime();
-                long schoolOpensTime = schoolOpensDate.getTime();
+            Calendar currentDate = Calendar.getInstance();
+            long currentTime = currentDate.getTime().getTime();
+            long schoolOpensTime = schoolOpensDate.getTime();
 
-                int currentWeek = currentDate.get(Calendar.DAY_OF_WEEK);
+            int currentWeek = currentDate.get(Calendar.DAY_OF_WEEK);
 
-                int num = (currentWeek == 1 ? 7 : currentWeek - 1);
-                long time = currentTime - schoolOpensTime;
-                int day = (int) (time / 1000 / 60 / 60 / 24);
-                if (time < 0)
-                    mCurrentWeekTV.setText("假期中");
-                else {
-                    int k = (day - (7 - num + 1));
-                    if (k >= 1) {
-                        mCurrentWeekTV.setText("第" + ((k / 7) + 2) + "周");
-                    } else {
-                        mCurrentWeekTV.setText("当前周");
-                    }
+            int num = (currentWeek == 1 ? 7 : currentWeek - 1);
+            long time = currentTime - schoolOpensTime;
+            int day = (int) (time / 1000 / 60 / 60 / 24);
+            if (time < 0)
+                mCurrentWeekTV.setText("假期中");
+            else {
+                int k = (day - (7 - num + 1));
+                if (k >= 1) {
+                    mCurrentWeekTV.setText("第" + ((k / 7) + 2) + "周");
+                } else {
+                    mCurrentWeekTV.setText("当前周");
                 }
             }
         }
     }
+
+    TextView.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            TextView textView = (TextView) v;
+            if (textView.getText() != "") {
+                String start_tag = textView.getTag().toString().split(",")[0];
+                String end_tag = textView.getTag().toString().split(",")[1];
+                String zhou_tag = textView.getTag().toString().split(",")[2];
+                //            Toast.makeText(CourseMainActivity.this,zhou_tag,Toast.LENGTH_SHORT).show();
+
+                int startJie = Integer.parseInt(start_tag);
+                int endJie = Integer.parseInt(end_tag);
+                int belongColumnJie = Integer.parseInt(zhou_tag);
+
+                int belongWeek = -1;
+                if ((week_current - 1) % 7 != 0)
+                    belongWeek = (week_current - 1) % 7;
+                else
+                    belongWeek = 7;
+
+                DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+                String currentTimeStr = dateFormat.format(new Date());
+
+                Toast.makeText(CourseMainActivity.this, currentTimeStr, Toast.LENGTH_SHORT).show();
+                Date currentTime = null;
+                try {
+                    currentTime = dateFormat.parse(currentTimeStr);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Toast.makeText(CourseMainActivity.this, "当前时间转化失败", Toast.LENGTH_SHORT).show();
+                }
+
+                int courseTimeSpan = CourseSetting.COURSE_TIME_SPAN;
+
+                // TODO: 20-3-2 适配监督
+                for (int i = startJie; i <= endJie; i++) {
+                    String courseBeginTimeStr = CourseSetting.ALL_COURSE_START_TIME.get(i - 1);
+                    //String courseBeginTimeStr = sharedPreferences.getString("第" + i + "节", "没有上课时间的记录，请先添加上课时间");
+                    Date courseBeginTime = null;
+                    try {
+                        courseBeginTime = dateFormat.parse(courseBeginTimeStr);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        Toast.makeText(CourseMainActivity.this, "上课时间转化失败", Toast.LENGTH_SHORT).show();
+                    }
+                    long end = courseBeginTime.getTime() + courseTimeSpan * 60 * 1000;
+                    Date courseEndTime = new Date(end);
+                    String courseEndTimeStr = dateFormat.format(courseEndTime);
+
+                    // Toast.makeText(CourseMainActivity.this, belongColumnJie+" "+belongWeek, Toast.LENGTH_SHORT).show();
+
+                    if (((currentTime.after(courseBeginTime) || currentTime.equals(courseBeginTime))) && currentTime.before(courseEndTime) && belongColumnJie == belongWeek) {
+                        //long monitorTimeSpan=courseEndTime.getTime()-currentTime.getTime();
+
+                        //Toast.makeText(CourseMainActivity.this,courseEndTimeStr, Toast.LENGTH_SHORT).show();
+                        enter_jiandu_dialog(courseEndTimeStr, currentTimeStr);
+                        break;
+                    }
+                }
+                return true;
+            } else
+                return false;
+        }
+    };
+    OnClickListener mOnClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            TextView courseTv = (TextView) v;
+            if (courseTv.getText() != "") {
+                Toast.makeText(CourseMainActivity.this, "详细信息", Toast.LENGTH_SHORT).show();
+                courseInfoDialog(courseTv);
+            }
+        }
+    };
 
     @Override
     protected void onDestroy() {

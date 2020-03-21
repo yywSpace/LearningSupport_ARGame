@@ -29,7 +29,7 @@ public class TaskListView {
     public TaskListView(String currentUserId, AppCompatActivity content) {
         mCurrentUserId = currentUserId;
         mContext = content;
-        mView = mContext.getLayoutInflater().inflate(R.layout.tasklist_redo_layout, null, false);
+        mView = mContext.getLayoutInflater().inflate(R.layout.task_list_basic_layout, null, false);
         mTaskRecycleView = mView.findViewById(R.id.list_task_redo);
         mHandler = new Handler();
         mTaskList = new ArrayList<>();

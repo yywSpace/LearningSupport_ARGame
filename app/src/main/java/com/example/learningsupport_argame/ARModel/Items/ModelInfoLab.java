@@ -1,5 +1,7 @@
 package com.example.learningsupport_argame.ARModel.Items;
 
+import android.util.Log;
+
 import com.baidu.mapapi.model.LatLng;
 import com.example.learningsupport_argame.DbUtils;
 import com.example.learningsupport_argame.Task.Task;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ModelInfoLab {
+    private static String TAG = "ModelInfoLab";
     public static List<ModelInfo> mModelInfoList;
 
     public static void insertModelInfo(ModelInfo modelInfo, Task task) {
@@ -90,7 +93,7 @@ public class ModelInfoLab {
                     modelInfo.setHasVibratorShaken(info.isHasVibratorShaken());
                 return modelInfo;
             }).collect(Collectors.toList());
-
+        Log.d(TAG, "getModelInfoList: " + infoList.size());
         mModelInfoList = infoList;
         return infoList;
     }
