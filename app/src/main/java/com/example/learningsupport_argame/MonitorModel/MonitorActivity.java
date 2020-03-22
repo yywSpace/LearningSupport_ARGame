@@ -188,7 +188,7 @@ public class MonitorActivity extends AppCompatActivity {
             Log.d(TAG, "handleMessage: " + monitorInfo.getTaskId());
             // 保存监督信息
             new Thread(() -> MonitorInfoLab.insertMonitorInfo(monitorInfo)).start();
-
+            finish();
             Intent intent = new Intent(MonitorActivity.this, MissionAccomplishActivity.class);
             intent.putExtra(MonitorInfo.MONITOR_INFO, monitorInfo);
             startActivity(intent);

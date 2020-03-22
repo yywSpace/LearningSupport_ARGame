@@ -1,40 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#f0f0f0"
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.example.learningsupport_argame.CircleImageView
-        android:id="@+id/user_avatar"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_marginTop="42dp"
-        android:src="@mipmap/ic_launcher_round" />
+    <LinearLayout
+        android:id="@+id/navigation_user_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:paddingTop="50dp">
 
-    <RelativeLayout
-        android:layout_marginTop="10dp"
+        <com.example.learningsupport_argame.CircleImageView
+            android:id="@+id/user_avatar"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@mipmap/ic_launcher_round" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/user_name_and_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="用户名"
+                    android:textColor="@android:color/black"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/user_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@id/user_name"
+                    android:text="Lv.3"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+
+            <ProgressBar
+                android:id="@+id/user_hp"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="120dp"
+                android:layout_height="10dp"
+                android:layout_below="@+id/user_name_and_level"
+                android:layout_marginTop="10dp"
+                android:max="100"
+                android:progress="10"
+                android:progressDrawable="@drawable/navigation_user_hp_process_bar" />
+
+            <ProgressBar
+                android:id="@+id/user_exp"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="120dp"
+                android:layout_height="10dp"
+                android:layout_below="@+id/user_hp"
+                android:layout_marginTop="10dp"
+                android:max="100"
+                android:progress="10"
+                android:progressDrawable="@drawable/navigation_user_exp_process_bar" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navigation_user_message"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="用户名"
-            android:textSize="20dp" />
+        <ImageButton
+            android:id="@+id/navigation_ranking"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/navigation_ranking_icon"
+            tools:ignore="ContentDescription" />
 
-        <TextView
-            android:id="@+id/user_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/user_name"
-            android:text="Lv.3"
-            android:textSize="15dp" />
-    </RelativeLayout>
+        <ImageButton
+            android:id="@+id/navigation_honour"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="30dp"
+            android:background="@drawable/navigation_honour_icon"
+            tools:ignore="ContentDescription" />
 
-
-
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/navigation_shop"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="30dp"
+            android:background="@drawable/navigation_shop_icon"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
+</RelativeLayout>

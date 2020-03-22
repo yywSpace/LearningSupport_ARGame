@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
             status |= changePromptMessage(password.equals(""),
                     "请输入密码", mPasswordTextLabel, mPasswordTextStatus);
 
-            if (status == true)
+            if (status)
                 return;
 
             new Thread(() -> {
@@ -91,13 +91,14 @@ public class LoginActivity extends AppCompatActivity {
                         editor.commit();//提交修改
                         Toast.makeText(this, "LOGIN_SUCCESS" + UserLab.getCurrentUser().getName(), Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "onCreate: " + user.getName());
-//                        startService(LocationService.mLocationServiceIntent);
-//                        startService(MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
+                        startService(LocationService.mLocationServiceIntent);
+                        startService(MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
 
+//                        startActivity(new Intent(LoginActivity.this, MissionAccomplishActivity.class));
+                        startActivity(new Intent(this, TaskListActivity.class));
 //                        startActivity(new Intent(LoginActivity.this, MapActivity.class));
-//                        startActivity(new Intent(this, TaskListActivity.class));
 //                        startActivity(new Intent(this, FeedbackDetailsActivity.class));
-                        startActivity(new Intent(this, CourseMainActivity.class));
+//                        startActivity(new Intent(this, CourseMainActivity.class));
                         finish();
                     }
                 });
@@ -126,10 +127,12 @@ public class LoginActivity extends AppCompatActivity {
             startService(LocationService.mLocationServiceIntent);
             startService(MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
         }).start();
-//        startActivity(new Intent(this, TaskListActivity.class));
+//        startActivity(new Intent(LoginActivity.this, MissionAccomplishActivity.class));
+
+        startActivity(new Intent(this, TaskListActivity.class));
 //        startActivity(new Intent(LoginActivity.this, MapActivity.class));
 //        startActivity(new Intent(this, FeedbackDetailsActivity.class));
-        startActivity(new Intent(this, CourseMainActivity.class));
+//        startActivity(new Intent(this, CourseMainActivity.class));
         finish();
     }
 

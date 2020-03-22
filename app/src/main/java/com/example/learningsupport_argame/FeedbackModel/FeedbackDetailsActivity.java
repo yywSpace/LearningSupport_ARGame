@@ -8,13 +8,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.learningsupport_argame.NavigationController;
 import com.example.learningsupport_argame.R;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class FeedbackDetailsActivity extends AppCompatActivity {
     private TabLayout mTabLayout;

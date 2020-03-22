@@ -163,7 +163,7 @@ public class TaskLab {
                         User user = new User();
                         user.setId(resultSet.getInt("user_id"));
                         user.setName(resultSet.getString("user_name"));
-                        user.setLevel(resultSet.getString("user_level"));
+                        user.setLevel(resultSet.getInt("user_level"));
                         users.add(user);
                     }
                 },

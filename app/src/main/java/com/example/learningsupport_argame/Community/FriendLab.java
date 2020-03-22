@@ -21,12 +21,12 @@ public class FriendLab {
                 user.setName(resultSet.getString("user_name"));
                 user.setAvatar(DbUtils.Bytes2Bitmap(resultSet.getBytes("user_avatar")));
                 user.setPassword(resultSet.getString("user_password"));
-                user.setLevel(resultSet.getString("user_level"));
+                user.setLevel(resultSet.getInt("user_level"));
                 user.setBirthday(resultSet.getString("user_birthday"));
                 user.setSex(resultSet.getString("user_sex"));
                 user.setCity(resultSet.getString("user_city"));
                 user.setExp(resultSet.getInt("user_exp"));
-                user.setCredits(resultSet.getInt("user_credits"));
+                user.setGold(resultSet.getInt("user_gold"));
                 friendList.add(user);
             }
         }, "SELECT * FROM user,friend where user.user_id = friend.friend_id AND friend.user_id = ?;", userId);

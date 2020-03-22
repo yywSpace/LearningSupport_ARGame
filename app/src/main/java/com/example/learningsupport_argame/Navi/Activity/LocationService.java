@@ -36,8 +36,18 @@ public class LocationService extends Service {
         super.onCreate();
         mDetectionARTaskThread = new Thread(() -> {
             while (!Thread.interrupted()) {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 if (ModelInfoLab.mModelInfoList != null) {
                     for (ModelInfo info : ModelInfoLab.mModelInfoList) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         if (withinDistance(info.getModelLatLng(), 5)) {
                             if (!info.isHasVibratorShaken()) {
                                 VibratorUtil.Vibrate(this, 1000);

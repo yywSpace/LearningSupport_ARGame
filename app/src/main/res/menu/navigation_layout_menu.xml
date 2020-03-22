@@ -8,6 +8,10 @@
         android:icon="@drawable/navigation_task"
         android:title="我的任务" />
     <item
+        android:id="@+id/navigation_menu_bag"
+        android:icon="@drawable/navigation_bag_icon"
+        android:title="我的背包" />
+    <item
         android:id="@+id/navigation_menu_course"
         android:icon="@drawable/navigation_course"
         android:title="我的课程" />

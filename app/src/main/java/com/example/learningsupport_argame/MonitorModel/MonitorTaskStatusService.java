@@ -43,15 +43,20 @@ public class MonitorTaskStatusService extends Service {
                 if (TaskLab.mAcceptedTaskList == null) {
                     continue;
                 }
-                // 一秒检测一次
+                // 10秒检测一次, 减轻开销
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 // TODO: 20-1-14 增加消息栏通知功能
                 for (Task task : TaskLab.mAcceptedTaskList) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     Date now = new Date();
                     try {
                         Date begin = df.parse(task.getTaskStartAt());
@@ -77,12 +82,21 @@ public class MonitorTaskStatusService extends Service {
                                             monitorInfo.getTaskId() + "",
                                             UserLab.getCurrentUser().getId() + "",
                                             "失败");
+                                    int inattentionTime = (int) ((monitorInfo.getTaskTotalTime() -
+                                            monitorInfo.getMonitorAttentionTime()) / 60);
+                                    if (inattentionTime >= 30)
+                                        UserLab.getCurrentUser().gettingHeart(2);
+                                    else
+                                        UserLab.getCurrentUser().gettingHeart(1);
+                                    UserLab.updateUser(UserLab.getCurrentUser());
                                 }
                             } else {
                                 TaskLab.updateTaskParticipantStatus(
                                         task.getTaskId() + "",
                                         UserLab.getCurrentUser().getId() + "",
                                         "失败");
+                                UserLab.getCurrentUser().gettingHeart(2);
+                                UserLab.updateUser(UserLab.getCurrentUser());
                             }
                         }
 

@@ -69,11 +69,9 @@ public class UserMessageActivity extends Activity {
     private List<MessageItem> mMessageItems;
     private FrameLayout mReturnButton;
 
-
     //地址选择s
     private List<Province> mProvinceList;
     private NumberPicker mProvincePicker, mCityPicker;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,6 +92,9 @@ public class UserMessageActivity extends Activity {
         mMessageItems = new ArrayList<>(
                 Arrays.asList(
                         new MessageItem("头像", BitmapFactory.decodeResource(getResources(), R.drawable.user_management_avatar), ItemType.AVATAR_ITEM),
+                        new MessageItem("等级", "等级", ItemType.NORMAL_ITEM),
+                        new MessageItem("血量", "血量", ItemType.NORMAL_ITEM),
+                        new MessageItem("经验", "经验", ItemType.NORMAL_ITEM),
                         new MessageItem("用户名", "用户名", ItemType.NORMAL_ITEM),
                         new MessageItem("性别", "性别", ItemType.NORMAL_ITEM),
                         new MessageItem("生日", "生日", ItemType.NORMAL_ITEM),
@@ -181,39 +182,39 @@ public class UserMessageActivity extends Activity {
                         // 头像
                         changeAvatar();
                         break;
-                    case 1:
+                    case 4:
                         // 用户名
                         changeNameDialog();
                         break;
-                    case 2:
+                    case 5:
                         // 性别
                         changeSexDialog();
                         break;
-                    case 3:
+                    case 6:
                         // 生日
                         showDatePickDialog();
                         break;
-                    case 4:
+                    case 7:
                         // 城市
                         changeAddressDialog();
                         break;
-                    case 5:
+                    case 8:
                         // 发布的任务
                         startActivity(new Intent(UserMessageActivity.this, UserReleasedTaskActivity.class));
                         break;
-                    case 6:
+                    case 9:
                         // 接受的任务
                         startActivity(new Intent(UserMessageActivity.this, UserAcceptedTaskActivity.class));
                         break;
-                    case 7:
+                    case 10:
                         // 完成的任务
                         startActivity(new Intent(UserMessageActivity.this, UserAccomplishTaskActivity.class));
                         break;
-                    case 8:
+                    case 11:
                         startActivity(new Intent(UserMessageActivity.this, FeedbackDetailsActivity.class));
                         // 更多信息
                         break;
-                    case 9:
+                    case 12:
                         // 修改密码
                         startActivity(new Intent(UserMessageActivity.this, ChangePasswordActivity.class));
                         break;
@@ -569,7 +570,7 @@ public class UserMessageActivity extends Activity {
     private void showCityByProvince(String province) {
         List<City> cityList = mProvinceList
                 .stream()
-                .filter((p) -> p.getName() == province)
+                .filter((p) -> p.getName().equals(province))
                 .findFirst()
                 .get()
                 .getCityList();
@@ -589,10 +590,18 @@ public class UserMessageActivity extends Activity {
     }
 
     private void updateAdapter(User user) {
+        int maxHp = User.BASIC_HP + user.getLevel();
+        int hp = user.getHp();
+        int maxExp = User.BASIC_EXP + user.getLevel() * 500;
+        int exp = user.getExp();
+        int level = user.getLevel();
         mMessageItems.get(0).setItemImageBitmap(user.getAvatar());
-        mMessageItems.get(1).setItemContent(user.getName());
-        mMessageItems.get(2).setItemContent(user.getSex());
-        mMessageItems.get(3).setItemContent(user.getBirthday());
-        mMessageItems.get(4).setItemContent(user.getCity());
+        mMessageItems.get(1).setItemContent("Lv." + level);
+        mMessageItems.get(2).setItemContent(hp + "/" + maxHp);
+        mMessageItems.get(3).setItemContent(exp + "/" + maxExp);
+        mMessageItems.get(4).setItemContent(user.getName());
+        mMessageItems.get(5).setItemContent(user.getSex());
+        mMessageItems.get(6).setItemContent(user.getBirthday());
+        mMessageItems.get(7).setItemContent(user.getCity());
     }
 }

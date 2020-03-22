@@ -15,10 +15,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.learningsupport_argame.MonitorModel.MonitorInfo;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Task.TaskLab;
+import com.example.learningsupport_argame.Task.TaskReward.RewardItem;
+import com.example.learningsupport_argame.Task.TaskReward.RewardLab;
+import com.example.learningsupport_argame.Task.TaskReward.TaskReward;
 import com.example.learningsupport_argame.UserManagement.UserLab;
+
+import java.util.Random;
 
 
 // todo 任务失败时，计算失败原因
+// todo 排行榜，称号系统
 public class MissionAccomplishActivity extends AppCompatActivity {
     private String TAG = "MissionAccomplishActivity";
     private TextView mAccomplishResult, mPhoneUseRate, mOutOfRangeRate, mAttentionRate, mPhoneUseCount, mExp, mGold, mItem;
@@ -38,11 +44,11 @@ public class MissionAccomplishActivity extends AppCompatActivity {
         mMonitorInfo = (MonitorInfo) getIntent().getSerializableExtra(MonitorInfo.MONITOR_INFO);
         if (mMonitorInfo == null) {
             mMonitorInfo = new MonitorInfo();
-            mMonitorInfo.setMonitorTaskScreenOffTime(1);
-            mMonitorInfo.setTaskOutOfRangeTime(1);
+            mMonitorInfo.setMonitorTaskScreenOffTime(0);
+            mMonitorInfo.setTaskOutOfRangeTime(0);
             mMonitorInfo.setMonitorPhoneUseCount(1);
-            mMonitorInfo.setMonitorScreenOnAttentionSpan(1);
-            mMonitorInfo.setMonitorTaskScreenOnTime(1);
+            mMonitorInfo.setMonitorScreenOnAttentionSpan(3600);
+            mMonitorInfo.setMonitorTaskScreenOnTime(3600);
             mMonitorInfo.setTaskBeginTime("2019-11-27 20:30");
             mMonitorInfo.setTaskEndTime("2019-11-27 21:30");
         }
@@ -87,25 +93,57 @@ public class MissionAccomplishActivity extends AppCompatActivity {
         mOutOfRangeRate.setText(String.format("%.2f%%", outOfRangeRate * 100));
         // 任务执行中手机使用次数
         mPhoneUseCount.setText(mMonitorInfo.getMonitorPhoneUseCount() + "次");
-        // TODO: 20-2-17 任务奖励的设置与应用
-        // 奖励
-        mExp.setText("x100");
-        mGold.setText("x100");
-        mItem.setText("x100");
+
         mItemImage.setImageResource(R.drawable.task_reward_potion_red);
         // 加权平均
-        float rate = (attentionRate * 60 + (1 - outOfRangeRate) * 40) / 100;
+        float rate = 0;
+        if (attentionRate <= 0.5) {
+            taskAccomplishSuccess = false;
+            rate = attentionRate;
+        } else if (outOfRangeRate <= 0.5) {
+            taskAccomplishSuccess = false;
+            rate = outOfRangeRate;
+        } else {
+            rate = (attentionRate * 60 + (1 - outOfRangeRate) * 40) / 100;
+        }
+
         Log.d(TAG, "phoneUseRate: " + phoneUseRate);
         Log.d(TAG, "attentionRate: " + attentionRate);
         Log.d(TAG, "outOfRangeRate: " + outOfRangeRate);
-        Log.d(TAG, "rate: " + rate
-        );
+        Log.d(TAG, "rate: " + rate);
+
         // 评分
         mMissionRateBar.setRating(rate);
         // 如果评分地狱0.4则判定此次任务失败
         if (rate >= 0.4) {
             taskAccomplishSuccess = true;
         }
+        // 奖励
+        double randomExp = (new Random(System.currentTimeMillis()).nextInt(5) + 5) / 10.0;
+        //exp =  专注时间(30s) * 随机数(.5-1) * 评分比率
+        int exp = (int) (mMonitorInfo.getMonitorAttentionTime() / 30 * randomExp * rate);
+        //gold =  专注时间(m) * 随机数(.2-1) * 评分比率
+        double randomGold = (new Random(System.currentTimeMillis() + 1).nextInt(8) + 2) / 10.0;
+        int gold = (int) (mMonitorInfo.getMonitorAttentionTime() / 60 * randomGold * rate);
+        Log.d(TAG, "randomExp: " + randomExp);
+        Log.d(TAG, "randomGold: " + randomGold);
+        TaskReward taskReward = new TaskReward(exp, gold);
+        // 如果任务成功则可能给出物品奖励
+        if (taskAccomplishSuccess) {
+            taskReward.randomRewardItem();
+            if (taskReward.getRewardItem().getRewardItemType().equals(RewardItem.RewardItemType.ITEM_EXP_POTION))
+                mItemImage.setBackgroundResource(R.drawable.task_reward_potion_yellow);
+            else if (taskReward.getRewardItem().getRewardItemType().equals(RewardItem.RewardItemType.ITEM_HEALING_POTION))
+                mItemImage.setBackgroundResource(R.drawable.task_reward_potion_blue);
+            else if (taskReward.getRewardItem().getRewardItemType().equals(RewardItem.RewardItemType.ITEM_SPEED_POTION))
+                mItemImage.setBackgroundResource(R.drawable.task_reward_potion_red);
+            mItem.setText("x" + taskReward.getRewardItem().getCount());
+        } else {
+            taskReward.setRewardItem(new RewardItem(RewardItem.RewardItemType.ITEM_NONE, 0));
+        }
+        taskReward.setTaskId(mMonitorInfo.getTaskId());
+        mExp.setText("x" + exp);
+        mGold.setText("x" + gold);
 
         // 根据任务成功与否设置图片,及进行数据库操作
         if (taskAccomplishSuccess) {
@@ -132,7 +170,18 @@ public class MissionAccomplishActivity extends AppCompatActivity {
                         mMonitorInfo.getTask().getTaskId() + "",
                         UserLab.getCurrentUser().getId() + "",
                         "失败");
+                int inattentionTime = (int) ((mMonitorInfo.getTaskTotalTime() -
+                        mMonitorInfo.getMonitorAttentionTime()) / 60);
+                if (inattentionTime >= 30)
+                    UserLab.getCurrentUser().gettingHeart(2);
+                else
+                    UserLab.getCurrentUser().gettingHeart(1);
+                UserLab.updateUser(UserLab.getCurrentUser());
             }
+            // 将获得属性加到自身
+            UserLab.getCurrentUser().addReward(taskReward);
+            UserLab.updateUser(UserLab.getCurrentUser());
+            RewardLab.insert(taskReward);
         }).start();
         takeAnimation();
         mRatingBarLayout.setOnClickListener(v -> {

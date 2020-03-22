@@ -3,9 +3,11 @@ package com.example.learningsupport_argame.UserManagement;
 import android.util.Log;
 
 import com.example.learningsupport_argame.DbUtils;
+import com.example.learningsupport_argame.Task.TaskReward.RewardItem;
 import com.example.learningsupport_argame.UserManagement.Login.UserManagementStatus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -32,8 +34,6 @@ public class UserLab {
         if (users.size() == 0)
             return null;
         return users.get(0);
-
-
     }
 
     public static User getUser(String account) {
@@ -53,12 +53,38 @@ public class UserLab {
                 user.setName(resultSet.getString("user_name"));
                 user.setAvatar(DbUtils.Bytes2Bitmap(resultSet.getBytes("user_avatar")));
                 user.setPassword(resultSet.getString("user_password"));
-                user.setLevel(resultSet.getString("user_level"));
+                user.setLevel(resultSet.getInt("user_level"));
                 user.setBirthday(resultSet.getString("user_birthday"));
                 user.setSex(resultSet.getString("user_sex"));
                 user.setCity(resultSet.getString("user_city"));
                 user.setExp(resultSet.getInt("user_exp"));
-                user.setCredits(resultSet.getInt("user_credits"));
+                user.setGold(resultSet.getInt("user_gold"));
+                user.setHp(resultSet.getInt("user_hp"));
+                String rewardItemsStr = resultSet.getString("user_reward_items");
+                List<RewardItem> rewardItems = new ArrayList<>(3);
+                if (rewardItemsStr.equals("")) {
+                    rewardItems.addAll(Arrays.asList(
+                            new RewardItem(RewardItem.RewardItemType.ITEM_HEALING_POTION, 0),
+                            new RewardItem(RewardItem.RewardItemType.ITEM_EXP_POTION, 0),
+                            new RewardItem(RewardItem.RewardItemType.ITEM_SPEED_POTION, 0)));
+                    user.setRewardItems(rewardItems);
+                } else {
+                    //[ITEM_HEALING_POTION-0, ITEM_EXP_POTION-0, ITEM_SPEED_POTION-0]
+                    String[] rewardItemsArray = rewardItemsStr.substring(1, rewardItemsStr.length() - 1).split(",");
+                    for (String item : rewardItemsArray) {
+                        Log.d(TAG, "item: " + item);
+                        String type = item.split("-")[0];
+                        int count = Integer.parseInt(item.split("-")[1]);
+                        if (RewardItem.RewardItemType.ITEM_HEALING_POTION.toString().equals(type.trim()))
+                            rewardItems.add(new RewardItem(RewardItem.RewardItemType.ITEM_HEALING_POTION, count));
+                        else if (RewardItem.RewardItemType.ITEM_EXP_POTION.toString().equals(type.trim()))
+                            rewardItems.add(new RewardItem(RewardItem.RewardItemType.ITEM_EXP_POTION, count));
+                        else if (RewardItem.RewardItemType.ITEM_SPEED_POTION.toString().equals(type.trim()))
+                            rewardItems.add(new RewardItem(RewardItem.RewardItemType.ITEM_SPEED_POTION, count));
+                    }
+                    Log.d(TAG, "rewardItems: " + rewardItems.toString());
+                    user.setRewardItems(rewardItems);
+                }
                 users.add(user);
             }
         }, sql, args);
@@ -108,7 +134,8 @@ public class UserLab {
     public static void updateUser(User user) {
         DbUtils.update(null,
                 "UPDATE user " +
-                        "SET user_name = ?, user_avatar = ?, user_password = ?,user_sex = ?, user_birthday = ?,  user_city= ? " +
+                        "SET user_name = ?, user_avatar = ?, user_password = ?,user_sex = ?, user_birthday = ?,  user_city= ?, " +
+                        "user_hp = ?, user_level = ?, user_exp = ?, user_gold = ?, user_reward_items = ?" +
                         "WHERE user_id = ?",
                 user.getName(),
                 DbUtils.Bitmap2Bytes(user.getAvatar()),
@@ -116,6 +143,11 @@ public class UserLab {
                 user.getSex(),
                 user.getBirthday(),
                 user.getCity(),
+                user.getHp(),
+                user.getLevel(),
+                user.getExp(),
+                user.getGold(),
+                user.getRewardItems().toString(),
                 user.getId());
     }
 

@@ -65,7 +65,6 @@ public class TaskListBasicFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        mCurrentUserId = UserLab.getCurrentUser().getId() + "";
         View view = inflater.inflate(R.layout.task_list_basic_layout, container, false);
         mTypePersonBtn = view.findViewById(R.id.tab_type_person);
         mTypeFriendBtn = view.findViewById(R.id.tab_type_friend);
@@ -96,6 +95,9 @@ public class TaskListBasicFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        while (UserLab.getCurrentUser() == null) ;
+        mCurrentUserId = UserLab.getCurrentUser().getId() + "";
+
     }
 
     public static TaskListBasicFragment getInstance(String userId, String taskType) {
