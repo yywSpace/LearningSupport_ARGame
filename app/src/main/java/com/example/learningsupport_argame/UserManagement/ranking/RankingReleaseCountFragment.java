@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.UserManagement.ranking;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
@@ -27,10 +29,11 @@ import static java.lang.String.*;
 
 public class RankingReleaseCountFragment extends Fragment {
     private static AppCompatActivity sActivity;
-    public static  boolean isLoadDataFinish = true;
+    public static boolean isLoadDataFinish = true;
     private RecyclerView mRankingRecyclerView;
-    private RankingReleaseCountAdapter mRankingLevelAdapter;
+    private RankingReleaseCountAdapter mRankingReleaseCountAdapter;
     private List<User> mUserList = new ArrayList<>();
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,15 +43,19 @@ public class RankingReleaseCountFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (UserLab.sUserListWithReleaseCount != null) {
+            mUserList.clear();
+            mUserList.addAll(UserLab.sUserListWithReleaseCount);
+            mRankingReleaseCountAdapter.notifyDataSetChanged();
+        }
         if (isLoadDataFinish) {
             isLoadDataFinish = false;
             new Thread(() -> {
                 mUserList.clear();
-                if (UserLab.sUserListWithReleaseCount.size() <= 0)
-                    UserLab.getUserWithReleaseCount();
+                UserLab.getUserWithReleaseCount();
                 mUserList.addAll(UserLab.sUserListWithReleaseCount);
                 sActivity.runOnUiThread(() -> {
-                    mRankingLevelAdapter.notifyDataSetChanged();
+                    mRankingReleaseCountAdapter.notifyDataSetChanged();
                     isLoadDataFinish = true;
                 });
             }).start();
@@ -59,11 +66,27 @@ public class RankingReleaseCountFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.ranking_basic_recycler_view_layout, null, false);
+        mSwipeRefreshLayout = view.findViewById(R.id.ranking_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            if (isLoadDataFinish) {
+                isLoadDataFinish = false;
+                new Thread(() -> {
+                    mUserList.clear();
+                    UserLab.getUserWithReleaseCount();
+                    mUserList.addAll(UserLab.sUserListWithReleaseCount);
+                    sActivity.runOnUiThread(() -> {
+                        mRankingReleaseCountAdapter.notifyDataSetChanged();
+                        isLoadDataFinish = true;
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
+                }).start();
+            }
+        });
         mRankingRecyclerView = view.findViewById(R.id.ranking_basic_recycler_view);
-        mRankingLevelAdapter = new RankingReleaseCountAdapter(mUserList);
+        mRankingReleaseCountAdapter = new RankingReleaseCountAdapter(mUserList);
         mRankingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRankingRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        mRankingRecyclerView.setAdapter(mRankingLevelAdapter);
+        mRankingRecyclerView.setAdapter(mRankingReleaseCountAdapter);
         return view;
     }
 
@@ -136,6 +159,20 @@ public class RankingReleaseCountFragment extends Fragment {
         }
 
         void bind(User user, int position) {
+            switch (position) {
+                case 0:
+                    rankingNum.setTextSize(25);
+                    rankingNum.setTextColor(Color.parseColor("#FFD700"));
+                    break;
+                case 1:
+                    rankingNum.setTextSize(23);
+                    rankingNum.setTextColor(Color.parseColor("#c0c0c0"));
+                    break;
+                case 2:
+                    rankingNum.setTextSize(21);
+                    rankingNum.setTextColor(Color.parseColor("#b87333"));
+                    break;
+            }
             userAvatar.setImageBitmap(user.getAvatar());
             userName.setText(user.getName());
             userReleaseCount.setText(user.getReleaseCount() + "次");

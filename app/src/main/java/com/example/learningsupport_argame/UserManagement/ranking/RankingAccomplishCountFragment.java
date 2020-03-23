@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.UserManagement.ranking;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Task.adapter.TaskItemAdapter;
@@ -32,6 +34,7 @@ public class RankingAccomplishCountFragment extends Fragment {
     private RecyclerView mRankingRecyclerView;
     private RankingAccomplishCountAdapter mRankingAccomplishCountAdapter;
     private List<User> mUserList = new ArrayList<>();
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,26 +44,45 @@ public class RankingAccomplishCountFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (UserLab.sUserListWithAccomplishCount != null) {
+            mUserList.clear();
+            mUserList.addAll(UserLab.sUserListWithAccomplishCount);
+            mRankingAccomplishCountAdapter.notifyDataSetChanged();
+        }
         if (isLoadDataFinish) {
             isLoadDataFinish = false;
             new Thread(() -> {
                 mUserList.clear();
-                if (UserLab.sUserListWithAccomplishCount.size() <= 0)
-                    UserLab.getUsersWithAccomplishCount();
-                mUserList.addAll(UserLab.sUserListWithAccomplishCount);
+                List<User> users = UserLab.getUsersWithAccomplishCount();
+                mUserList.addAll(users);
                 sActivity.runOnUiThread(() -> {
                     mRankingAccomplishCountAdapter.notifyDataSetChanged();
                     isLoadDataFinish = true;
                 });
             }).start();
         }
-
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.ranking_basic_recycler_view_layout, null, false);
+        mSwipeRefreshLayout = view.findViewById(R.id.ranking_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            if (isLoadDataFinish) {
+                isLoadDataFinish = false;
+                new Thread(() -> {
+                    mUserList.clear();
+                    UserLab.getUsersWithAccomplishCount();
+                    mUserList.addAll(UserLab.sUserListWithAccomplishCount);
+                    sActivity.runOnUiThread(() -> {
+                        mRankingAccomplishCountAdapter.notifyDataSetChanged();
+                        isLoadDataFinish = true;
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
+                }).start();
+            }
+        });
         mRankingRecyclerView = view.findViewById(R.id.ranking_basic_recycler_view);
         mRankingAccomplishCountAdapter = new RankingAccomplishCountAdapter(mUserList);
         mRankingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -137,6 +159,20 @@ public class RankingAccomplishCountFragment extends Fragment {
         }
 
         void bind(User user, int position) {
+            switch (position) {
+                case 0:
+                    rankingNum.setTextSize(25);
+                    rankingNum.setTextColor(Color.parseColor("#FFD700"));
+                    break;
+                case 1:
+                    rankingNum.setTextSize(23);
+                    rankingNum.setTextColor(Color.parseColor("#c0c0c0"));
+                    break;
+                case 2:
+                    rankingNum.setTextSize(21);
+                    rankingNum.setTextColor(Color.parseColor("#b87333"));
+                    break;
+            }
             userAvatar.setImageBitmap(user.getAvatar());
             userAccomplishCount.setText(user.getAccomplishCount() + "个");
             userName.setText(user.getName());

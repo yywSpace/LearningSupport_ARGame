@@ -17,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.Navi.Activity.MapActivity;
+import com.example.learningsupport_argame.UserManagement.bag.UserBagActivity;
 import com.example.learningsupport_argame.UserManagement.ranking.RankingActivity;
 import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 import com.example.learningsupport_argame.UserManagement.User;
@@ -105,8 +106,7 @@ public class NavigationController {
 //                context.startActivity(new Intent(context, FriendListActivity.class));
             }
             if (item.getItemId() == R.id.navigation_menu_bag && mNavigationItem != NavigationItem.BAG) {
-                Toast.makeText(context, "bag", Toast.LENGTH_SHORT).show();
-//                context.startActivity(new Intent(context, TaskListActivity.class));
+                context.startActivity(new Intent(context, UserBagActivity.class));
             }
             if (item.getItemId() == R.id.navigation_menu_task && mNavigationItem != NavigationItem.TASK)
                 context.startActivity(new Intent(context, TaskListActivity.class));

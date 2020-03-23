@@ -1,6 +1,7 @@
 package com.example.learningsupport_argame.Task.TaskReward;
 
 import com.example.learningsupport_argame.DbUtils;
+import com.example.learningsupport_argame.UserManagement.User;
 
 public class RewardLab {
     private static String TAG = "RewardLab";

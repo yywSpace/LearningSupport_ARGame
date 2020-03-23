@@ -2,10 +2,12 @@ package com.example.learningsupport_argame.Task.TaskReward;
 
 import androidx.annotation.NonNull;
 
+import com.example.learningsupport_argame.UserManagement.bag.Item;
+
 /**
  * 目前设置每次只能得到一种道具
  */
-public class RewardItem {
+public class RewardItem extends Item {
     private RewardItemType mRewardItemType;
     private int mCount;
 

@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.UserManagement.ranking;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
@@ -27,10 +29,11 @@ import static java.lang.String.*;
 
 public class RankingLevelFragment extends Fragment {
     private static AppCompatActivity sActivity;
-    public static  boolean isLoadDataFinish = true;
+    public static boolean isLoadDataFinish = true;
     private RecyclerView mRankingRecyclerView;
     private RankingLevelAdapter mRankingLevelAdapter;
     private List<User> mUserList = new ArrayList<>();
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,12 +43,16 @@ public class RankingLevelFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (UserLab.sUserListWithLevel != null) {
+            mUserList.clear();
+            mUserList.addAll(UserLab.sUserListWithLevel);
+            mRankingLevelAdapter.notifyDataSetChanged();
+        }
         if (isLoadDataFinish) {
             isLoadDataFinish = false;
             new Thread(() -> {
                 mUserList.clear();
-                if (UserLab.sUserListWithLevel.size() <= 0)
-                    UserLab.getUserListWithLevel();
+                UserLab.getUserListWithLevel();
                 mUserList.addAll(UserLab.sUserListWithLevel);
                 sActivity.runOnUiThread(() -> {
                     mRankingLevelAdapter.notifyDataSetChanged();
@@ -60,6 +67,22 @@ public class RankingLevelFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.ranking_basic_recycler_view_layout, null, false);
+        mSwipeRefreshLayout = view.findViewById(R.id.ranking_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            if (isLoadDataFinish) {
+                isLoadDataFinish = false;
+                new Thread(() -> {
+                    mUserList.clear();
+                    UserLab.getUserListWithLevel();
+                    mUserList.addAll(UserLab.sUserListWithLevel);
+                    sActivity.runOnUiThread(() -> {
+                        mRankingLevelAdapter.notifyDataSetChanged();
+                        isLoadDataFinish = true;
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
+                }).start();
+            }
+        });
         mRankingRecyclerView = view.findViewById(R.id.ranking_basic_recycler_view);
         mRankingLevelAdapter = new RankingLevelAdapter(mUserList);
         mRankingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -78,6 +101,7 @@ public class RankingLevelFragment extends Fragment {
         private List<User> mUserList;
         static final int ITEM_NORMAL = 1;
         static final int ITEM_EMPTY = 0;
+
         RankingLevelAdapter(List<User> userList) {
             mUserList = userList;
         }
@@ -135,6 +159,20 @@ public class RankingLevelFragment extends Fragment {
         }
 
         void bind(User user, int position) {
+            switch (position) {
+                case 0:
+                    rankingNum.setTextSize(25);
+                    rankingNum.setTextColor(Color.parseColor("#FFD700"));
+                    break;
+                case 1:
+                    rankingNum.setTextSize(23);
+                    rankingNum.setTextColor(Color.parseColor("#c0c0c0"));
+                    break;
+                case 2:
+                    rankingNum.setTextSize(21);
+                    rankingNum.setTextColor(Color.parseColor("#b87333"));
+                    break;
+            }
             userAvatar.setImageBitmap(user.getAvatar());
             userLevel.setText("Lv." + user.getLevel());
             userName.setText(user.getName());

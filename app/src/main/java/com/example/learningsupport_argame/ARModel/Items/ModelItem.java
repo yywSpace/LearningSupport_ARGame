@@ -1,6 +1,8 @@
 package com.example.learningsupport_argame.ARModel.Items;
 
-public class ModelItem {
+import com.example.learningsupport_argame.UserManagement.bag.Item;
+
+public class ModelItem extends Item {
     private ModelItemType mModelItemType;
     private String mItemName;
     private String mItemDesc;

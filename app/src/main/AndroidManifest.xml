@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.learningsupport_argame">
+
     <permission android:name="android.permission.WRITE_SETTINGS" />
+
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
@@ -38,7 +40,6 @@
 
         <activity android:name=".UserManagement.ranking.RankingActivity" />
 
-
         <activity android:name=".Community.activity.FriendListActivity" />
         <activity android:name=".Task.activity.TaskListActivity" />
         <activity android:name=".MainActivity" />
@@ -70,6 +71,7 @@
         <activity android:name=".UserManagement.UserMessage.UserAccomplishTaskActivity" />
         <activity android:name=".UserManagement.UserMessage.UserAcceptedTaskActivity" />
         <activity android:name=".UserManagement.UserMessage.UserReleasedTaskActivity" />
+        <activity android:name=".UserManagement.bag.UserBagActivity" />
 
         <activity android:name=".Course.CourseMainActivity" />
         <activity android:name=".Course.AddCourseActivity" />
@@ -107,7 +109,6 @@
         </provider>
     </application>
 
-
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -115,10 +116,7 @@
         android:resizeable="true"
         android:smallScreens="true" />
 
-
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
-
-
 </manifest>

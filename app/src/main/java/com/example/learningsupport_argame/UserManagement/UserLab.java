@@ -191,7 +191,7 @@ public class UserLab {
                 users.add(user);
             }
         }, sql);
-        sUserListWithLevel.addAll(users);
+        sUserListWithLevel = users;
         return users;
     }
 
@@ -215,7 +215,7 @@ public class UserLab {
             }
         }, sql);
         Log.d(TAG, "getUserWithReleaseCount: " + users.size());
-        sUserListWithReleaseCount.addAll(users);
+        sUserListWithReleaseCount = users;
         return users;
     }
 
@@ -247,7 +247,7 @@ public class UserLab {
             }
         }, sql);
         Log.d(TAG, "getUsersWithAccomplishCount: " + users.size());
-        sUserListWithAccomplishCount.addAll(users);
+        sUserListWithAccomplishCount = users;
         return users;
     }
 
