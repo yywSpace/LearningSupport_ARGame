@@ -17,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.Navi.Activity.MapActivity;
+import com.example.learningsupport_argame.UserManagement.ranking.RankingActivity;
 import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
@@ -78,6 +79,7 @@ public class NavigationController {
         ImageButton rankingImageButton = headerView.findViewById(R.id.navigation_ranking);
         rankingImageButton.setOnClickListener(v -> {
             Toast.makeText(context, "排行", Toast.LENGTH_SHORT).show();
+            context.startActivity(new Intent(context, RankingActivity.class));
         });
         ImageButton honourImageButton = headerView.findViewById(R.id.navigation_honour);
         honourImageButton.setOnClickListener(v -> {
@@ -102,8 +104,7 @@ public class NavigationController {
                 FriendListDialog fld = new FriendListDialog(context, UserLab.getCurrentUser().getId() + "", null);
 //                context.startActivity(new Intent(context, FriendListActivity.class));
             }
-            if (item.getItemId() == R.id.navigation_menu_bag && mNavigationItem != NavigationItem.BAG)
-            {
+            if (item.getItemId() == R.id.navigation_menu_bag && mNavigationItem != NavigationItem.BAG) {
                 Toast.makeText(context, "bag", Toast.LENGTH_SHORT).show();
 //                context.startActivity(new Intent(context, TaskListActivity.class));
             }

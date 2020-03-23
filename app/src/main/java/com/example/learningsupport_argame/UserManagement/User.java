@@ -30,6 +30,9 @@ public class User {
     private List<RewardItem> mRewardItems;
     private int mOnlineStatus;// 0 不在线， 1 在线， 2 接收到消息
 
+    // 一些排行信息
+    private int mReleaseCount;
+    private int mAccomplishCount;
     public User() {
 
     }
@@ -180,5 +183,21 @@ public class User {
 
     public void setHp(int hp) {
         mHp = hp;
+    }
+
+    public int getReleaseCount() {
+        return mReleaseCount;
+    }
+
+    public void setReleaseCount(int releaseCount) {
+        mReleaseCount = releaseCount;
+    }
+
+    public int getAccomplishCount() {
+        return mAccomplishCount;
+    }
+
+    public void setAccomplishCount(int accomplishCount) {
+        mAccomplishCount = accomplishCount;
     }
 }

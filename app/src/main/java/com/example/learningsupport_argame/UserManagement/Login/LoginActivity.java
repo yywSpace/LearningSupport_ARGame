@@ -26,6 +26,7 @@ import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
+import com.example.learningsupport_argame.UserManagement.ranking.RankingReleaseCountFragment;
 
 // TODO: 20-2-17 各个权限的获取可以全部获取或按需获取
 public class LoginActivity extends AppCompatActivity {
@@ -99,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
 //                        startActivity(new Intent(LoginActivity.this, MapActivity.class));
 //                        startActivity(new Intent(this, FeedbackDetailsActivity.class));
 //                        startActivity(new Intent(this, CourseMainActivity.class));
+
                         finish();
                     }
                 });
@@ -128,8 +130,8 @@ public class LoginActivity extends AppCompatActivity {
             startService(MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
         }).start();
 //        startActivity(new Intent(LoginActivity.this, MissionAccomplishActivity.class));
-
         startActivity(new Intent(this, TaskListActivity.class));
+
 //        startActivity(new Intent(LoginActivity.this, MapActivity.class));
 //        startActivity(new Intent(this, FeedbackDetailsActivity.class));
 //        startActivity(new Intent(this, CourseMainActivity.class));
@@ -165,5 +167,4 @@ public class LoginActivity extends AppCompatActivity {
                 .create()
                 .show();
     }
-
 }

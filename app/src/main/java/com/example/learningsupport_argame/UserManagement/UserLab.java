@@ -13,7 +13,9 @@ import java.util.List;
 
 public class UserLab {
     public static String TAG = "UserLab";
-
+    public static List<User> sUserListWithLevel = new ArrayList<>();
+    public static List<User> sUserListWithAccomplishCount = new ArrayList<>();
+    public static List<User> sUserListWithReleaseCount = new ArrayList<>();
     private static User sCurrentUser;
 
     private UserLab() {
@@ -46,7 +48,7 @@ public class UserLab {
     public static List<User> getUserWith(String sql, Object... args) {
         List<User> users = new ArrayList<>();
         DbUtils.query(resultSet -> {
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 User user = new User();
                 user.setId(resultSet.getInt("user_id"));
                 user.setAccount(resultSet.getString("user_account"));
@@ -168,4 +170,85 @@ public class UserLab {
                 "DELETE FROM friend WHERE friend_id = ?",
                 Integer.parseInt(friendId));
     }
+
+
+    public static List<User> getUserListWithLevel() {
+        List<User> users = new ArrayList<>();
+        String sql = "" +
+                "select \n " +
+                "   user_id,\n" +
+                "   user_name,\n" +
+                "   user_avatar,\n" +
+                "   user_level\n" +
+                "from user order by user_level desc;";
+        DbUtils.query(resultSet -> {
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getInt("user_id"));
+                user.setName(resultSet.getString("user_name"));
+                user.setAvatar(DbUtils.Bytes2Bitmap(resultSet.getBytes("user_avatar")));
+                user.setLevel(resultSet.getInt("user_level"));
+                users.add(user);
+            }
+        }, sql);
+        sUserListWithLevel.addAll(users);
+        return users;
+    }
+
+    public static List<User> getUserWithReleaseCount() {
+        String sql = "" +
+                "select\n" +
+                "   user_id as id,\n" +
+                "   user_name,\n" +
+                "   user_avatar,\n" +
+                "   (select count(*)  from task t where t.user_id =  id)  release_count \n" +
+                "from user order by release_count desc;";
+        List<User> users = new ArrayList<>();
+        DbUtils.query(resultSet -> {
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getInt("id"));
+                user.setName(resultSet.getString("user_name"));
+                user.setAvatar(DbUtils.Bytes2Bitmap(resultSet.getBytes("user_avatar")));
+                user.setReleaseCount(resultSet.getInt("release_count"));
+                users.add(user);
+            }
+        }, sql);
+        Log.d(TAG, "getUserWithReleaseCount: " + users.size());
+        sUserListWithReleaseCount.addAll(users);
+        return users;
+    }
+
+
+    /**
+     * 查询每个用户的完成任务数量
+     *
+     * @return
+     */
+    public static List<User> getUsersWithAccomplishCount() {
+        String sql = "" +
+                "select \n" +
+                "   user_id as id,\n" +
+                "   user_name,\n" +
+                "   user_avatar,\n" +
+                "   (select count(*) from task where task_id in \n" +
+                "       (select task_id from task_participant \n" +
+                "           where task_participant.participant_id = id and task_participant.task_accomplish_status = '完成'))  accomplish_count " +
+                " from user order by accomplish_count desc;";
+        List<User> users = new ArrayList<>();
+        DbUtils.query(resultSet -> {
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getInt("id"));
+                user.setName(resultSet.getString("user_name"));
+                user.setAvatar(DbUtils.Bytes2Bitmap(resultSet.getBytes("user_avatar")));
+                user.setAccomplishCount(resultSet.getInt("accomplish_count"));
+                users.add(user);
+            }
+        }, sql);
+        Log.d(TAG, "getUsersWithAccomplishCount: " + users.size());
+        sUserListWithAccomplishCount.addAll(users);
+        return users;
+    }
+
 }
