@@ -1,13 +1,20 @@
 package com.example.learningsupport_argame.ARModel.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.example.learningsupport_argame.ARModel.Items.ModelItem;
+import com.example.learningsupport_argame.Task.Task;
+import com.example.learningsupport_argame.Task.TaskLab;
+import com.example.learningsupport_argame.Task.TaskShowView;
 import com.google.ar.sceneform.Camera;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
@@ -16,7 +23,6 @@ import com.google.ar.sceneform.rendering.ViewRenderable;
 
 public class ARUtils {
     private static final String TAG = "ARUtils";
-
 
 
     // dp转像素
@@ -41,9 +47,11 @@ public class ARUtils {
         return rotation;
     }
 
-    public static void buildViewRenderable(Context context, ModelItem item, OnRenderableBuildListener renderableBuildListener) {
+    public static void buildViewRenderable(Context context, Task task, ModelItem item, OnRenderableBuildListener renderableBuildListener) {
+        TaskShowView taskShowView = new TaskShowView((Activity) context);
+        taskShowView.initData(task);
         ViewRenderable.builder()
-                .setView(context, item.getViewId())
+                .setView(context, taskShowView.getView())
                 .build()
                 .thenAccept(renderable -> {
                     if (renderableBuildListener != null)

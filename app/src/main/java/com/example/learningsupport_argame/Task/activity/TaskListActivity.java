@@ -50,6 +50,7 @@ import java.util.List;
 import static com.example.learningsupport_argame.Task.TaskLab.mAcceptedTaskList;
 
 public class TaskListActivity extends AppCompatActivity {
+    private NavigationController mNavigationController;
     private static String TAG = "TaskListActivity";
     private static final int PUT_MODEL_ACCOMPLISH = 1;
     private VpAdapter mVpAdapter;
@@ -68,7 +69,7 @@ public class TaskListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tasklist_navigation_layout);
         // 初始化导航栏信息
-        new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.TASK);
+        mNavigationController = new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.TASK);
 //        mReturnButton = findViewById(R.id.navigation_button);
 //        mReturnButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -97,6 +98,13 @@ public class TaskListActivity extends AppCompatActivity {
         initEvent();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mNavigationController != null)
+            mNavigationController.refresh();
+    }
+
     /**
      * init BottomNavigationViewEx envent
      */
@@ -108,7 +116,6 @@ public class TaskListActivity extends AppCompatActivity {
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                 menu.findItem(R.id.menu_task_running).setIcon(R.drawable.task_list_icon_running);
                 menu.findItem(R.id.menu_task_accepted).setIcon(R.drawable.task_list_icon_accepted);
                 menu.findItem(R.id.menu_task_can_accept).setIcon(R.drawable.task_list_icon_all);
@@ -167,7 +174,6 @@ public class TaskListActivity extends AppCompatActivity {
 
             }
         });
-
 
         /**
          * fab 点击事件结合OnNavigationItemSelectedListener中return false使用

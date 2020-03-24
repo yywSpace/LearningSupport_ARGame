@@ -180,7 +180,7 @@ public class MapActivity extends AppCompatActivity {
             TaskShowView taskShowView = new TaskShowView(this);
             new Thread(() -> {
                 Task task = TaskLab.getARTask(marker.getExtraInfo().getString("task_id"));
-                runOnUiThread(()->{
+                runOnUiThread(() -> {
                     taskShowView.initData(task);
                 });
             }).start();
@@ -318,7 +318,9 @@ public class MapActivity extends AppCompatActivity {
 
     void initARTask() {
         List<OverlayOptions> optionsList = new ArrayList<>();
-
+        Log.d(TAG, "initARTask: " + ModelInfoLab.mModelInfoList);
+        if (ModelInfoLab.mModelInfoList == null)
+            return;
         ModelInfoLab.mModelInfoList.stream().forEach((info) -> {
             OverlayOptions overlayOptions = createOverlay(info.getModelLatLng(), R.drawable.map_task_icon, "task_id", info.getTaskId() + "");
             optionsList.add(overlayOptions);
@@ -338,7 +340,6 @@ public class MapActivity extends AppCompatActivity {
         initUdpClient();
         mMapView.onResume();
         super.onResume();
-
     }
 
     @Override

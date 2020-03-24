@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,12 +20,13 @@ import com.example.learningsupport_argame.Task.TaskReward.RewardItem;
 import com.example.learningsupport_argame.Task.TaskReward.RewardLab;
 import com.example.learningsupport_argame.Task.TaskReward.TaskReward;
 import com.example.learningsupport_argame.UserManagement.UserLab;
+import com.example.learningsupport_argame.UserManagement.bag.UserBagActivity;
 
 import java.util.Random;
 
 
 // todo 任务失败时，计算失败原因
-// todo 排行榜，称号系统
+// todo 称号系统
 public class MissionAccomplishActivity extends AppCompatActivity {
     private String TAG = "MissionAccomplishActivity";
     private TextView mAccomplishResult, mPhoneUseRate, mOutOfRangeRate, mAttentionRate, mPhoneUseCount, mExp, mGold, mItem;
@@ -52,7 +54,8 @@ public class MissionAccomplishActivity extends AppCompatActivity {
             mMonitorInfo.setTaskBeginTime("2019-11-27 20:30");
             mMonitorInfo.setTaskEndTime("2019-11-27 21:30");
         }
-
+        // 任务结束后设置加速为false
+        UserLab.getCurrentUser().setNextTaskSpeedUp(false);
         initView();
         initData();
     }
@@ -93,14 +96,12 @@ public class MissionAccomplishActivity extends AppCompatActivity {
         mOutOfRangeRate.setText(String.format("%.2f%%", outOfRangeRate * 100));
         // 任务执行中手机使用次数
         mPhoneUseCount.setText(mMonitorInfo.getMonitorPhoneUseCount() + "次");
-
-        mItemImage.setImageResource(R.drawable.task_reward_potion_red);
         // 加权平均
         float rate = 0;
         if (attentionRate <= 0.5) {
             taskAccomplishSuccess = false;
             rate = attentionRate;
-        } else if (outOfRangeRate <= 0.5) {
+        } else if ((1 - outOfRangeRate) <= 0.5) {
             taskAccomplishSuccess = false;
             rate = outOfRangeRate;
         } else {
@@ -132,11 +133,13 @@ public class MissionAccomplishActivity extends AppCompatActivity {
         if (taskAccomplishSuccess) {
             taskReward.randomRewardItem();
             if (taskReward.getRewardItem().getRewardItemType().equals(RewardItem.RewardItemType.ITEM_EXP_POTION))
-                mItemImage.setBackgroundResource(R.drawable.task_reward_potion_yellow);
+                mItemImage.setBackgroundResource(R.drawable.bag_exp_icon);
             else if (taskReward.getRewardItem().getRewardItemType().equals(RewardItem.RewardItemType.ITEM_HEALING_POTION))
-                mItemImage.setBackgroundResource(R.drawable.task_reward_potion_blue);
+                mItemImage.setBackgroundResource(R.drawable.bag_heal_icon);
             else if (taskReward.getRewardItem().getRewardItemType().equals(RewardItem.RewardItemType.ITEM_SPEED_POTION))
-                mItemImage.setBackgroundResource(R.drawable.task_reward_potion_red);
+                mItemImage.setBackgroundResource(R.drawable.bag_speed_icon);
+            else if (taskReward.getRewardItem().getRewardItemType().equals(RewardItem.RewardItemType.ITEM_GOLD_POTION))
+                mItemImage.setBackgroundResource(R.drawable.bag_gold_icon);
             mItem.setText("x" + taskReward.getRewardItem().getCount());
         } else {
             taskReward.setRewardItem(new RewardItem(RewardItem.RewardItemType.ITEM_NONE, 0));
@@ -179,7 +182,9 @@ public class MissionAccomplishActivity extends AppCompatActivity {
                 UserLab.updateUser(UserLab.getCurrentUser());
             }
             // 将获得属性加到自身
-            UserLab.getCurrentUser().addReward(taskReward);
+            boolean isLevelUp = UserLab.getCurrentUser().addReward(taskReward);
+            if (isLevelUp)
+                Toast.makeText(this, "恭喜您的等级提升至" + UserLab.getCurrentUser().getLevel() + "级", Toast.LENGTH_SHORT).show();
             UserLab.updateUser(UserLab.getCurrentUser());
             RewardLab.insert(taskReward);
         }).start();

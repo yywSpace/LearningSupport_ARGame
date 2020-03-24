@@ -119,6 +119,7 @@ public class MonitorTaskStatusService extends Service {
                                 String currentTime = df.format(now);
                                 mMonitorIntent.putExtra("current_time", currentTime);
                                 startService(mMonitorIntent);
+                                MonitorActivity.sMonitorIntent = mMonitorIntent;
                                 // 打开监督界面
                                 getApplication().startActivity(monitorIntent);
                                 // 设置任务状态为正执行

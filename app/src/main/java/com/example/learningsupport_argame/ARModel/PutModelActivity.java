@@ -340,7 +340,7 @@ public class PutModelActivity extends AppCompatActivity {
                 }
 
                 if (item.getModelItemType() == ModelItemType.VIEW) {
-                    ARUtils.buildViewRenderable(this, item, renderable -> {
+                    ARUtils.buildViewRenderable(this, mCurrentTask, item, renderable -> {
                         mViewRenderable = (ViewRenderable) renderable;
                         createAnchorNode(mArSceneView, mViewRenderable);
                         Toast.makeText(this, "View renderable build finish", Toast.LENGTH_SHORT).show();

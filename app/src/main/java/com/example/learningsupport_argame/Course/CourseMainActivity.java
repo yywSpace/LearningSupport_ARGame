@@ -55,6 +55,9 @@ public class CourseMainActivity extends AppCompatActivity {
     private final static String TAG = "CourseMainActivity";
     public static final int COURSE_TIME_REQUEST_CODE = 100;
     public static final int COURSE_ADD_REQUEST_CODE = 101;
+
+    private NavigationController mNavigationController;
+
     private String[] weeks = new String[]{"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
     private int[] background = new int[]{R.drawable.course_course1, R.drawable.course_course2,
             R.drawable.course_course3, R.drawable.course_course4,
@@ -85,7 +88,7 @@ public class CourseMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.course_table_navigation_layout);
         // 添加侧边栏
-        new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.COURSE);
+        mNavigationController = new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.COURSE);
 
         week_current = Integer.parseInt(getDate()[1]);
         initView();
@@ -113,6 +116,13 @@ public class CourseMainActivity extends AppCompatActivity {
 //        String ss2 = "周使用时间" + m.getWeekInfo()[0] + " 周专注时间" + m.getWeekInfo()[1] + " 周使用次数" + m.getWeekInfo()[2];
 ////        String ss3="月使用时间"+m.getMonthInfo()[0]+" 月专注时间"+m.getMonthInfo()[1]+" 月使用次数"+m.getMonthInfo()[2];
 //        Toast.makeText(CourseMainActivity.this, ss1 + ss2, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mNavigationController != null)
+            mNavigationController.refresh();
     }
 
     @Override

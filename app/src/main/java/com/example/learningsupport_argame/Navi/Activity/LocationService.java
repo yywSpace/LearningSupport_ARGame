@@ -37,20 +37,20 @@ public class LocationService extends Service {
         mDetectionARTaskThread = new Thread(() -> {
             while (!Thread.interrupted()) {
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 if (ModelInfoLab.mModelInfoList != null) {
                     for (ModelInfo info : ModelInfoLab.mModelInfoList) {
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(100);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        if (withinDistance(info.getModelLatLng(), 5)) {
+                        if (withinDistance(info.getModelLatLng(), 100)) {
                             if (!info.isHasVibratorShaken()) {
-                                VibratorUtil.Vibrate(this, 1000);
+                                VibratorUtil.Vibrate(this, 500);
                                 info.setHasVibratorShaken(true);
                             }
                         } else
@@ -62,7 +62,6 @@ public class LocationService extends Service {
         new Thread(() -> {
             // 获取AR模型列表
             ModelInfoLab.getModelInfoList();
-
             while (UserLab.getCurrentUser() == null) ;
             Log.d(TAG, "onCreate: " + UserLab.getCurrentUser());
             mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, UserLab.getCurrentUser().getName());
@@ -89,7 +88,6 @@ public class LocationService extends Service {
                         // 检测是否到达目标点
 
                     }).start();
-
                 }
             });
             mLocationClient.start();
@@ -123,14 +121,13 @@ public class LocationService extends Service {
         return mCurrentLocation;
     }
 
-
-    private boolean withinDistance(LatLng modelLatLng, int distanceLimit) {
+    public static boolean withinDistance(LatLng modelLatLng, int distanceLimit) {
         if (getCurrentLocation() == null)
             return false;
         return distance(modelLatLng) <= distanceLimit;
     }
 
-    public int distance(LatLng modelLatLng) {
+    public static int distance(LatLng modelLatLng) {
         return (int) Math.round(
                 MapUtils.distance(
                         modelLatLng.latitude,

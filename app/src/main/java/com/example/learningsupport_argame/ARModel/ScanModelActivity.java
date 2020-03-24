@@ -38,10 +38,14 @@ import com.example.learningsupport_argame.ARModel.Items.ModelInfoLab;
 import com.example.learningsupport_argame.ARModel.Utils.ARUtils;
 import com.example.learningsupport_argame.ARModel.Utils.DemoUtils;
 import com.example.learningsupport_argame.ARModel.Utils.Vector3Utils;
+import com.example.learningsupport_argame.Navi.Activity.LocationService;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Client.ClientLab;
 import com.example.learningsupport_argame.Client.MessageData;
 import com.example.learningsupport_argame.Client.UDPClient;
+import com.example.learningsupport_argame.Task.Task;
+import com.example.learningsupport_argame.Task.TaskLab;
+import com.example.learningsupport_argame.Task.fragment.TaskListBasicFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Pose;
@@ -97,30 +101,40 @@ public class ScanModelActivity extends AppCompatActivity {
                 Toast.makeText(ScanModelActivity.this, "NO_TRACKING", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (mCurrentAnchorNode == null)
+            if (mCurrentAnchorNode == null) {
+                Toast.makeText(ScanModelActivity.this, "模型未加载完毕", Toast.LENGTH_SHORT).show();
                 return;
-            if (mCurrentAnchorNode != null)
-                mCurrentAnchorNode.getAnchor().detach();
+            }
+            mCurrentAnchorNode.getAnchor().detach();
             mCurrentAnchorNode = createAnchorNode(mCurrentModelInfo, mCurrentRenderable);
         });
 
-        initMap();
-        initARTask();
-
         // 申请相机权限
         DemoUtils.requestCameraPermission(this, RC_PERMISSIONS);
-    }
 
-    @Override
-    protected void onResume() {
-        // 获取地图中AR模型数据
         new Thread(() -> {
-            ModelInfoLab.getModelInfoList();
+//            List<ModelInfo> modelInfos = ModelInfoLab.getModelInfoList();
             // 等待进入追踪状态
-            while (mArSceneView.getArFrame().getCamera().getTrackingState() != TrackingState.TRACKING)
-                ;
-            ModelInfoLab.mModelInfoList.stream().forEach(modelInfo -> {
-                if (modelInfo.isHasVibratorShaken()) {
+            while (mArSceneView.getArFrame() == null) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "onCreate:  getArFrame == null");
+            }
+            while (mArSceneView.getArFrame().getCamera().getTrackingState() != TrackingState.TRACKING) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "onCreate: NOT TRACKING");
+            }
+            Log.d(TAG, "onCreate: " + ModelInfoLab.mModelInfoList.size());
+            ModelInfoLab.mModelInfoList.forEach(modelInfo -> {
+                if (LocationService.withinDistance(modelInfo.getModelLatLng(), 100)) {
+                    Task task = TaskLab.getTaskById(modelInfo.getTaskId());
                     ModelItem ar_item = ModelItemsLab.get()
                             .getItemList()
                             .stream()
@@ -131,17 +145,57 @@ public class ScanModelActivity extends AppCompatActivity {
                             Toast.makeText(this, "buildModelRenderable", Toast.LENGTH_SHORT).show();
                             mCurrentAnchorNode = createAnchorNode(modelInfo, renderable);
                         }));
-
                     } else if (ar_item.getModelItemType() == ModelItemType.VIEW) {
-                        runOnUiThread(() -> ARUtils.buildViewRenderable(this, ar_item, renderable -> {
+                        runOnUiThread(() -> ARUtils.buildViewRenderable(this, task, ar_item, renderable -> {
                             Toast.makeText(this, "buildViewRenderable", Toast.LENGTH_SHORT).show();
                             mCurrentAnchorNode = createAnchorNode(modelInfo, renderable);
                         }));
                     }
                     mCurrentModelInfo = modelInfo;
                 }
+//                if (modelInfo.isHasVibratorShaken()) {
+//                    Log.d(TAG, "onCreate:start " + mCurrentModelInfo.getModelName());
+//                    ModelItem ar_item = ModelItemsLab.get()
+//                            .getItemList()
+//                            .stream()
+//                            .filter(item -> item.getItemName().equals(modelInfo.getModelName()))
+//                            .findFirst().get();
+//                    if (ar_item.getModelItemType() == ModelItemType.MODEL) {
+//                        runOnUiThread(() -> ARUtils.buildModelRenderable(this, ar_item, renderable -> {
+//                            Toast.makeText(this, "buildModelRenderable", Toast.LENGTH_SHORT).show();
+//                            mCurrentAnchorNode = createAnchorNode(modelInfo, renderable);
+//                        }));
+//                    } else if (ar_item.getModelItemType() == ModelItemType.VIEW) {
+//                        runOnUiThread(() -> ARUtils.buildViewRenderable(this, task, ar_item, renderable -> {
+//                            Toast.makeText(this, "buildViewRenderable", Toast.LENGTH_SHORT).show();
+//                            mCurrentAnchorNode = createAnchorNode(modelInfo, renderable);
+//                        }));
+//                    }
+//                    mCurrentModelInfo = modelInfo;
+//                    Log.d(TAG, "onCreate:finish " + mCurrentModelInfo.getModelName());
+//                }
             });
         }).start();
+        initMap();
+        initARTask();
+    }
+
+    @Override
+    protected void onResume() {
+        // 获取地图中AR模型数据
+//        new Thread(() -> {
+//            if (mArSceneView != null &&
+//                    mArSceneView.getArFrame() != null && mCurrentModelInfo != null && mCurrentRenderable != null && mCurrentAnchorNode != null) {
+//                while (mArSceneView.getArFrame().getCamera().getTrackingState() != TrackingState.TRACKING) {
+//                    Log.d(TAG, "onResume:  NOT TRACKING");
+//                }
+//                runOnUiThread(() -> {
+//                    mCurrentAnchorNode.getAnchor().detach();
+//                    mCurrentAnchorNode = createAnchorNode(mCurrentModelInfo, mCurrentRenderable);
+//                });
+//            }
+//            ModelInfoLab.getModelInfoList();
+//        }).start();
 
         mMapView.onResume();
         super.onResume();
@@ -169,7 +223,6 @@ public class ScanModelActivity extends AppCompatActivity {
         } catch (CameraNotAvailableException ex) {
             DemoUtils.displayError(this, "Unable to get camera", ex);
             finish();
-            return;
         }
     }
 
@@ -328,6 +381,9 @@ public class ScanModelActivity extends AppCompatActivity {
 
     void initARTask() {
         List<OverlayOptions> optionsList = new ArrayList<>();
+        Log.d(TAG, "initARTask: " + ModelInfoLab.mModelInfoList);
+        if (ModelInfoLab.mModelInfoList == null)
+            return;
         ModelInfoLab.mModelInfoList.stream().forEach((info) -> {
             BitmapDescriptor bitmap = BitmapDescriptorFactory.fromBitmap(ARUtils.zoomImage(
                     BitmapFactory.decodeResource(getResources(), R.drawable.map_task_icon),

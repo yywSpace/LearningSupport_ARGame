@@ -140,7 +140,7 @@
         android:layout_marginTop="30dp"
         android:text="任务奖励"
         android:textAlignment="center"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:textStyle="bold" />
 
     <RelativeLayout
@@ -165,12 +165,12 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/feedback_reward_exp_image"
             android:layout_alignBottom="@+id/feedback_reward_exp_image"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/feedback_reward_exp_image"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/feedback_reward_exp_image"
             android:gravity="center"
             android:text="x100"
             android:textColor="@android:color/black"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
 
         <ImageView
@@ -201,19 +201,19 @@
             android:layout_height="30dp"
             android:layout_below="@+id/feedback_reward_gold_image"
             android:layout_marginTop="5dp"
-            android:src="@drawable/task_reward_potion_red" />
+            android:src="@drawable/bag_heal_icon" />
 
         <TextView
             android:id="@+id/feedback_reward_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/feedback_reward_item_image"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/feedback_reward_item_image"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/feedback_reward_item_image"
             android:gravity="center"
             android:text="x1"
             android:textColor="@android:color/black"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
     </RelativeLayout>
 
     <LinearLayout

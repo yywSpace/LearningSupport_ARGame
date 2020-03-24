@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="140dp"
+    android:layout_marginTop="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/shop_item_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/navigation_shop_icon" />
+
+        <TextView
+            android:id="@+id/shop_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/shop_item_image"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@+id/shop_item_image"
+            android:text="Android模型"
+            android:textSize="20sp" />
+
+
+        <TextView
+            android:id="@+id/shop_item_type_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/shop_item_title"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/shop_item_image"
+            android:text="道具类型：" />
+
+        <TextView
+            android:id="@+id/shop_item_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/shop_item_type_label"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/shop_item_type_label"
+            android:text="AR模型"
+            android:textColor="@color/colorBlack" />
+
+        <TextView
+            android:id="@+id/shop_item_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/shop_item_type_label"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/shop_item_image"
+            android:text="道具或模型的描述" />
+
+        <TextView
+            android:id="@+id/shop_item_coast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/shop_item_image"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:text="$50"
+            android:textColor="@color/colorBlack"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/shop_item_use_button"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dp"
+            android:background="@android:color/holo_blue_light"
+            android:text="购买" />
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

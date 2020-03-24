@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.learningsupport_argame.DbUtils;
 import com.example.learningsupport_argame.Task.TaskReward.RewardItem;
+import com.example.learningsupport_argame.Task.TaskReward.RewardItemLab;
 import com.example.learningsupport_argame.UserManagement.Login.UserManagementStatus;
 
 import java.util.ArrayList;
@@ -63,12 +64,14 @@ public class UserLab {
                 user.setGold(resultSet.getInt("user_gold"));
                 user.setHp(resultSet.getInt("user_hp"));
                 String rewardItemsStr = resultSet.getString("user_reward_items");
-                List<RewardItem> rewardItems = new ArrayList<>(3);
+                List<RewardItem> rewardItems = new ArrayList<>(4);
+                RewardItemLab rewardItemLab = RewardItemLab.get();
                 if (rewardItemsStr.equals("")) {
                     rewardItems.addAll(Arrays.asList(
-                            new RewardItem(RewardItem.RewardItemType.ITEM_HEALING_POTION, 0),
-                            new RewardItem(RewardItem.RewardItemType.ITEM_EXP_POTION, 0),
-                            new RewardItem(RewardItem.RewardItemType.ITEM_SPEED_POTION, 0)));
+                            rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_HEALING_POTION, 0),
+                            rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_EXP_POTION, 0),
+                            rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_SPEED_POTION, 0),
+                            rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_GOLD_POTION, 0)));
                     user.setRewardItems(rewardItems);
                 } else {
                     //[ITEM_HEALING_POTION-0, ITEM_EXP_POTION-0, ITEM_SPEED_POTION-0]
@@ -78,11 +81,13 @@ public class UserLab {
                         String type = item.split("-")[0];
                         int count = Integer.parseInt(item.split("-")[1]);
                         if (RewardItem.RewardItemType.ITEM_HEALING_POTION.toString().equals(type.trim()))
-                            rewardItems.add(new RewardItem(RewardItem.RewardItemType.ITEM_HEALING_POTION, count));
+                            rewardItems.add(rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_HEALING_POTION, count));
                         else if (RewardItem.RewardItemType.ITEM_EXP_POTION.toString().equals(type.trim()))
-                            rewardItems.add(new RewardItem(RewardItem.RewardItemType.ITEM_EXP_POTION, count));
+                            rewardItems.add(rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_EXP_POTION, count));
                         else if (RewardItem.RewardItemType.ITEM_SPEED_POTION.toString().equals(type.trim()))
-                            rewardItems.add(new RewardItem(RewardItem.RewardItemType.ITEM_SPEED_POTION, count));
+                            rewardItems.add(rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_SPEED_POTION, count));
+                        else if (RewardItem.RewardItemType.ITEM_GOLD_POTION.toString().equals(type.trim()))
+                            rewardItems.add(rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_GOLD_POTION, count));
                     }
                     Log.d(TAG, "rewardItems: " + rewardItems.toString());
                     user.setRewardItems(rewardItems);

@@ -97,6 +97,5 @@ public class ModelInfoLab {
         mModelInfoList = infoList;
         return infoList;
     }
-
 }
 

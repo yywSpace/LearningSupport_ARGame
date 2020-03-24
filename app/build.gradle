@@ -4,6 +4,8 @@ apply plugin: 'com.google.ar.sceneform.plugin'
 android {
     compileSdkVersion 28
     defaultConfig {
+        multiDexEnabled true
+
         applicationId "com.example.learningsupport_argame"
         minSdkVersion 26
 
@@ -16,7 +18,8 @@ android {
 
 
         ndk {
-            abiFilters 'armeabi-v7a', 'x86'
+            //abiFilters 'armeabi-v7a', 'x86'
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
         }
     }
 

@@ -8,24 +8,31 @@ import com.example.learningsupport_argame.UserManagement.bag.Item;
  * 目前设置每次只能得到一种道具
  */
 public class RewardItem extends Item {
-    private RewardItemType mRewardItemType;
+    private RewardItemType mItemType;
     private int mCount;
 
     public RewardItem() {
+        super("", "");
+    }
 
+    public RewardItem(String name, String desc, RewardItemType rewardItemType, int count) {
+        super(name, desc);
+        mItemType = rewardItemType;
+        mCount = count;
     }
 
     public RewardItem(RewardItemType rewardItemType, int count) {
-        mRewardItemType = rewardItemType;
+        super("", "");
+        mItemType = rewardItemType;
         mCount = count;
     }
 
     public RewardItemType getRewardItemType() {
-        return mRewardItemType;
+        return mItemType;
     }
 
     public void setRewardItemType(RewardItemType rewardItemType) {
-        mRewardItemType = rewardItemType;
+        mItemType = rewardItemType;
     }
 
     public int getCount() {
@@ -35,6 +42,7 @@ public class RewardItem extends Item {
     public void setCount(int count) {
         mCount = count;
     }
+
 
     @NonNull
     @Override
@@ -55,6 +63,10 @@ public class RewardItem extends Item {
          * 加速药水，可适当加速任务完成
          */
         ITEM_SPEED_POTION,
+        /**
+         * 金币
+         */
+        ITEM_GOLD_POTION,
         /**
          * 没有道具
          */

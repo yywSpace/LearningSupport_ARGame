@@ -13,8 +13,7 @@ public class ModelItemsLab {
     private ModelItemsLab() {
         mItemList = new ArrayList<>();
         mItemList.add(new ModelItem("Android模型", "简单的android模型", "andy.sfb", ModelItemType.MODEL));
-        mItemList.add(new ModelItem("文字", "只包含文字的布局", R.layout.armodel_view_renderable_text, ModelItemType.VIEW));
-
+        mItemList.add(new ModelItem("任务详情", "在AR界面中显示任务详情界面", R.layout.armodel_view_renderable_text, ModelItemType.VIEW));
     }
 
     public static ModelItemsLab get() {

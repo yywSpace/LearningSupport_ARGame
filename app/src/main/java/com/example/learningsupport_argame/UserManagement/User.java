@@ -29,10 +29,12 @@ public class User {
     private int mGold;
     private List<RewardItem> mRewardItems;
     private int mOnlineStatus;// 0 不在线， 1 在线， 2 接收到消息
+    private boolean isNextTaskSpeedUp;
 
     // 一些排行信息
     private int mReleaseCount;
     private int mAccomplishCount;
+
     public User() {
 
     }
@@ -48,21 +50,24 @@ public class User {
         mHp = Math.max(mHp, 0);
     }
 
-    public void addReward(TaskReward taskReward) {
-        mExp += taskReward.getExp();
+    // 返回是否升级成功
+    public boolean addReward(TaskReward taskReward) {
         mGold += taskReward.getGold();
-        if (taskReward.getRewardItem() == null)
-            return;
-        for (int i = 0; i < mRewardItems.size(); i++) {
-            Log.d(UserLab.TAG, "addReward: " + mRewardItems.get(i));
-            Log.d(UserLab.TAG, "taskReward: " + taskReward.getRewardItem().toString());
-            if (mRewardItems.get(i).getRewardItemType().equals(taskReward.getRewardItem().getRewardItemType())) {
-                mRewardItems.get(i).setCount(mRewardItems.get(i).getCount() + taskReward.getRewardItem().getCount());
-                Log.d(UserLab.TAG, "addReward: " + mRewardItems.get(i).getCount() + "," + taskReward.getRewardItem().getCount());
-                break;
+        if (taskReward.getRewardItem() != null)
+            for (int i = 0; i < mRewardItems.size(); i++) {
+                Log.d(UserLab.TAG, "addReward: " + mRewardItems.get(i));
+                Log.d(UserLab.TAG, "taskReward: " + taskReward.getRewardItem().toString());
+                if (mRewardItems.get(i).getRewardItemType().equals(taskReward.getRewardItem().getRewardItemType())) {
+                    mRewardItems.get(i).setCount(mRewardItems.get(i).getCount() + taskReward.getRewardItem().getCount());
+                    Log.d(UserLab.TAG, "addReward: " + mRewardItems.get(i).getCount() + "," + taskReward.getRewardItem().getCount());
+                    break;
+                }
             }
-        }
+        return levelUp(taskReward.getExp());
+    }
 
+    public boolean levelUp(int addedExp) {
+        mExp += addedExp;
         // 升级
         int maxExp = User.BASIC_EXP + mLevel * 500;
         if (mExp >= maxExp) {
@@ -70,7 +75,9 @@ public class User {
             mLevel++;
             // 升级血量满
             mHp = User.BASIC_HP + mLevel;
+            return true;
         }
+        return false;
     }
 
     public int getId() {
@@ -199,5 +206,13 @@ public class User {
 
     public void setAccomplishCount(int accomplishCount) {
         mAccomplishCount = accomplishCount;
+    }
+
+    public boolean isNextTaskSpeedUp() {
+        return isNextTaskSpeedUp;
+    }
+
+    public void setNextTaskSpeedUp(boolean nextTaskSpeedUp) {
+        isNextTaskSpeedUp = nextTaskSpeedUp;
     }
 }

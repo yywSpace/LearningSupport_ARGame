@@ -25,6 +25,7 @@ import com.example.learningsupport_argame.Navi.Activity.LocationService;
 import com.example.learningsupport_argame.Navi.Utils.MapUtils;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Task.Task;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -69,6 +70,11 @@ public class MonitorTaskAccomplishService extends Service {
         mPowerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mTimer = new Timer();
         new Thread(() -> {
+            // 如果此任务加速，则减小间隔时间
+            int period = 1000;
+            if (UserLab.getCurrentUser().isNextTaskSpeedUp()) {
+                period *= 0.7;
+            }
             mTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -163,7 +169,7 @@ public class MonitorTaskAccomplishService extends Service {
                     mRemoteViews.setTextViewText(R.id.monitor_notification_task_attention_time, TimeUtils.second2Time(mAttentionTime));
                     startForeground(NOTIFICATION_FOREGROUND_ID, notification);
                 }
-            }, 0, 1000);
+            }, 0, period);
         }).start();
 
     }

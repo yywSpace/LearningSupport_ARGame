@@ -6,9 +6,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import com.example.learningsupport_argame.FeedbackModel.MissionAccomplishActivit
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.TestActivity;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.util.List;
 
@@ -29,7 +32,7 @@ import java.util.List;
 // todo 引导用户将此应用加入白名单
 public class MonitorActivity extends AppCompatActivity {
     private static String TAG = "MonitorActivity";
-    private Intent mMonitorIntent;
+    public static Intent sMonitorIntent;
     private ImageView mReturnImageView;
     private TextView mAttentionTime;
     private TextView mPhoneUseCount;
@@ -37,6 +40,7 @@ public class MonitorActivity extends AppCompatActivity {
     private TextView mRemainingTime;
     private int mInitialRemainingTime;
     private CountDownView mCountDownView;
+    private ImageView mTaskSpeedUpImageView;
     private boolean hasSetTime;
     public static MonitorUIHandler mMonitorHandler;
     public static boolean isActivityOn;
@@ -114,6 +118,15 @@ public class MonitorActivity extends AppCompatActivity {
     }
 
     void initView() {
+        mTaskSpeedUpImageView = findViewById(R.id.monitor_task_speed_up_image_view);
+        if (UserLab.getCurrentUser().isNextTaskSpeedUp()) {
+            mTaskSpeedUpImageView.setVisibility(View.VISIBLE);
+            mTaskSpeedUpImageView.setOnClickListener(v ->
+                    Toast.makeText(MonitorActivity.this, "任务加速中", Toast.LENGTH_SHORT).show());
+        } else {
+            mTaskSpeedUpImageView.setVisibility(View.INVISIBLE);
+        }
+
         mReturnImageView = findViewById(R.id.monitor_return);
         mReturnImageView.setOnClickListener(v -> {
             Intent i = new Intent(Intent.ACTION_MAIN);
@@ -171,9 +184,11 @@ public class MonitorActivity extends AppCompatActivity {
             if (remandingTime > 0)
                 return;
 
-
 //            unbindService(mServiceConnection);
-//            stopService(mMonitorIntent);
+            if (sMonitorIntent != null) {
+                stopService(sMonitorIntent);
+                Log.d(TAG, "handleMessage: stopService");
+            }
 
             monitorInfo.setMonitorTaskScreenOnTime(data.getInt(MonitorInfo.TASK_SCREEN_ON_TIME));
             monitorInfo.setMonitorScreenOnAttentionSpan(data.getInt(MonitorInfo.ATTENTION_TIME));
@@ -194,5 +209,4 @@ public class MonitorActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
-
 }

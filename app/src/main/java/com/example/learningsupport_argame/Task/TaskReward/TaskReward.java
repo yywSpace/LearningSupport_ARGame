@@ -23,7 +23,7 @@ public class TaskReward {
      */
     public void randomRewardItem() {
         mRewardItem = new RewardItem();
-        // 十分之三的几率可能获得道具
+        // 十分之4的几率可能获得道具
         int randomNum = new Random(System.currentTimeMillis()).nextInt(100);
         if (randomNum <= 10)
             mRewardItem.setRewardItemType(RewardItem.RewardItemType.ITEM_HEALING_POTION);
@@ -31,9 +31,11 @@ public class TaskReward {
             mRewardItem.setRewardItemType(RewardItem.RewardItemType.ITEM_EXP_POTION);
         else if (randomNum <= 30)
             mRewardItem.setRewardItemType(RewardItem.RewardItemType.ITEM_SPEED_POTION);
+        else if (randomNum <= 40)
+            mRewardItem.setRewardItemType(RewardItem.RewardItemType.ITEM_GOLD_POTION);
         else
             mRewardItem.setRewardItemType(RewardItem.RewardItemType.ITEM_NONE);
-        int itemCount = new Random(System.currentTimeMillis()).nextInt(2);
+        int itemCount = new Random(System.currentTimeMillis()).nextInt(3);
         mRewardItem.setCount(itemCount);
     }
 

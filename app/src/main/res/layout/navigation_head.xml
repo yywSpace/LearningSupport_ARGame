@@ -7,13 +7,14 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/navigation_user_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:paddingTop="50dp">
+        android:paddingTop="50dp"
+        android:paddingBottom="10dp">
 
         <com.example.learningsupport_argame.CircleImageView
             android:id="@+id/user_avatar"
@@ -21,10 +22,22 @@
             android:layout_height="72dp"
             android:src="@mipmap/ic_launcher_round" />
 
+        <TextView
+            android:id="@+id/user_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_avatar"
+            android:layout_alignStart="@+id/exp_and_hp"
+            android:layout_marginTop="10dp"
+            android:text="金币：100"
+            android:textSize="15sp" />
+
         <RelativeLayout
+            android:id="@+id/exp_and_hp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/user_avatar"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -75,14 +88,15 @@
 
         </RelativeLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/navigation_user_message"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="5dp">
+
 
         <ImageButton
             android:id="@+id/navigation_ranking"
@@ -106,5 +120,6 @@
             android:layout_marginStart="30dp"
             android:background="@drawable/navigation_shop_icon"
             tools:ignore="ContentDescription" />
+
     </LinearLayout>
 </RelativeLayout>

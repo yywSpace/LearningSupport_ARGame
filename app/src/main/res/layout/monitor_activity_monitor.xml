@@ -37,20 +37,35 @@
             android:layout_weight="9"
             android:orientation="vertical">
 
-            <TextClock
-                android:id="@+id/monitor_system_time"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="30dp"
-                android:format12Hour="hh:mm"
-                android:format24Hour="HH:mm"
-                android:text="10:06"
-                android:textColor="@android:color/black"
-                android:textSize="40dp"
-                android:textStyle="bold" />
+                android:layout_marginTop="30dp">
 
-            <TextClock
+                <TextView
+                    android:id="@+id/monitor_system_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:format12Hour="hh:mm"
+                    android:format24Hour="HH:mm"
+                    android:text="10:06"
+                    android:textColor="@android:color/black"
+                    android:textSize="40dp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/monitor_task_speed_up_image_view"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/monitor_task_speed_up_icon" />
+            </RelativeLayout>
+
+
+            <TextView
                 android:id="@+id/monitor_system_calender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
