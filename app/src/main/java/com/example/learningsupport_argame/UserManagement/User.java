@@ -30,7 +30,8 @@ public class User {
     private List<RewardItem> mRewardItems;
     private int mOnlineStatus;// 0 不在线， 1 在线， 2 接收到消息
     private boolean isNextTaskSpeedUp;
-
+    private String mLastLoginTime;
+    private int mLoginCount;
     // 一些排行信息
     private int mReleaseCount;
     private int mAccomplishCount;
@@ -214,5 +215,21 @@ public class User {
 
     public void setNextTaskSpeedUp(boolean nextTaskSpeedUp) {
         isNextTaskSpeedUp = nextTaskSpeedUp;
+    }
+
+    public String getLastLoginTime() {
+        return mLastLoginTime;
+    }
+
+    public void setLastLoginTime(String lastLoginTime) {
+        mLastLoginTime = lastLoginTime;
+    }
+
+    public int getLoginCount() {
+        return mLoginCount;
+    }
+
+    public void setLoginCount(int loginCount) {
+        mLoginCount = loginCount;
     }
 }

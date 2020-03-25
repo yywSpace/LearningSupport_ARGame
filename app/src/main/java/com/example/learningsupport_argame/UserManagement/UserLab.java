@@ -60,9 +60,11 @@ public class UserLab {
                 user.setBirthday(resultSet.getString("user_birthday"));
                 user.setSex(resultSet.getString("user_sex"));
                 user.setCity(resultSet.getString("user_city"));
+                user.setLastLoginTime(resultSet.getString("user_last_login_time"));
                 user.setExp(resultSet.getInt("user_exp"));
                 user.setGold(resultSet.getInt("user_gold"));
                 user.setHp(resultSet.getInt("user_hp"));
+                user.setLoginCount(resultSet.getInt("user_login_count"));
                 String rewardItemsStr = resultSet.getString("user_reward_items");
                 List<RewardItem> rewardItems = new ArrayList<>(4);
                 RewardItemLab rewardItemLab = RewardItemLab.get();
@@ -133,16 +135,15 @@ public class UserLab {
     public static boolean confirmPassword(String account, String oldPassword) {
         User user = getUser(account);
         Log.d(TAG, "confirmPassword: " + account);
-        if (user.getPassword().equals(oldPassword))
-            return true;
-        else return false;
+        return user.getPassword().equals(oldPassword);
     }
 
     public static void updateUser(User user) {
         DbUtils.update(null,
                 "UPDATE user " +
                         "SET user_name = ?, user_avatar = ?, user_password = ?,user_sex = ?, user_birthday = ?,  user_city= ?, " +
-                        "user_hp = ?, user_level = ?, user_exp = ?, user_gold = ?, user_reward_items = ?" +
+                        "user_hp = ?, user_level = ?, user_exp = ?, user_gold = ?, user_reward_items = ?," +
+                        "user_last_login_time = ?,user_login_count = ? " +
                         "WHERE user_id = ?",
                 user.getName(),
                 DbUtils.Bitmap2Bytes(user.getAvatar()),
@@ -155,6 +156,8 @@ public class UserLab {
                 user.getExp(),
                 user.getGold(),
                 user.getRewardItems().toString(),
+                user.getLastLoginTime(),
+                user.getLoginCount(),
                 user.getId());
     }
 

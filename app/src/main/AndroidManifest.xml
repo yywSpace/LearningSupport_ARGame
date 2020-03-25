@@ -73,6 +73,7 @@
         <activity android:name=".UserManagement.UserMessage.UserReleasedTaskActivity" />
         <activity android:name=".UserManagement.bag.UserBagActivity" />
         <activity android:name=".UserManagement.shop.ShopActivity" />
+        <activity android:name=".UserManagement.achievement.AchievementActivity" />
 
         <activity android:name=".Course.CourseMainActivity" />
         <activity android:name=".Course.AddCourseActivity" />

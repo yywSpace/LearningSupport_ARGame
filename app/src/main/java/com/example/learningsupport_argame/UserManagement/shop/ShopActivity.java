@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.UserManagement.shop;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,9 +9,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,10 +25,16 @@ import com.example.learningsupport_argame.ARModel.Items.ModelItemsLab;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Task.TaskReward.RewardItem;
 import com.example.learningsupport_argame.Task.TaskReward.RewardItemLab;
+import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.bag.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+
+// TODO: 20-3-25  增加更多模型道具
 
 public class ShopActivity extends AppCompatActivity {
     private List<Item> mShopItemList;
@@ -86,7 +95,7 @@ public class ShopActivity extends AppCompatActivity {
         private TextView mItemType;
         private TextView mItemCoast;
         private TextView mItemDesc;
-        private TextView mItemUseButton;
+        private TextView mItemBuyButton;
 
         public ShopListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -95,7 +104,7 @@ public class ShopActivity extends AppCompatActivity {
             mItemType = itemView.findViewById(R.id.shop_item_type);
             mItemCoast = itemView.findViewById(R.id.shop_item_coast);
             mItemDesc = itemView.findViewById(R.id.shop_item_desc);
-            mItemUseButton = itemView.findViewById(R.id.shop_item_use_button);
+            mItemBuyButton = itemView.findViewById(R.id.shop_item_use_button);
         }
 
         void bind(Item item) {
@@ -108,30 +117,60 @@ public class ShopActivity extends AppCompatActivity {
                     case ITEM_EXP_POTION:
                         mItemCoast.setText("$200");
                         mItemImage.setBackgroundResource(R.drawable.bag_exp_icon);
+                        mItemBuyButton.setOnClickListener(v -> showButItemDialog(rewardItem.getItemName(), 200));
                         break;
                     case ITEM_SPEED_POTION:
-                        mItemCoast.setText("$1000");
+                        mItemCoast.setText("$500");
                         mItemImage.setBackgroundResource(R.drawable.bag_speed_icon);
+                        mItemBuyButton.setOnClickListener(v ->
+                                showButItemDialog(rewardItem.getItemName(), 500));
                         break;
                     case ITEM_HEALING_POTION:
                         mItemCoast.setText("$100");
                         mItemImage.setBackgroundResource(R.drawable.bag_heal_icon);
+                        mItemBuyButton.setOnClickListener(v ->
+                                showButItemDialog(rewardItem.getItemName(), 100));
                         break;
                     case ITEM_GOLD_POTION:
                         mItemCoast.setText("$100");
                         mItemImage.setBackgroundResource(R.drawable.bag_gold_icon);
+                        mItemBuyButton.setOnClickListener(v ->
+                                showButItemDialog(rewardItem.getItemName(), 100));
                         break;
                 }
             } else if (item instanceof ModelItem) {
                 ModelItem modelItem = (ModelItem) item;
                 mItemCoast.setText("$500");
-                mItemUseButton.setClickable(false);
-                mItemUseButton.setBackgroundColor(Color.parseColor("#d4d4d4"));
+                mItemBuyButton.setClickable(false);
+                mItemBuyButton.setBackgroundColor(Color.parseColor("#d4d4d4"));
                 if (modelItem.getModelItemType().equals(ModelItemType.MODEL))
                     mItemImage.setBackgroundResource(R.drawable.ar_item_model_icon);
                 else
                     mItemImage.setBackgroundResource(R.drawable.ar_item_view_icon);
             }
         }
+    }
+
+    void showButItemDialog(String name, int coast) {
+        AlertDialog alertDialog = new AlertDialog.Builder(ShopActivity.this)
+                .setTitle("购买" + name)
+                .setMessage(String.format("是否要购买%s?\n你将花费%d个金币", name, coast))
+                .setPositiveButton("购买", (dialog, which) -> {
+                    User user = UserLab.getCurrentUser();
+                    if (user.getGold() < coast) {
+                        Toast.makeText(this, String.format("当前金币数(%d)不足，无法购买", user.getGold()), Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    Optional<RewardItem> itemOptional = user.getRewardItems()
+                            .stream()
+                            .filter(rewardItem -> rewardItem.getItemName().equals(name))
+                            .findFirst();
+                    itemOptional.ifPresent(rewardItem -> rewardItem.setCount(rewardItem.getCount() + 1));
+                    user.setGold(user.getGold() - coast);
+                    new Thread(()-> UserLab.updateUser(user)).start();
+                    Toast.makeText(this, "购买道具成功，此次花费" + coast + "个金币", Toast.LENGTH_LONG).show();
+                }).setNegativeButton("取消", null)
+                .create();
+        alertDialog.show();
     }
 }
