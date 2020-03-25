@@ -40,7 +40,12 @@ public class UserLab {
     }
 
     public static User getUser(String account) {
-        List<User> users = getUserWith("SELECT * FROM user WHERE user_account = ?", account);
+        List<User> users = getUserWith("" +
+                "SELECT " +
+                "   u.*,\n" +
+                "   (SELECT COUNT(*) FROM task WHERE user_id = u.user_id) task_release_count,\n" +
+                "   (SELECT COUNT(*) FROM task_participant WHERE participant_id = u.user_id AND task_accomplish_status = '完成') task_accomplish_count\n" +
+                "FROM user u WHERE user_account = ?;", account);
         if (users.size() == 0)
             return null;
         return users.get(0);
@@ -65,6 +70,8 @@ public class UserLab {
                 user.setGold(resultSet.getInt("user_gold"));
                 user.setHp(resultSet.getInt("user_hp"));
                 user.setLoginCount(resultSet.getInt("user_login_count"));
+                user.setReleaseCount(resultSet.getInt("task_release_count"));
+                user.setAccomplishCount(resultSet.getInt("task_accomplish_count"));
                 String rewardItemsStr = resultSet.getString("user_reward_items");
                 List<RewardItem> rewardItems = new ArrayList<>(4);
                 RewardItemLab rewardItemLab = RewardItemLab.get();

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="30dp">
+
+    <ImageView
+        android:id="@+id/achievement_badge_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/achievement_3" />
+
+    <TextView
+        android:id="@+id/achievement_badge_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/achievement_badge_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="累计签到时间达到3天"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/achievement_badge_process"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/achievement_badge_desc"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="5/10"
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp" />
+
+</RelativeLayout>

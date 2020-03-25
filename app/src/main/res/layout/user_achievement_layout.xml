@@ -109,7 +109,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
-                android:background="@android:color/darker_gray" />
+                android:background="@android:color/darker_gray"
+                android:visibility="gone" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -187,8 +188,99 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
-                android:background="@android:color/darker_gray" />
+                android:background="@android:color/darker_gray"
+                android:visibility="gone" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="累计完成任务数量:"
+                android:textColor="@color/colorBlack"
+                android:textSize="20dp" />
+
+            <GridLayout
+                android:id="@+id/achievement_user_accomplish_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:columnCount="4"
+                android:rowCount="2">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="100dp"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:src="@drawable/achievement_trophy_1" />
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="100dp"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:src="@drawable/achievement_trophy_2" />
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="100dp"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:src="@drawable/achievement_trophy_3" />
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="100dp"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:src="@drawable/achievement_trophy_4"/>
+            </GridLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="累计发布任务数量:"
+                android:textColor="@color/colorBlack"
+                android:textSize="20dp" />
+
+            <GridLayout
+                android:id="@+id/achievement_user_release_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:columnCount="4"
+                android:rowCount="2">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="100dp"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:src="@drawable/achievement_diamond_1" />
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="100dp"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:src="@drawable/achievement_diamond_2" />
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="100dp"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:src="@drawable/achievement_diamond_3" />
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="100dp"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1" />
+            </GridLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
