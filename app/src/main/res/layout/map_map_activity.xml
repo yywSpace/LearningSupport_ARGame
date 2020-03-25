@@ -26,11 +26,11 @@
         android:id="@+id/map_switch_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_marginRight="20dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="40dp"
         android:backgroundTint="@android:color/white"
-        android:src="@drawable/map_mode_switch"
+        android:src="@drawable/map_switch_mode_icon"
         app:borderWidth="0dp">
 
     </com.google.android.material.floatingactionbutton.FloatingActionButton>

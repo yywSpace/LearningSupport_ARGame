@@ -234,6 +234,13 @@ public class TaskLab {
                 task.getTaskName(), task.getUserId(), UserLab.getCurrentUser().getId());
     }
 
+    public static Task getParticipantTask(int taskId, int userId) {
+        List<Task> arTasks = getTasksWith("SELECT * FROM task_participant where task_id = ? and participant = ", taskId, userId);
+        if (arTasks.size() == 0)
+            return null;
+        return arTasks.get(0);
+    }
+
     public static Task getARTask(String taskId) {
         if (taskId == null)
             return null;

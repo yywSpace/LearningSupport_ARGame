@@ -1,6 +1,7 @@
 package com.example.learningsupport_argame.ARModel.Items;
 
 import android.util.Log;
+import android.view.Display;
 
 import com.baidu.mapapi.model.LatLng;
 import com.example.learningsupport_argame.DbUtils;
@@ -10,6 +11,7 @@ import com.google.ar.sceneform.math.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ModelInfoLab {
@@ -85,12 +87,10 @@ public class ModelInfoLab {
         List<ModelInfo> infoList = getModelInfoWith("select * from task_ar_model");
         if (mModelInfoList != null)
             infoList = infoList.stream().map(modelInfo -> {
-                ModelInfo info = mModelInfoList.stream()
+                Optional<ModelInfo> infoOptional = mModelInfoList.stream()
                         .filter(oldInfo -> oldInfo.getTaskId() == modelInfo.getTaskId())
-                        .findFirst()
-                        .get();
-                if (info != null)
-                    modelInfo.setHasVibratorShaken(info.isHasVibratorShaken());
+                        .findFirst();
+                infoOptional.ifPresent((info) -> modelInfo.setHasVibratorShaken(info.isHasVibratorShaken()));
                 return modelInfo;
             }).collect(Collectors.toList());
         Log.d(TAG, "getModelInfoList: " + infoList.size());
