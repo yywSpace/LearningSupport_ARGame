@@ -1,0 +1,15 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/user_management_avatar"
+    android:layout_width="match_parent"
+    android:layout_height="60dp">
+
+
+    <Button
+        android:id="@+id/user_management_message_logout"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:background="@android:color/holo_red_light"
+        android:text="登出" />
+
+</androidx.cardview.widget.CardView>

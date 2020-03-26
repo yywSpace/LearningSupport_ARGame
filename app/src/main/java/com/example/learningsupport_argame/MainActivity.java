@@ -19,8 +19,8 @@ import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.UserMessageActivity;
-import com.example.learningsupport_argame.Community.activity.FriendListActivity;
-import com.example.learningsupport_argame.Community.activity.FriendListDialog;
+import com.example.learningsupport_argame.Community.friend.FriendListActivity;
+import com.example.learningsupport_argame.Community.friend.FriendListDialog;
 import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 
 

@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 
+import com.example.learningsupport_argame.Community.friend.FriendListActivity;
 import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.Navi.Activity.MapActivity;
@@ -26,7 +26,6 @@ import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.UserMessageActivity;
-import com.example.learningsupport_argame.Community.activity.FriendListDialog;
 import com.example.learningsupport_argame.UserManagement.shop.ShopActivity;
 import com.google.android.material.navigation.NavigationView;
 
@@ -92,8 +91,10 @@ public class NavigationController {
         navigationView.setNavigationItemSelectedListener(item -> {
             Toast.makeText(context, item.getTitle().toString(), Toast.LENGTH_SHORT).show();
             if (item.getItemId() == R.id.navigation_menu_friend && mNavigationItem != NavigationItem.FRIEND) {
-                FriendListDialog fld = new FriendListDialog(context, UserLab.getCurrentUser().getId() + "", null);
-//                context.startActivity(new Intent(context, FriendListActivity.class));
+//                FriendListDialog fld = new FriendListDialog(context, UserLab.getCurrentUser().getId() + "", null);
+                Intent intent = new Intent(context, FriendListActivity.class);
+                intent.putExtra(User.CURRENT_USER_ID, String.valueOf(UserLab.getCurrentUser().getId()));
+                context.startActivity(intent);
             }
             if (item.getItemId() == R.id.navigation_menu_bag && mNavigationItem != NavigationItem.BAG) {
                 context.startActivity(new Intent(context, UserBagActivity.class));

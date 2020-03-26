@@ -19,6 +19,7 @@ public class FriendLab {
                 user.setId(resultSet.getInt("user_id"));
                 user.setAccount(resultSet.getString("user_account"));
                 user.setName(resultSet.getString("user_name"));
+                user.setLabel(resultSet.getString("user_label"));
                 user.setAvatar(DbUtils.Bytes2Bitmap(resultSet.getBytes("user_avatar")));
                 user.setPassword(resultSet.getString("user_password"));
                 user.setLevel(resultSet.getInt("user_level"));

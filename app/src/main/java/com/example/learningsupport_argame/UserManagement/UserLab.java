@@ -33,7 +33,8 @@ public class UserLab {
 
 
     public static User getUserById(String userId) {
-        List<User> users = getUserWith("SELECT * FROM user WHERE user_id = ?", userId);
+        List<User> users = getUserWith("SELECT * FROM user WHERE user_id = ?", Integer.parseInt(userId));
+        Log.d(TAG, "getUserById: " + users.size());
         if (users.size() == 0)
             return null;
         return users.get(0);
@@ -59,6 +60,7 @@ public class UserLab {
                 user.setId(resultSet.getInt("user_id"));
                 user.setAccount(resultSet.getString("user_account"));
                 user.setName(resultSet.getString("user_name"));
+                user.setLabel(resultSet.getString("user_label"));
                 user.setAvatar(DbUtils.Bytes2Bitmap(resultSet.getBytes("user_avatar")));
                 user.setPassword(resultSet.getString("user_password"));
                 user.setLevel(resultSet.getInt("user_level"));
@@ -70,8 +72,13 @@ public class UserLab {
                 user.setGold(resultSet.getInt("user_gold"));
                 user.setHp(resultSet.getInt("user_hp"));
                 user.setLoginCount(resultSet.getInt("user_login_count"));
-                user.setReleaseCount(resultSet.getInt("task_release_count"));
-                user.setAccomplishCount(resultSet.getInt("task_accomplish_count"));
+                try {
+                    user.setReleaseCount(resultSet.getInt("task_release_count"));
+                    user.setAccomplishCount(resultSet.getInt("task_accomplish_count"));
+                } catch (Exception e) {
+                    Log.e(TAG, "getUserWith: ", e);
+                }
+
                 String rewardItemsStr = resultSet.getString("user_reward_items");
                 List<RewardItem> rewardItems = new ArrayList<>(4);
                 RewardItemLab rewardItemLab = RewardItemLab.get();
@@ -150,7 +157,7 @@ public class UserLab {
                 "UPDATE user " +
                         "SET user_name = ?, user_avatar = ?, user_password = ?,user_sex = ?, user_birthday = ?,  user_city= ?, " +
                         "user_hp = ?, user_level = ?, user_exp = ?, user_gold = ?, user_reward_items = ?," +
-                        "user_last_login_time = ?,user_login_count = ? " +
+                        "user_last_login_time = ?,user_login_count = ?,user_label = ?  " +
                         "WHERE user_id = ?",
                 user.getName(),
                 DbUtils.Bitmap2Bytes(user.getAvatar()),
@@ -165,6 +172,7 @@ public class UserLab {
                 user.getRewardItems().toString(),
                 user.getLastLoginTime(),
                 user.getLoginCount(),
+                user.getLabel(),
                 user.getId());
     }
 
@@ -180,10 +188,10 @@ public class UserLab {
                 Integer.parseInt(friendId));
     }
 
-    public static void deleteFriend(String friendId) {
+    public static void deleteFriend(int friendId) {
         DbUtils.update(null,
-                "DELETE FROM friend WHERE friend_id = ?",
-                Integer.parseInt(friendId));
+                "DELETE FROM friend WHERE friend_id = ? AND user_id = ?",
+                friendId, getCurrentUser().getId());
     }
 
 
@@ -266,4 +274,7 @@ public class UserLab {
         return users;
     }
 
+    public static List<User> getUserByFuzzyName(String fuzzyName) {
+        return getUserWith(String.format("SELECT * FROM user WHERE user_name like '%%%s%%';", fuzzyName));
+    }
 }

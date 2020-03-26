@@ -1,37 +1,30 @@
-package com.example.learningsupport_argame.Community.activity;
+package com.example.learningsupport_argame.Community.friend;
+
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
-import android.graphics.Point;
-import android.os.Handler;
-import android.view.Gravity;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
-import com.example.learningsupport_argame.Client.ClientLab;
-import com.example.learningsupport_argame.Client.UDPClient;
 import com.example.learningsupport_argame.Community.FriendLab;
-import com.example.learningsupport_argame.Community.adapter.FriendItemAdapter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-public class FriendListDialog {
-    private final String TAG = "FriendListDialog";
+public class FriendListFragment extends Fragment {
     private String mCurrentUserID;
     private LinearLayout mFriendsSearch;  //外层的搜索框控件
     private SwipeRefreshLayout mRefreshLayout;
@@ -44,132 +37,62 @@ public class FriendListDialog {
     private List<User> mFriendList;
     private FriendItemAdapter mItemAdapter;
 
-    private Activity mContext;
-    private AlertDialog mFriendAlertDialog;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    private PopupWindow mPopupWindow;
-    private ImageView mReturnImageView;
-
-    String[] mUserAndMessages;
-    private FriendItemAdapter.OnRecycleViewItemClick mOnRecycleViewItemClick;
-
-    Handler mHandler;
-
-    private UDPClient mUDPClient;
-
-    public FriendListDialog(Activity context, String currentUserID, String[] userAndMessages) {
-        mContext = context;
-        mCurrentUserID = currentUserID;
-        mUserAndMessages = userAndMessages;
-
-        mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
-
-        mHandler = new Handler();
         // 为增强体验，如果已有数据则提前显示，后续在onResume中继续查询更新数据
         if (FriendLab.getFriendList() != null)
             mFriendList = FriendLab.getFriendList();
         else
             mFriendList = new ArrayList<>();
 
-        mItemAdapter = new FriendItemAdapter(context, mFriendList, userAndMessages);
-        mItemAdapter.setOnRecycleViewItemClick((view, position) -> {
-            if (mOnRecycleViewItemClick != null) {
-                mOnRecycleViewItemClick.onRecycleViewItemClick(view, position);
-            }
-        });
-        View view = LayoutInflater.from(context).inflate(R.layout.friend_list_pop_window_layout, null, false);
+        mItemAdapter = new FriendItemAdapter(getActivity(), mFriendList, null, true);
+        mCurrentUserID = getArguments().getString(User.CURRENT_USER_ID);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.friend_list_fragment_layout, container, false);
         mFriendsRecyclerView = view.findViewById(R.id.friend_list_recycler_view);
         mFriendsSearch = view.findViewById(R.id.friend_list_search);
         mRefreshLayout = view.findViewById(R.id.friend_list_refresh_layout);
-        mReturnImageView = view.findViewById(R.id.friend_list_pop_window_return);
-        mReturnImageView.setOnClickListener(v -> {
-            mPopupWindow.dismiss();
-        });
+        return view;
+    }
 
-        // 获取屏幕宽高，以防止pop window 充满真个个屏幕
-        Point point = new Point();
-        context.getWindowManager().getDefaultDisplay().getSize(point);
-        mPopupWindow = new PopupWindow(view, point.x - 100, point.y - 100);
-        mPopupWindow.setFocusable(true);//设置pw中的控件能够获取焦点
-        mPopupWindow.setOutsideTouchable(true); //设置可以通过点击mPopupWindow外部关闭mPopupWindow
-        mPopupWindow.update();//刷新mPopupWindow
-        mPopupWindow.showAtLocation(context.getWindow().getDecorView(), Gravity.CENTER, 0, 0);
-
-//        mFriendAlertDialog = new AlertDialog.Builder(context)
-//                .setView(view)
-//                .setTitle("好友列表")
-//                .setNegativeButton("取消", null)
-//                .setPositiveButton("确认", null)
-//                .show();
-        initView();
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
         new Thread(() -> {
             List<User> friendList = FriendLab.getFriends(mCurrentUserID);
             mFriendList.clear();
             mFriendList.addAll(friendList);
-            mHandler.post(() -> {
-
-                // 先将在线的好友放到前方
-                List<String> onlineUser = mUDPClient.onlineUser();
-
-                if (onlineUser.size() >= 0) {
-                    int indexCount = 0;
-                    for (int i = 0; i < mFriendList.size(); i++) {
-                        if (onlineUser.contains(mFriendList.get(i).getName())) {
-                            mFriendList.get(i).setOnlineStatus(1);
-                            Collections.swap(mFriendList, indexCount, i);
-                            indexCount++;
-                        }
-                    }
-                }
-
-                if (mUserAndMessages == null) {
-                    FriendLab.sFriendList = mFriendList;
-                    mItemAdapter.notifyDataSetChanged();
-                    return;
-                }
-
-                // 再将发送信息的好友，放到列表的前边
-                for (String uams : mUserAndMessages) {
-                    String[] uam = uams.split(":");
-                    Optional<User> optionalUser = mFriendList.stream().filter(user -> user.getName().equals(uam[0])).findFirst();
-                    if (optionalUser.isPresent())
-                        optionalUser.get().setOnlineStatus(2);
-                }
-
-                int indexCount = 0;
-                for (int i = 0; i < mFriendList.size(); i++) {
-                    if (mFriendList.get(i).getOnlineStatus() == 2) {
-                        Collections.swap(mFriendList, indexCount, i);
-                        indexCount++;
-                    }
-                }
-
-                FriendLab.sFriendList = mFriendList;
+            getActivity().runOnUiThread(() -> {
                 mItemAdapter.notifyDataSetChanged();
             });
         }).start();
     }
 
-    void initView() {
+    @Override
+    public void onStart() {
+        super.onStart();
         // 下拉刷新
         mRefreshLayout.setOnRefreshListener(() -> {
-            if (mRefreshLayout.isRefreshing() == true)
-                mRefreshLayout.setRefreshing(false);
             new Thread(() -> {
                 List<User> friendList = FriendLab.getFriends(mCurrentUserID);
                 mFriendList.clear();
                 mFriendList.addAll(friendList);
-                mHandler.post(() -> {
+                getActivity().runOnUiThread(() -> {
                     mItemAdapter.notifyDataSetChanged();
+                    mRefreshLayout.setRefreshing(false);
                 });
             }).start();
 
         });
 
-        mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-//        mFriendsRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
+        mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mFriendsRecyclerView.setAdapter(mItemAdapter);
         mFriendsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -222,7 +145,6 @@ public class FriendListDialog {
                     if (!isShow) {
                         return;
                     }
-
                     ObjectAnimator animator = ObjectAnimator.ofFloat(mFriendsSearch, "translationY", 0, -mLlSearchHeight);
                     animator.setDuration(300);
                     animator.addListener(new AnimatorListenerAdapter() {
@@ -247,15 +169,12 @@ public class FriendListDialog {
         });
     }
 
-    public PopupWindow getFriendPopupWindow() {
-        return mPopupWindow;
-    }
-
-    public void setOnRecycleViewItemClick(FriendItemAdapter.OnRecycleViewItemClick onRecycleViewItemClick) {
-        mOnRecycleViewItemClick = onRecycleViewItemClick;
-    }
-
-    public List<User> getFriendList() {
-        return mFriendList;
+    public static FriendListFragment getInstance(String userId) {
+        FriendListFragment fragment = new FriendListFragment();
+        Bundle args = new Bundle();
+        args.putString(User.CURRENT_USER_ID, userId);
+        fragment.setArguments(args);
+        return fragment;
     }
 }
+

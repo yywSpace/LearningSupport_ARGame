@@ -40,7 +40,7 @@
 
         <activity android:name=".UserManagement.ranking.RankingActivity" />
 
-        <activity android:name=".Community.activity.FriendListActivity" />
+        <activity android:name=".Community.friend.FriendListActivity" />
         <activity android:name=".Task.activity.TaskListActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ARModel.ScanModelActivity" />
@@ -82,6 +82,7 @@
 
         <activity android:name=".Navi.Activity.YoudaoActivity" />
         <activity android:name=".Navi.Activity.MapActivity" />
+        <activity android:name=".Community.club.ClubListActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

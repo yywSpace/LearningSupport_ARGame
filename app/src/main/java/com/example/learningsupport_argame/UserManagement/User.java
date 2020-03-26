@@ -16,6 +16,7 @@ public class User {
     private String mAccount;
     private Bitmap mAvatar;
     private String mName;
+    private String mLabel;
     private String mPassword;
     private String mSex;
     private String mBirthday;
@@ -231,5 +232,13 @@ public class User {
 
     public void setLoginCount(int loginCount) {
         mLoginCount = loginCount;
+    }
+
+    public String getLabel() {
+        return mLabel;
+    }
+
+    public void setLabel(String label) {
+        mLabel = label;
     }
 }

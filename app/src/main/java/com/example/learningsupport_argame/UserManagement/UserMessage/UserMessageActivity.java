@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -64,7 +65,6 @@ public class UserMessageActivity extends Activity {
     private static final int CROP_REQUEST_CODE = 3;
     private RecyclerView mMessageRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    private Button mLogoutButton;
     private File mTempFile;
     private List<MessageItem> mMessageItems;
     private FrameLayout mReturnButton;
@@ -80,14 +80,6 @@ public class UserMessageActivity extends Activity {
         mReturnButton = findViewById(R.id.user_management_message_return);
         mReturnButton.setOnClickListener((view) -> finish());
         mProvinceList = AddressManager.getProvince(this);
-        mLogoutButton = findViewById(R.id.user_management_message_logout);
-        mLogoutButton.setOnClickListener((view) -> {
-            SharedPreferences userInfo = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
-            SharedPreferences.Editor editor = userInfo.edit();//获取Editor
-            editor.clear();
-            editor.commit();
-            ActivityUtil.destroyAll();
-        });
         mMessageRecyclerView = findViewById(R.id.user_management_message_recycle_view);
         mMessageItems = new ArrayList<>(
                 Arrays.asList(
@@ -96,6 +88,7 @@ public class UserMessageActivity extends Activity {
                         new MessageItem("血量", "血量", ItemType.NORMAL_ITEM),
                         new MessageItem("经验", "经验", ItemType.NORMAL_ITEM),
                         new MessageItem("用户名", "用户名", ItemType.NORMAL_ITEM),
+                        new MessageItem("标签", "标签", ItemType.NORMAL_ITEM),
                         new MessageItem("性别", "性别", ItemType.NORMAL_ITEM),
                         new MessageItem("生日", "生日", ItemType.NORMAL_ITEM),
                         new MessageItem("城市", "城市", ItemType.NORMAL_ITEM),
@@ -103,7 +96,9 @@ public class UserMessageActivity extends Activity {
                         new MessageItem("接受的任务", R.drawable.user_management_next, ItemType.IMAGE_ITEM),
                         new MessageItem("完成的任务", R.drawable.user_management_next, ItemType.IMAGE_ITEM),
                         new MessageItem("更多信息", R.drawable.user_management_next, ItemType.IMAGE_ITEM),
-                        new MessageItem("修改密码", R.drawable.user_management_next, ItemType.IMAGE_ITEM)
+                        new MessageItem("修改密码", R.drawable.user_management_next, ItemType.IMAGE_ITEM),
+                        new MessageItem("登出", R.drawable.user_management_next, ItemType.LOGOUT_ITEM)
+
                 ));
         mAdapter = new MessageItemAdapter(mMessageItems);
         mMessageRecyclerView.addItemDecoration(new MyItemDecoration(mMessageItems));
@@ -150,6 +145,10 @@ public class UserMessageActivity extends Activity {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_management_message_image_item, parent, false);
                 return new ImageItemViewHolder(view);
             }
+            if (viewType == ItemType.LOGOUT_ITEM.ordinal()) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_management_message_logout_item, parent, false);
+                return new LogoutItemViewHolder(view);
+            }
             return null;
         }
 
@@ -187,34 +186,38 @@ public class UserMessageActivity extends Activity {
                         changeNameDialog();
                         break;
                     case 5:
+                        // label
+                        changeLabelDialog();
+                        break;
+                    case 6:
                         // 性别
                         changeSexDialog();
                         break;
-                    case 6:
+                    case 7:
                         // 生日
                         showDatePickDialog();
                         break;
-                    case 7:
+                    case 8:
                         // 城市
                         changeAddressDialog();
                         break;
-                    case 8:
+                    case 9:
                         // 发布的任务
                         startActivity(new Intent(UserMessageActivity.this, UserReleasedTaskActivity.class));
                         break;
-                    case 9:
+                    case 10:
                         // 接受的任务
                         startActivity(new Intent(UserMessageActivity.this, UserAcceptedTaskActivity.class));
                         break;
-                    case 10:
+                    case 11:
                         // 完成的任务
                         startActivity(new Intent(UserMessageActivity.this, UserAccomplishTaskActivity.class));
                         break;
-                    case 11:
+                    case 12:
                         startActivity(new Intent(UserMessageActivity.this, FeedbackDetailsActivity.class));
                         // 更多信息
                         break;
-                    case 12:
+                    case 13:
                         // 修改密码
                         startActivity(new Intent(UserMessageActivity.this, ChangePasswordActivity.class));
                         break;
@@ -225,6 +228,24 @@ public class UserMessageActivity extends Activity {
         @Override
         public int getItemCount() {
             return mMessageItemList.size();
+        }
+
+
+        public class LogoutItemViewHolder extends RecyclerView.ViewHolder {
+            private Button mLogoutButton;
+
+            public LogoutItemViewHolder(@NonNull View itemView) {
+                super(itemView);
+                mLogoutButton = itemView.findViewById(R.id.user_management_message_logout);
+
+                mLogoutButton.setOnClickListener((view) -> {
+                    SharedPreferences userInfo = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+                    editor.clear();
+                    editor.commit();
+                    ActivityUtil.destroyAll();
+                });
+            }
         }
 
         public class NormalItemViewHolder extends RecyclerView.ViewHolder {
@@ -266,14 +287,15 @@ public class UserMessageActivity extends Activity {
     public enum ItemType {
         IMAGE_ITEM,
         NORMAL_ITEM,
-        AVATAR_ITEM
+        AVATAR_ITEM,
+        LOGOUT_ITEM
     }
 
-    class MyItemDecoration extends RecyclerView.ItemDecoration {
+    static class MyItemDecoration extends RecyclerView.ItemDecoration {
 
-        public List<MessageItem> mMessageItemList;
+        List<MessageItem> mMessageItemList;
 
-        public MyItemDecoration(List<MessageItem> messageItemList) {
+        MyItemDecoration(List<MessageItem> messageItemList) {
             mMessageItemList = messageItemList;
         }
 
@@ -292,6 +314,7 @@ public class UserMessageActivity extends Activity {
             MessageItem itemData = mMessageItemList.get(position);
             if (itemData.getItemLabel().equals("头像") ||
                     itemData.getItemLabel().equals("城市") ||
+                    itemData.getItemLabel().equals("经验") ||
                     itemData.getItemLabel().equals("完成任务") ||
                     itemData.getItemLabel().equals("更多信息")) {
                 outRect.bottom = 10;
@@ -446,11 +469,13 @@ public class UserMessageActivity extends Activity {
     }
 
     private void changeNameDialog() {
-        EditText getNameEditText = new EditText(this);
+        View view = LayoutInflater.from(getApplicationContext())
+                .inflate(R.layout.user_management_message_dialog_edit_text, null, false);
+        EditText getNameEditText = view.findViewById(R.id.user_message_dialog_edit_text);
         getNameEditText.setText(UserLab.getCurrentUser().getName());
         new AlertDialog.Builder(this)
                 .setTitle("请输入姓名")
-                .setView(getNameEditText)
+                .setView(view)
                 .setPositiveButton("确定", (dialog, which) -> {
                     String name = getNameEditText.getText().toString();
                     if (name.equals("")) {
@@ -466,6 +491,26 @@ public class UserMessageActivity extends Activity {
                     }
                 }).setNegativeButton("取消", null).show();
 
+    }
+
+    private void changeLabelDialog() {
+        View view = LayoutInflater.from(getApplicationContext())
+                .inflate(R.layout.user_management_message_dialog_edit_text, null, false);
+        EditText getNameEditText = view.findViewById(R.id.user_message_dialog_edit_text);
+        getNameEditText.setText(UserLab.getCurrentUser().getName());
+        new AlertDialog.Builder(this)
+                .setTitle("请输入标签")
+                .setView(view)
+                .setPositiveButton("确定", (dialog, which) -> {
+                    String label = getNameEditText.getText().toString();
+                    UserLab.getCurrentUser().setLabel(label);
+                    Optional<MessageItem> userNameItem = mMessageItems
+                            .stream()
+                            .filter((item) -> item.getItemLabel().equals("标签"))
+                            .findFirst();
+                    userNameItem.get().setItemContent(label);
+                    mAdapter.notifyDataSetChanged();
+                }).setNegativeButton("取消", null).show();
     }
 
     private void changeSexDialog() {
@@ -486,7 +531,6 @@ public class UserMessageActivity extends Activity {
                 })
                 .show();
     }
-
 
     private void changeAvatar() {
         View contentView = LayoutInflater.from(UserMessageActivity.this).inflate(R.layout.user_management_select_camera, null);
@@ -600,8 +644,9 @@ public class UserMessageActivity extends Activity {
         mMessageItems.get(2).setItemContent(hp + "/" + maxHp);
         mMessageItems.get(3).setItemContent(exp + "/" + maxExp);
         mMessageItems.get(4).setItemContent(user.getName());
-        mMessageItems.get(5).setItemContent(user.getSex());
-        mMessageItems.get(6).setItemContent(user.getBirthday());
-        mMessageItems.get(7).setItemContent(user.getCity());
+        mMessageItems.get(5).setItemContent(user.getLabel());
+        mMessageItems.get(6).setItemContent(user.getSex());
+        mMessageItems.get(7).setItemContent(user.getBirthday());
+        mMessageItems.get(8).setItemContent(user.getCity());
     }
 }
