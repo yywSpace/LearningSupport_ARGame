@@ -42,7 +42,7 @@ public class TaskShowView {
 
     public TaskShowView(Activity activity) {
         mActivity = activity;
-        mView = mActivity.getLayoutInflater().inflate(R.layout.task_current_fragment_layout, null, false);
+        mView = mActivity.getLayoutInflater().inflate(R.layout.task_current_fragment_layout_22, null, false);
         initView(mView);
     }
 

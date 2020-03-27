@@ -108,30 +108,29 @@ public class LoginActivity extends AppCompatActivity {
 //                        startActivity(new Intent(LoginActivity.this, MapActivity.class));
 //                        startActivity(new Intent(this, FeedbackDetailsActivity.class));
 //                        startActivity(new Intent(this, CourseMainActivity.class));
-
-
-                        try {
-                            Date nowDate = new Date();
-                            Log.d(TAG, "onCreate: " + user.getLastLoginTime());
-                            if (user.getLastLoginTime() == null || user.getLastLoginTime().equals("")) {
-                                user.setLastLoginTime(df.format(nowDate));
-                                user.setLoginCount(1);
-                                UserLab.updateUser(user);
-                            } else {
-                                Date oldDate = df.parse(user.getLastLoginTime());
-                                // 如果当前日期比之前的日期多一天则可签到，并设置登录时间及登录次数
-                                if (nowDate.getTime() - oldDate.getTime() >= 1000 * 3600 * 24) {
-                                    user.setLastLoginTime(df.format(nowDate));
-                                    user.setLoginCount(user.getLoginCount() + 1);
-                                    UserLab.updateUser(user);
-                                }
-                            }
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
                         finish();
                     }
                 });
+                User user = UserLab.getCurrentUser();
+                try {
+                    Date nowDate = new Date();
+                    Log.d(TAG, "onCreate: " + user.getLastLoginTime());
+                    if (user.getLastLoginTime() == null || user.getLastLoginTime().equals("")) {
+                        user.setLastLoginTime(df.format(nowDate));
+                        user.setLoginCount(1);
+                        UserLab.updateUser(user);
+                    } else {
+                        Date oldDate = df.parse(user.getLastLoginTime());
+                        // 如果当前日期比之前的日期多一天则可签到，并设置登录时间及登录次数
+                        if (nowDate.getTime() - oldDate.getTime() >= 1000 * 3600 * 24) {
+                            user.setLastLoginTime(df.format(nowDate));
+                            user.setLoginCount(user.getLoginCount() + 1);
+                            UserLab.updateUser(user);
+                        }
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }).start();
         });
         mRegisterTextView.setOnClickListener((view) -> {

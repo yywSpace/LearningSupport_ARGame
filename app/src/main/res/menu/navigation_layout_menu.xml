@@ -4,6 +4,10 @@
         android:icon="@drawable/navigation_friend"
         android:title="我的好友" />
     <item
+        android:id="@+id/navigation_menu_club"
+        android:icon="@drawable/navigation_club"
+        android:title="我的社团" />
+    <item
         android:id="@+id/navigation_menu_task"
         android:icon="@drawable/navigation_task"
         android:title="我的任务" />

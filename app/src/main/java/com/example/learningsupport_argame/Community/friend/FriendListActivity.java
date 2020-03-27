@@ -55,7 +55,7 @@ public class FriendListActivity extends AppCompatActivity {
             if (isSearchList) {
                 isSearchList = false;
                 mSearchButton.setBackgroundResource(R.drawable.sousuo);
-                mItemAdapter = new FriendItemAdapter(this, mFriendList, null, true);
+                mItemAdapter = new FriendItemAdapter(this, mFriendList, null);
                 mFriendsRecyclerView.setAdapter(mItemAdapter);
             } else {
                 String name = mSearchBox.getText().toString();
@@ -64,14 +64,14 @@ public class FriendListActivity extends AppCompatActivity {
                     mSearchList = UserLab.getUserByFuzzyName(name);
                     Log.d(TAG, "onCreate: " + mSearchList.size());
                     runOnUiThread(() -> {
-                        mItemAdapter = new FriendItemAdapter(this, mSearchList, null, false);
+                        mItemAdapter = new FriendItemAdapter(this,mFriendList , mSearchList);
                         mFriendsRecyclerView.setAdapter(mItemAdapter);
                         mSearchButton.setBackgroundResource(R.drawable.friend_list_pop_window_cross);
                     });
                 }).start();
             }
         });
-        mItemAdapter = new FriendItemAdapter(this, mFriendList, null, true);
+        mItemAdapter = new FriendItemAdapter(this, mFriendList, null);
         mFriendsRecyclerView = findViewById(R.id.friend_list_recycler_view);
         mRefreshLayout = findViewById(R.id.friend_list_refresh_layout);
         mSearchBox = findViewById(R.id.friend_search_box);

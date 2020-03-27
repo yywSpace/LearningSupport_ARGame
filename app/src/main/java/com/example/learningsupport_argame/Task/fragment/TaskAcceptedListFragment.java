@@ -71,7 +71,7 @@ public class TaskAcceptedListFragment extends TaskListBasicFragment {
         });
         mTaskItemAdapter.setOnRecycleViewItemClick((v, position) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            View taskDetailView = getLayoutInflater().inflate(R.layout.task_current_fragment_layout, null);//获取自定义布局
+            View taskDetailView = getLayoutInflater().inflate(R.layout.task_current_fragment_layout_22, null);//获取自定义布局
             initView(taskDetailView);
             initData(mTaskList.get(position));
             builder.setView(taskDetailView);
@@ -91,7 +91,13 @@ public class TaskAcceptedListFragment extends TaskListBasicFragment {
 
     private void initListByType() {
         List<Task> tasks = TaskLab.mAcceptedTaskList.stream()
-                .filter(task -> task.getTaskType().equals(mCurrentType))
+                .filter(task -> {
+                    if (mCurrentType.equals("个人任务")) {
+                        return task.getTaskType().equals(mCurrentType) ||
+                                task.getTaskType().equals("全体任务");
+                    }
+                    return task.getTaskType().equals(mCurrentType);
+                })
                 .collect(Collectors.toList());
         mTaskList.clear();
         mTaskList.addAll(tasks);

@@ -82,7 +82,11 @@
 
         <activity android:name=".Navi.Activity.YoudaoActivity" />
         <activity android:name=".Navi.Activity.MapActivity" />
-        <activity android:name=".Community.club.ClubListActivity" />
+        <activity android:name=".Community.club.activity.ClubListActivity" />
+        <activity android:name=".Community.club.activity.ClubCreateActivity" />
+        <activity android:name=".Community.club.activity.ClubSettingActivity" />
+        <activity android:name=".Community.club.activity.ClubInfoActivity" />
+        <activity android:name=".Community.club.activity.ClubMembersActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

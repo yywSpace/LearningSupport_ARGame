@@ -37,7 +37,6 @@ public class TaskCreateView {
     private TextView mTaskEndTime;
     private ImageView mChooseLocation;
     private TextView mTaskLocation;
-    private FrameLayout mTaskTypeDynamicLayout;
     private EditText mTaskDescEditText;
 
     /**
@@ -74,7 +73,6 @@ public class TaskCreateView {
         mTaskEndTime = mTaskCreateView.findViewById(R.id.task_create_end_time);
         mChooseLocation = mTaskCreateView.findViewById(R.id.task_create_set_location);
         mTaskLocation = mTaskCreateView.findViewById(R.id.task_create_location);
-        mTaskTypeDynamicLayout = mTaskCreateView.findViewById(R.id.layout_task_type);
         mTaskDescEditText = mTaskCreateView.findViewById(R.id.task_create_enter_task_desc);
 
         // 设置任务时间默认为当前时间
@@ -100,15 +98,12 @@ public class TaskCreateView {
                 mTaskType = i;
                 switch (mTaskType) {
                     case 0: // 对自己发布
-                        mTaskTypeDynamicLayout.removeAllViews();
 
                     case 3: // 使用AR发布
-                        mTaskTypeDynamicLayout.removeAllViews();
                         break;
                     case 1:
                         // 对好友发布
                         // TODO: 19-11-3 适配数据
-                        mTaskTypeDynamicLayout.removeAllViews();
                         MultiSelectionSpinner chooseFriends = new MultiSelectionSpinner(mContext);
 //                        List<PairInfoBean> peopleList = new ArrayList<>();
 //                        List<String> peopleListString = new ArrayList<>();
@@ -140,28 +135,6 @@ public class TaskCreateView {
                         // 对社团发布
                         // TODO: 19-11-3 适配数据
 
-                        mTaskTypeDynamicLayout.removeAllViews();
-                        MultiSelectionSpinner chooseSociety = new MultiSelectionSpinner(mContext);
-
-                        List<String> shetuanListString = new ArrayList<>();
-                        char b = 'A';
-                        for (int j = 0; j < 10; j++) {
-                            shetuanListString.add(b + "/" + j);
-                            b++;
-                        }
-                        chooseSociety.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-                            @Override
-                            public void selectedIndices(List<Integer> indices) {
-                                Toast.makeText(mContext, "22222", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void selectedStrings(List<String> strings) {
-
-                            }
-                        });
-                        chooseSociety.setItems(shetuanListString);
-                        mTaskTypeDynamicLayout.addView(chooseSociety);
                         break;
                 }
             }

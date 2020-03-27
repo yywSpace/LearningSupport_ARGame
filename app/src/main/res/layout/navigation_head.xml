@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#f0f0f0"
     android:gravity="center"
     android:orientation="vertical">
+    <!--    android:background="#f0f0f0"-->
 
     <RelativeLayout
         android:id="@+id/navigation_user_message"
@@ -20,7 +20,7 @@
             android:id="@+id/user_avatar"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:src="@mipmap/ic_launcher_round" />
+            android:src="@drawable/img_avatar_02" />
 
         <TextView
             android:id="@+id/user_gold"

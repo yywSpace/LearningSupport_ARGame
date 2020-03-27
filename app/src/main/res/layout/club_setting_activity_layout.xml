@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/club_setting_return"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:padding="10dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="19dp"
+                    android:background="@drawable/user_management_return" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/club_list_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="社团设置"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+            <FrameLayout
+                android:id="@+id/club_setting_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="15dp"
+                android:padding="10dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="19dp"
+                    android:background="@drawable/ar_submit_icon" />
+            </FrameLayout>
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/club_cover_page"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/club_add_cover_image_icon"
+                android:contentDescription="点击添加社团封面" />
+
+
+            <TextView
+                android:id="@+id/club_name_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_cover_page"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:text="社团名称："
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/club_name_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/club_name_label"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@+id/club_name_label"
+                android:hint="请输入社团名称"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/club_type_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_name_edit_text"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:text="社团类型："
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/club_type_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/club_type_label"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@+id/club_type_label"
+                android:hint="少于10字，多出部分将不会显示"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/club_desc_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_type_edit_text"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:text="社团描述："
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/club_desc_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/club_desc_label"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@+id/club_desc_label"
+                android:gravity="top"
+                android:hint="请输入社团描述"
+                android:inputType="textMultiLine"
+                android:minLines="2" />
+
+            <TextView
+                android:id="@+id/club_max_member_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_desc_edit_text"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:text="社团人数："
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/club_max_member"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/club_max_member_label"
+                android:layout_toEndOf="@+id/club_max_member_label"
+                android:text="10人"
+                android:textColor="@color/colorBlack"
+                android:textSize="17sp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/view_club_members"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_max_member"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="5dp"
+                android:elevation="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="查看社团成员"
+                    android:textSize="15sp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/club_dissolve"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view_club_members"
+                android:layout_margin="5dp"
+                android:elevation="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="解散该社团"
+                    android:textColor="@android:color/holo_red_light"
+                    android:textSize="15sp" />
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>

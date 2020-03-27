@@ -585,7 +585,7 @@ public class UserMessageActivity extends Activity {
         mCityPicker = view.findViewById(R.id.city_picker);
     }
 
-    //设置“省份”选择器的数据
+    //club_list_item_setting“省份”选择器的数据
     private void initAddressPickerProvince() {
         List<String> provinceList = mProvinceList.stream().map(Province::getName).collect(Collectors.toList());
         String[] provinces = provinceList.toArray(new String[provinceList.size()]);

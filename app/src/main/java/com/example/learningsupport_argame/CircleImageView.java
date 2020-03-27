@@ -1,4 +1,5 @@
 package com.example.learningsupport_argame;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
@@ -55,7 +56,10 @@ public class CircleImageView extends AppCompatImageView {
             return;
         }
         if (drawable instanceof BitmapDrawable) {
-            paint.setShader(initBitmapShader((BitmapDrawable) drawable));//将着色器设置给画笔
+            BitmapShader bitmapShader = initBitmapShader((BitmapDrawable) drawable);
+            if (bitmapShader == null)
+                return;
+            paint.setShader(bitmapShader);//将着色器设置给画笔
             canvas.drawCircle(width / 2, height / 2, radius, paint);//使用画笔在画布上画圆
             return;
         }
@@ -67,6 +71,8 @@ public class CircleImageView extends AppCompatImageView {
      */
     private BitmapShader initBitmapShader(BitmapDrawable drawable) {
         Bitmap bitmap = drawable.getBitmap();
+        if (bitmap == null)
+            return null;
         BitmapShader bitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
         float scale = Math.max(width / bitmap.getWidth(), height / bitmap.getHeight());
         matrix.setScale(scale, scale);//将图片宽高等比例缩放，避免拉伸

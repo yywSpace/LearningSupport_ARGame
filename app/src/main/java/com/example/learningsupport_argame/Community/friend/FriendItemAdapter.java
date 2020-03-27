@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,14 +22,15 @@ import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.FriendMessageActivity;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static String TAG = "FriendItemAdapter";
     private Context mContext;
     private List<User> mFriendList;
-    private String[] mUserAndMessages;
-    private boolean isFriend;
+    private List<User> mSearchList;
+    private List<User> mOperationList;
 
     static final int ITEM_NORMAL = 1;
     static final int ITEM_EMPTY = 0;
@@ -36,11 +39,15 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private OnRecycleViewItemLongClick mOnRecycleViewItemLongClick;
 
-    public FriendItemAdapter(Context context, List<User> friendList, String[] userAndMessage, boolean isFriend) {
+    public FriendItemAdapter(Context context, List<User> friendList, List<User> searchList) {
         mFriendList = friendList;
-        this.isFriend = isFriend;
+        mSearchList = searchList;
+        // 说明此时是搜索列表
+        if (searchList == null)
+            mOperationList = mFriendList;
+        else
+            mOperationList = searchList;
         mContext = context;
-        mUserAndMessages = userAndMessage;
     }
 
     @Override
@@ -67,12 +74,11 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 PopupMenu popupMenu = new PopupMenu(mContext, holder.itemView);
                 popupMenu.inflate(R.menu.friend_list_item_menu);
                 popupMenu.setOnMenuItemClickListener(item -> {
-                    User user = mFriendList.get(position);
+                    User user = mOperationList.get(position);
                     switch (item.getItemId()) {
                         case R.id.menu_friend_info:
                             Intent intent = new Intent(mContext, FriendMessageActivity.class);
                             intent.putExtra(User.CURRENT_USER_ID, user.getId() + "");
-                            intent.putExtra(FriendMessageActivity.FRIEND_STATUS, isFriend);
                             mContext.startActivity(intent);
                             break;
                         case R.id.menu_friend_delete:
@@ -80,8 +86,8 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     .setTitle("删除好友")
                                     .setMessage("确定要删除好友" + user.getName() + "吗?")
                                     .setPositiveButton("确认", (dialog, which) -> {
-                                        new Thread(()-> UserLab.deleteFriend(user.getId())).start();
-                                        mFriendList.remove(user);
+                                        new Thread(() -> UserLab.deleteFriend(user.getId())).start();
+                                        mOperationList.remove(user);
                                         notifyDataSetChanged();
                                     })
                                     .setNegativeButton("取消", null)
@@ -93,7 +99,7 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 popupMenu.show();
                 return false;
             });
-            User user = mFriendList.get(position);
+            User user = mOperationList.get(position);
 
             ((FriendItemViewHolder) holder).bind(user);
 
@@ -104,18 +110,6 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         .setBackgroundResource(R.drawable.friend_list_item_green_point);
                 TextView message = holder.itemView.findViewById(R.id.friend_item_last_message);
                 message.setText("在线");
-            } else if (user.getOnlineStatus() == 2) {
-                // 如果消息列表不为空
-                if (mUserAndMessages != null)
-                    for (String uams : mUserAndMessages) {
-                        String[] uam = uams.split(":");
-                        if (uam[0].equals(user.getName())) {
-                            holder.itemView.findViewById(R.id.friend_list_item_avatar_red_point)
-                                    .setBackgroundResource(R.drawable.friend_list_item_red_point);
-                            TextView message = holder.itemView.findViewById(R.id.friend_item_last_message);
-                            message.setText(uam[2]);
-                        }
-                    }
             } else {
                 // 不在线
                 holder.itemView
@@ -125,13 +119,12 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 message.setText("不在线");
             }
         }
-
     }
 
     @Override
     public int getItemViewType(int position) {
         // 如果没有数据，使用空布局的布局
-        if (mFriendList.size() == 0) {
+        if (mOperationList.size() == 0) {
             return ITEM_EMPTY;
         }
         //如果有数据，则使用ITEM的布局
@@ -141,10 +134,10 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemCount() {
         // size()为0的，只引入一个空布局,此时recyclerView的itemCount为1
-        if (mFriendList.size() == 0) {
+        if (mOperationList.size() == 0) {
             return 1;
         }
-        return mFriendList.size();
+        return mOperationList.size();
     }
 
     public void setOnRecycleViewItemClick(OnRecycleViewItemClick onRecycleViewItemClick) {
@@ -157,6 +150,7 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public class FriendItemViewHolder extends RecyclerView.ViewHolder {
         private ImageView friendAvatar;
+        private ImageView strangerIcon;
         private TextView friendName;
         private TextView friendLevel;
         private TextView friendMajor;
@@ -165,6 +159,7 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public FriendItemViewHolder(View itemView) {
             super(itemView);
+            strangerIcon = itemView.findViewById(R.id.friend_list_item_stranger);
             friendAvatar = itemView.findViewById(R.id.friend_list_item_avatar);
             friendName = itemView.findViewById(R.id.friend_list_item_name);
             friendLevel = itemView.findViewById(R.id.friend_list_item_level);
@@ -174,16 +169,30 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         public void bind(User user) {
-            friendAvatar.setImageBitmap(user.getAvatar());
+            if (user.getAvatar() != null)
+                friendAvatar.setImageBitmap(user.getAvatar());
+            else {
+                Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.img_avatar_03);
+                friendAvatar.setImageBitmap(bitmap);
+            }
+            // 如果当前是搜索列表，则判断此人是否为陌生人
+            if (mSearchList != null) {
+                Optional<User> userOptional = mFriendList
+                        .stream()
+                        .filter(u -> u.getId() == user.getId()).findFirst();
+                //不在好友列表中，为陌生人
+                if (!userOptional.isPresent())
+                    strangerIcon.setVisibility(View.VISIBLE);
+                else strangerIcon.setVisibility(View.INVISIBLE);
+            }
+
             friendName.setText(user.getName());
             friendLevel.setText("Lv." + user.getLevel());
             friendMajor.setText(user.getLabel());
-            // friendMajor.setText(user.getName());
             friendLastMessage.setText("消息来了");
             friendInfo.setOnClickListener((view) -> {
                 Intent intent = new Intent(mContext, FriendMessageActivity.class);
                 intent.putExtra(User.CURRENT_USER_ID, user.getId() + "");
-                intent.putExtra(FriendMessageActivity.FRIEND_STATUS, isFriend);
                 mContext.startActivity(intent);
             });
         }

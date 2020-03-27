@@ -249,4 +249,24 @@ public class TaskLab {
             return null;
         return arTasks.get(0);
     }
+
+
+    public static List<Task> getFriendTask() {
+        String sql = "" +
+                "select * from task where user_id in (select user_id from friend where friend_id = ?) and task_type = '好友任务' and\n" +
+                "                        task_id not in (select task_id from task_ar_model)  and \n" +
+                "                        task_id not in (select task_id from task_participant where task_participant.participant_id = ?);";
+        List<Task> friendTask = getTasksWith(sql, UserLab.getCurrentUser().getId(), UserLab.getCurrentUser().getId());
+        return friendTask;
+    }
+
+    // 获取全体任务
+    public static List<Task> getAllPeopleTask() {
+        String sql = "" +
+                "select * from task " +
+                "   where task_id not in (select task_id from task_ar_model) and task_type = '全体任务' and\n" +
+                "         task_id not in (select task_id from task_participant where task_participant.participant_id = ?);";
+        List<Task> friendTask = getTasksWith(sql, UserLab.getCurrentUser().getId());
+        return friendTask;
+    }
 }

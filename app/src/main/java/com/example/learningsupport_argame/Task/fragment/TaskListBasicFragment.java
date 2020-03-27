@@ -1,5 +1,7 @@
 package com.example.learningsupport_argame.Task.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +40,7 @@ import java.util.List;
  */
 public class TaskListBasicFragment extends Fragment {
     protected static final String TAG = "TaskListBasicFragment";
+    private Activity mActivity;
     protected String mCurrentUserId;
     protected Button mTypePersonBtn;
     protected Button mTypeFriendBtn;
@@ -61,6 +64,12 @@ public class TaskListBasicFragment extends Fragment {
     private List<User> mUserList;
     private LatLng mAccomplishTaskLatLng;
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = getActivity();
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -76,7 +85,7 @@ public class TaskListBasicFragment extends Fragment {
         mTaskItemAdapter = new TaskItemAdapter(mTaskList, getActivity());
 
         mTaskItemAdapter.setOnRecycleViewItemClick((v, position) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
             View taskDetailView = getLayoutInflater().inflate(R.layout.task_current_fragment_layout, null);//获取自定义布局
             initView(taskDetailView);
             initData(mTaskList.get(position));
@@ -88,7 +97,7 @@ public class TaskListBasicFragment extends Fragment {
         });
         mTaskRecycleView.setAdapter(mTaskItemAdapter);
         mTaskRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mTaskRecycleView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        mTaskRecycleView.addItemDecoration(new DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL));
         return view;
     }
 
@@ -127,10 +136,10 @@ public class TaskListBasicFragment extends Fragment {
         mTaskParticipantRecyclerView.setAdapter(mParticipantItemAdapter);
 
         mTaskParticipantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mTaskParticipantRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        mTaskParticipantRecyclerView.addItemDecoration(new DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL));
 
         mTaskStatusFaq.setOnClickListener((v) -> {
-            new AlertDialog.Builder(getContext())
+            new AlertDialog.Builder(mActivity)
                     .setTitle("任务类型提示")
                     .setMessage("为红色则表示自建任务\n\t\t\t\t\t为绿色则表示社团任务\n\t\t\t\t\t为蓝色则表示好友指定任务\n\t\t\t\t\t为紫色则表示主动的接受任务")
                     .setNegativeButton("取消", null)
@@ -159,7 +168,7 @@ public class TaskListBasicFragment extends Fragment {
             List<User> participants = TaskLab.getParticipant("" + task.getTaskId());
             mUserList.clear();
             mUserList.addAll(participants);
-            getActivity().runOnUiThread(() -> {
+            mActivity.runOnUiThread(() -> {
                 mParticipantItemAdapter.notifyDataSetChanged();
                 Log.d(TAG, "initData: " + mUserList.size());
             });

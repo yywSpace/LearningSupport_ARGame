@@ -1,5 +1,7 @@
 package com.example.learningsupport_argame.Task.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,25 +15,35 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.learningsupport_argame.Community.FriendLab;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.TaskLab;
+import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TaskCanAcceptListFragment extends TaskListBasicFragment {
-    private static AppCompatActivity mActivity;
-    private String mCurrentType = "个人任务";
+    private Activity mActivity;
+    private String mCurrentType = "全体任务";
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = getActivity();
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        mCurrentType = "个人任务";
+        mCurrentType = "全体任务";
+        mTypePersonBtn.setText("全体任务");
         mTypePersonBtn.setOnClickListener(v -> {
-            mCurrentType = "个人任务";
+            mCurrentType = "全体任务";
             initListByType();
             mTypePersonBtn.setBackgroundColor(Color.parseColor("#f0f0f0"));
             mTypeGroupBtn.setBackgroundColor(Color.parseColor("#FFFAFAFA"));
@@ -54,10 +66,12 @@ public class TaskCanAcceptListFragment extends TaskListBasicFragment {
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             new Thread(() -> {
-                List<Task> tasks = TaskLab.getCanAcceptTask().stream()
-                        .filter(task -> task.getTaskType().equals(mCurrentType))
-                        .collect(Collectors.toList());
-                Log.d(TAG, "onResume: " + tasks.size());
+                List<Task> tasks = new ArrayList<>();
+                if (mCurrentType.equals("好友任务")) {
+                    tasks = TaskLab.getFriendTask();
+                } else if (mCurrentType.equals("全体任务")) {
+                    tasks = TaskLab.getAllPeopleTask();
+                }
                 mTaskList.clear();
                 mTaskList.addAll(tasks);
                 mActivity.runOnUiThread(() -> {
@@ -67,32 +81,38 @@ public class TaskCanAcceptListFragment extends TaskListBasicFragment {
             }).start();
         });
         mTaskItemAdapter.setOnRecycleViewItemClick((v, position) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            View taskDetailView = getLayoutInflater().inflate(R.layout.task_current_fragment_layout, null);//获取自定义布局
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            View taskDetailView = getLayoutInflater().inflate(R.layout.task_current_fragment_layout_22, null);//获取自定义布局
             initView(taskDetailView);
             initData(mTaskList.get(position));
             builder.setView(taskDetailView);
             builder.setTitle("任务详情");
-            if (!mTaskList.get(position).getTaskType().equals("AR任务")) {
-                builder.setPositiveButton("接受", (dialog, which) -> {
-                    new Thread(() -> {
-                        TaskLab.acceptTask(mTaskList.get(position));
-                    }).start();
-                });
-                builder.setNegativeButton("取消", null);
-            }
+            builder.setPositiveButton("接受", (dialog, which) -> {
+                new Thread(() -> {
+                    TaskLab.acceptTask(mTaskList.get(position));
+                }).start();
+            });
+            builder.setNegativeButton("取消", null);
             builder.show();
         });
         return view;
     }
 
     private void initListByType() {
-        List<Task> tasks = TaskLab.mCanAcceptedTaskList.stream()
-                .filter(task -> task.getTaskType().equals(mCurrentType))
-                .collect(Collectors.toList());
-        mTaskList.clear();
-        mTaskList.addAll(tasks);
-        mTaskItemAdapter.notifyDataSetChanged();
+        new Thread(() -> {
+            List<Task> tasks = new ArrayList<>();
+            if (mCurrentType.equals("好友任务")) {
+                tasks = TaskLab.getFriendTask();
+            } else if (mCurrentType.equals("全体任务")) {
+                Log.d(TAG, "initListByType: 全体任务");
+                tasks = TaskLab.getAllPeopleTask();
+            }
+            mTaskList.clear();
+            mTaskList.addAll(tasks);
+            mActivity.runOnUiThread(() -> {
+                mTaskItemAdapter.notifyDataSetChanged();
+            });
+        }).start();
     }
 
     @Override
@@ -100,10 +120,14 @@ public class TaskCanAcceptListFragment extends TaskListBasicFragment {
         super.onResume();
         // 获取数据
         new Thread(() -> {
-            List<Task> tasks = TaskLab.getCanAcceptTask().stream()
-                    .filter(task -> task.getTaskType().equals(mCurrentType))
-                    .collect(Collectors.toList());
-            Log.d(TAG, "onResume: " + tasks.size());
+            List<Task> tasks = new ArrayList<>();
+            if (mCurrentType.equals("好友任务")) {
+                tasks = TaskLab.getFriendTask();
+            }
+            if (mCurrentType.equals("全体任务")) {
+                tasks = TaskLab.getAllPeopleTask();
+            }
+
             mTaskList.clear();
             mTaskList.addAll(tasks);
             mActivity.runOnUiThread(() -> {
@@ -113,9 +137,8 @@ public class TaskCanAcceptListFragment extends TaskListBasicFragment {
     }
 
 
-    public static TaskCanAcceptListFragment getInstance(AppCompatActivity activity) {
+    public static TaskCanAcceptListFragment getInstance() {
         TaskCanAcceptListFragment fragment = new TaskCanAcceptListFragment();
-        mActivity = activity;
 //        Bundle args = new Bundle();
 //        args.putString(User.CURRENT_USER_ID, userId);
 //        fragment.setArguments(args);

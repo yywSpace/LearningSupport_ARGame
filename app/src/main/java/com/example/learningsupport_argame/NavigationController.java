@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 
+import com.example.learningsupport_argame.Community.club.activity.ClubListActivity;
 import com.example.learningsupport_argame.Community.friend.FriendListActivity;
 import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
@@ -96,8 +97,12 @@ public class NavigationController {
                 intent.putExtra(User.CURRENT_USER_ID, String.valueOf(UserLab.getCurrentUser().getId()));
                 context.startActivity(intent);
             }
-            if (item.getItemId() == R.id.navigation_menu_bag && mNavigationItem != NavigationItem.BAG) {
+            if (item.getItemId() == R.id.navigation_menu_club && mNavigationItem != NavigationItem.CLUB) {
+                context.startActivity(new Intent(context, ClubListActivity.class));
+
+            }if (item.getItemId() == R.id.navigation_menu_bag && mNavigationItem != NavigationItem.BAG) {
                 context.startActivity(new Intent(context, UserBagActivity.class));
+
             }
             if (item.getItemId() == R.id.navigation_menu_task && mNavigationItem != NavigationItem.TASK)
                 context.startActivity(new Intent(context, TaskListActivity.class));
@@ -154,6 +159,7 @@ public class NavigationController {
         COURSE,
         FEEDBACK,
         MAP,
-        BAG
+        BAG,
+        CLUB
     }
 }

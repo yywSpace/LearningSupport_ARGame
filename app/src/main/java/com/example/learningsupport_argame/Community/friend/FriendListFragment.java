@@ -47,7 +47,7 @@ public class FriendListFragment extends Fragment {
         else
             mFriendList = new ArrayList<>();
 
-        mItemAdapter = new FriendItemAdapter(getActivity(), mFriendList, null, true);
+        mItemAdapter = new FriendItemAdapter(getActivity(), mFriendList, null);
         mCurrentUserID = getArguments().getString(User.CURRENT_USER_ID);
     }
 

@@ -3,6 +3,7 @@ package com.example.learningsupport_argame.Community;
 
 import com.example.learningsupport_argame.DbUtils;
 import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +37,41 @@ public class FriendLab {
 
     /**
      * 记录当前得到好友数据
+     *
      * @return
      */
     public static List<User> getFriendList() {
         return sFriendList;
     }
 
+
+    // 主要用于测试是否已添加了好友
+    public static User getFriendById(int friendId) {
+        List<User> friendList = new ArrayList<>();
+        String sql = "select * from friend where user_id = ? and friend_id = ?;";
+        DbUtils.query(resultSet -> {
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getInt("user_id"));
+                friendList.add(user);
+            }
+        }, sql, UserLab.getCurrentUser().getId(), friendId);
+        if (friendList.size() <= 0)
+            return null;
+        return friendList.get(0);
+    }
+
+    // 获取加了我好友的人
+    public static List<User> getFans() {
+        String sql = "select * from task where user_id in (select user_id from friend where friend_id = ?);";
+        List<User> fansList = new ArrayList<>();
+        DbUtils.query(resultSet -> {
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getInt("user_id"));
+                fansList.add(user);
+            }
+        }, sql, UserLab.getCurrentUser().getId());
+        return fansList;
+    }
 }

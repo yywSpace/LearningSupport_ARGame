@@ -70,7 +70,7 @@ public class FriendListDialog {
         else
             mFriendList = new ArrayList<>();
 
-        mItemAdapter = new FriendItemAdapter(context, mFriendList, userAndMessages, true);
+        mItemAdapter = new FriendItemAdapter(context, mFriendList, null);
         mItemAdapter.setOnRecycleViewItemClick((view, position) -> {
             if (mOnRecycleViewItemClick != null) {
                 mOnRecycleViewItemClick.onRecycleViewItemClick(view, position);

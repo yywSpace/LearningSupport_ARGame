@@ -4,5 +4,6 @@
         <item>对自己发布</item>
         <item>对好友发布</item>
         <item>对社团发布</item>
+        <item>对全体发布</item>
     </string-array>
 </resources>

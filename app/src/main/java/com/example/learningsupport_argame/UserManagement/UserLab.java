@@ -33,7 +33,11 @@ public class UserLab {
 
 
     public static User getUserById(String userId) {
-        List<User> users = getUserWith("SELECT * FROM user WHERE user_id = ?", Integer.parseInt(userId));
+        List<User> users = getUserWith(  "SELECT " +
+                "   u.*,\n" +
+                "   (SELECT COUNT(*) FROM task WHERE user_id = u.user_id) task_release_count,\n" +
+                "   (SELECT COUNT(*) FROM task_participant WHERE participant_id = u.user_id AND task_accomplish_status = '完成') task_accomplish_count\n" +
+                "FROM user u WHERE user_id = ?", Integer.parseInt(userId));
         Log.d(TAG, "getUserById: " + users.size());
         if (users.size() == 0)
             return null;
@@ -276,5 +280,27 @@ public class UserLab {
 
     public static List<User> getUserByFuzzyName(String fuzzyName) {
         return getUserWith(String.format("SELECT * FROM user WHERE user_name like '%%%s%%';", fuzzyName));
+    }
+
+    public static User getSampleUser(int userId) {
+        List<User> users = new ArrayList<>();
+        String sql = "" +
+                "select \n " +
+                "   user_id,\n" +
+                "   user_name,\n" +
+                "   user_level\n" +
+                "from user where user_id = ?;";
+        DbUtils.query(resultSet -> {
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getInt("user_id"));
+                user.setName(resultSet.getString("user_name"));
+                user.setLevel(resultSet.getInt("user_level"));
+                users.add(user);
+            }
+        }, sql, userId);
+        if (users.size() <= 0)
+            return null;
+        return users.get(0);
     }
 }

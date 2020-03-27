@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="1dp">
+    android:layout_marginStart="5dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="5dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp">
+        android:padding="10dp">
 
 
         <ImageView
             android:id="@+id/friend_list_item_avatar"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/img_avatar_01" />
+            android:src="@drawable/img_avatar_03" />
 
 
         <TextView
             android:id="@+id/friend_list_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/friend_list_item_avatar"
+            android:layout_toEndOf="@+id/friend_list_item_avatar"
             android:gravity="center"
             android:text="ta的昵称"
             android:textColor="@android:color/black"
@@ -37,17 +37,26 @@
             android:id="@+id/friend_list_item_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/friend_list_item_name"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/friend_list_item_name"
             android:text="Lv.1"
             android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/friend_list_item_stranger"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/friend_list_item_level"
+            android:src="@drawable/friend_stranger_icon"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/friend_list_item_major"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/friend_list_item_level"
-            android:layout_toRightOf="@+id/friend_list_item_avatar"
+            android:layout_toEndOf="@+id/friend_list_item_avatar"
             android:gravity="center"
             android:text="IT/互联网"
             android:textColor="#cbcbcb" />
@@ -59,9 +68,9 @@
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:scaleType="fitXY"
-            android:src="@drawable/gerenxinxi" />
+            android:src="@drawable/friend_info_icon" />
 
 
         <ImageView
@@ -69,9 +78,9 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_alignBottom="@+id/friend_item_last_message"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_toRightOf="@+id/friend_list_item_avatar" />
+            android:layout_toEndOf="@+id/friend_list_item_avatar" />
 
         <TextView
             android:id="@+id/friend_item_last_message"
@@ -79,9 +88,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/friend_list_item_major"
             android:layout_marginTop="5dp"
-            android:layout_toRightOf="@id/friend_list_item_avatar_red_point"
-            android:text="不要搞笑好不要"
-            android:textSize="15dp" />
+            android:layout_toEndOf="@id/friend_list_item_avatar_red_point"
+            android:text="不在线"
+            android:textSize="15sp" />
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

@@ -25,7 +25,6 @@ public class MonitorInfoLab {
 
     private MonitorInfoLab() {
 
-
     }
 
     public static List<MonitorInfo> getAllMonitorInfo(int userId) {

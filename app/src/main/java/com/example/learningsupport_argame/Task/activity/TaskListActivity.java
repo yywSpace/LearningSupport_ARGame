@@ -13,6 +13,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +29,9 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.learningsupport_argame.ARModel.PutModelActivity;
+import com.example.learningsupport_argame.Client.ClientLab;
+import com.example.learningsupport_argame.Community.club.Club;
+import com.example.learningsupport_argame.Community.club.ClubLab;
 import com.example.learningsupport_argame.Navi.Activity.SelectLocationPopWindow;
 import com.example.learningsupport_argame.NavigationController;
 import com.example.learningsupport_argame.R;
@@ -87,7 +92,7 @@ public class TaskListActivity extends AppCompatActivity {
         mFragmentList = new ArrayList<>(Arrays.asList(
                 CurrentTaskFragment.getInstance(this),
                 TaskAcceptedListFragment.getInstance(this),
-                TaskCanAcceptListFragment.getInstance(this)
+                TaskCanAcceptListFragment.getInstance()
         ));
 
         mViewPager.setCurrentItem(0);
@@ -200,7 +205,7 @@ public class TaskListActivity extends AppCompatActivity {
                         .create();
                 mCreateTaskDialog.show();
                 mCreateTaskDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-                    String[] taskReleaseTypeStr = new String[]{"个人任务", "好友任务", "社团任务"};
+                    String[] taskReleaseTypeStr = new String[]{"个人任务", "好友任务", "社团任务", "全体任务"};
                     int taskType = taskViewAdapter.mTaskType;
                     String[] taskStartTimeArray = taskViewAdapter.mStartTimes;
                     String[] taskEndTimeArray = taskViewAdapter.mEndTimes;
@@ -317,7 +322,7 @@ public class TaskListActivity extends AppCompatActivity {
         TextView mTaskEndTime;
         ImageView mChooseLocation;
         TextView mTaskLocation;
-        FrameLayout mTaskTypeDynamicLayout;
+        TextView mTaskClubSelectTV;
         EditText mTaskDescEditText;
         /**
          * 0:自己
@@ -330,6 +335,7 @@ public class TaskListActivity extends AppCompatActivity {
         String[] mEndTimes = new String[2];
         String mTaskCreateTime;
         String mTaskAccomplishFullAddress = "";
+        String mClubName;
 
 
         public View getView() {
@@ -347,10 +353,31 @@ public class TaskListActivity extends AppCompatActivity {
             mTaskEndTime = createTaskView.findViewById(R.id.task_create_end_time);
             mChooseLocation = createTaskView.findViewById(R.id.task_create_set_location);
             mTaskLocation = createTaskView.findViewById(R.id.task_create_location);
-            mTaskTypeDynamicLayout = createTaskView.findViewById(R.id.layout_task_type);
+            mTaskClubSelectTV = createTaskView.findViewById(R.id.task_club_select_layout);
             mTaskDescEditText = createTaskView.findViewById(R.id.task_create_enter_task_desc);
             mChooseTaskAR = createTaskView.findViewById(R.id.task_create_choose_ar);
+            mTaskClubSelectTV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    View view = LayoutInflater.from(TaskListActivity.this).inflate(R.layout.task_release_select_club_layout, null, false);
+                    RadioGroup radioGroup = view.findViewById(R.id.club_select_radio_group);
+                    for (int i = 0; i < 4; i++) {
+                        RadioButton radioButton = new RadioButton(TaskListActivity.this);
+                        radioButton.setText("社团" + i);
+                        radioGroup.addView(radioButton);
+                    }
 
+                    new Thread(() -> {
+                        List<Club> clubList = ClubLab.getParticipateClubList();
+                    });
+                    new AlertDialog.Builder(TaskListActivity.this)
+                            .setTitle("选择要发布的社团")
+                            .setView(view)
+                            .show();
+                    mClubName = "";
+                    Toast.makeText(TaskListActivity.this, "弹窗选择社团", Toast.LENGTH_SHORT).show();
+                }
+            });
             // 设置任务时间默认为当前时间
             Calendar calendar = Calendar.getInstance();
             String currentTime = String.format("%d-%02d-%02d %d:%02d",
@@ -373,68 +400,27 @@ public class TaskListActivity extends AppCompatActivity {
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     mTaskType = i;
                     switch (mTaskType) {
-                        case 0: // 对自己发布
+                        case 0:
+                            // 对自己发布
                             mChooseTaskAR.setEnabled(false);
-                            mTaskTypeDynamicLayout.removeAllViews();
+                            mTaskClubSelectTV.setVisibility(View.INVISIBLE);
                             break;
                         case 1:
                             // 对好友发布
-                            // TODO: 19-11-3 适配数据
                             mChooseTaskAR.setEnabled(true);
-                            mTaskTypeDynamicLayout.removeAllViews();
-                            MultiSelectionSpinner chooseFriends = new MultiSelectionSpinner(TaskListActivity.this);
-//                            List<PairInfoBean> peopleList = new ArrayList<>();
-//                            List<String> peopleListString = new ArrayList<>();
-//                            char a = 'A';
-//                            for (int j = 0; j < 10; j++) {
-//                                PairInfoBean pairInfoBean = new PairInfoBean();
-//                                pairInfoBean.pairName = a + "/" + j;
-//                                peopleListString.add(pairInfoBean.pairName);
-//                                peopleList.add(pairInfoBean);
-//                                a++;
-//                            }
-//                            ArrayAdapter<PairInfoBean> adapter = new ArrayAdapter<PairInfoBean>(TaskListActivity.this, android.R.layout.simple_spinner_dropdown_item, peopleList);
-//                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                            chooseFriends.setItems(peopleListString);
-//                            mTaskTypeDynamicLayout.addView(chooseFriends);
-//                            chooseFriends.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-//                                @Override
-//                                public void selectedIndices(List<Integer> indices) {
-//                                    Toast.makeText(TaskListActivity.this, "22222", Toast.LENGTH_SHORT).show();
-//                                }
-//
-//                                @Override
-//                                public void selectedStrings(List<String> strings) {
-//
-//                                }
-//                            });
+                            mTaskClubSelectTV.setVisibility(View.INVISIBLE);
                             break;
                         case 2:
                             // 对社团发布
                             // TODO: 19-11-3 适配数据
                             mChooseTaskAR.setEnabled(true);
-                            mTaskTypeDynamicLayout.removeAllViews();
-                            MultiSelectionSpinner chooseSociety = new MultiSelectionSpinner(TaskListActivity.this);
-
-                            List<String> shetuanListString = new ArrayList<>();
-                            char b = 'A';
-                            for (int j = 0; j < 10; j++) {
-                                shetuanListString.add(b + "/" + j);
-                                b++;
-                            }
-                            chooseSociety.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-                                @Override
-                                public void selectedIndices(List<Integer> indices) {
-                                    Toast.makeText(TaskListActivity.this, "22222", Toast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void selectedStrings(List<String> strings) {
-
-                                }
-                            });
-                            chooseSociety.setItems(shetuanListString);
-                            mTaskTypeDynamicLayout.addView(chooseSociety);
+                            mTaskClubSelectTV.setEnabled(true);
+                            mTaskClubSelectTV.setVisibility(View.VISIBLE);
+                            break;
+                        case 3:
+                            // 对全体发布
+                            mTaskClubSelectTV.setVisibility(View.INVISIBLE);
+                            mChooseTaskAR.setEnabled(true);
                             break;
                     }
                 }

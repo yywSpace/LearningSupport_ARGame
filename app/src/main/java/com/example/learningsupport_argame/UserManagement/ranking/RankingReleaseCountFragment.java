@@ -1,5 +1,7 @@
 package com.example.learningsupport_argame.UserManagement.ranking;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -144,7 +146,7 @@ public class RankingReleaseCountFragment extends Fragment {
         }
     }
 
-    static class RankingReleaseCountViewHolder extends RecyclerView.ViewHolder {
+    class RankingReleaseCountViewHolder extends RecyclerView.ViewHolder {
         ImageView userAvatar;
         TextView userReleaseCount;
         TextView userName;
@@ -173,7 +175,12 @@ public class RankingReleaseCountFragment extends Fragment {
                     rankingNum.setTextColor(Color.parseColor("#b87333"));
                     break;
             }
-            userAvatar.setImageBitmap(user.getAvatar());
+            if (user.getAvatar() != null)
+                userAvatar.setImageBitmap(user.getAvatar());
+            else {
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.img_avatar_02);
+                userAvatar.setImageBitmap(bitmap);
+            }
             userName.setText(user.getName());
             userReleaseCount.setText(user.getReleaseCount() + "次");
             rankingNum.setText(valueOf(position + 1));

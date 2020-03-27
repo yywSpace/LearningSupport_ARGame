@@ -1,5 +1,7 @@
 package com.example.learningsupport_argame.UserManagement.UserMessage;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.learningsupport_argame.Community.FriendLab;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
@@ -27,7 +30,6 @@ import java.util.List;
 public class FriendMessageActivity extends AppCompatActivity {
     public static final String FRIEND_STATUS = "friend_status";
     private String mCurrentUserId;
-    private boolean isFriend;
     private TextView mUserName;
     private TextView mUserLevel;
     private ImageView mImageView;
@@ -52,22 +54,7 @@ public class FriendMessageActivity extends AppCompatActivity {
         mReturnBtn = findViewById(R.id.user_management_friend_message_return);
         mReturnBtn.setOnClickListener(v -> finish());
         mCurrentUserId = getIntent().getStringExtra(User.CURRENT_USER_ID);
-        isFriend = getIntent().getBooleanExtra(FRIEND_STATUS, false);
-        if (isFriend) {
-            mAttentionButton.setClickable(false);
-            mAttentionButton.setText("已关注");
-        } else {
-            mAttentionButton.setClickable(true);
-            mAttentionButton.setOnClickListener(v -> {
-                new Thread(() -> {
-                    UserLab.addFriend(mCurrentUserId);
-                    runOnUiThread(() -> {
-                        mAttentionButton.setClickable(false);
-                        mAttentionButton.setText("已关注");
-                    });
-                }).start();
-            });
-        }
+
         mTitleList = new ArrayList<>(Arrays.asList("已发布", "已完成", "动态"));
         mFragmentList = new ArrayList<>(Arrays.asList(
                 FriendReleasedTaskFragment.getInstance(mCurrentUserId),
@@ -98,12 +85,36 @@ public class FriendMessageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         new Thread(() -> {
+            User friend = FriendLab.getFriendById(Integer.parseInt(mCurrentUserId));
+            runOnUiThread(()->{
+                if (friend != null) {
+                    mAttentionButton.setClickable(false);
+                    mAttentionButton.setText("已关注");
+                } else {
+                    mAttentionButton.setClickable(true);
+                    mAttentionButton.setOnClickListener(v -> {
+                        new Thread(() -> {
+                            UserLab.addFriend(mCurrentUserId);
+                            runOnUiThread(() -> {
+                                mAttentionButton.setClickable(false);
+                                mAttentionButton.setText("已关注");
+                            });
+                        }).start();
+                    });
+                }
+            });
+
             User user = UserLab.getUserById(mCurrentUserId);
             Log.d(TAG, "onResume: " + user);
             runOnUiThread(() -> {
                 mUserName.setText(user.getName());
                 mUserLevel.setText("Lv." + user.getLevel());
-                mImageView.setImageBitmap(user.getAvatar());
+                if (user.getAvatar() != null)
+                    mImageView.setImageBitmap(user.getAvatar());
+                else {
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.img_avatar_05);
+                    mImageView.setImageBitmap(bitmap);
+                }
             });
         }).start();
     }
