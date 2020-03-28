@@ -1,7 +1,10 @@
 package com.example.learningsupport_argame.UserManagement.UserMessage;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,17 +20,25 @@ import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.adapter.TaskItemAdapter;
 import com.example.learningsupport_argame.Task.TaskLab;
+import com.example.learningsupport_argame.UserManagement.achievement.AchievementActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FriendReleasedTaskFragment extends Fragment {
+    private Activity mActivity;
     private static String TAG = "FriendReleasedTaskFragment";
 
     private String mCurrentUserId;
     private RecyclerView mRecyclerView;
     private TaskItemAdapter mTaskItemAdapter;
     private List<Task> mReleasedTasks;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mActivity = getActivity();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,10 +53,10 @@ public class FriendReleasedTaskFragment extends Fragment {
         mReleasedTasks = new ArrayList<>();
         View view = inflater.inflate(R.layout.user_management_friend_fragment_release_task, container, false);
         mRecyclerView = view.findViewById(R.id.user_management_released_task_recycler_view);
-        mTaskItemAdapter = new TaskItemAdapter(mReleasedTasks, getActivity());
+        mTaskItemAdapter = new TaskItemAdapter(mReleasedTasks, mActivity);
         mRecyclerView.setAdapter(mTaskItemAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL));
         return view;
     }
 
@@ -56,7 +67,7 @@ public class FriendReleasedTaskFragment extends Fragment {
             List<Task> tasks = TaskLab.getReleasedTask(mCurrentUserId);
             Log.d(TAG, "onResume: " + tasks.size());
             mReleasedTasks.addAll(tasks);
-            getActivity().runOnUiThread(() -> {
+            mActivity.runOnUiThread(() -> {
                 mTaskItemAdapter.notifyDataSetChanged();
             });
         }).start();

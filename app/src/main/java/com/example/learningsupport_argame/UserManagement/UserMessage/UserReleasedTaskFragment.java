@@ -1,5 +1,7 @@
 package com.example.learningsupport_argame.UserManagement.UserMessage;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.Task.TaskShowView;
 import com.example.learningsupport_argame.Task.fragment.TaskListBasicFragment;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.Task.Task;
@@ -23,7 +26,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserReleasedTaskFragment extends TaskListBasicFragment {
+    private Activity mActivity;
     private String mCurrentType = "个人任务";
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = getActivity();
+    }
 
     @Nullable
     @Override
@@ -54,14 +64,13 @@ public class UserReleasedTaskFragment extends TaskListBasicFragment {
         });
 
         mTaskItemAdapter.setOnRecycleViewItemClick((v, position) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            View taskDetailView = getLayoutInflater().inflate(R.layout.task_current_fragment_layout, null);//获取自定义布局
-            initView(taskDetailView);
-            initData(mTaskList.get(position));
-            builder.setView(taskDetailView);
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            TaskShowView taskShowView = new TaskShowView(mActivity);
+            taskShowView.initData(mTaskList.get(position));
+            builder.setView(taskShowView.getView());
             builder.setTitle("任务详情");
             builder.setPositiveButton("删除", (dialog, which) -> {
-                Toast.makeText(getActivity(), "删除或修改，待定", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, "删除或修改，待定", Toast.LENGTH_SHORT).show();
 //                new Thread(() -> {
 //                    DbUtils.update(null,
 //                            "DELETE FROM task WHERE task_id = ?",
@@ -79,7 +88,7 @@ public class UserReleasedTaskFragment extends TaskListBasicFragment {
             Log.d(TAG, "onResume: " + tasks.size());
             mTaskList.clear();
             mTaskList.addAll(tasks);
-            getActivity().runOnUiThread(() -> {
+            mActivity.runOnUiThread(() -> {
                 mTaskItemAdapter.notifyDataSetChanged();
                 getSwipeRefreshLayout().setRefreshing(false);
             });
@@ -105,7 +114,7 @@ public class UserReleasedTaskFragment extends TaskListBasicFragment {
             Log.d(TAG, "onResume: " + tasks.size());
             mTaskList.clear();
             mTaskList.addAll(tasks);
-            getActivity().runOnUiThread(() -> {
+            mActivity.runOnUiThread(() -> {
                 mTaskItemAdapter.notifyDataSetChanged();
             });
         }).start();

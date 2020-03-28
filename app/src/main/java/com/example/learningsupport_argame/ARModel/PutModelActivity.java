@@ -37,6 +37,7 @@ import com.example.learningsupport_argame.Navi.Activity.LocationService;
 import com.example.learningsupport_argame.Navi.Utils.MapUtils;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Task.Task;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
@@ -324,7 +325,7 @@ public class PutModelActivity extends AppCompatActivity {
         mShowModelItemButton.setOnClickListener((v) -> {
             View view = LayoutInflater.from(this).inflate(R.layout.ar_item_recycle_layout, null, false);
             mItemsRecyclerView = view.findViewById(R.id.ar_items_recycler_view);
-            mModelItemsAdapter = new ModelItemsAdapter(this, ModelItemsLab.get().getItemList());
+            mModelItemsAdapter = new ModelItemsAdapter(this, UserLab.getCurrentUser().getModelItems());
             mItemsRecyclerView.setAdapter(mModelItemsAdapter);
             mModelItemsAdapter.setOnModelItemClickListener(item -> {
                 // 如果已经放置模型，则返回
@@ -385,6 +386,7 @@ public class PutModelActivity extends AppCompatActivity {
         mSubmitModelButton = findViewById(R.id.armodel_model_submit_button);
         mDeleteModelButton = findViewById(R.id.armodel_model_delete_button);
         mScanModelButton = findViewById(R.id.armodel_model_scan_button);
+        mScanModelButton.setVisibility(View.GONE);
         mShowModelItemButton = findViewById(R.id.armodel_model_show_button);
     }
 

@@ -1,6 +1,7 @@
 package com.example.learningsupport_argame.Task;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.baidu.mapapi.model.LatLng;
+import com.example.learningsupport_argame.Community.club.Club;
+import com.example.learningsupport_argame.Community.club.ClubLab;
 import com.example.learningsupport_argame.Navi.Activity.ShowLocationPopWindow;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Task.adapter.ParticipantItemAdapter;
@@ -29,6 +32,8 @@ public class TaskShowView {
     private ImageView mMapLocationBtn;
     private TextView mTaskStatusTextView;
     private TextView mTaskNameTextView;
+    private TextView mTaskAuthorTextView;
+    private TextView mTaskClubNameTextView;
     private TextView mTaskTypeTextView;
     private TextClock mTaskTimeTextClock;
     private TextView mTaskLocationTextView;
@@ -59,6 +64,8 @@ public class TaskShowView {
         mTaskStatusFaq = view.findViewById(R.id.task_status_faq);
         mTaskStatusTextView = view.findViewById(R.id.task_status);
         mTaskNameTextView = view.findViewById(R.id.task_name);
+        mTaskAuthorTextView = view.findViewById(R.id.task_publisher);
+        mTaskClubNameTextView = view.findViewById(R.id.task_club_name);
         mTaskTypeTextView = view.findViewById(R.id.task_type);
         mTaskTimeTextClock = view.findViewById(R.id.task_time);
         mTaskLocationTextView = view.findViewById(R.id.task_location);
@@ -104,12 +111,25 @@ public class TaskShowView {
         mTaskLocationTextView.setText(location[0]);
         mTaskDescTextView.setText(task.getTaskContent());
         mAccomplishTaskLatLng = new LatLng(Double.parseDouble(location[1]), Double.parseDouble(location[2]));
+
         // 参与列表
         new Thread(() -> {
+            Club club = null;
+            if (task.getTaskType().equals("社团任务")) {
+                club = ClubLab.getClubById(task.getReleaseClubId());
+                Log.d("123", "initData: "+club.getClubName());
+            }
+            User author = UserLab.getUserById(String.valueOf(task.getUserId()));
             List<User> participants = TaskLab.getParticipant("" + task.getTaskId());
             mUserList.clear();
             mUserList.addAll(participants);
+            final Club finalClub = club;
             mActivity.runOnUiThread(() -> {
+                if (task.getTaskType().equals("社团任务") && finalClub != null) {
+                    mTaskClubNameTextView.setVisibility(View.VISIBLE);
+                    mTaskClubNameTextView.setText(finalClub.getClubName());
+                }
+                mTaskAuthorTextView.setText(author.getName());
                 mItemAdapter.notifyDataSetChanged();
             });
         }).start();

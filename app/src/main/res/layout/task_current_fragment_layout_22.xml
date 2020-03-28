@@ -98,6 +98,17 @@
                         android:textSize="17sp"
                         android:textStyle="bold" />
 
+                    <TextView
+                        android:id="@+id/task_club_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/task_type"
+                        android:layout_marginStart="30dp"
+                        android:layout_toEndOf="@+id/task_type"
+                        android:text="苹果部"
+                        android:textSize="17sp"
+                        android:visibility="invisible" />
+
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -114,10 +125,28 @@
                         android:textSize="20sp" />
 
                     <TextView
+                        android:id="@+id/task_publisher_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/task_message"
+                        android:layout_alignStart="@id/task_message"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:text="作者：" />
+
+                    <TextView
+                        android:id="@+id/task_publisher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/task_publisher_label"
+                        android:layout_toEndOf="@+id/task_publisher_label"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
                         android:id="@+id/task_time_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/task_message"
+                        android:layout_below="@id/task_publisher_label"
                         android:layout_alignStart="@id/task_message"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="10dp"
@@ -129,7 +158,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignBaseline="@id/task_time_label"
-                        android:layout_centerHorizontal="true"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@id/task_time_label"
                         android:background="#63FFFFFF"

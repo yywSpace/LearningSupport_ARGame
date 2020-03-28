@@ -30,7 +30,7 @@ public class MonitorInfoLab {
     public static List<MonitorInfo> getAllMonitorInfo(int userId) {
         String sql = "SELECT * FROM monitor_info WHERE user_id = ?;";
         mMonitorInfoList = getMonitorInfoWith(sql, userId);
-        Log.d(TAG, "getAllMonitorInfo: "+mMonitorInfoList.size());
+        Log.d(TAG, "getAllMonitorInfo: " + mMonitorInfoList.size());
         return mMonitorInfoList;
     }
 
@@ -66,7 +66,7 @@ public class MonitorInfoLab {
         return taskAccomplishSuccess;
     }
 
-    public static boolean insertMonitorInfo(MonitorInfo monitorInfo) {
+    static boolean insertMonitorInfo(MonitorInfo monitorInfo) {
         String sql = "INSERT INTO monitor_info (user_id, task_id, task_phone_use_count, task_begin_time, task_end_time, task_out_of_range_time, task_screen_on_time, task_screen_off_time, task_screen_on_attention_time,task_delay_time)" +
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);\n";
         DbUtils.update(effectRow -> mEffectRow = effectRow,
@@ -88,7 +88,7 @@ public class MonitorInfoLab {
     }
 
 
-    public static List<MonitorInfo> getMonitorInfoWith(String sql, Object... args) {
+    private static List<MonitorInfo> getMonitorInfoWith(String sql, Object... args) {
         List<MonitorInfo> monitorInfoList = new ArrayList<>();
         DbUtils.query(resultSet -> {
             while (resultSet.next()) {
@@ -109,14 +109,15 @@ public class MonitorInfoLab {
     }
 
     public List<MonitorInfo> getMonitorInfoListDay(String dataStr) {
+
         List<MonitorInfo> infoList = new ArrayList<>();
-        Log.d(TAG, "dataStr: "+dataStr);
+        Log.d(TAG, "dataStr: " + dataStr);
         int dayGiven = Integer.parseInt(dataStr.substring(8, 10));
-        Log.d(TAG, "dayGiven: "+dayGiven);
+        Log.d(TAG, "dayGiven: " + dayGiven);
         for (int i = 0; i < mMonitorInfoList.size(); i++) {
-            Log.d(TAG, "getTaskBeginTime: "+mMonitorInfoList.get(i).getTaskBeginTime());
+            Log.d(TAG, "getTaskBeginTime: " + mMonitorInfoList.get(i).getTaskBeginTime());
             String day = mMonitorInfoList.get(i).getTaskBeginTime().substring(8, 10).trim();
-            Log.d(TAG, "day: "+day);
+            Log.d(TAG, "day: " + day);
             if (Integer.parseInt(day) == dayGiven)
                 infoList.add(mMonitorInfoList.get(i));
         }
@@ -125,18 +126,20 @@ public class MonitorInfoLab {
     }
 
     public List<MonitorInfo> getMonitorInfoListWeek(String dataStr) {
-        Log.d(TAG, dataStr);
+        dataStr = dataStr.replace("-", "/");
+        Log.d(TAG, "getMonitorInfoListWeek " + dataStr);
         List<MonitorInfo> infoList = new ArrayList<>();
         String weekRange = getFirstAndLastOfWeek(dataStr);
         String[] range = weekRange.split("-");
+        Log.d(TAG, "getMonitorInfoListWeek:range " + range[0] + "-" + range[1]);
         for (int i = 0; i < mMonitorInfoList.size(); i++) {
             String currentTime = mMonitorInfoList.get(i).getTaskBeginTime().substring(0, 10);
-            Log.d(TAG, currentTime);
+            currentTime = currentTime.replace("-", "/");
+            Log.d(TAG, "getMonitorInfoListWeek: currentTime " + currentTime);
             if (inTheTwoDate(currentTime, range[0], range[1]))
                 infoList.add(mMonitorInfoList.get(i));
         }
-        Log.d(TAG, infoList.size() + "");
-
+        Log.d(TAG, "getMonitorInfoListWeek:size " + infoList.size() + "");
         return infoList;
     }
 
@@ -170,12 +173,15 @@ public class MonitorInfoLab {
 
 
     public List<MonitorInfo> getMonitorInfoListMonth(String dataStr) {
+        dataStr = dataStr.replace("-", "/");
         List<MonitorInfo> infoList = new ArrayList<>();
         String monthRange = getFirstAndLastOfMonth(dataStr);
         String[] range = monthRange.split("-");
+        Log.d(TAG, "monthRange:dataStr " + dataStr);
         Log.d(TAG, "monthRange: " + monthRange);
         for (int i = 0; i < mMonitorInfoList.size(); i++) {
             String currentTime = mMonitorInfoList.get(i).getTaskBeginTime().substring(0, 10);
+            currentTime = currentTime.replace("-", "/");
             Log.d(TAG, "currentTime: " + currentTime);
             if (inTheTwoDate(currentTime, range[0], range[1]))
                 infoList.add(mMonitorInfoList.get(i));

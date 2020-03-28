@@ -1,6 +1,7 @@
 package com.example.learningsupport_argame.Task.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,13 @@ import com.example.learningsupport_argame.Task.TaskShowView;
 public class CurrentTaskFragment extends Fragment {
     private String TAG = "CurrentTaskFragment";
     private TaskShowView mTaskShowView;
-    private static Activity mActivity;
+    private Activity mActivity;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mActivity = getActivity();
+    }
 
     @Nullable
     @Override
@@ -33,9 +40,8 @@ public class CurrentTaskFragment extends Fragment {
     }
 
 
-    public static CurrentTaskFragment getInstance(Activity activity) {
+    public static CurrentTaskFragment getInstance() {
         CurrentTaskFragment fragment = new CurrentTaskFragment();
-        mActivity = activity;
 //        Bundle args = new Bundle();
 //        args.putString(User.CURRENT_USER_ID, userId);
 //        fragment.setArguments(args);

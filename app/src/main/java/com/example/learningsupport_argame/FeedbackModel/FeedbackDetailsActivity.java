@@ -1,6 +1,8 @@
 package com.example.learningsupport_argame.FeedbackModel;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +19,7 @@ import java.util.List;
 public class FeedbackDetailsActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
-
+    private FrameLayout mReturnLayout;
     private List<Fragment> fragments = new ArrayList<>();
     private List<String> titles = new ArrayList<>();
 
@@ -26,6 +28,8 @@ public class FeedbackDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feedback_activity_details);
 
+        mReturnLayout = findViewById(R.id.feedback_return);
+        mReturnLayout.setOnClickListener(v -> finish());
         mTabLayout = findViewById(R.id.feedback_details_tabs);
         mViewPager = findViewById(R.id.feedback_details_vp_content);
         fragments.add(RadarChartFragment.newInstance());

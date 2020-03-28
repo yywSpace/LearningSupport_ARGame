@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.UserManagement.UserMessage;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,15 +23,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FriendDynamicFragment extends Fragment {
+    private Activity mActivity;
     private String mCurrentUserId;
     private RecyclerView mRecyclerView;
     private List<Task> mTaskList;
     private DynamicTaskItemAdapter mAdapter;
 
 
-    public static final int ITEM_NORMAL = 1;
-    public static final int ITEM_EMPTY = 0;
+    private static final int ITEM_NORMAL = 1;
+    private static final int ITEM_EMPTY = 0;
 
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mActivity = getActivity();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,8 +55,8 @@ public class FriendDynamicFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.user_management_dynamic_recycler_view);
         mAdapter = new DynamicTaskItemAdapter(mTaskList, getContext());
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL));
         return view;
     }
 
@@ -58,7 +66,7 @@ public class FriendDynamicFragment extends Fragment {
         new Thread(() -> {
             List<Task> tasks = TaskLab.getAllTask(mCurrentUserId);
             mTaskList.addAll(tasks);
-            getActivity().runOnUiThread(() -> mAdapter.notifyDataSetChanged());
+            mActivity.runOnUiThread(() -> mAdapter.notifyDataSetChanged());
 
         }).start();
     }

@@ -24,6 +24,10 @@ public class TaskLab {
     public static List<Task> mReleasedTaskList;
     public static List<Task> mRunningTaskList = new ArrayList<>();
 
+    public static List<Task> sFriendTaskList;
+    public static List<Task> sAllPeopleTaskList;
+    public static List<Task> sClubTaskList;
+
     public static Task getTaskById(int id) {
         String sql = "select * from task where task_id = ?;";
         List<Task> tasks = getTasksWith(sql, id);
@@ -138,6 +142,7 @@ public class TaskLab {
                 task.setTaskNotification(resultSet.getBoolean("task_notification"));
                 task.setAccomplishTaskLocation(resultSet.getString("task_accomplish_location"));
                 task.setTaskCreateTime(resultSet.getString("task_create_time"));
+                task.setReleaseClubId(resultSet.getInt("task_release_club"));
                 // 此处查询消耗时间过长
                 // 获取参与人员列表
                 // List<User> participant = getParticipant(task.getTaskId() + "");
@@ -178,8 +183,8 @@ public class TaskLab {
                 "INSERT INTO task (" +
                         " user_id, task_name, task_content," +
                         " task_type, task_status, task_notification, task_participant, " +
-                        " task_accomplish_location,task_start_at, task_end_in, task_create_time " +
-                        ") VALUE(?,?,?,?,?,?,?,?,?,?,?);",
+                        " task_accomplish_location,task_start_at, task_end_in, task_create_time,task_release_club " +
+                        ") VALUE(?,?,?,?,?,?,?,?,?,?,?,?);",
                 task.getUserId(),
                 task.getTaskName(),
                 task.getTaskContent(),
@@ -190,7 +195,8 @@ public class TaskLab {
                 task.getAccomplishTaskLocation(),
                 task.getTaskStartAt(),
                 task.getTaskEndIn(),
-                task.getTaskCreateTime());
+                task.getTaskCreateTime(),
+                task.getReleaseClubId());
     }
 
     public static void deleteReleasedTask(Task task) {
@@ -257,6 +263,7 @@ public class TaskLab {
                 "                        task_id not in (select task_id from task_ar_model)  and \n" +
                 "                        task_id not in (select task_id from task_participant where task_participant.participant_id = ?);";
         List<Task> friendTask = getTasksWith(sql, UserLab.getCurrentUser().getId(), UserLab.getCurrentUser().getId());
+        sFriendTaskList = friendTask;
         return friendTask;
     }
 
@@ -266,7 +273,22 @@ public class TaskLab {
                 "select * from task " +
                 "   where task_id not in (select task_id from task_ar_model) and task_type = '全体任务' and\n" +
                 "         task_id not in (select task_id from task_participant where task_participant.participant_id = ?);";
-        List<Task> friendTask = getTasksWith(sql, UserLab.getCurrentUser().getId());
-        return friendTask;
+        List<Task> allPeopleTask = getTasksWith(sql, UserLab.getCurrentUser().getId());
+        sAllPeopleTaskList = allPeopleTask;
+        return allPeopleTask;
+    }
+
+    // 获取我参加的社团发布的任务
+    public static List<Task> getClubTask() {
+        String sql = "" +
+                "select * from task " +
+                "   where task_release_club " +
+                "       in (select club_id from club_members where user_id = ?) and " +
+                "       task_type = '社团任务' and\n" +
+                "       task_id not in (select task_id from task_ar_model)  and \n" +
+                "       task_id not in (select task_id from task_participant where task_participant.participant_id = ?);";
+        List<Task> clubTask = getTasksWith(sql, UserLab.getCurrentUser().getId(), UserLab.getCurrentUser().getId());
+        sClubTaskList = clubTask;
+        return clubTask;
     }
 }

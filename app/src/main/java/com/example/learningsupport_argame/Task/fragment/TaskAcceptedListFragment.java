@@ -1,5 +1,7 @@
 package com.example.learningsupport_argame.Task.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.learningsupport_argame.DbUtils;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.Task.TaskShowView;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.TaskLab;
@@ -23,16 +26,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TaskAcceptedListFragment extends TaskListBasicFragment {
-    private static AppCompatActivity mActivity;
+    private Activity mActivity;
     private String mCurrentUserId;
     private String mCurrentType = "个人任务";
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = getActivity();
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         mCurrentType = "个人任务";
-
+        mTypePersonBtn.setText("个人/全体任务");
         mTypePersonBtn.setOnClickListener(v -> {
             mCurrentType = "个人任务";
             initListByType();
@@ -70,11 +79,10 @@ public class TaskAcceptedListFragment extends TaskListBasicFragment {
             }).start();
         });
         mTaskItemAdapter.setOnRecycleViewItemClick((v, position) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            View taskDetailView = getLayoutInflater().inflate(R.layout.task_current_fragment_layout_22, null);//获取自定义布局
-            initView(taskDetailView);
-            initData(mTaskList.get(position));
-            builder.setView(taskDetailView);
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            TaskShowView taskShowView = new TaskShowView(mActivity);
+            taskShowView.initData(mTaskList.get(position));
+            builder.setView(taskShowView.getView());
             builder.setTitle("任务详情");
             builder.setPositiveButton("删除", (dialog, which) -> {
                 new Thread(() -> {
@@ -124,10 +132,9 @@ public class TaskAcceptedListFragment extends TaskListBasicFragment {
     }
 
 
-    public static TaskAcceptedListFragment getInstance(AppCompatActivity activity) {
+    public static TaskAcceptedListFragment getInstance() {
         TaskAcceptedListFragment fragment = new TaskAcceptedListFragment();
-        mActivity = activity;
-//        Bundle args = new Bundle();
+        //        Bundle args = new Bundle();
 //        args.putString(User.CURRENT_USER_ID, userId);
 //        fragment.setArguments(args);
         return fragment;

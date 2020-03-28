@@ -19,6 +19,8 @@ import com.example.learningsupport_argame.Community.FriendLab;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.TaskLab;
+import com.example.learningsupport_argame.Task.TaskShowView;
+import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
@@ -71,6 +73,8 @@ public class TaskCanAcceptListFragment extends TaskListBasicFragment {
                     tasks = TaskLab.getFriendTask();
                 } else if (mCurrentType.equals("全体任务")) {
                     tasks = TaskLab.getAllPeopleTask();
+                } else if (mCurrentType.equals("社团任务")) {
+                    tasks = TaskLab.getClubTask();
                 }
                 mTaskList.clear();
                 mTaskList.addAll(tasks);
@@ -81,11 +85,10 @@ public class TaskCanAcceptListFragment extends TaskListBasicFragment {
             }).start();
         });
         mTaskItemAdapter.setOnRecycleViewItemClick((v, position) -> {
+            TaskShowView  taskShowView = new TaskShowView(mActivity);
+            taskShowView.initData(mTaskList.get(position));
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-            View taskDetailView = getLayoutInflater().inflate(R.layout.task_current_fragment_layout_22, null);//获取自定义布局
-            initView(taskDetailView);
-            initData(mTaskList.get(position));
-            builder.setView(taskDetailView);
+            builder.setView(taskShowView.getView());
             builder.setTitle("任务详情");
             builder.setPositiveButton("接受", (dialog, which) -> {
                 new Thread(() -> {
@@ -101,11 +104,25 @@ public class TaskCanAcceptListFragment extends TaskListBasicFragment {
     private void initListByType() {
         new Thread(() -> {
             List<Task> tasks = new ArrayList<>();
-            if (mCurrentType.equals("好友任务")) {
-                tasks = TaskLab.getFriendTask();
-            } else if (mCurrentType.equals("全体任务")) {
-                Log.d(TAG, "initListByType: 全体任务");
-                tasks = TaskLab.getAllPeopleTask();
+            switch (mCurrentType) {
+                case "好友任务":
+                    if (TaskLab.sFriendTaskList == null)
+                        tasks = TaskLab.getFriendTask();
+                    else
+                        tasks = TaskLab.sFriendTaskList;
+                    break;
+                case "全体任务":
+                    if (TaskLab.sAllPeopleTaskList == null)
+                        tasks = TaskLab.getAllPeopleTask();
+                    else
+                        tasks = TaskLab.sAllPeopleTaskList;
+                    break;
+                case "社团任务":
+                    if (TaskLab.sClubTaskList == null)
+                        tasks = TaskLab.getClubTask();
+                    else
+                        tasks = TaskLab.sClubTaskList;
+                    break;
             }
             mTaskList.clear();
             mTaskList.addAll(tasks);
@@ -126,6 +143,8 @@ public class TaskCanAcceptListFragment extends TaskListBasicFragment {
             }
             if (mCurrentType.equals("全体任务")) {
                 tasks = TaskLab.getAllPeopleTask();
+            } else if (mCurrentType.equals("社团任务")) {
+                tasks = TaskLab.getClubTask();
             }
 
             mTaskList.clear();

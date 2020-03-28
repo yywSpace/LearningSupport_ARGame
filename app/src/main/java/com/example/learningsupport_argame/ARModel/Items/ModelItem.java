@@ -1,20 +1,27 @@
 package com.example.learningsupport_argame.ARModel.Items;
 
+import androidx.annotation.NonNull;
+
 import com.example.learningsupport_argame.UserManagement.bag.Item;
 
 public class ModelItem extends Item {
+    private int mId;
+    private int mImageRes;
     private ModelItemType mModelItemType;
     private int mViewId;
     private String mModelPath;
 
-    public ModelItem(String name, String desc, int id, ModelItemType modelItemType) {
+    public ModelItem(int id, String name, String desc, int viewId, ModelItemType modelItemType) {
         super(name, desc);
+        mId = id;
         mModelItemType = modelItemType;
-        mViewId = id;
+        mViewId = viewId;
     }
 
-    public ModelItem(String name, String desc, String path, ModelItemType modelItemType) {
+    public ModelItem(int id, String name, String desc, String path, int imageRes, ModelItemType modelItemType) {
         super(name, desc);
+        mId = id;
+        mImageRes = imageRes;
         mModelItemType = modelItemType;
         mModelPath = path;
     }
@@ -41,5 +48,19 @@ public class ModelItem extends Item {
 
     public void setModelPath(String modelPath) {
         mModelPath = modelPath;
+    }
+
+    public int getImageRes() {
+        return mImageRes;
+    }
+
+    public void setImageRes(int imageRes) {
+        mImageRes = imageRes;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.valueOf(mId);
     }
 }

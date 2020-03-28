@@ -22,7 +22,7 @@ public class ModelItemsViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(ModelItem item) {
         if (item.getModelItemType() == ModelItemType.MODEL)
-            mImageView.setImageResource(R.drawable.ar_item_model_icon);
+            mImageView.setImageResource(item.getImageRes());
         else if (item.getModelItemType() == ModelItemType.VIEW)
             mImageView.setImageResource(R.drawable.ar_item_view_icon);
         mTextView.setText(item.getItemName());

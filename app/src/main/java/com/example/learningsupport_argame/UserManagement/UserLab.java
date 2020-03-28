@@ -2,6 +2,9 @@ package com.example.learningsupport_argame.UserManagement;
 
 import android.util.Log;
 
+import com.example.learningsupport_argame.ARModel.Items.ModelInfo;
+import com.example.learningsupport_argame.ARModel.Items.ModelItem;
+import com.example.learningsupport_argame.ARModel.Items.ModelItemsLab;
 import com.example.learningsupport_argame.DbUtils;
 import com.example.learningsupport_argame.Task.TaskReward.RewardItem;
 import com.example.learningsupport_argame.Task.TaskReward.RewardItemLab;
@@ -33,7 +36,7 @@ public class UserLab {
 
 
     public static User getUserById(String userId) {
-        List<User> users = getUserWith(  "SELECT " +
+        List<User> users = getUserWith("SELECT " +
                 "   u.*,\n" +
                 "   (SELECT COUNT(*) FROM task WHERE user_id = u.user_id) task_release_count,\n" +
                 "   (SELECT COUNT(*) FROM task_participant WHERE participant_id = u.user_id AND task_accomplish_status = '完成') task_accomplish_count\n" +
@@ -82,7 +85,7 @@ public class UserLab {
                 } catch (Exception e) {
                     Log.e(TAG, "getUserWith: ", e);
                 }
-
+                // 奖励列表
                 String rewardItemsStr = resultSet.getString("user_reward_items");
                 List<RewardItem> rewardItems = new ArrayList<>(4);
                 RewardItemLab rewardItemLab = RewardItemLab.get();
@@ -111,6 +114,19 @@ public class UserLab {
                     }
                     Log.d(TAG, "rewardItems: " + rewardItems.toString());
                     user.setRewardItems(rewardItems);
+
+                    // 模型列表
+                    String modelItemsStr = resultSet.getString("user_model_items");
+                    List<ModelItem> modelItems = new ArrayList<>();
+                    if (modelItemsStr == null || modelItemsStr.equals("")) {
+                        modelItems.add(ModelItemsLab.get().getItemList().get(0));
+                        modelItems.add(ModelItemsLab.get().getItemList().get(1));
+                    } else {
+                        String[] modelItemsArray = modelItemsStr.substring(1, modelItemsStr.length() - 1).split(",");
+                        for (String id : modelItemsArray)
+                            modelItems.add(ModelItemsLab.get().getItemList().get(Integer.parseInt(id.trim())));
+                    }
+                    user.setModelItems(modelItems);
                 }
                 users.add(user);
             }
@@ -161,7 +177,7 @@ public class UserLab {
                 "UPDATE user " +
                         "SET user_name = ?, user_avatar = ?, user_password = ?,user_sex = ?, user_birthday = ?,  user_city= ?, " +
                         "user_hp = ?, user_level = ?, user_exp = ?, user_gold = ?, user_reward_items = ?," +
-                        "user_last_login_time = ?,user_login_count = ?,user_label = ?  " +
+                        "user_last_login_time = ?,user_login_count = ?,user_label = ?, user_model_items=? " +
                         "WHERE user_id = ?",
                 user.getName(),
                 DbUtils.Bitmap2Bytes(user.getAvatar()),
@@ -177,6 +193,7 @@ public class UserLab {
                 user.getLastLoginTime(),
                 user.getLoginCount(),
                 user.getLabel(),
+                user.getModelItems().toString(),
                 user.getId());
     }
 

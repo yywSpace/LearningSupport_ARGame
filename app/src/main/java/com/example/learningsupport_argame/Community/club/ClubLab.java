@@ -3,6 +3,7 @@ package com.example.learningsupport_argame.Community.club;
 import android.util.Log;
 
 import com.example.learningsupport_argame.DbUtils;
+import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
@@ -75,6 +76,18 @@ public class ClubLab {
         DbUtils.update(null, "" +
                         "delete from club where id = ?",
                 club.getId());
+    }
+
+    public static Club getClubById(int id) {
+        String sql = "" +
+                "select c.*, (select count(*) from club_members where club_id = c.id) as current_num " +
+                "   from club c where id = ?;";
+        List<Club> clubs = getClubWith(sql, id);
+        if (clubs.size() <= 0) {
+            return null;
+        } else {
+            return clubs.get(0);
+        }
     }
 
     public static void attendClub(Club club) {

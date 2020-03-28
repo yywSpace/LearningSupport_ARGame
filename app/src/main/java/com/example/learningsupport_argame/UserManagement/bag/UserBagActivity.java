@@ -50,7 +50,7 @@ public class UserBagActivity extends Activity {
                 .stream()
                 .filter(rewardItem -> rewardItem.getCount() != 0)
                 .collect(Collectors.toList()));
-        mItemList.addAll(ModelItemsLab.get().getItemList());
+        mItemList.addAll(UserLab.getCurrentUser().getModelItems());
         mSwipeRefreshLayout = findViewById(R.id.bag_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mItemList.clear();
@@ -59,7 +59,7 @@ public class UserBagActivity extends Activity {
                     .stream()
                     .filter(rewardItem -> rewardItem.getCount() != 0)
                     .collect(Collectors.toList()));
-            mItemList.addAll(ModelItemsLab.get().getItemList());
+            mItemList.addAll(UserLab.getCurrentUser().getModelItems());
             mUserBagListAdapter.notifyDataSetChanged();
             mSwipeRefreshLayout.setRefreshing(false);
         });
@@ -98,7 +98,6 @@ public class UserBagActivity extends Activity {
         }
     }
 
-    // TODO: 20-3-23 适配各种模型图片
     class UserBagListViewHolder extends RecyclerView.ViewHolder {
         private ImageView mItemImage;
         private TextView mItemName;
@@ -153,9 +152,10 @@ public class UserBagActivity extends Activity {
                 ModelItem modelItem = (ModelItem) item;
                 mItemNumber.setText("1个");
                 mItemUseButton.setClickable(false);
+                mItemImage.setBackgroundResource(modelItem.getImageRes());
                 mItemUseButton.setBackgroundColor(Color.parseColor("#d4d4d4"));
                 if (modelItem.getModelItemType().equals(ModelItemType.MODEL))
-                    mItemImage.setBackgroundResource(R.drawable.ar_item_model_icon);
+                    mItemImage.setBackgroundResource(modelItem.getImageRes());
                 else
                     mItemImage.setBackgroundResource(R.drawable.ar_item_view_icon);
             }

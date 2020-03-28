@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -90,8 +92,8 @@ public class TaskListActivity extends AppCompatActivity {
         mFloatingActionButton = findViewById(R.id.task_list_add_task);
         mViewPager = findViewById(R.id.task_list_vp_content);
         mFragmentList = new ArrayList<>(Arrays.asList(
-                CurrentTaskFragment.getInstance(this),
-                TaskAcceptedListFragment.getInstance(this),
+                CurrentTaskFragment.getInstance(),
+                TaskAcceptedListFragment.getInstance(),
                 TaskCanAcceptListFragment.getInstance()
         ));
 
@@ -221,6 +223,15 @@ public class TaskListActivity extends AppCompatActivity {
                     task.setUserId(UserLab.getCurrentUser().getId());
                     task.setTaskStatus("未开始");
 
+                    if (taskViewAdapter.getClub() != null) {
+                        task.setReleaseClubId(taskViewAdapter.getClub().getId());
+                    }
+
+                    Log.d(TAG, "onClick: "+taskViewAdapter.getClub());
+                    if (taskType == 2 && taskViewAdapter.getClub() == null) {
+                        Toast.makeText(TaskListActivity.this, "请选择要发布的社团", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     if (task.getTaskName().equals("")) {
                         Toast.makeText(TaskListActivity.this, "请输入任务名称", Toast.LENGTH_SHORT).show();
                         return;
@@ -335,8 +346,10 @@ public class TaskListActivity extends AppCompatActivity {
         String[] mEndTimes = new String[2];
         String mTaskCreateTime;
         String mTaskAccomplishFullAddress = "";
-        String mClubName;
-
+        int mClubIndex = -1;
+        private List<RadioButton> mRadioButtonList = new ArrayList<>();
+        private List<Club> mClubList = null;
+        private View mSelectClubView = null;
 
         public View getView() {
             return mCreateTaskView;
@@ -359,23 +372,44 @@ public class TaskListActivity extends AppCompatActivity {
             mTaskClubSelectTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    View view = LayoutInflater.from(TaskListActivity.this).inflate(R.layout.task_release_select_club_layout, null, false);
-                    RadioGroup radioGroup = view.findViewById(R.id.club_select_radio_group);
-                    for (int i = 0; i < 4; i++) {
-                        RadioButton radioButton = new RadioButton(TaskListActivity.this);
-                        radioButton.setText("社团" + i);
-                        radioGroup.addView(radioButton);
-                    }
-
+                    mRadioButtonList = new ArrayList<>();
+                    mSelectClubView = LayoutInflater.from(TaskListActivity.this).inflate(R.layout.task_release_select_club_layout, null, false);
+                    LinearLayout linearLayout = mSelectClubView.findViewById(R.id.club_select_linear_layout);
                     new Thread(() -> {
-                        List<Club> clubList = ClubLab.getParticipateClubList();
-                    });
-                    new AlertDialog.Builder(TaskListActivity.this)
-                            .setTitle("选择要发布的社团")
-                            .setView(view)
-                            .show();
-                    mClubName = "";
-                    Toast.makeText(TaskListActivity.this, "弹窗选择社团", Toast.LENGTH_SHORT).show();
+                        if (mClubList == null)
+                            mClubList = ClubLab.getParticipateClubList();
+                        runOnUiThread(() -> {
+                            for (Club club : mClubList) {
+                                View itemView = LayoutInflater.from(TaskListActivity.this).inflate(R.layout.task_releas_club_select_item, null, false);
+                                ImageView avatar = itemView.findViewById(R.id.club_image);
+                                TextView name = itemView.findViewById(R.id.club_name);
+                                TextView memberNum = itemView.findViewById(R.id.club_member_number);
+                                RadioButton selectRadioButton = itemView.findViewById(R.id.club_select_radio_button);
+                                mRadioButtonList.add(selectRadioButton);
+                                selectRadioButton.setOnClickListener(v1 -> {
+                                    for (RadioButton radioButton : mRadioButtonList) {
+                                        if (selectRadioButton.equals(radioButton)) {
+                                            mClubIndex = mRadioButtonList.indexOf(selectRadioButton);
+                                            mTaskClubSelectTV.setText(mClubList.get(mClubIndex).getClubName());
+                                            continue;
+                                        }
+                                        radioButton.setChecked(false);
+                                    }
+                                });
+                                if (club.getCoverBitmap() != null)
+                                    avatar.setImageBitmap(club.getCoverBitmap());
+                                name.setText(club.getClubName());
+                                memberNum.setText(club.getCurrentMemberNum() + "/" + club.getClubMaxMember());
+                                linearLayout.addView(itemView);
+                            }
+                            new AlertDialog.Builder(TaskListActivity.this)
+                                    .setTitle("选择要发布的社团")
+                                    .setView(mSelectClubView)
+                                    .setPositiveButton("确认", null)
+                                    .show();
+                        });
+
+                    }).start();
                 }
             });
             // 设置任务时间默认为当前时间
@@ -412,7 +446,6 @@ public class TaskListActivity extends AppCompatActivity {
                             break;
                         case 2:
                             // 对社团发布
-                            // TODO: 19-11-3 适配数据
                             mChooseTaskAR.setEnabled(true);
                             mTaskClubSelectTV.setEnabled(true);
                             mTaskClubSelectTV.setVisibility(View.VISIBLE);
@@ -496,6 +529,16 @@ public class TaskListActivity extends AppCompatActivity {
             });
             mCreateTaskView = createTaskView;
         }
+
+        public Club getClub() {
+            if (mClubIndex <= 0)
+                return null;
+            if (mClubList.size() <= mClubIndex)
+                return null;
+            return mClubList.get(mClubIndex);
+        }
     }
+
+
 }
 

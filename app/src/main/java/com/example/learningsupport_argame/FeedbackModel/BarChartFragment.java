@@ -76,9 +76,9 @@ public class BarChartFragment extends Fragment {
                         mMonitorInfosMonth = mMonitorInfoLab.getMonitorInfoListMonth(time);
                         setData();
                     },
-                    Integer.parseInt(time.split("-")[0]) + 0,
+                    Integer.parseInt(time.split("-")[0]),
                     Integer.parseInt(time.split("-")[1]) - 1,
-                    Integer.parseInt(time.split("-")[2]) + 0)
+                    Integer.parseInt(time.split("-")[2]))
                     .show();
         });
         mBarChart = view.findViewById(R.id.bar_chart);

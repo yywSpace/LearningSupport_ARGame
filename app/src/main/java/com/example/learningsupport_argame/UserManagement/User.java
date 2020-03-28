@@ -3,6 +3,7 @@ package com.example.learningsupport_argame.UserManagement;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.example.learningsupport_argame.ARModel.Items.ModelItem;
 import com.example.learningsupport_argame.Task.TaskReward.RewardItem;
 import com.example.learningsupport_argame.Task.TaskReward.TaskReward;
 
@@ -29,6 +30,7 @@ public class User {
     private int mExp;
     private int mGold;
     private List<RewardItem> mRewardItems;
+    private List<ModelItem> mModelItems;
     private int mOnlineStatus;// 0 不在线， 1 在线， 2 接收到消息
     private boolean isNextTaskSpeedUp;
     private String mLastLoginTime;
@@ -240,5 +242,13 @@ public class User {
 
     public void setLabel(String label) {
         mLabel = label;
+    }
+
+    public List<ModelItem> getModelItems() {
+        return mModelItems;
+    }
+
+    public void setModelItems(List<ModelItem> modelItems) {
+        mModelItems = modelItems;
     }
 }

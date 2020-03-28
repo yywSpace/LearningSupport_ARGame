@@ -2,10 +2,12 @@ package com.example.learningsupport_argame.UserManagement.shop;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,8 +50,6 @@ public class ShopActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shop_activity_layout);
         mShopItemList = new ArrayList<>();
-        mShopItemList.addAll(RewardItemLab.get().getRewardItemList());
-        mShopItemList.addAll(ModelItemsLab.get().getItemList());
         mReturnLayout = findViewById(R.id.shop_return);
         mReturnLayout.setOnClickListener(v -> finish());
         mRecyclerView = findViewById(R.id.shop_list_recycler_view);
@@ -58,17 +58,25 @@ public class ShopActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mShopListAdapter);
         mSwipeRefreshLayout = findViewById(R.id.shop_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
-            mShopItemList.clear();
-            mShopItemList.addAll(RewardItemLab.get().getRewardItemList());
-            mShopItemList.addAll(ModelItemsLab.get().getItemList());
+            refreshModel();
             mSwipeRefreshLayout.setRefreshing(false);
         });
+        refreshModel();
+    }
+
+    void refreshModel() {
+        mShopItemList.clear();
+        mShopItemList.addAll(RewardItemLab.get().getRewardItemList());
+        List<ModelItem> shopItem = new ArrayList<>(ModelItemsLab.get().getItemList());
+        shopItem.removeIf((modelItem -> UserLab.getCurrentUser().getModelItems().contains(modelItem)));
+        mShopItemList.addAll(shopItem);
+        mShopListAdapter.notifyDataSetChanged();
     }
 
     class ShopListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private List<Item> mShopItemList;
 
-        public ShopListAdapter(List<Item> shopItemList) {
+        ShopListAdapter(List<Item> shopItemList) {
             mShopItemList = shopItemList;
         }
 
@@ -95,9 +103,9 @@ public class ShopActivity extends AppCompatActivity {
         private TextView mItemType;
         private TextView mItemCoast;
         private TextView mItemDesc;
-        private TextView mItemBuyButton;
+        private Button mItemBuyButton;
 
-        public ShopListViewHolder(@NonNull View itemView) {
+        ShopListViewHolder(@NonNull View itemView) {
             super(itemView);
             mItemImage = itemView.findViewById(R.id.shop_item_image);
             mItemName = itemView.findViewById(R.id.shop_item_title);
@@ -117,41 +125,64 @@ public class ShopActivity extends AppCompatActivity {
                     case ITEM_EXP_POTION:
                         mItemCoast.setText("$200");
                         mItemImage.setBackgroundResource(R.drawable.bag_exp_icon);
-                        mItemBuyButton.setOnClickListener(v -> showButItemDialog(rewardItem.getItemName(), 200));
+                        mItemBuyButton.setOnClickListener(v -> showBuyRewardItemDialog(rewardItem.getItemName(), 200));
                         break;
                     case ITEM_SPEED_POTION:
                         mItemCoast.setText("$500");
                         mItemImage.setBackgroundResource(R.drawable.bag_speed_icon);
                         mItemBuyButton.setOnClickListener(v ->
-                                showButItemDialog(rewardItem.getItemName(), 500));
+                                showBuyRewardItemDialog(rewardItem.getItemName(), 500));
                         break;
                     case ITEM_HEALING_POTION:
                         mItemCoast.setText("$100");
                         mItemImage.setBackgroundResource(R.drawable.bag_heal_icon);
                         mItemBuyButton.setOnClickListener(v ->
-                                showButItemDialog(rewardItem.getItemName(), 100));
+                                showBuyRewardItemDialog(rewardItem.getItemName(), 100));
                         break;
                     case ITEM_GOLD_POTION:
                         mItemCoast.setText("$100");
                         mItemImage.setBackgroundResource(R.drawable.bag_gold_icon);
                         mItemBuyButton.setOnClickListener(v ->
-                                showButItemDialog(rewardItem.getItemName(), 100));
+                                showBuyRewardItemDialog(rewardItem.getItemName(), 100));
                         break;
                 }
             } else if (item instanceof ModelItem) {
                 ModelItem modelItem = (ModelItem) item;
+                mItemType.setText("模型");
+                mItemBuyButton.setOnClickListener(v ->
+                        showBuyModelItemDialog(mItemBuyButton, modelItem, 500));
                 mItemCoast.setText("$500");
-                mItemBuyButton.setClickable(false);
-                mItemBuyButton.setBackgroundColor(Color.parseColor("#d4d4d4"));
                 if (modelItem.getModelItemType().equals(ModelItemType.MODEL))
-                    mItemImage.setBackgroundResource(R.drawable.ar_item_model_icon);
+                    mItemImage.setBackgroundResource(modelItem.getImageRes());
                 else
                     mItemImage.setBackgroundResource(R.drawable.ar_item_view_icon);
             }
         }
     }
 
-    void showButItemDialog(String name, int coast) {
+    void showBuyModelItemDialog(Button button, ModelItem modelItem, int coast) {
+        new AlertDialog.Builder(ShopActivity.this)
+                .setTitle("购买" + modelItem.getItemName())
+                .setMessage(String.format("是否要购买%s?\n你将花费%d个金币", modelItem.getItemName(), coast))
+                .setPositiveButton("购买", (dialog, which) -> {
+                    User user = UserLab.getCurrentUser();
+                    if (user.getGold() < coast) {
+                        Toast.makeText(this, String.format("当前金币数(%d)不足，无法购买", user.getGold()), Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    UserLab.getCurrentUser()
+                            .getModelItems()
+                            .add(modelItem);
+                    user.setGold(user.getGold() - coast);
+                    button.setEnabled(false);
+                    button.setBackgroundColor(Color.parseColor("#d4d4d4"));
+                    new Thread(() -> UserLab.updateUser(user)).start();
+                    Toast.makeText(this, "购买道具成功，此次花费" + coast + "个金币", Toast.LENGTH_LONG).show();
+                }).setNegativeButton("取消", null)
+                .show();
+    }
+
+    void showBuyRewardItemDialog(String name, int coast) {
         AlertDialog alertDialog = new AlertDialog.Builder(ShopActivity.this)
                 .setTitle("购买" + name)
                 .setMessage(String.format("是否要购买%s?\n你将花费%d个金币", name, coast))
@@ -167,7 +198,7 @@ public class ShopActivity extends AppCompatActivity {
                             .findFirst();
                     itemOptional.ifPresent(rewardItem -> rewardItem.setCount(rewardItem.getCount() + 1));
                     user.setGold(user.getGold() - coast);
-                    new Thread(()-> UserLab.updateUser(user)).start();
+                    new Thread(() -> UserLab.updateUser(user)).start();
                     Toast.makeText(this, "购买道具成功，此次花费" + coast + "个金币", Toast.LENGTH_LONG).show();
                 }).setNegativeButton("取消", null)
                 .create();

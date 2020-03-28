@@ -8,6 +8,7 @@ import java.util.List;
 public class Task implements Serializable {
     private int mTaskId;
     private int mUserId;
+    private int mReleaseClubId;
     private String mTaskName;  //任务名
     private String mTaskContent; //任务内容
     private String mTaskType;  //任务类型：个人任务，好友任务，社团任务，AR任务
@@ -133,4 +134,11 @@ public class Task implements Serializable {
         mAccomplishTaskLocation = accomplishTaskLocation;
     }
 
+    public int getReleaseClubId() {
+        return mReleaseClubId;
+    }
+
+    public void setReleaseClubId(int releaseClubId) {
+        mReleaseClubId = releaseClubId;
+    }
 }
