@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -61,10 +63,13 @@ import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.Camera;
+import com.google.ar.sceneform.HitTestResult;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
+import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
+import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -138,7 +143,7 @@ public class ScanModelActivity extends AppCompatActivity {
                 return;
             }
             mCurrentAnchorNode.getAnchor().detach();
-            mCurrentAnchorNode = createAnchorNode(mCurrentModelInfo, mCurrentRenderable);
+            mCurrentAnchorNode = createAnchorNode(mCurrentModelInfo, mCurrentRenderable, mCurrentTask);
         });
 
         // 申请相机权限
@@ -286,18 +291,25 @@ public class ScanModelActivity extends AppCompatActivity {
                     if (ar_item.getModelItemType() == ModelItemType.MODEL) {
                         runOnUiThread(() -> ARUtils.buildModelRenderable(this, ar_item, renderable -> {
                             Toast.makeText(this, "buildModelRenderable", Toast.LENGTH_SHORT).show();
-                            mCurrentAnchorNode = createAnchorNode(modelInfo, renderable);
+                            mCurrentAnchorNode = createAnchorNode(modelInfo, renderable, task);
+                            // TODO: 20-3-29 增加交互view
                         }));
                     } else if (ar_item.getModelItemType() == ModelItemType.VIEW) {
                         runOnUiThread(() -> ARUtils.buildViewRenderable(this, task, ar_item, renderable -> {
                             Toast.makeText(this, "buildViewRenderable", Toast.LENGTH_SHORT).show();
-                            mCurrentAnchorNode = createAnchorNode(modelInfo, renderable);
+                            mCurrentAnchorNode = createAnchorNode(modelInfo, renderable, task);
                         }));
                     }
                     mCurrentModelInfo = modelInfo;
                 }
             });
         }).start();
+    }
+
+    View initARTaskMessageView() {
+        View view = LayoutInflater.from(ScanModelActivity.this).inflate(R.layout.ar_activity_model_interactive_view, null, false);
+
+        return view;
     }
 
     void initMap() {
@@ -418,7 +430,7 @@ public class ScanModelActivity extends AppCompatActivity {
         mBaiDuMap.addOverlays(optionsList);
     }
 
-    AnchorNode createAnchorNode(ModelInfo modelInfo, Renderable renderable) {
+    AnchorNode createAnchorNode(ModelInfo modelInfo, Renderable renderable, Task task) {
         // 清除上一个矛点，放置加载多个
         if (mCurrentAnchorNode != null)
             mCurrentAnchorNode.getAnchor().detach();
@@ -436,7 +448,7 @@ public class ScanModelActivity extends AppCompatActivity {
         Anchor anchor = mArSceneView.getSession().createAnchor(pose);
         AnchorNode anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(mArSceneView.getScene());
-        Node node = new Node();
+        InfoNode node = new InfoNode(this, task);
         node.setLocalScale(modelInfo.getLocalScale());
         // 调整模型自身旋转方向（避免因相机旋转造成的模型自身旋转出错）
         Vector3 nodeRotation = Vector3Utils.quaternion2Euler(modelInfo.getLocalRotation());
@@ -448,6 +460,8 @@ public class ScanModelActivity extends AppCompatActivity {
         node.setLocalRotation(Quaternion.eulerAngles(nodeRotation));
         node.setRenderable(renderable);
         anchorNode.addChild(node);
+        anchorNode.setOnTapListener((hitTestResult, motionEvent) ->
+                node.onTap(hitTestResult, motionEvent));
         return anchorNode;
     }
 }

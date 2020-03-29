@@ -72,6 +72,14 @@ public class ClubCreateActivity extends Activity {
         });
         mSubmitButton = findViewById(R.id.club_create_submit);
         mSubmitButton.setOnClickListener(v -> {
+            int maxClubNum = UserLab.getCurrentUser().getLevel() + Club.BASE_CLUB_NUMBER;
+            // 如果当前创建社团数量超出 当前等级+BASE_CLUB_NUMBER(3) 或者 >= 20 则无法创建社团
+            if (ClubLab.sCreatedClubList.size() >= 20 ||
+                    ClubLab.sCreatedClubList.size() >= maxClubNum) {
+                Toast.makeText(this, "当前社团数量已达上限，请删除其他无用社团后在做尝试", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             String name = mClubNameET.getText().toString();
             String type = mClubTypeET.getText().toString();
             String desc = mClubDescET.getText().toString();

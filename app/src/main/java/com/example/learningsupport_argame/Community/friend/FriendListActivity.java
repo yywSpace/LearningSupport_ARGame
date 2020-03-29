@@ -64,7 +64,7 @@ public class FriendListActivity extends AppCompatActivity {
                     mSearchList = UserLab.getUserByFuzzyName(name);
                     Log.d(TAG, "onCreate: " + mSearchList.size());
                     runOnUiThread(() -> {
-                        mItemAdapter = new FriendItemAdapter(this,mFriendList , mSearchList);
+                        mItemAdapter = new FriendItemAdapter(this, mFriendList, mSearchList);
                         mFriendsRecyclerView.setAdapter(mItemAdapter);
                         mSearchButton.setBackgroundResource(R.drawable.friend_list_pop_window_cross);
                     });
@@ -77,6 +77,10 @@ public class FriendListActivity extends AppCompatActivity {
         mSearchBox = findViewById(R.id.friend_search_box);
         // 下拉刷新
         mRefreshLayout.setOnRefreshListener(() -> {
+            if (isSearchList) {
+                mRefreshLayout.setRefreshing(false);
+                return;
+            }
             new Thread(() -> {
                 List<User> friendList = FriendLab.getFriends(mCurrentUserID);
                 mFriendList.clear();

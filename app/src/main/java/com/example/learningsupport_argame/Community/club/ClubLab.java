@@ -129,4 +129,8 @@ public class ClubLab {
         }, sql, club_id);
         return clubMemberList;
     }
+
+    public static void deleteClubMember(int clubId, int memberId) {
+        DbUtils.update(null, "delete from club_members where club_id = ? and user_id = ?;", clubId, memberId);
+    }
 }

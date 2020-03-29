@@ -7,6 +7,7 @@ import java.io.Serializable;
 public class Club {
     // 主要用于解决，activity键无法传递Bitmap的问题
     public static Club sCurrentClub;
+    public final static int BASE_CLUB_NUMBER = 3;
     private int mId;
     private int mManagerId;
     private Bitmap mCoverBitmap;

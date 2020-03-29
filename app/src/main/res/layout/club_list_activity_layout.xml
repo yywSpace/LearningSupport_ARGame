@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -21,20 +22,35 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="19dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:background="@drawable/user_management_return" />
             </FrameLayout>
 
 
-            <TextView
-                android:id="@+id/club_list_title"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="社团列表"
-                android:textColor="@android:color/black"
-                android:textSize="20sp" />
+                android:layout_centerInParent="true">
+
+                <EditText
+                    android:id="@+id/club_search_box"
+                    android:layout_width="240dp"
+                    android:layout_height="wrap_content"
+                    android:hint="我创建的社团"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    tools:ignore="LabelFor" />
+
+                <ImageButton
+                    android:id="@+id/club_search_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/sousuo"
+                    android:scaleType="centerInside"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
 
             <FrameLayout
                 android:id="@+id/club_create"
@@ -42,12 +58,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="15dp"
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
                     android:background="@drawable/course_menu_plus" />
             </FrameLayout>
         </RelativeLayout>

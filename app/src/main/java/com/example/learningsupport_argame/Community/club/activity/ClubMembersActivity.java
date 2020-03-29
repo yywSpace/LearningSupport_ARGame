@@ -1,6 +1,8 @@
 package com.example.learningsupport_argame.Community.club.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -90,11 +92,6 @@ public class ClubMembersActivity extends Activity {
                     users.remove(user);
                     users.add(0, user);
                 }
-                if (users.size() > 1)
-                    if (user.getId() == UserLab.getCurrentUser().getId()) {
-                        users.remove(user);
-                        users.add(1, user);
-                    }
             }
             Log.d(TAG, "onResume: " + users.size());
             mMemberList.clear();
@@ -173,7 +170,6 @@ public class ClubMembersActivity extends Activity {
             name = itemView.findViewById(R.id.member_list_item_name);
             level = itemView.findViewById(R.id.member_list_item_level);
             operationButton = itemView.findViewById(R.id.member_list_item_operation);
-
         }
 
         void bind(User user) {
@@ -188,8 +184,19 @@ public class ClubMembersActivity extends Activity {
                 }
             });
             if (UserLab.getCurrentUser().getId() == mManagerId) {
-                operationButton.setOnClickListener(v ->
-                        Toast.makeText(ClubMembersActivity.this, "删除", Toast.LENGTH_SHORT).show());
+                operationButton.setOnClickListener(v -> {
+                    new AlertDialog.Builder(ClubMembersActivity.this)
+                            .setTitle("删除成员")
+                            .setMessage("确定要删除成员:" + user.getName() + " 吗？")
+                            .setPositiveButton("确定", (dialog, which) -> {
+                                mMemberList.remove(user);
+                                mMemberListAdapter.notifyDataSetChanged();
+                                new Thread(() -> ClubLab.deleteClubMember(mClubId, user.getId())).start();
+                                Toast.makeText(ClubMembersActivity.this, "删除", Toast.LENGTH_SHORT).show();
+                            })
+                            .setNegativeButton("取消", null)
+                            .show();
+                });
             } else {
                 operationButton.setVisibility(View.INVISIBLE);
             }
