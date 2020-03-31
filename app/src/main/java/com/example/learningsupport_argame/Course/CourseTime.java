@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import java.io.Serializable;
 
 public class CourseTime implements Serializable {
+    private boolean isEnable = true;
     // 周几的课程
     private String mWeek;
     // 开始的节数
@@ -19,7 +20,7 @@ public class CourseTime implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return String.format("%s-%d-%d", mWeek, mStartTime, mEndTime);
+        return String.format("%s-%d-%d-%b", mWeek, mStartTime, mEndTime, isEnable);
     }
 
     public String getWeek() {
@@ -52,5 +53,13 @@ public class CourseTime implements Serializable {
 
     public void setTimeTextView(TextView timeTextView) {
         mTimeTextView = timeTextView;
+    }
+
+    public boolean isEnable() {
+        return isEnable;
+    }
+
+    public void setEnable(boolean enable) {
+        isEnable = enable;
     }
 }

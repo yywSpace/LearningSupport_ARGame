@@ -86,9 +86,7 @@ public class MapActivity extends AppCompatActivity {
     private String currentPopTaskId;
     private FloatingActionButton switchMapModeBtn;
     private FloatingActionButton goToARBtn;
-    SendLocationExample mSendLocationExample1;
-    SendLocationExample mSendLocationExample2;
-    SendLocationExample mSendLocationExample3;
+
 
     public void initUdpClient() {
 
@@ -97,8 +95,7 @@ public class MapActivity extends AppCompatActivity {
             mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
             mUDPClient.setOnReceiveUserList(userListStr -> {
                 Log.d(TAG, "run: " + userListStr);
-                MessageData data = new Gson().fromJson(userListStr, MessageData.class);
-                String[] users = data.Message.split(";");
+                String[] users = userListStr.split(";");
                 runOnUiThread(() -> {
                     if (mBaiduMap != null)
                         mBaiduMap.clear();
@@ -215,14 +212,6 @@ public class MapActivity extends AppCompatActivity {
         initEvent();
         initARTask();
 
-        // 模拟多个用户
-        try {
-            mSendLocationExample1 = new SendLocationExample("MapWayExample/way1.txt", this, "王烁");
-            mSendLocationExample2 = new SendLocationExample("MapWayExample/way2.txt", this, "郭小磊");
-            mSendLocationExample3 = new SendLocationExample("MapWayExample/way3.txt", this, "刘根");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 
@@ -350,13 +339,6 @@ public class MapActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        // 退出时注销用户, 此处有可能bug，mMapView.onDestroy()调用后其后语句无法执行
-        // 所以就不掉用了
-        mSendLocationExample1.sendLocationThread.interrupt();
-        mSendLocationExample2.sendLocationThread.interrupt();
-        mSendLocationExample3.sendLocationThread.interrupt();
-        new Thread(() -> mUDPClient.Logout()).start();
-
         // 退出时销毁定位
         if (mLocationClient != null) {
             mLocationClient.stop();

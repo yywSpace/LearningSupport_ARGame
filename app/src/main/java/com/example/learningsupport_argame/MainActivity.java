@@ -41,6 +41,7 @@ public class MainActivity extends SendMessageActivity {//NavigationMainActivity
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case TASK_ACTIVITY:
                 if (resultCode == RESULT_OK) {

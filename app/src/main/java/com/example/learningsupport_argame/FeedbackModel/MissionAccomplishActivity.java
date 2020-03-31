@@ -37,6 +37,7 @@ public class MissionAccomplishActivity extends AppCompatActivity {
     private MonitorInfo mMonitorInfo;
     private long lastClickTime = 0;
     boolean taskAccomplishSuccess = false;
+    boolean isNewInfo = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,6 +45,8 @@ public class MissionAccomplishActivity extends AppCompatActivity {
         setContentView(R.layout.feedback_activity_accomplish);
         // 监督信息
         mMonitorInfo = (MonitorInfo) getIntent().getSerializableExtra(MonitorInfo.MONITOR_INFO);
+        // 代表此监督信息是否是新的，及是否是通过监督界面进入的
+        isNewInfo = getIntent().getBooleanExtra("is_new_info", true);
         if (mMonitorInfo == null) {
             mMonitorInfo = new MonitorInfo();
             mMonitorInfo.setMonitorTaskScreenOffTime(0);
@@ -92,7 +95,7 @@ public class MissionAccomplishActivity extends AppCompatActivity {
         // 任务执行中超出任务执行地点的时间
         mOutOfRangeProgressBar.setMax(mMonitorInfo.getTaskTotalTime());
         mOutOfRangeProgressBar.setProgress(mMonitorInfo.getTaskOutOfRangeTime());
-        float outOfRangeRate = mMonitorInfo.getTaskOutOfRangeTime() / mMonitorInfo.getTaskTotalTime();
+        float outOfRangeRate = (float) mMonitorInfo.getTaskOutOfRangeTime() / mMonitorInfo.getTaskTotalTime();
         mOutOfRangeRate.setText(String.format("%.2f%%", outOfRangeRate * 100));
         // 任务执行中手机使用次数
         mPhoneUseCount.setText(mMonitorInfo.getMonitorPhoneUseCount() + "次");
@@ -140,7 +143,10 @@ public class MissionAccomplishActivity extends AppCompatActivity {
                 mItemImage.setBackgroundResource(R.drawable.bag_speed_icon);
             else if (taskReward.getRewardItem().getRewardItemType().equals(RewardItem.RewardItemType.ITEM_GOLD_POTION))
                 mItemImage.setBackgroundResource(R.drawable.bag_gold_icon);
-            mItem.setText("x" + taskReward.getRewardItem().getCount());
+            if (taskReward.getRewardItem().getRewardItemType().equals(RewardItem.RewardItemType.ITEM_NONE))
+                mItem.setText("x0");
+            else
+                mItem.setText("x" + taskReward.getRewardItem().getCount());
         } else {
             taskReward.setRewardItem(new RewardItem(RewardItem.RewardItemType.ITEM_NONE, 0));
         }
@@ -158,36 +164,38 @@ public class MissionAccomplishActivity extends AppCompatActivity {
             mAccomplishResult.setText(R.string.feedback_mission_failure);
             mAccomplishStateImage.setImageResource(R.drawable.task_accomplish_failure);
         }
-        new Thread(() -> {
-            // 设置此任务为结束状态
-            mMonitorInfo.getTask().setTaskStatus("已结束");
-            TaskLab.updateTask(mMonitorInfo.getTask());
-            // 设置任务参与者完成状态
-            if (taskAccomplishSuccess) {
-                TaskLab.updateTaskParticipantStatus(
-                        mMonitorInfo.getTask().getTaskId() + "",
-                        UserLab.getCurrentUser().getId() + "",
-                        "完成");
-            } else {
-                TaskLab.updateTaskParticipantStatus(
-                        mMonitorInfo.getTask().getTaskId() + "",
-                        UserLab.getCurrentUser().getId() + "",
-                        "失败");
-                int inattentionTime = (int) ((mMonitorInfo.getTaskTotalTime() -
-                        mMonitorInfo.getMonitorAttentionTime()) / 60);
-                if (inattentionTime >= 30)
-                    UserLab.getCurrentUser().gettingHeart(2);
-                else
-                    UserLab.getCurrentUser().gettingHeart(1);
+        if (isNewInfo)
+            new Thread(() -> {
+                // 设置此任务为结束状态
+                mMonitorInfo.getTask().setTaskStatus("已结束");
+                TaskLab.updateTask(mMonitorInfo.getTask());
+                // 设置任务参与者完成状态
+                if (taskAccomplishSuccess) {
+                    TaskLab.updateTaskParticipantStatus(
+                            mMonitorInfo.getTask().getTaskId() + "",
+                            UserLab.getCurrentUser().getId() + "",
+                            "完成");
+                } else {
+                    TaskLab.updateTaskParticipantStatus(
+                            mMonitorInfo.getTask().getTaskId() + "",
+                            UserLab.getCurrentUser().getId() + "",
+                            "失败");
+                    int inattentionTime = (int) ((mMonitorInfo.getTaskTotalTime() -
+                            mMonitorInfo.getMonitorAttentionTime()) / 60);
+                    // 任务失败时每失神低于30分钟扣一点血，否则每15分钟扣一点血
+                    if (inattentionTime >= 30)
+                        UserLab.getCurrentUser().gettingHeart(inattentionTime / 15);
+                    else
+                        UserLab.getCurrentUser().gettingHeart(1);
+                    UserLab.updateUser(UserLab.getCurrentUser());
+                }
+                // 将获得属性加到自身
+                boolean isLevelUp = UserLab.getCurrentUser().addReward(taskReward);
+                if (isLevelUp)
+                    Toast.makeText(this, "恭喜您的等级提升至" + UserLab.getCurrentUser().getLevel() + "级", Toast.LENGTH_SHORT).show();
                 UserLab.updateUser(UserLab.getCurrentUser());
-            }
-            // 将获得属性加到自身
-            boolean isLevelUp = UserLab.getCurrentUser().addReward(taskReward);
-            if (isLevelUp)
-                Toast.makeText(this, "恭喜您的等级提升至" + UserLab.getCurrentUser().getLevel() + "级", Toast.LENGTH_SHORT).show();
-            UserLab.updateUser(UserLab.getCurrentUser());
-            RewardLab.insert(taskReward);
-        }).start();
+                RewardLab.insert(taskReward);
+            }).start();
         takeAnimation();
         mRatingBarLayout.setOnClickListener(v -> {
             long now = System.currentTimeMillis();

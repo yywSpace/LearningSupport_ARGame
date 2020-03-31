@@ -36,6 +36,7 @@ import com.example.learningsupport_argame.Course.PopupWindow.PromptAdapter;
 import com.example.learningsupport_argame.MonitorModel.MonitorActivity;
 import com.example.learningsupport_argame.NavigationController;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.text.DateFormat;
@@ -91,11 +92,13 @@ public class CourseMainActivity extends AppCompatActivity {
         mNavigationController = new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.COURSE);
 
         week_current = Integer.parseInt(getDate()[1]);
+        mHandler = new Handler();
+
         initView();
         initEvent();
         initCourseTable(12);
         initPopupMenu();
-        runOnUiThread(() -> new Thread(() -> {
+        new Thread(() -> {
             while (UserLab.getCurrentUser() == null) ;
             // 获取设置信息后初始化主页面
             CourseLab.getCourseSetting();
@@ -104,11 +107,11 @@ public class CourseMainActivity extends AppCompatActivity {
                 initCourseTable(CourseSetting.COURSE_NUMBER);
                 setCurrentWeek();
                 clearTable();
-                query_db(CourseLab.sCourseList);
+                initTableData(CourseLab.sCourseList);
                 isDataLoaded = true;
             });
-        }).start());
-        mHandler = new Handler();
+        }).start();
+
 
 //        GetMonitorInfo m = new GetMonitorInfo();
 //        m.get();
@@ -134,7 +137,7 @@ public class CourseMainActivity extends AppCompatActivity {
                 initCourseTable(CourseSetting.COURSE_NUMBER);
             } else if (requestCode == COURSE_ADD_REQUEST_CODE) {
                 clearTable();
-                query_db(CourseLab.sCourseList);
+                initTableData(CourseLab.sCourseList);
             }
         }
         // 如果修改了开学日期
@@ -142,7 +145,7 @@ public class CourseMainActivity extends AppCompatActivity {
             if (requestCode == COURSE_TIME_REQUEST_CODE) {
                 setCurrentWeek();
                 clearTable();
-                query_db(CourseLab.sCourseList);
+                initTableData(CourseLab.sCourseList);
             }
         }
     }
@@ -241,7 +244,7 @@ public class CourseMainActivity extends AppCompatActivity {
                 // 展示选中数据
                 mCurrentWeekTV.setText("第" + weekNumberList.get(options1) + "周");
                 clearTable();
-                query_db(CourseLab.sCourseList);
+                initTableData(CourseLab.sCourseList);
             }
         }).setLayoutRes(R.layout.course_pickerview_stair_layout, new CustomListener() {
             @Override
@@ -283,7 +286,7 @@ public class CourseMainActivity extends AppCompatActivity {
     }
 
     //从数据库提取数据
-    public void query_db(List<Course> courseList) {
+    public void initTableData(List<Course> courseList) {
         for (Course course : courseList) {
             int course_id = course.getId();
             String courseName = course.getName();
@@ -615,6 +618,7 @@ public class CourseMainActivity extends AppCompatActivity {
             }
         }
     }
+
 
     TextView.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
         @Override

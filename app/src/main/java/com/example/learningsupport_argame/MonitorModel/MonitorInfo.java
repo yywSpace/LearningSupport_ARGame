@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class MonitorInfo implements Serializable {
     public static final String MONITOR_INFO_PREFS_NAME = "mMonitorInfoPrefsName";
+    public static final String MONITOR_TASK_ID = "mMonitorTaskId";
     public static final String MONITOR_INFO = "mMonitorInfo";
     public static final String TASK_SCREEN_ON_TIME = "mMonitorTaskScreenOnTime";
     public static final String TASK_SCREEN_OFF_TIME = "mMonitorTaskScreenOffTime";

@@ -364,49 +364,6 @@ public class ScanModelActivity extends AppCompatActivity {
             }
         });
         mLocationClient.start();
-
-        // 无法在主线程发起网络请求，在线程中处理
-        new Thread(() -> {
-            UDPClient udpClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
-            udpClient.setOnReceiveUserList(userListStr -> {
-                //name,ipEndPoint,x,y;name1,ipEndPoint1,x1,y1;
-                MessageData data = new Gson().fromJson(userListStr, MessageData.class);
-                String[] users = data.Message.split(";");
-                runOnUiThread(() -> {
-                    if (mBaiDuMap != null)
-                        mBaiDuMap.clear();
-                });
-                // 添加AR任务图标
-                initARTask();
-
-                // 添加用户图标
-                for (int i = 0; i < users.length; i++) {
-                    String[] userArgs = users[i].split(",");
-                    String userName = userArgs[0];
-                    float latitude = Float.parseFloat(userArgs[2]);
-                    float longitude = Float.parseFloat(userArgs[3]);
-
-                    // 根据用户名查询用户信息
-                    runOnUiThread(() -> {
-                        if (mBaiDuMap != null) {
-                            // 如果不为自身
-                            if (!ClientLab.sUserName.equals(userName)) {
-                                BitmapDescriptor bitmap = BitmapDescriptorFactory.fromBitmap(ARUtils.zoomImage(
-                                        BitmapFactory.decodeResource(getResources(), R.drawable.map_character_other),
-                                        90,
-                                        90));
-                                OverlayOptions overlayOptions = new MarkerOptions()
-                                        .position(new LatLng(latitude, longitude))
-                                        .draggable(false)
-                                        .icon(bitmap);
-                                //在地图上添加Marker，并显示
-                                mBaiDuMap.addOverlay(overlayOptions);
-                            }
-                        }
-                    });
-                }
-            });
-        }).start();
     }
 
     void initARTask() {

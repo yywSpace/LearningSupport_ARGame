@@ -188,6 +188,14 @@ public class TaskListActivity extends AppCompatActivity {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (UserLab.getCurrentUser().getHp() <= 0) {
+                    new AlertDialog.Builder(TaskListActivity.this)
+                            .setTitle("血量过少")
+                            .setMessage("当前血量过少，无法接受任务。\n您可以使用血量道具或等待血量恢复")
+                            .setPositiveButton("确定", null)
+                            .show();
+                    return;
+                }
                 Task task = new Task();
                 hasInsertTask = false;
                 LayoutInflater inflater = getLayoutInflater();
@@ -227,7 +235,7 @@ public class TaskListActivity extends AppCompatActivity {
                         task.setReleaseClubId(taskViewAdapter.getClub().getId());
                     }
 
-                    Log.d(TAG, "onClick: "+taskViewAdapter.getClub());
+                    Log.d(TAG, "onClick: " + taskViewAdapter.getClub());
                     if (taskType == 2 && taskViewAdapter.getClub() == null) {
                         Toast.makeText(TaskListActivity.this, "请选择要发布的社团", Toast.LENGTH_SHORT).show();
                         return;
@@ -280,6 +288,7 @@ public class TaskListActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PUT_MODEL_ACCOMPLISH)
             if (resultCode == RESULT_OK) {
                 mCreateTaskDialog.dismiss();
@@ -420,11 +429,9 @@ public class TaskListActivity extends AppCompatActivity {
                     calendar.get(Calendar.DAY_OF_MONTH),
                     calendar.get(Calendar.HOUR_OF_DAY),
                     calendar.get(Calendar.MINUTE));
-            mStartTimes[0] = mEndTimes[0] = calendar.get(Calendar.YEAR) + "-" +
-                    (calendar.get(Calendar.MONTH) + 1) + "-" +
-                    calendar.get(Calendar.DAY_OF_MONTH);
-            mStartTimes[1] = mEndTimes[1] = calendar.get(Calendar.HOUR_OF_DAY) + ":" +
-                    String.format("%02d", calendar.get(Calendar.MINUTE));
+            mStartTimes[0] = mEndTimes[0] = String.format("%d-%02d-%02d", calendar.get(Calendar.YEAR),
+                    (calendar.get(Calendar.MONTH) + 1), calendar.get(Calendar.DAY_OF_MONTH));
+            mStartTimes[1] = mEndTimes[1] = String.format("%02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             mTaskCreateTime = currentTime;
             mTaskStartTime.setText(currentTime);
             mTaskEndTime.setText(currentTime);

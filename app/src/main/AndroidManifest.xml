@@ -87,6 +87,7 @@
         <activity android:name=".Community.club.activity.ClubSettingActivity" />
         <activity android:name=".Community.club.activity.ClubInfoActivity" />
         <activity android:name=".Community.club.activity.ClubMembersActivity" />
+        <activity android:name=".TestActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

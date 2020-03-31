@@ -189,6 +189,7 @@ public class MonitorTaskAccomplishService extends Service {
         SharedPreferences monitorInfo = getSharedPreferences(MonitorInfo.MONITOR_INFO_PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = monitorInfo.edit();//获取Editor
         //得到Editor后，写入需要保存的数据
+        editor.putInt(MonitorInfo.MONITOR_TASK_ID, mTask.getTaskId());
         editor.putInt(MonitorInfo.TASK_SCREEN_ON_TIME, mTaskScreenOnTime);
         editor.putInt(MonitorInfo.TASK_SCREEN_OFF_TIME, mTaskScreenOffTime);
         editor.putInt(MonitorInfo.ATTENTION_TIME, mAttentionTime);

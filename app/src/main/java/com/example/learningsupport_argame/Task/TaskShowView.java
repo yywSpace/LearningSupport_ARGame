@@ -28,7 +28,6 @@ import java.util.List;
 
 public class TaskShowView {
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ImageButton mTaskStatusFaq;
     private ImageView mMapLocationBtn;
     private TextView mTaskStatusTextView;
     private TextView mTaskNameTextView;
@@ -61,7 +60,6 @@ public class TaskShowView {
             updateData();
             mSwipeRefreshLayout.setRefreshing(false);
         });
-        mTaskStatusFaq = view.findViewById(R.id.task_status_faq);
         mTaskStatusTextView = view.findViewById(R.id.task_status);
         mTaskNameTextView = view.findViewById(R.id.task_name);
         mTaskAuthorTextView = view.findViewById(R.id.task_publisher);
@@ -84,14 +82,6 @@ public class TaskShowView {
 
         mTaskParticipantRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         mTaskParticipantRecyclerView.addItemDecoration(new DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL));
-
-        mTaskStatusFaq.setOnClickListener((v) -> {
-            new AlertDialog.Builder(mActivity)
-                    .setTitle("任务类型提示")
-                    .setMessage("为红色则表示自建任务\n\t\t\t\t\t为绿色则表示社团任务\n\t\t\t\t\t为蓝色则表示好友指定任务\n\t\t\t\t\t为紫色则表示主动的接受任务")
-                    .setNegativeButton("取消", null)
-                    .show();
-        });
 
         mMapLocationBtn.setOnClickListener((v) -> {
             if (mAccomplishTaskLatLng != null)

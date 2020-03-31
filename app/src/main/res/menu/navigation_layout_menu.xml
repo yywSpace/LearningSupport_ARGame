@@ -28,5 +28,8 @@
         android:id="@+id/navigation_menu_map"
         android:icon="@drawable/navigation_map"
         android:title="地图" />
+    <item
+        android:id="@+id/navigation_menu_test"
+        android:title="测试" />
 
 </menu>

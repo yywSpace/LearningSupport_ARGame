@@ -81,9 +81,15 @@ public class InfoNode extends Node implements Node.OnTapListener {
                     Looper.prepare();
                     Toast.makeText(mContext, "您已经接受过此任务，无法重复接取", Toast.LENGTH_SHORT).show();
                     Looper.loop();
-                } else
+                } else {
+                    Looper.prepare();
+                    Toast.makeText(mContext, "任务接受成功", Toast.LENGTH_SHORT).show();
+                    Looper.loop();
                     TaskLab.acceptTask(mTask);
+                }
             }).start();
+
+            mInfoCard.setEnabled(false);
         });
 
     }

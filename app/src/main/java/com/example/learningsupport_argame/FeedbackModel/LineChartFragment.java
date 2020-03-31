@@ -133,7 +133,7 @@ public class LineChartFragment extends Fragment {
         mMonthButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 monthSetting();
-                setData(mMonitorInfosWeek, 31);
+                setData(mMonitorInfosMonth, 31);
             }
         });
         return view;
@@ -170,12 +170,12 @@ public class LineChartFragment extends Fragment {
             int hourBegin = Integer.parseInt(beginTime.split(":")[0]);
             int hourEnd = Integer.parseInt(endTime.split(":")[0]);
             for (int i = hourBegin; i <= hourEnd; i++) {
-                entries1.set(i, new Entry(i, monitorInfo.getTaskDelayTime() / 60));
-                entries2.set(i, new Entry(i, monitorInfo.getTaskTotalTime() / 60));
+                entries1.set(i, new Entry(i, (float) (monitorInfo.getTaskDelayTime() / 60.0)));
+                entries2.set(i, new Entry(i, (float) (monitorInfo.getTaskTotalTime() / 60.0)));
                 entries3.set(i, new Entry(i, monitorInfo.getMonitorAttentionTime() / 60));
             }
         }
-        LineDataSet dataSet1 = new LineDataSet(entries1, "使劲推迟时间");
+        LineDataSet dataSet1 = new LineDataSet(entries1, "任务推迟时间");
         dataSet1.setColor(Color.RED);
 
         LineDataSet dataSet2 = new LineDataSet(entries2, "任务持续时间");

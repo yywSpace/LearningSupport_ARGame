@@ -100,7 +100,8 @@ public class NavigationController {
             if (item.getItemId() == R.id.navigation_menu_club && mNavigationItem != NavigationItem.CLUB) {
                 context.startActivity(new Intent(context, ClubListActivity.class));
 
-            }if (item.getItemId() == R.id.navigation_menu_bag && mNavigationItem != NavigationItem.BAG) {
+            }
+            if (item.getItemId() == R.id.navigation_menu_bag && mNavigationItem != NavigationItem.BAG) {
                 context.startActivity(new Intent(context, UserBagActivity.class));
 
             }
@@ -112,6 +113,11 @@ public class NavigationController {
                 context.startActivity(new Intent(context, FeedbackDetailsActivity.class));
             if (item.getItemId() == R.id.navigation_menu_map && mNavigationItem != NavigationItem.MAP)
                 context.startActivity(new Intent(context, MapActivity.class));
+            if (item.getItemId() == R.id.navigation_menu_test) {
+                context.startActivity(new Intent(context, TestActivity.class));
+
+            }
+
 //            if (item.getItemId() == R.id.navigation_menu_put)
 //                context.startActivity(new Intent(context, ModelPutActivity.class));
 //            if (item.getItemId() == R.id.navigation_menu_social)

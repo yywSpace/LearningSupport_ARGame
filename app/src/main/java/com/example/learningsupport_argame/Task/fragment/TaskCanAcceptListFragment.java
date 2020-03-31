@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -85,12 +86,20 @@ public class TaskCanAcceptListFragment extends TaskListBasicFragment {
             }).start();
         });
         mTaskItemAdapter.setOnRecycleViewItemClick((v, position) -> {
-            TaskShowView  taskShowView = new TaskShowView(mActivity);
+            TaskShowView taskShowView = new TaskShowView(mActivity);
             taskShowView.initData(mTaskList.get(position));
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
             builder.setView(taskShowView.getView());
             builder.setTitle("任务详情");
             builder.setPositiveButton("接受", (dialog, which) -> {
+                if (UserLab.getCurrentUser().getHp() < 2) {
+                    new AlertDialog.Builder(mActivity)
+                            .setTitle("血量过少")
+                            .setMessage("当前血量过少，无法接受任务。\n您可以使用血量道具或等待血量恢复")
+                            .setPositiveButton("确定", null)
+                            .show();
+                    return;
+                }
                 new Thread(() -> {
                     TaskLab.acceptTask(mTaskList.get(position));
                 }).start();

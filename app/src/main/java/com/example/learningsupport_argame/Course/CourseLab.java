@@ -37,6 +37,7 @@ public class CourseLab {
                     courseTime.setWeek(timeArray[0]);
                     courseTime.setStartTime(Integer.parseInt(timeArray[1]));
                     courseTime.setEndTime(Integer.parseInt(timeArray[2]));
+                    courseTime.setEnable(Boolean.parseBoolean(timeArray[2]));
                     return courseTime;
                 }).collect(Collectors.toList());
                 courseTimeList.forEach(courseTime -> Log.d(TAG, "courseTimeList: " + courseTime));

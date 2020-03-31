@@ -1,5 +1,9 @@
 package com.example.learningsupport_argame.UserManagement.Login;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -14,7 +18,12 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
+import com.example.learningsupport_argame.Client.ClientLab;
+import com.example.learningsupport_argame.Client.OnReceiveUserChat;
+import com.example.learningsupport_argame.Client.UDPClient;
+import com.example.learningsupport_argame.Community.friend.FriendListActivity;
 import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.FeedbackModel.MissionAccomplishActivity;
@@ -47,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordEditText;
     private Button mLoginButton;
     private TextView mRegisterTextView;
+    private UDPClient mUDPClient;
     // 防止多次点击
     private long lastClickTime = 0;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -55,7 +65,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityUtil.addActivity(this);
-
         setContentView(R.layout.user_management_activity_login);
         LocationService.mLocationServiceIntent = new Intent(this, LocationService.class);
         MonitorTaskStatusService.mMonitorTaskStatusServiceIntent = new Intent(this, MonitorTaskStatusService.class);
@@ -108,6 +117,7 @@ public class LoginActivity extends AppCompatActivity {
 //                        startActivity(new Intent(LoginActivity.this, MapActivity.class));
 //                        startActivity(new Intent(this, FeedbackDetailsActivity.class));
 //                        startActivity(new Intent(this, CourseMainActivity.class));
+                        initUDPClient();
                         finish();
                     }
                 });
@@ -174,6 +184,7 @@ public class LoginActivity extends AppCompatActivity {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+            initUDPClient();
 
         }).start();
 //        startActivity(new Intent(LoginActivity.this, MissionAccomplishActivity.class));
@@ -197,6 +208,40 @@ public class LoginActivity extends AppCompatActivity {
             labelTextView.setTextColor(Color.BLACK);
         }
         return status;
+    }
+
+    void initUDPClient() {
+        mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, UserLab.getCurrentUser().getName());
+        mUDPClient.setOnReceiveUserChat((name, content) -> {
+            Log.d(TAG, "initUDPClient: ReceiveUserChat");
+            int notificationId = 100;//通知的id
+            final String CHANNEL_ID = "CHAT_CHANNEL_ID";
+            final String CHANNEL_NAME = "CHAT_CHANNEL_NAME";
+            NotificationManager mNotificationManager = (NotificationManager)
+                    getSystemService(Context.NOTIFICATION_SERVICE);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                //只在Android O之上需要渠道
+                NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,
+                        CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+                //如果这里用IMPORTANCE_NOENE就需要在系统的设置里面开启渠道，
+                //通知才能正常弹出
+                mNotificationManager.createNotificationChannel(notificationChannel);
+            }
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+            builder.setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("接收到" + name + "发来的信息")
+                    .setContentText(String.format("%s:%s", name, content))
+                    .setAutoCancel(true);
+            Intent resultIntent = new Intent(this, FriendListActivity.class);
+            resultIntent.setAction(Intent.ACTION_MAIN);
+            resultIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            //building the notification
+            builder.setContentIntent(resultPendingIntent);
+            mNotificationManager.notify(notificationId, builder.build());
+        });
     }
 
     @Override

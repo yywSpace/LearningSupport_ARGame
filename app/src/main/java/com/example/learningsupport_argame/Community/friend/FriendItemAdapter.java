@@ -13,9 +13,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.learningsupport_argame.Client.ClientLab;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
@@ -32,8 +35,8 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private List<User> mSearchList;
     private List<User> mOperationList;
 
-    static final int ITEM_NORMAL = 1;
-    static final int ITEM_EMPTY = 0;
+    private static final int ITEM_NORMAL = 1;
+    private static final int ITEM_EMPTY = 0;
 
     private OnRecycleViewItemClick mOnRecycleViewItemClick;
 
@@ -63,18 +66,21 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FriendItemViewHolder) {
+            User user = mOperationList.get(position);
+
             holder.itemView.setOnClickListener(v -> {
-                if (mOnRecycleViewItemClick != null) {
-                    mOnRecycleViewItemClick.onRecycleViewItemClick(v, position);
+                if (user.getOnlineStatus() == 0) {
+                    Toast.makeText(mContext, "当前用户不在线，请稍后重试", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "启动Unity界面并进行聊天", Toast.LENGTH_SHORT).show();
                 }
             });
             holder.itemView.setOnLongClickListener(v -> {
                 PopupMenu popupMenu = new PopupMenu(mContext, holder.itemView);
                 popupMenu.inflate(R.menu.friend_list_item_menu);
                 popupMenu.setOnMenuItemClickListener(item -> {
-                    User user = mOperationList.get(position);
                     switch (item.getItemId()) {
                         case R.id.menu_friend_info:
                             Intent intent = new Intent(mContext, FriendMessageActivity.class);
@@ -99,7 +105,6 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 popupMenu.show();
                 return false;
             });
-            User user = mOperationList.get(position);
 
             ((FriendItemViewHolder) holder).bind(user);
 
@@ -110,13 +115,20 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         .setBackgroundResource(R.drawable.friend_list_item_green_point);
                 TextView message = holder.itemView.findViewById(R.id.friend_item_last_message);
                 message.setText("在线");
-            } else {
+            } else if (user.getOnlineStatus() == 0) {
                 // 不在线
                 holder.itemView
                         .findViewById(R.id.friend_list_item_avatar_red_point)
                         .setBackgroundResource(R.drawable.friend_list_item_gray_point);
                 TextView message = holder.itemView.findViewById(R.id.friend_item_last_message);
                 message.setText("不在线");
+            } else {
+                // 接收到消息
+                holder.itemView
+                        .findViewById(R.id.friend_list_item_avatar_red_point)
+                        .setBackgroundResource(R.drawable.friend_list_item_red_point);
+                TextView message = holder.itemView.findViewById(R.id.friend_item_last_message);
+                message.setText(ClientLab.getClient().getMessageMap().get(user.getName()));
             }
         }
     }

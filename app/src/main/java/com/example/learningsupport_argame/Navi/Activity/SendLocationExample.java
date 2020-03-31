@@ -29,9 +29,8 @@ public class SendLocationExample {
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
-
-
         }).start();
+
 
         sendLocationThread = new Thread(() -> {
             try {
@@ -53,9 +52,12 @@ public class SendLocationExample {
 //                e.printStackTrace();
             } finally {
                 mUDPClient.Logout();
-
             }
         });
         sendLocationThread.start();
+    }
+
+    public UDPClient getUDPClient() {
+        return mUDPClient;
     }
 }

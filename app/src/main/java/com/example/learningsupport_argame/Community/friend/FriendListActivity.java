@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.learningsupport_argame.Client.ClientLab;
+import com.example.learningsupport_argame.Client.UDPClient;
 import com.example.learningsupport_argame.Community.FriendLab;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
@@ -19,7 +21,9 @@ import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class FriendListActivity extends AppCompatActivity {
     private static final String TAG = "FriendListActivity";
@@ -33,11 +37,13 @@ public class FriendListActivity extends AppCompatActivity {
     private SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mFriendsRecyclerView;
     private boolean isSearchList;
+    private UDPClient mUDPClient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.friend_list_activity_layout);
+        mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
 
         ActivityUtil.addActivity(this);
         mCurrentUserID = String.valueOf(UserLab.getCurrentUser().getId());
@@ -62,6 +68,7 @@ public class FriendListActivity extends AppCompatActivity {
                 isSearchList = true;
                 new Thread(() -> {
                     mSearchList = UserLab.getUserByFuzzyName(name);
+                    initFriendList(mSearchList);
                     Log.d(TAG, "onCreate: " + mSearchList.size());
                     runOnUiThread(() -> {
                         mItemAdapter = new FriendItemAdapter(this, mFriendList, mSearchList);
@@ -85,11 +92,13 @@ public class FriendListActivity extends AppCompatActivity {
                 List<User> friendList = FriendLab.getFriends(mCurrentUserID);
                 mFriendList.clear();
                 mFriendList.addAll(friendList);
+                initFriendList(mFriendList);
                 runOnUiThread(() -> {
                     mItemAdapter.notifyDataSetChanged();
                     mRefreshLayout.setRefreshing(false);
                 });
             }).start();
+
         });
         mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mFriendsRecyclerView.setAdapter(mItemAdapter);
@@ -102,7 +111,33 @@ public class FriendListActivity extends AppCompatActivity {
             List<User> friendList = FriendLab.getFriends(mCurrentUserID);
             mFriendList.clear();
             mFriendList.addAll(friendList);
+            initFriendList(mFriendList);
             runOnUiThread(() -> mItemAdapter.notifyDataSetChanged());
         }).start();
+    }
+
+
+    void initFriendList(List<User> userList) {
+        List<String> onlineUser = mUDPClient.onlineUser();
+        // 在线的提前
+        int indexCount = 0;
+        for (int i = 0; i < userList.size(); i++) {
+            if (onlineUser.contains(userList.get(i).getName())) {
+                userList.get(i).setOnlineStatus(1);
+                Collections.swap(userList, indexCount, i);
+                indexCount++;
+            }
+        }
+        Map<String, String> messageMap = mUDPClient.getMessageMap();
+        // 发送消息的提前
+        indexCount = 0;
+        for (int i = 0; i < userList.size(); i++) {
+            if (messageMap.containsKey(userList.get(i).getName())) {
+                // 接收到消息
+                userList.get(i).setOnlineStatus(2);
+                Collections.swap(userList, indexCount, i);
+                indexCount++;
+            }
+        }
     }
 }

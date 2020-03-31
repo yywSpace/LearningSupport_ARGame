@@ -2,6 +2,8 @@ package com.example.learningsupport_argame.Course;
 
 import androidx.annotation.NonNull;
 
+import com.example.learningsupport_argame.Task.Task;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

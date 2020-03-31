@@ -66,9 +66,22 @@ public class TaskAcceptedListFragment extends TaskListBasicFragment {
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             new Thread(() -> {
                 mCurrentUserId = UserLab.getCurrentUser().getId() + "";
-                List<Task> tasks = TaskLab.getAcceptedTask(mCurrentUserId).stream()
-                        .filter(task -> task.getTaskType().equals(mCurrentType))
-                        .collect(Collectors.toList());
+                List<Task> tasks;
+                if (mCurrentType.equals("个人任务")) {
+                    tasks = TaskLab.getAcceptedTask(mCurrentUserId).stream()
+                            .filter(task -> {
+                                if (mCurrentType.equals("个人任务")) {
+                                    return task.getTaskType().equals(mCurrentType) ||
+                                            task.getTaskType().equals("全体任务");
+                                }
+                                return task.getTaskType().equals(mCurrentType);
+                            })
+                            .collect(Collectors.toList());
+                } else {
+                    tasks = TaskLab.getAcceptedTask(mCurrentUserId).stream()
+                            .filter(task -> task.getTaskType().equals(mCurrentType))
+                            .collect(Collectors.toList());
+                }
                 Log.d(TAG, "onResume: " + tasks.size());
                 mTaskList.clear();
                 mTaskList.addAll(tasks);
@@ -119,9 +132,22 @@ public class TaskAcceptedListFragment extends TaskListBasicFragment {
         new Thread(() -> {
             while (UserLab.getCurrentUser() == null) ;
             mCurrentUserId = UserLab.getCurrentUser().getId() + "";
-            List<Task> tasks = TaskLab.getAcceptedTask(mCurrentUserId).stream()
-                    .filter(task -> task.getTaskType().equals(mCurrentType))
-                    .collect(Collectors.toList());
+            List<Task> tasks;
+            if (mCurrentType.equals("个人任务")) {
+                tasks = TaskLab.getAcceptedTask(mCurrentUserId).stream()
+                        .filter(task -> {
+                            if (mCurrentType.equals("个人任务")) {
+                                return task.getTaskType().equals(mCurrentType) ||
+                                        task.getTaskType().equals("全体任务");
+                            }
+                            return task.getTaskType().equals(mCurrentType);
+                        })
+                        .collect(Collectors.toList());
+            } else {
+                tasks = TaskLab.getAcceptedTask(mCurrentUserId).stream()
+                        .filter(task -> task.getTaskType().equals(mCurrentType))
+                        .collect(Collectors.toList());
+            }
             Log.d(TAG, "onResume: " + tasks.size());
             mTaskList.clear();
             mTaskList.addAll(tasks);

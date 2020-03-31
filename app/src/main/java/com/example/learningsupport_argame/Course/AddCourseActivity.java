@@ -96,13 +96,13 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.course_add_layout);
         mHandler = new Handler();
-        CourseTime courseTime = new CourseTime();
-        courseTime.setTimeTextView(mCourseTimeTV);
-        mCourseTimeList.add(courseTime);
+
         initView();
         initData();
         initEvent();
-
+        CourseTime courseTime = new CourseTime();
+        courseTime.setTimeTextView(mCourseTimeTV);
+        mCourseTimeList.add(courseTime);
         edittext_zhou = "";
         mHandler_jieshu.sendEmptyMessage(MSG_LOAD_DATA);
         mHandler_zhoushu.sendEmptyMessage(MSG_LOAD_DATA);
@@ -454,7 +454,7 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
                 } else {
                     String tx = opt1week + " " + startTime + "－" + endTime + "节";
                     boolean isMixed = mCourseTimeList.stream()
-                            .filter((courseTime -> !courseTime.getTimeTextView().getText().toString().equals("")))
+                            .filter((courseTime -> courseTime.getTimeTextView() == null || !courseTime.getTimeTextView().getText().toString().equals("")))
                             .anyMatch(courseTime -> {
                                 // 如果与刚设置时间冲突
                                 return !(Integer.parseInt(startTime) > courseTime.getEndTime() || Integer.parseInt(endTime) < courseTime.getStartTime()) &&
@@ -465,7 +465,7 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
                         return;
                     }
                     textView.setText(tx);
-                    CourseTime courseTime = mCourseTimeList.stream().filter((ct) -> ct.getTimeTextView().equals(textView)).findFirst().get();
+                    CourseTime courseTime = mCourseTimeList.stream().filter((ct) -> ct.getTimeTextView() == null || ct.getTimeTextView().equals(textView)).findFirst().get();
                     courseTime.setWeek(opt1week);
                     courseTime.setStartTime(Integer.parseInt(startTime));
                     courseTime.setEndTime(Integer.parseInt(endTime));
