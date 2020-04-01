@@ -103,7 +103,6 @@ public class NavigationController {
             }
             if (item.getItemId() == R.id.navigation_menu_bag && mNavigationItem != NavigationItem.BAG) {
                 context.startActivity(new Intent(context, UserBagActivity.class));
-
             }
             if (item.getItemId() == R.id.navigation_menu_task && mNavigationItem != NavigationItem.TASK)
                 context.startActivity(new Intent(context, TaskListActivity.class));
@@ -113,11 +112,14 @@ public class NavigationController {
                 context.startActivity(new Intent(context, FeedbackDetailsActivity.class));
             if (item.getItemId() == R.id.navigation_menu_map && mNavigationItem != NavigationItem.MAP)
                 context.startActivity(new Intent(context, MapActivity.class));
+            if (item.getItemId() == R.id.navigation_menu_square) {
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra("scene", "square");
+                context.startActivity(intent);
+            }
             if (item.getItemId() == R.id.navigation_menu_test) {
                 context.startActivity(new Intent(context, TestActivity.class));
-
             }
-
 //            if (item.getItemId() == R.id.navigation_menu_put)
 //                context.startActivity(new Intent(context, ModelPutActivity.class));
 //            if (item.getItemId() == R.id.navigation_menu_social)

@@ -82,8 +82,8 @@
         android:id="@+id/message_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="134"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:text="134" />
 
     <Button
         android:id="@+id/button_send_to_other"
@@ -91,4 +91,33 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="SendToOther" />
+
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/call_chatroom_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="chatroom" />
+
+        <Button
+            android:id="@+id/call_square_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="square" />
+
+        <Button
+            android:id="@+id/call_club_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="club" />
+    </LinearLayout>
 </LinearLayout>
+
+
+

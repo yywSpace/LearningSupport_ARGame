@@ -1,6 +1,7 @@
 package com.example.learningsupport_argame;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,12 +14,16 @@ import com.example.learningsupport_argame.Client.ClientLab;
 import com.example.learningsupport_argame.Client.OnReceiveMessageList;
 import com.example.learningsupport_argame.Client.UDPClient;
 import com.example.learningsupport_argame.Navi.Activity.SendLocationExample;
+import com.unity3d.player.UnityPlayerOperationActivity;
 
 import java.io.IOException;
 
 
 public class TestActivity extends AppCompatActivity {
     private String TAG = "TestActivity";
+    Button mChatButton;
+    Button mSquareButton;
+    Button mClubButton;
     SendLocationExample mSendLocationExample1;
     SendLocationExample mSendLocationExample2;
     SendLocationExample mSendLocationExample3;
@@ -31,9 +36,12 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initUnity();
+
         // 模拟多个用户
         try {
-            mSendLocationExample1 = new SendLocationExample("MapWayExample/way1.txt", this, "王烁");
+            mSendLocationExample1 = new SendLocationExample("MapWayExample/way1.txt", this, "Spider");
             mSendLocationExample2 = new SendLocationExample("MapWayExample/way2.txt", this, "郭小磊");
             mSendLocationExample3 = new SendLocationExample("MapWayExample/way3.txt", this, "刘根");
         } catch (IOException e) {
@@ -90,6 +98,38 @@ public class TestActivity extends AppCompatActivity {
             new Thread(() -> {
                 mUDPClient.ChatToUser("王烁", "hello");
             }).start();
+        });
+    }
+
+    void initUnity(){
+        mChatButton = findViewById(R.id.call_chatroom_button);
+        mChatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TestActivity.this, MainActivity.class);
+                intent.putExtra("scene", "chat_room");
+                startActivity(intent);
+            }
+        });
+
+        mSquareButton = findViewById(R.id.call_square_button);
+        mSquareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TestActivity.this, MainActivity.class);
+                intent.putExtra("scene", "square");
+                startActivity(intent);
+            }
+        });
+
+        mClubButton = findViewById(R.id.call_club_button);
+        mClubButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TestActivity.this, MainActivity.class);
+                intent.putExtra("scene", "club");
+                startActivity(intent);
+            }
         });
     }
 

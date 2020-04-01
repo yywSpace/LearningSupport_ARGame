@@ -46,7 +46,10 @@ public class FriendListActivity extends AppCompatActivity {
         mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
 
         ActivityUtil.addActivity(this);
-        mCurrentUserID = String.valueOf(UserLab.getCurrentUser().getId());
+        if (UserLab.getCurrentUser() == null) {
+            mCurrentUserID = "4";
+        } else
+            mCurrentUserID = String.valueOf(UserLab.getCurrentUser().getId());
         // 为增强体验，如果已有数据则提前显示，后续在onResume中继续查询更新数据
         if (FriendLab.getFriendList() != null)
             mFriendList = FriendLab.getFriendList();
@@ -108,6 +111,7 @@ public class FriendListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         new Thread(() -> {
+
             List<User> friendList = FriendLab.getFriends(mCurrentUserID);
             mFriendList.clear();
             mFriendList.addAll(friendList);

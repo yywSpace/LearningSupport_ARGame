@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +20,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.learningsupport_argame.Client.ClientLab;
+import com.example.learningsupport_argame.MainActivity;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.TestActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.FriendMessageActivity;
@@ -74,7 +77,14 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 if (user.getOnlineStatus() == 0) {
                     Toast.makeText(mContext, "当前用户不在线，请稍后重试", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(mContext, "启动Unity界面并进行聊天", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(mContext, MainActivity.class);
+                    intent.putExtra("scene", "chat_room");
+                    //message:otherName,userName,modName
+                    intent.putExtra("scene_args",
+                            user.getName() + "," + UserLab.getCurrentUser().getName() + "," + "modeName");
+                    Log.d(TAG, "onBindViewHolder: "+user.getName() + "," + UserLab.getCurrentUser().getName() + "," + "modeName");
+                    mContext.startActivity(intent);
+                    Toast.makeText(mContext, user.getName() + "," + UserLab.getCurrentUser().getName() + "," + "modeName", Toast.LENGTH_SHORT).show();
                 }
             });
             holder.itemView.setOnLongClickListener(v -> {
