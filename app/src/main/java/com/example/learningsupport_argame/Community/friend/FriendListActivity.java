@@ -1,11 +1,13 @@
 package com.example.learningsupport_argame.Community.friend;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,17 +41,19 @@ public class FriendListActivity extends AppCompatActivity {
     private boolean isSearchList;
     private UDPClient mUDPClient;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.friend_list_activity_layout);
-        mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
-
-        ActivityUtil.addActivity(this);
-        if (UserLab.getCurrentUser() == null) {
-            mCurrentUserID = "4";
-        } else
+        Log.d(TAG, "onCreate: ");
+        if (savedInstanceState == null) {
             mCurrentUserID = String.valueOf(UserLab.getCurrentUser().getId());
+        } else {
+            mCurrentUserID = "" + savedInstanceState.getInt(User.CURRENT_USER_ID);
+        }
+
+        // ActivityUtil.addActivity(this);
         // 为增强体验，如果已有数据则提前显示，后续在onResume中继续查询更新数据
         if (FriendLab.getFriendList() != null)
             mFriendList = FriendLab.getFriendList();
@@ -110,16 +114,33 @@ public class FriendListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        new Thread(() -> {
+        Log.d(TAG, "onResume: ");
 
+        new Thread(() -> {
+            while (UserLab.getCurrentUser() == null) ;
+            mUDPClient = ClientLab.getInstance(this, ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
+            Log.d(TAG, "onResume: mCurrentUserID" + mCurrentUserID);
             List<User> friendList = FriendLab.getFriends(mCurrentUserID);
             mFriendList.clear();
             mFriendList.addAll(friendList);
             initFriendList(mFriendList);
             runOnUiThread(() -> mItemAdapter.notifyDataSetChanged());
+            Log.d(TAG, "onResume: mFriendList.size " + mFriendList.size());
+
         }).start();
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState: " + UserLab.getCurrentUser().getId());
+        outState.putInt(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
     void initFriendList(List<User> userList) {
         List<String> onlineUser = mUDPClient.onlineUser();

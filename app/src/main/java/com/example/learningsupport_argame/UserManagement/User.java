@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.learningsupport_argame.ARModel.Items.ModelItem;
 import com.example.learningsupport_argame.Task.TaskReward.RewardItem;
 import com.example.learningsupport_argame.Task.TaskReward.TaskReward;
+import com.example.learningsupport_argame.UserManagement.bag.UnityItem;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class User {
     private String mCity;
     private int mLevel;
     private int mHp;
+    private String mModName;
     /**
      * 代表当前等级的经验量，当等级提升后将重置
      */
@@ -31,6 +33,7 @@ public class User {
     private int mGold;
     private List<RewardItem> mRewardItems;
     private List<ModelItem> mModelItems;
+    private List<UnityItem> mUnityItems;
     private int mOnlineStatus;// 0 不在线， 1 在线， 2 接收到消息
     private boolean isNextTaskSpeedUp;
     private String mLastLoginTime;
@@ -250,5 +253,21 @@ public class User {
 
     public void setModelItems(List<ModelItem> modelItems) {
         mModelItems = modelItems;
+    }
+
+    public List<UnityItem> getUnityItems() {
+        return mUnityItems;
+    }
+
+    public void setUnityItems(List<UnityItem> unityItems) {
+        mUnityItems = unityItems;
+    }
+
+    public String getModName() {
+        return mModName;
+    }
+
+    public void setModName(String modName) {
+        mModName = modName;
     }
 }

@@ -92,7 +92,7 @@ public class MapActivity extends AppCompatActivity {
 
         // 无法在主线程发起网络请求，在线程中处理
         new Thread(() -> {
-            mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
+            mUDPClient = ClientLab.getInstance(this, ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
             mUDPClient.setOnReceiveUserList(userListStr -> {
                 Log.d(TAG, "run: " + userListStr);
                 String[] users = userListStr.split(";");

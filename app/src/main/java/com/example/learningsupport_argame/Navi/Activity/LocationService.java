@@ -2,6 +2,7 @@ package com.example.learningsupport_argame.Navi.Activity;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -16,6 +17,7 @@ import com.example.learningsupport_argame.ARModel.Items.ModelInfo;
 import com.example.learningsupport_argame.ARModel.Items.ModelInfoLab;
 import com.example.learningsupport_argame.ARModel.Utils.VibratorUtil;
 import com.example.learningsupport_argame.Navi.Utils.MapUtils;
+import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.Client.ClientLab;
 import com.example.learningsupport_argame.Client.UDPClient;
@@ -62,9 +64,13 @@ public class LocationService extends Service {
         new Thread(() -> {
             // 获取AR模型列表
             ModelInfoLab.getModelInfoList();
-            while (UserLab.getCurrentUser() == null) ;
+            if (UserLab.getCurrentUser() == null) {
+                SharedPreferences userInfo = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
+                int id = userInfo.getInt("id", 0);
+              UserLab.setCurrentUser(UserLab.getUserById(id+""));
+            }
             Log.d(TAG, "onCreate: " + UserLab.getCurrentUser());
-            mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, UserLab.getCurrentUser().getName());
+            mUDPClient = ClientLab.getInstance(this,ClientLab.sPort, ClientLab.sIp, UserLab.getCurrentUser().getName());
 
             mUDPClient.Login();
 

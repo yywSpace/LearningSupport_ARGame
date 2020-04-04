@@ -82,10 +82,10 @@ public class TestActivity extends AppCompatActivity {
             }).start();
         });
 
-        mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
+        mUDPClient = ClientLab.getInstance(this, ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
 
         mUDPClient.setOnReceiveMessageList(messageList -> {
-            runOnUiThread(()->{
+            runOnUiThread(() -> {
                 mTextViewMessageList.setText(messageList);
             });
         });
@@ -99,9 +99,15 @@ public class TestActivity extends AppCompatActivity {
                 mUDPClient.ChatToUser("王烁", "hello");
             }).start();
         });
+
+
+        Button button = findViewById(R.id.search_test);
+        button.setOnClickListener(v -> onSearchRequested());
+
+
     }
 
-    void initUnity(){
+    void initUnity() {
         mChatButton = findViewById(R.id.call_chatroom_button);
         mChatButton.setOnClickListener(new View.OnClickListener() {
             @Override

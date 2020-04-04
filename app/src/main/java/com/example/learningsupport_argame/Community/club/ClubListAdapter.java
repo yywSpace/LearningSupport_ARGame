@@ -22,7 +22,7 @@ public class ClubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<Club> mClubList;
     private Context mContext;
     private View.OnLongClickListener mOnLongClickListener;
-    private View.OnClickListener mOnClickListener;
+    private OnClubClickListener mOnClubClickListener;
     private OnSettingClickListener mOnSettingClickListener;
 
     private static final int ITEM_NORMAL = 1;
@@ -70,10 +70,10 @@ public class ClubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mOnLongClickListener = onLongClickListener;
     }
 
-    public void setOnClickListener(View.OnClickListener onClickListener) {
-        mOnClickListener = onClickListener;
-    }
 
+    public interface OnClubClickListener {
+        void onClubClickListener(View v, Club club);
+    }
 
     class ClubListViewHolder extends RecyclerView.ViewHolder {
         private ImageView mClubImage;
@@ -89,8 +89,7 @@ public class ClubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             super(itemView);
             if (mOnLongClickListener != null)
                 itemView.setOnLongClickListener(mOnLongClickListener);
-            if (mOnClickListener != null)
-                itemView.setOnClickListener(mOnClickListener);
+
             mClubSetting = itemView.findViewById(R.id.club_setting);
 
             mClubManagerImage = itemView.findViewById(R.id.club_manager_symbol);
@@ -102,6 +101,11 @@ public class ClubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         void bind(Club club) {
+            itemView.setOnClickListener(v -> {
+                if (mOnClubClickListener != null)
+                    mOnClubClickListener.onClubClickListener(v, club);
+            });
+
             if (club.getCoverBitmap() != null) {
                 mClubImage.setImageBitmap(club.getCoverBitmap());
             } else {
@@ -124,6 +128,10 @@ public class ClubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface OnSettingClickListener {
         void onSettingClickListener(Club club, View v);
+    }
+
+    public void setOnClubClickListener(OnClubClickListener onClubClickListener) {
+        mOnClubClickListener = onClubClickListener;
     }
 
     public void setOnSettingClickListener(OnSettingClickListener onSettingClickListener) {

@@ -61,7 +61,7 @@ public class FriendListDialog {
         mCurrentUserID = currentUserID;
         mUserAndMessages = userAndMessages;
 
-        mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
+        mUDPClient = ClientLab.getInstance(mContext,ClientLab.sPort, ClientLab.sIp, ClientLab.sUserName);
 
         mHandler = new Handler();
         // 为增强体验，如果已有数据则提前显示，后续在onResume中继续查询更新数据

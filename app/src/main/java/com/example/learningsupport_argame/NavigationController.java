@@ -1,7 +1,9 @@
 package com.example.learningsupport_argame;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -20,6 +22,7 @@ import com.example.learningsupport_argame.Community.friend.FriendListActivity;
 import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.Navi.Activity.MapActivity;
+import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
 import com.example.learningsupport_argame.UserManagement.achievement.AchievementActivity;
 import com.example.learningsupport_argame.UserManagement.bag.UserBagActivity;
 import com.example.learningsupport_argame.UserManagement.ranking.RankingActivity;
@@ -42,7 +45,11 @@ public class NavigationController {
     public NavigationController(AppCompatActivity context, View view, NavigationItem navigationItem) {
         mNavigationItem = navigationItem;
         new Thread(() -> {
-            while (UserLab.getCurrentUser() == null) ;
+            if (UserLab.getCurrentUser() == null) {
+                SharedPreferences userInfo = context.getSharedPreferences(LoginActivity.PREFS_NAME, Context.MODE_PRIVATE);
+                int id = userInfo.getInt("id", 0);
+                UserLab.setCurrentUser(UserLab.getUserById(id+""));
+            }
             context.runOnUiThread(() -> {
                 hasInitView = true;
                 initView(view, context);
@@ -113,8 +120,11 @@ public class NavigationController {
             if (item.getItemId() == R.id.navigation_menu_map && mNavigationItem != NavigationItem.MAP)
                 context.startActivity(new Intent(context, MapActivity.class));
             if (item.getItemId() == R.id.navigation_menu_square) {
+                User user = UserLab.getCurrentUser();
                 Intent intent = new Intent(context, MainActivity.class);
                 intent.putExtra("scene", "square");
+                // message:userName,modName,squareName
+                intent.putExtra("scene_args", String.format("%s,%s,square",user.getName(),user.getModName()));
                 context.startActivity(intent);
             }
             if (item.getItemId() == R.id.navigation_menu_test) {

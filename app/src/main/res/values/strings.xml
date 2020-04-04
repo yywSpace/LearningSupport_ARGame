@@ -4,5 +4,6 @@
     <string name="feedback_mission_failure">Mission Failure</string>
 
     <string name="action_settings">Settings</string>
+    <string name="search_hint">搜索任务</string>
     <string name="game_view_content_description"></string>
 </resources>

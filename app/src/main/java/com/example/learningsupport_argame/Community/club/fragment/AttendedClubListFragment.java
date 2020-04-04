@@ -22,7 +22,10 @@ import com.example.learningsupport_argame.Community.club.ClubLab;
 import com.example.learningsupport_argame.Community.club.ClubListAdapter;
 import com.example.learningsupport_argame.Community.club.activity.ClubListActivity;
 import com.example.learningsupport_argame.Community.club.activity.ClubSettingActivity;
+import com.example.learningsupport_argame.MainActivity;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.TestActivity;
+import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.util.ArrayList;
@@ -77,6 +80,15 @@ public class AttendedClubListFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.club_my_created_fragment, container, false);
         mClubListAdapter = new ClubListAdapter(mClubList, getContext());
+        mClubListAdapter.setOnClubClickListener((v, club) -> {
+            User user = UserLab.getCurrentUser();
+            Intent intent = new Intent(mActivity, MainActivity.class);
+            intent.putExtra("scene", "club");
+            // message:clubName,userName,modName
+            intent.putExtra("scene_args", String.format("%s,%s,%s", club.getClubName(), user.getName(), user.getModName()));
+            startActivity(intent);
+            mActivity.finish();
+        });
         mClubListAdapter.setOnSettingClickListener((club, v) -> {
             Club.sCurrentClub = club;
             if (club.getManagerId() == UserLab.getCurrentUser().getId()) {

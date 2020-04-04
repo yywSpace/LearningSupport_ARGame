@@ -1,9 +1,13 @@
 package com.example.learningsupport_argame.UserManagement.bag;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -14,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -23,22 +28,29 @@ import com.example.learningsupport_argame.ARModel.Items.ModelItemType;
 import com.example.learningsupport_argame.ARModel.Items.ModelItemsLab;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Task.TaskReward.RewardItem;
+import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.example.learningsupport_argame.UserManagement.Login.LoginActivity.*;
 
 /**
  * 两种类型道具，第一种为AR模型ModelItems，第二种奖励道具RewardItems
  */
 public class UserBagActivity extends Activity {
+    private String TAG = "UserBagActivity";
+    private Toolbar mToolbar;
     private FrameLayout mReturnLayout;
     private RecyclerView mBagRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserBagListAdapter mUserBagListAdapter;
     private List<Item> mItemList;
+    private List<Item> mTypeItemList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,6 +63,61 @@ public class UserBagActivity extends Activity {
                 .filter(rewardItem -> rewardItem.getCount() != 0)
                 .collect(Collectors.toList()));
         mItemList.addAll(UserLab.getCurrentUser().getModelItems());
+        mItemList.addAll(UserLab.getCurrentUser().getUnityItems());
+        // 上面list为全部数据，下方type为显示的数据
+        mTypeItemList = new ArrayList<>(mItemList);
+        mToolbar = findViewById(R.id.bag_tool_bar);
+        mToolbar.inflateMenu(R.menu.bag_menu);
+        mToolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.bag_ar:
+                    mTypeItemList.clear();
+                    mTypeItemList.addAll(mItemList
+                            .stream()
+                            .filter(item1 -> item1 instanceof ModelItem)
+                            .collect(Collectors.toList()));
+                    break;
+                case R.id.bag_unity:
+                    mTypeItemList.clear();
+                    mTypeItemList.addAll(mItemList
+                            .stream()
+                            .filter(item1 -> item1 instanceof UnityItem)
+                            .collect(Collectors.toList()));
+                    break;
+                case R.id.bag_item:
+                    mTypeItemList.clear();
+                    mTypeItemList.addAll(mItemList
+                            .stream()
+                            .filter(item1 -> item1 instanceof RewardItem)
+                            .collect(Collectors.toList()));
+                    break;
+                case R.id.bag_all:
+                    mTypeItemList.clear();
+                    mTypeItemList.addAll(mItemList);
+                    break;
+                case R.id.reverse_order:
+                    mTypeItemList.sort((item1, item2) -> {
+                        if (item1.getCount() < item2.getCount())
+                            return 1;
+                        else if (item1.getCount() > item2.getCount())
+                            return -1;
+                        return 0;
+                    });
+                    break;
+                case R.id.natural_order:
+                    mTypeItemList.sort((item1, item2) -> {
+                        if (item1.getCount() > item2.getCount())
+                            return 1;
+                        else if (item1.getCount() < item2.getCount())
+                            return -1;
+                        return 0;
+                    });
+                    break;
+            }
+            Log.d(TAG, "setOnMenuItemClickListener: " + mTypeItemList.size());
+            mUserBagListAdapter.notifyDataSetChanged();
+            return true;
+        });
         mSwipeRefreshLayout = findViewById(R.id.bag_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mItemList.clear();
@@ -60,16 +127,19 @@ public class UserBagActivity extends Activity {
                     .filter(rewardItem -> rewardItem.getCount() != 0)
                     .collect(Collectors.toList()));
             mItemList.addAll(UserLab.getCurrentUser().getModelItems());
+            mItemList.addAll(UserLab.getCurrentUser().getUnityItems());
+            mTypeItemList = new ArrayList<>(mItemList);
             mUserBagListAdapter.notifyDataSetChanged();
             mSwipeRefreshLayout.setRefreshing(false);
         });
         mReturnLayout = findViewById(R.id.bag_return);
         mReturnLayout.setOnClickListener(v -> finish());
-        mUserBagListAdapter = new UserBagListAdapter(mItemList);
+        mUserBagListAdapter = new UserBagListAdapter(mTypeItemList);
         mBagRecyclerView = findViewById(R.id.bag_list_recycler_view);
         mBagRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mBagRecyclerView.setAdapter(mUserBagListAdapter);
     }
+
 
     class UserBagListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private List<Item> mItemList;
@@ -96,70 +166,93 @@ public class UserBagActivity extends Activity {
         public int getItemCount() {
             return mItemList.size();
         }
-    }
 
-    class UserBagListViewHolder extends RecyclerView.ViewHolder {
-        private ImageView mItemImage;
-        private TextView mItemName;
-        private TextView mItemType;
-        private TextView mItemNumber;
-        private TextView mItemDesc;
-        private TextView mItemUseButton;
 
-        public UserBagListViewHolder(@NonNull View itemView) {
-            super(itemView);
-            mItemImage = itemView.findViewById(R.id.bag_item_image);
-            mItemName = itemView.findViewById(R.id.bag_item_title);
-            mItemType = itemView.findViewById(R.id.bag_item_type);
-            mItemNumber = itemView.findViewById(R.id.bag_item_number);
-            mItemDesc = itemView.findViewById(R.id.bag_item_desc);
-            mItemUseButton = itemView.findViewById(R.id.bag_item_use_button);
-        }
+        class UserBagListViewHolder extends RecyclerView.ViewHolder {
+            private ImageView mItemImage;
+            private TextView mItemName;
+            private TextView mItemType;
+            private TextView mItemNumber;
+            private TextView mItemDesc;
+            private TextView mItemUseButton;
 
-        public void bind(Item item) {
-            mItemName.setText(item.getItemName());
-            mItemDesc.setText(item.getItemDesc());
-            if (item instanceof RewardItem) {
-                RewardItem rewardItem = (RewardItem) item;
-                mItemType.setText("道具");
-                mItemNumber.setText(rewardItem.getCount() + "个");
-                switch (rewardItem.getRewardItemType()) {
-                    case ITEM_EXP_POTION:
-                        mItemImage.setBackgroundResource(R.drawable.bag_exp_icon);
-                        mItemUseButton.setOnClickListener(v -> showExpItemUseDialog());
-                        break;
-                    case ITEM_SPEED_POTION:
-                        mItemImage.setBackgroundResource(R.drawable.bag_speed_icon);
-                        mItemUseButton.setOnClickListener(v -> showSpeedItemUseDialog());
-                        break;
-                    case ITEM_HEALING_POTION:
-                        mItemImage.setBackgroundResource(R.drawable.bag_heal_icon);
-                        mItemUseButton.setOnClickListener(v -> showHealItemUseDialog());
-                        break;
-                    case ITEM_GOLD_POTION:
-                        mItemImage.setBackgroundResource(R.drawable.bag_gold_icon);
-                        mItemUseButton.setOnClickListener(v -> showGoldItemUseDialog());
-                        break;
-                }
-                if (rewardItem.getCount() <= 0) {
+            public UserBagListViewHolder(@NonNull View itemView) {
+                super(itemView);
+                mItemImage = itemView.findViewById(R.id.bag_item_image);
+                mItemName = itemView.findViewById(R.id.bag_item_title);
+                mItemType = itemView.findViewById(R.id.bag_item_type);
+                mItemNumber = itemView.findViewById(R.id.bag_item_number);
+                mItemDesc = itemView.findViewById(R.id.bag_item_desc);
+                mItemUseButton = itemView.findViewById(R.id.bag_item_use_button);
+            }
+
+            public void bind(Item item) {
+                mItemName.setText(item.getItemName());
+                mItemDesc.setText(item.getItemDesc());
+                mItemNumber.setText(item.getCount() + "个");
+
+                if (item instanceof RewardItem) {
+                    RewardItem rewardItem = (RewardItem) item;
+                    mItemType.setText("道具");
+                    mItemUseButton.setText("使用");
+                    switch (rewardItem.getRewardItemType()) {
+                        case ITEM_EXP_POTION:
+                            mItemImage.setBackgroundResource(R.drawable.bag_exp_icon);
+                            mItemUseButton.setOnClickListener(v -> showExpItemUseDialog());
+                            break;
+                        case ITEM_SPEED_POTION:
+                            mItemImage.setBackgroundResource(R.drawable.bag_speed_icon);
+                            mItemUseButton.setOnClickListener(v -> showSpeedItemUseDialog());
+                            break;
+                        case ITEM_HEALING_POTION:
+                            mItemImage.setBackgroundResource(R.drawable.bag_heal_icon);
+                            mItemUseButton.setOnClickListener(v -> showHealItemUseDialog());
+                            break;
+                        case ITEM_GOLD_POTION:
+                            mItemImage.setBackgroundResource(R.drawable.bag_gold_icon);
+                            mItemUseButton.setOnClickListener(v -> showGoldItemUseDialog());
+                            break;
+                    }
+                    if (rewardItem.getCount() <= 0) {
+                        mItemUseButton.setClickable(false);
+                        mItemUseButton.setBackgroundColor(Color.parseColor("#d4d4d4"));
+                    } else {
+                        mItemUseButton.setClickable(true);
+                        mItemUseButton.setBackgroundColor(Color.parseColor("#33b5e5"));
+                    }
+                } else if (item instanceof ModelItem) {
+                    ModelItem modelItem = (ModelItem) item;
+                    mItemType.setText("AR模型");
                     mItemUseButton.setClickable(false);
                     mItemUseButton.setBackgroundColor(Color.parseColor("#d4d4d4"));
-                } else {
-                    mItemUseButton.setClickable(true);
+                    mItemUseButton.setText("使用");
+                    if (modelItem.getModelItemType().equals(ModelItemType.MODEL))
+                        mItemImage.setBackgroundResource(modelItem.getImageRes());
+                    else
+                        mItemImage.setBackgroundResource(R.drawable.ar_item_view_icon);
+                } else if (item instanceof UnityItem) {
+                    UnityItem unityItem = (UnityItem) item;
                     mItemUseButton.setBackgroundColor(Color.parseColor("#33b5e5"));
+                    mItemType.setText("人物模型");
+                    if (UserLab.getCurrentUser().getModName().equals(unityItem.getModName())) {
+                        mItemUseButton.setClickable(false);
+                        mItemUseButton.setText("已启用");
+                    } else {
+                        mItemUseButton.setClickable(true);
+                        mItemUseButton.setText("启用");
+                        mItemUseButton.setOnClickListener(v -> {
+                            UserLab.getCurrentUser().setModName(unityItem.getModName());
+                            mItemList.remove(item);
+                            mItemList.add(0, item);
+                            new Thread(() -> UserLab.updateUser(UserLab.getCurrentUser())).start();
+                            notifyDataSetChanged();
+                        });
+                    }
+                    mItemImage.setBackgroundResource(unityItem.getImgRec());
                 }
-            } else if (item instanceof ModelItem) {
-                ModelItem modelItem = (ModelItem) item;
-                mItemNumber.setText("1个");
-                mItemUseButton.setClickable(false);
-                mItemImage.setBackgroundResource(modelItem.getImageRes());
-                mItemUseButton.setBackgroundColor(Color.parseColor("#d4d4d4"));
-                if (modelItem.getModelItemType().equals(ModelItemType.MODEL))
-                    mItemImage.setBackgroundResource(modelItem.getImageRes());
-                else
-                    mItemImage.setBackgroundResource(R.drawable.ar_item_view_icon);
             }
         }
+
 
         void showHealItemUseDialog() {
             AlertDialog alertDialog = new AlertDialog.Builder(UserBagActivity.this)

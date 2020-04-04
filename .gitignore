@@ -13,5 +13,8 @@
 .externalNativeBuild
 
 # 忽略unity asset文件，防止工程过大
+/app/libs/unityLibrary-debug.aar
 /ARModel/src/main/assets
 /Projection/src/main/assets
+/LearningSupport_ARGame.zip
+/module

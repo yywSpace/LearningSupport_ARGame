@@ -29,6 +29,11 @@ public class FriendLab {
                 user.setCity(resultSet.getString("user_city"));
                 user.setExp(resultSet.getInt("user_exp"));
                 user.setGold(resultSet.getInt("user_gold"));
+                String modName = resultSet.getString("user_current_mod_name");
+                if (modName == null || modName.equals(""))
+                    user.setModName("Mod1");
+                else
+                    user.setModName(modName);
                 friendList.add(user);
             }
         }, "SELECT * FROM user,friend where user.user_id = friend.friend_id AND friend.user_id = ?;", userId);
@@ -59,19 +64,5 @@ public class FriendLab {
         if (friendList.size() <= 0)
             return null;
         return friendList.get(0);
-    }
-
-    // 获取加了我好友的人
-    public static List<User> getFans() {
-        String sql = "select * from task where user_id in (select user_id from friend where friend_id = ?);";
-        List<User> fansList = new ArrayList<>();
-        DbUtils.query(resultSet -> {
-            while (resultSet.next()) {
-                User user = new User();
-                user.setId(resultSet.getInt("user_id"));
-                fansList.add(user);
-            }
-        }, sql, UserLab.getCurrentUser().getId());
-        return fansList;
     }
 }

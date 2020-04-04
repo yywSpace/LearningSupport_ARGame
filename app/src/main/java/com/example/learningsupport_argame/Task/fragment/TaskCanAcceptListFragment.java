@@ -111,6 +111,8 @@ public class TaskCanAcceptListFragment extends TaskListBasicFragment {
     }
 
     private void initListByType() {
+        mTaskList.clear();
+        mTaskItemAdapter.notifyDataSetChanged();
         new Thread(() -> {
             List<Task> tasks = new ArrayList<>();
             switch (mCurrentType) {
@@ -133,7 +135,7 @@ public class TaskCanAcceptListFragment extends TaskListBasicFragment {
                         tasks = TaskLab.sClubTaskList;
                     break;
             }
-            mTaskList.clear();
+
             mTaskList.addAll(tasks);
             mActivity.runOnUiThread(() -> {
                 mTaskItemAdapter.notifyDataSetChanged();

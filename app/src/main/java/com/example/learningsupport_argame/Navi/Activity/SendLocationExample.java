@@ -43,8 +43,8 @@ public class SendLocationExample {
                     String line;
                     while ((line = br.readLine()) != null) {
                         Thread.sleep(500);
-                        String[] latlong = line.split(",");
-                        mUDPClient.Location(Float.parseFloat(latlong[0]), Float.parseFloat(latlong[1]));
+                        String[] latLong = line.split(",");
+                        mUDPClient.Location(Float.parseFloat(latLong[0]), Float.parseFloat(latLong[1]));
                     }
                 }
             } catch (InterruptedException | IOException e) {

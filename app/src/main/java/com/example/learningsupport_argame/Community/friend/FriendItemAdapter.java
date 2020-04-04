@@ -1,9 +1,11 @@
 package com.example.learningsupport_argame.Community.friend;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -23,6 +25,7 @@ import com.example.learningsupport_argame.Client.ClientLab;
 import com.example.learningsupport_argame.MainActivity;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.TestActivity;
+import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.FriendMessageActivity;
@@ -81,10 +84,10 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     intent.putExtra("scene", "chat_room");
                     //message:otherName,userName,modName
                     intent.putExtra("scene_args",
-                            user.getName() + "," + UserLab.getCurrentUser().getName() + "," + "modeName");
-                    Log.d(TAG, "onBindViewHolder: "+user.getName() + "," + UserLab.getCurrentUser().getName() + "," + "modeName");
+                            user.getName() + "," + UserLab.getCurrentUser().getName() + "," + user.getModName().trim());
                     mContext.startActivity(intent);
-                    Toast.makeText(mContext, user.getName() + "," + UserLab.getCurrentUser().getName() + "," + "modeName", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, user.getName() + "," + UserLab.getCurrentUser().getName() + "," + user.getModName(), Toast.LENGTH_SHORT).show();
+                    ((Activity) mContext).finish();
                 }
             });
             holder.itemView.setOnLongClickListener(v -> {

@@ -99,14 +99,10 @@ public class LoginActivity extends AppCompatActivity {
                     changePromptMessage(ums == UserManagementStatus.LOGIN_PASSWORD_ERROR,
                             "密码错误", mPasswordTextLabel, mPasswordTextStatus);
                     if (ums == UserManagementStatus.LOGIN_SUCCESS) {
+                        // TODO: 20-4-2
                         // 登录成功
-                        SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = userInfo.edit();// 获取Editor
-                        // 写入需要保存的数据
                         User user = UserLab.getCurrentUser();
-                        editor.putString("account", user.getAccount());
-                        editor.putString("password", user.getPassword());
-                        editor.commit();//提交修改
+                        saveUserInfoToLocal(user);
                         Toast.makeText(this, "LOGIN_SUCCESS" + UserLab.getCurrentUser().getName(), Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "onCreate: " + user.getName());
                         startService(LocationService.mLocationServiceIntent);
@@ -122,25 +118,26 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
                 User user = UserLab.getCurrentUser();
-                try {
-                    Date nowDate = new Date();
-                    Log.d(TAG, "onCreate: " + user.getLastLoginTime());
-                    if (user.getLastLoginTime() == null || user.getLastLoginTime().equals("")) {
-                        user.setLastLoginTime(df.format(nowDate));
-                        user.setLoginCount(1);
-                        UserLab.updateUser(user);
-                    } else {
-                        Date oldDate = df.parse(user.getLastLoginTime());
-                        // 如果当前日期比之前的日期多一天则可签到，并设置登录时间及登录次数
-                        if (nowDate.getTime() - oldDate.getTime() >= 1000 * 3600 * 24) {
+                if (user != null)
+                    try {
+                        Date nowDate = new Date();
+                        Log.d(TAG, "onCreate: " + user.getLastLoginTime());
+                        if (user.getLastLoginTime() == null || user.getLastLoginTime().equals("")) {
                             user.setLastLoginTime(df.format(nowDate));
-                            user.setLoginCount(user.getLoginCount() + 1);
+                            user.setLoginCount(1);
                             UserLab.updateUser(user);
+                        } else {
+                            Date oldDate = df.parse(user.getLastLoginTime());
+                            // 如果当前日期比之前的日期多一天则可签到，并设置登录时间及登录次数
+                            if (nowDate.getTime() - oldDate.getTime() >= 1000 * 3600 * 24) {
+                                user.setLastLoginTime(df.format(nowDate));
+                                user.setLoginCount(user.getLoginCount() + 1);
+                                UserLab.updateUser(user);
+                            }
                         }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
             }).start();
         });
         mRegisterTextView.setOnClickListener((view) -> {
@@ -211,37 +208,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void initUDPClient() {
-        mUDPClient = ClientLab.getInstance(ClientLab.sPort, ClientLab.sIp, UserLab.getCurrentUser().getName());
-        mUDPClient.setOnReceiveUserChat((name, content) -> {
-            Log.d(TAG, "initUDPClient: ReceiveUserChat");
-            int notificationId = 100;//通知的id
-            final String CHANNEL_ID = "CHAT_CHANNEL_ID";
-            final String CHANNEL_NAME = "CHAT_CHANNEL_NAME";
-            NotificationManager mNotificationManager = (NotificationManager)
-                    getSystemService(Context.NOTIFICATION_SERVICE);
+        mUDPClient = ClientLab.getInstance(this, ClientLab.sPort, ClientLab.sIp, UserLab.getCurrentUser().getName());
+    }
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                //只在Android O之上需要渠道
-                NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,
-                        CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
-                //如果这里用IMPORTANCE_NOENE就需要在系统的设置里面开启渠道，
-                //通知才能正常弹出
-                mNotificationManager.createNotificationChannel(notificationChannel);
-            }
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-            builder.setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("接收到" + name + "发来的信息")
-                    .setContentText(String.format("%s:%s", name, content))
-                    .setAutoCancel(true);
-            Intent resultIntent = new Intent(this, FriendListActivity.class);
-            resultIntent.setAction(Intent.ACTION_MAIN);
-            resultIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            //building the notification
-            builder.setContentIntent(resultPendingIntent);
-            mNotificationManager.notify(notificationId, builder.build());
-        });
+    void saveUserInfoToLocal(User user) {
+        SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = userInfo.edit();// 获取Editor
+        // 写入需要保存的数据
+        editor.putInt("id", user.getId());
+        editor.putString("account", user.getAccount());
+        editor.putString("password", user.getPassword());
+        editor.commit();//提交修改
     }
 
     @Override

@@ -11,19 +11,22 @@ public class ModelItem extends Item {
     private int mViewId;
     private String mModelPath;
 
-    public ModelItem(int id, String name, String desc, int viewId, ModelItemType modelItemType) {
-        super(name, desc);
+
+    public ModelItem(int id, String name, String desc, int viewId, ModelItemType modelItemType, int price) {
+        super(name, desc, 0, price);
         mId = id;
         mModelItemType = modelItemType;
         mViewId = viewId;
+        setCount(1);
     }
 
-    public ModelItem(int id, String name, String desc, String path, int imageRes, ModelItemType modelItemType) {
-        super(name, desc);
+    public ModelItem(int id, String name, String desc, String path, int imageRes, ModelItemType modelItemType, int price) {
+        super(name, desc, 1, price);
         mId = id;
         mImageRes = imageRes;
         mModelItemType = modelItemType;
         mModelPath = path;
+        setCount(1);
     }
 
     public ModelItemType getModelItemType() {

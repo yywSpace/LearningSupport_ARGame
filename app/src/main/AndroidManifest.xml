@@ -52,8 +52,6 @@
         <activity android:name=".MonitorModel.MonitorActivity" />
 
         <activity android:name=".UserManagement.Login.LoginActivity">
-            <!--                    <activity android:name=".TestActivity">-->
-            <!--        <activity android:name=".Course.CourseMainActivity">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -87,7 +85,26 @@
         <activity android:name=".Community.club.activity.ClubSettingActivity" />
         <activity android:name=".Community.club.activity.ClubInfoActivity" />
         <activity android:name=".Community.club.activity.ClubMembersActivity" />
-        <activity android:name=".TestActivity" />
+        <activity android:name=".TestActivity">
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".Task.activity.TaskSearchActivity" />
+        </activity>
+
+        <activity android:name=".Task.activity.TaskSearchActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+        </activity>
+
+        <provider
+            android:authorities="com.example.learningsupport_argame.Task.activity.TaskSearchSuggestionProvider"
+            android:name=".Task.activity.TaskSearchSuggestionProvider"/>
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

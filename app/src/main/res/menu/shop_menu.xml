@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="类型">
+        <menu>
+            <group>
+                <item
+                    android:id="@+id/shop_unity"
+                    android:title="人物模型" />
+                <item
+                    android:id="@+id/shop_ar"
+                    android:title="AR模型" />
+                <item
+                    android:id="@+id/shop_item"
+                    android:title="道具" />
+                <item
+                    android:id="@+id/shop_all"
+                    android:title="全部" />
+            </group>
+        </menu>
+    </item>
+    <item android:title="排序">
+        <menu>
+            <group>
+                <item
+                    android:id="@+id/natural_order"
+                    android:title="正序" />
+                <item
+                    android:id="@+id/reverse_order"
+                    android:title="倒序" />
+            </group>
+        </menu>
+    </item>
+</menu>

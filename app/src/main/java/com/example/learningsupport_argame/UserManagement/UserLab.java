@@ -9,6 +9,8 @@ import com.example.learningsupport_argame.DbUtils;
 import com.example.learningsupport_argame.Task.TaskReward.RewardItem;
 import com.example.learningsupport_argame.Task.TaskReward.RewardItemLab;
 import com.example.learningsupport_argame.UserManagement.Login.UserManagementStatus;
+import com.example.learningsupport_argame.UserManagement.bag.UnityItem;
+import com.example.learningsupport_argame.UserManagement.bag.UnityItemLab;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,6 +81,11 @@ public class UserLab {
                 user.setGold(resultSet.getInt("user_gold"));
                 user.setHp(resultSet.getInt("user_hp"));
                 user.setLoginCount(resultSet.getInt("user_login_count"));
+                String modName = resultSet.getString("user_current_mod_name");
+                if (modName == null || modName.equals(""))
+                    user.setModName("Mod1");
+                else
+                    user.setModName(modName);
                 try {
                     user.setReleaseCount(resultSet.getInt("task_release_count"));
                     user.setAccomplishCount(resultSet.getInt("task_accomplish_count"));
@@ -127,6 +134,17 @@ public class UserLab {
                             modelItems.add(ModelItemsLab.get().getItemList().get(Integer.parseInt(id.trim())));
                     }
                     user.setModelItems(modelItems);
+                    // unity模型列表
+                    String unityModelsStr = resultSet.getString("user_unity_models");
+                    List<UnityItem> unityModels = new ArrayList<>();
+                    if (unityModelsStr == null || unityModelsStr.equals("")) {
+                        unityModels.add(UnityItemLab.get().getUnityItemList().get(0));
+                    } else {
+                        String[] modelItemsArray = unityModelsStr.substring(1, unityModelsStr.length() - 1).split(",");
+                        for (String id : modelItemsArray)
+                            unityModels.add(UnityItemLab.get().getUnityItemList().get(Integer.parseInt(id.trim())));
+                    }
+                    user.setUnityItems(unityModels);
                 }
                 users.add(user);
             }
@@ -177,7 +195,7 @@ public class UserLab {
                 "UPDATE user " +
                         "SET user_name = ?, user_avatar = ?, user_password = ?,user_sex = ?, user_birthday = ?,  user_city= ?, " +
                         "user_hp = ?, user_level = ?, user_exp = ?, user_gold = ?, user_reward_items = ?," +
-                        "user_last_login_time = ?,user_login_count = ?,user_label = ?, user_model_items=? " +
+                        "user_last_login_time = ?,user_login_count = ?,user_label = ?, user_model_items=?, user_unity_models = ? ,user_current_mod_name = ? " +
                         "WHERE user_id = ?",
                 user.getName(),
                 DbUtils.Bitmap2Bytes(user.getAvatar()),
@@ -194,6 +212,8 @@ public class UserLab {
                 user.getLoginCount(),
                 user.getLabel(),
                 user.getModelItems().toString(),
+                user.getUnityItems().toString(),
+                user.getModName(),
                 user.getId());
     }
 

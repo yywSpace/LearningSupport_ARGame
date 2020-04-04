@@ -9,22 +9,20 @@ import com.example.learningsupport_argame.UserManagement.bag.Item;
  */
 public class RewardItem extends Item {
     private RewardItemType mItemType;
-    private int mCount;
 
     public RewardItem() {
-        super("", "");
+        super("", "", 1, 0);
     }
 
-    public RewardItem(String name, String desc, RewardItemType rewardItemType, int count) {
-        super(name, desc);
+    public RewardItem(String name, String desc, RewardItemType rewardItemType, int count, int price) {
+        super(name, desc, count, price);
         mItemType = rewardItemType;
-        mCount = count;
+        setCount(count);
     }
 
     public RewardItem(RewardItemType rewardItemType, int count) {
-        super("", "");
+        super("", "", 1, 0);
         mItemType = rewardItemType;
-        mCount = count;
     }
 
     public RewardItemType getRewardItemType() {
@@ -33,14 +31,6 @@ public class RewardItem extends Item {
 
     public void setRewardItemType(RewardItemType rewardItemType) {
         mItemType = rewardItemType;
-    }
-
-    public int getCount() {
-        return mCount;
-    }
-
-    public void setCount(int count) {
-        mCount = count;
     }
 
 
