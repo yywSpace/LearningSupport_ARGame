@@ -41,7 +41,11 @@
         <activity android:name=".UserManagement.ranking.RankingActivity" />
 
         <activity android:name=".Community.friend.FriendListActivity" />
-        <activity android:name=".Task.activity.TaskListActivity" />
+        <activity android:name=".Task.activity.TaskListActivity">
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".Task.activity.TaskSearchActivity" />
+        </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".ARModel.ScanModelActivity" />
         <activity android:name=".ARModel.PutModelActivity" />
@@ -85,14 +89,12 @@
         <activity android:name=".Community.club.activity.ClubSettingActivity" />
         <activity android:name=".Community.club.activity.ClubInfoActivity" />
         <activity android:name=".Community.club.activity.ClubMembersActivity" />
-        <activity android:name=".TestActivity">
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value=".Task.activity.TaskSearchActivity" />
-        </activity>
+        <activity android:name=".TestActivity"></activity>
 
-        <activity android:name=".Task.activity.TaskSearchActivity"
-            android:launchMode="singleTop">
+        <activity
+            android:name=".Task.activity.TaskSearchActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.example.learningsupport_argame.Task.activity.TaskListActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -103,8 +105,8 @@
         </activity>
 
         <provider
-            android:authorities="com.example.learningsupport_argame.Task.activity.TaskSearchSuggestionProvider"
-            android:name=".Task.activity.TaskSearchSuggestionProvider"/>
+            android:name=".Task.activity.TaskSearchSuggestionProvider"
+            android:authorities="com.example.learningsupport_argame.Task.activity.TaskSearchSuggestionProvider" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

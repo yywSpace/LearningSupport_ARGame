@@ -291,4 +291,14 @@ public class TaskLab {
         sClubTaskList = clubTask;
         return clubTask;
     }
+
+    public static List<Task> getAcceptedTaskByFuzzyName(String name) {
+        String sql = String.format("" +
+                "select * from task, task_participant" +
+                "   where task_participant.participant_id = ? and " +
+                "       task.task_id = task_participant.task_id and " +
+                "       task_participant.task_accomplish_status = '进行中' and task_name like '%%%s%%';", name);
+        return getTasksWith(sql, UserLab.getCurrentUser().getId());
+    }
+
 }

@@ -57,6 +57,7 @@ import java.util.List;
 import static com.example.learningsupport_argame.Task.TaskLab.mAcceptedTaskList;
 
 public class TaskListActivity extends AppCompatActivity {
+    public static String sCurrentListType;
     private NavigationController mNavigationController;
     private static String TAG = "TaskListActivity";
     private static final int PUT_MODEL_ACCOMPLISH = 1;
@@ -65,6 +66,7 @@ public class TaskListActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private TextView mNavigationTitle;
     private FloatingActionButton mFloatingActionButton;
+    private FloatingActionButton mFloatingActionSearchButton;
     private BottomNavigationViewEx mNavigationView;
     private AlertDialog mCreateTaskDialog;
     // 第一次为insert如果用户返回则应修改信息
@@ -90,12 +92,15 @@ public class TaskListActivity extends AppCompatActivity {
         mNavigationView = findViewById(R.id.task_list_navigation_view);
 
         mFloatingActionButton = findViewById(R.id.task_list_add_task);
+        mFloatingActionSearchButton = findViewById(R.id.task_list_search);
+        mFloatingActionSearchButton.setOnClickListener((v) -> onSearchRequested());
         mViewPager = findViewById(R.id.task_list_vp_content);
         mFragmentList = new ArrayList<>(Arrays.asList(
                 CurrentTaskFragment.getInstance(),
                 TaskAcceptedListFragment.getInstance(),
                 TaskCanAcceptListFragment.getInstance()
         ));
+        mFloatingActionSearchButton.setVisibility(View.INVISIBLE);
 
         mViewPager.setCurrentItem(0);
         mVpAdapter = new VpAdapter(getSupportFragmentManager(), mFragmentList);
@@ -132,14 +137,19 @@ public class TaskListActivity extends AppCompatActivity {
                     case R.id.menu_task_running:
                         mNavigationTitle.setText("执行中");
                         item.setIcon(R.drawable.task_list_icon_running_sellected);
-                        break;
+                        mFloatingActionSearchButton.setVisibility(View.INVISIBLE);
+                         break;
                     case R.id.menu_task_accepted:
+                        mFloatingActionSearchButton.setVisibility(View.VISIBLE);
                         mNavigationTitle.setText("已接受的任务");
+                        sCurrentListType = "已接受的任务";
                         position = 1;
                         item.setIcon(R.drawable.navigation_task);
                         break;
                     case R.id.menu_task_can_accept: {
+                        mFloatingActionSearchButton.setVisibility(View.VISIBLE);
                         mNavigationTitle.setText("任务列表");
+                        sCurrentListType = "任务列表";
                         position = 2;
                         item.setIcon(R.drawable.task_list_icon_all_sellected);
                         // 此处return false且在FloatingActionButton没有自定义点击事件时 会屏蔽点击事件
