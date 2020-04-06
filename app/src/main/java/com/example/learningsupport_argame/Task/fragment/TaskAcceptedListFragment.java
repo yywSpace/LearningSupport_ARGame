@@ -22,6 +22,7 @@ import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.TaskLab;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,7 @@ public class TaskAcceptedListFragment extends TaskListBasicFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+
         mCurrentType = "个人任务";
         mTypePersonBtn.setText("个人/全体任务");
         mTypePersonBtn.setOnClickListener(v -> {
@@ -154,6 +156,7 @@ public class TaskAcceptedListFragment extends TaskListBasicFragment {
             mActivity.runOnUiThread(() -> {
                 mTaskItemAdapter.notifyDataSetChanged();
             });
+            Log.d(TAG, "onResume: finish");
         }).start();
     }
 

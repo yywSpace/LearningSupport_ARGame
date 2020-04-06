@@ -54,7 +54,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.example.learningsupport_argame.Task.TaskLab.mAcceptedTaskList;
 
 public class TaskListActivity extends AppCompatActivity {
     public static String sCurrentListType;

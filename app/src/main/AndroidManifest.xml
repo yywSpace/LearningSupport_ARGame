@@ -55,7 +55,9 @@
 
         <activity android:name=".MonitorModel.MonitorActivity" />
 
-        <activity android:name=".UserManagement.Login.LoginActivity">
+        <activity
+            android:name=".UserManagement.Login.LoginActivity"
+            android:theme="@style/splashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -89,12 +91,12 @@
         <activity android:name=".Community.club.activity.ClubSettingActivity" />
         <activity android:name=".Community.club.activity.ClubInfoActivity" />
         <activity android:name=".Community.club.activity.ClubMembersActivity" />
-        <activity android:name=".TestActivity"></activity>
+        <activity android:name=".TestActivity" />
 
         <activity
             android:name=".Task.activity.TaskSearchActivity"
             android:launchMode="singleTop"
-            android:parentActivityName="com.example.learningsupport_argame.Task.activity.TaskListActivity" >
+            android:parentActivityName="com.example.learningsupport_argame.Task.activity.TaskListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -103,6 +105,9 @@
                 android:resource="@xml/searchable" />
 
         </activity>
+        <activity
+            android:name=".UserManagement.Login.SplashActivity"
+            android:theme="@style/splashLoadingScreenTheme" />
 
         <provider
             android:name=".Task.activity.TaskSearchSuggestionProvider"

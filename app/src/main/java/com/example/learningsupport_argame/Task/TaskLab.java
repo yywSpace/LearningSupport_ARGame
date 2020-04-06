@@ -69,7 +69,7 @@ public class TaskLab {
      */
     public static List<Task> getAcceptedTask(String userId) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String sql = "select * from task, task_participant where task_participant.participant_id = ? and task.task_id = task_participant.task_id and task_participant.task_accomplish_status = '进行中';";
+        String sql = "select * from task, task_participant where task_participant.participant_id = ? and task.task_id = task_participant.task_id and task_participant.task_accomplish_status = '进行中' order by task.task_id desc ;";
         mAcceptedTaskList = getTasksWith(sql, userId);
         mAcceptedTaskList = mAcceptedTaskList.stream().sorted((task1, task2) -> {
             try {
@@ -93,7 +93,7 @@ public class TaskLab {
     public static List<Task> getAccomplishTask(String userId) {
         String sql = "select * from task where task_id in " +
                 "       (select task_id from task_participant " +
-                "           where task_participant.participant_id = ? and task_accomplish_status = '完成');";
+                "           where task_participant.participant_id = ? and task_accomplish_status = '完成')  order by task_id desc ;";
 
         List<Task> accomplishTasks = getTasksWith(sql, Integer.parseInt(userId));
         mAccomplishTaskList = accomplishTasks;
@@ -108,7 +108,7 @@ public class TaskLab {
      */
     public static List<Task> getReleasedTask(String userId) {
         List<Task> releasedTasks = getTasksWith(
-                "select * from task where user_id = ?",
+                "select * from task where user_id = ?  order by task_id desc ",
                 userId);
         mReleasedTaskList = releasedTasks;
         return releasedTasks;

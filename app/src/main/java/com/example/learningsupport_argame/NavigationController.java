@@ -23,6 +23,7 @@ import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.Navi.Activity.MapActivity;
 import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
+import com.example.learningsupport_argame.UserManagement.Login.SplashActivity;
 import com.example.learningsupport_argame.UserManagement.achievement.AchievementActivity;
 import com.example.learningsupport_argame.UserManagement.bag.UserBagActivity;
 import com.example.learningsupport_argame.UserManagement.ranking.RankingActivity;

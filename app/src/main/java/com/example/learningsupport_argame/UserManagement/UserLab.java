@@ -96,7 +96,7 @@ public class UserLab {
                 String rewardItemsStr = resultSet.getString("user_reward_items");
                 List<RewardItem> rewardItems = new ArrayList<>(4);
                 RewardItemLab rewardItemLab = RewardItemLab.get();
-                if (rewardItemsStr.equals("")) {
+                if (rewardItemsStr == null || rewardItemsStr.equals("")) {
                     rewardItems.addAll(Arrays.asList(
                             rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_HEALING_POTION, 0),
                             rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_EXP_POTION, 0),
@@ -130,8 +130,11 @@ public class UserLab {
                         modelItems.add(ModelItemsLab.get().getItemList().get(1));
                     } else {
                         String[] modelItemsArray = modelItemsStr.substring(1, modelItemsStr.length() - 1).split(",");
-                        for (String id : modelItemsArray)
+                        for (String id : modelItemsArray){
+                            if (id.equals(""))
+                                continue;
                             modelItems.add(ModelItemsLab.get().getItemList().get(Integer.parseInt(id.trim())));
+                        }
                     }
                     user.setModelItems(modelItems);
                     // unity模型列表
@@ -141,8 +144,12 @@ public class UserLab {
                         unityModels.add(UnityItemLab.get().getUnityItemList().get(0));
                     } else {
                         String[] modelItemsArray = unityModelsStr.substring(1, unityModelsStr.length() - 1).split(",");
-                        for (String id : modelItemsArray)
+                        for (String id : modelItemsArray) {
+                            if (id.equals("")) {
+                                continue;
+                            }
                             unityModels.add(UnityItemLab.get().getUnityItemList().get(Integer.parseInt(id.trim())));
+                        }
                     }
                     user.setUnityItems(unityModels);
                 }

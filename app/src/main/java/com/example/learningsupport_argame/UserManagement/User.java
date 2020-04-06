@@ -8,6 +8,7 @@ import com.example.learningsupport_argame.Task.TaskReward.RewardItem;
 import com.example.learningsupport_argame.Task.TaskReward.TaskReward;
 import com.example.learningsupport_argame.UserManagement.bag.UnityItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -248,6 +249,8 @@ public class User {
     }
 
     public List<ModelItem> getModelItems() {
+        if (mModelItems == null)
+            return new ArrayList<>();
         return mModelItems;
     }
 
@@ -256,6 +259,8 @@ public class User {
     }
 
     public List<UnityItem> getUnityItems() {
+        if (mUnityItems == null)
+            return new ArrayList<>();
         return mUnityItems;
     }
 

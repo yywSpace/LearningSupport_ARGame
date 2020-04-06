@@ -91,7 +91,7 @@ public class TaskListBasicFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        while (UserLab.getCurrentUser() == null) ;
+        while (UserLab.getCurrentUser() == null) Log.d(TAG, "getCurrentUser: null"); ;
         mCurrentUserId = UserLab.getCurrentUser().getId() + "";
 
     }

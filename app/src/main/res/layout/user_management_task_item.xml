@@ -24,13 +24,21 @@
         android:textColor="@android:color/black" />
 
     <ImageView
+        android:id="@+id/task_type_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/user_management_task_name"
+        android:background="@drawable/task_personal_icon" />
+
+    <ImageView
         android:id="@+id/task_item_image1"
         android:layout_width="15dp"
-
         android:layout_height="20dp"
         android:layout_below="@id/user_management_task_name"
         android:layout_alignBottom="@id/user_management_task_time"
         android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/task_item_icon"
         android:src="@drawable/shijian" />
 
@@ -40,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/user_management_task_name"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
         android:layout_toEndOf="@id/task_item_image1"
         android:text="时间" />
 

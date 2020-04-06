@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.Community.friend;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.example.learningsupport_argame.Client.UDPClient;
 import com.example.learningsupport_argame.Community.FriendLab;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
+import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
@@ -47,10 +49,12 @@ public class FriendListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.friend_list_activity_layout);
         Log.d(TAG, "onCreate: ");
-        if (savedInstanceState == null) {
+        if (UserLab.getCurrentUser() != null) {
             mCurrentUserID = String.valueOf(UserLab.getCurrentUser().getId());
         } else {
-            mCurrentUserID = "" + savedInstanceState.getInt(User.CURRENT_USER_ID);
+            SharedPreferences userInfo = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
+            int id = userInfo.getInt("id", 0);
+            mCurrentUserID = String.valueOf(id);
         }
 
         // ActivityUtil.addActivity(this);

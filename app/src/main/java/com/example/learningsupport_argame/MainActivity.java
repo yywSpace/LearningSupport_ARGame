@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,6 +14,7 @@ import com.example.learningsupport_argame.Client.UDPClient;
 import com.example.learningsupport_argame.MonitorModel.MonitorTaskStatusService;
 import com.example.learningsupport_argame.Navi.Activity.LocationService;
 import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
+import com.example.learningsupport_argame.UserManagement.Login.SplashActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.UserMessageActivity;
@@ -35,6 +37,9 @@ public class MainActivity extends UnityPlayerOperationActivity {
         mOnUnityExit = new OnUnityExit() {
             @Override
             public void onUnityExit() {
+//                Intent intent = new Intent(MainActivity.this, SplashActivity.class);
+//                intent.putExtra("loading_type", 2);
+//                startActivity(intent);
                 Log.d(TAG, "onDestroy: LocationService" + LocationService.mLocationServiceIntent);
                 Log.d(TAG, "onDestroy: MonitorTaskStatusService" + MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
 //                startActivity(new Intent(MainActivity.this, TaskListActivity.class));

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -78,6 +79,7 @@ public class TaskItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private TextView taskTime;
         private TextView taskLocation;
         private View mItemView;
+        private ImageView iconImage;
 
         public TaskItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,15 +87,28 @@ public class TaskItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             taskName = itemView.findViewById(R.id.user_management_task_name);
             taskTime = itemView.findViewById(R.id.user_management_task_time);
             taskLocation = itemView.findViewById(R.id.user_management_task_location);
+            iconImage = itemView.findViewById(R.id.task_type_icon);
 
         }
 
         public void bind(Task task, int position) {
             taskName.setText(task.getTaskName());
             taskTime.setText(task.getTaskStartAt() + "-" + task.getTaskEndIn());
-
             taskLocation.setText(task.getAccomplishTaskLocation().split(",")[0]);
-
+            switch (task.getTaskType()) {
+                case "个人任务":
+                    iconImage.setBackgroundResource(R.drawable.task_personal_icon);
+                    break;
+                case "好友任务":
+                    iconImage.setBackgroundResource(R.drawable.task_friend_icon);
+                    break;
+                case "社团任务":
+                    iconImage.setBackgroundResource(R.drawable.task_club_icon);
+                    break;
+                case "全体任务":
+                    iconImage.setBackgroundResource(R.drawable.task_all_icon);
+                    break;
+            }
             mItemView.setOnClickListener((view) -> {
                 if (mOnRecycleViewItemClick != null)
                     mOnRecycleViewItemClick.onRecycleViewItemClick(view, position);

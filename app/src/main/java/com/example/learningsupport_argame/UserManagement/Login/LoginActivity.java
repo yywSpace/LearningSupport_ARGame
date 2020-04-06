@@ -48,6 +48,7 @@ import java.text.SimpleDateFormat;
 public class LoginActivity extends AppCompatActivity {
     private static String TAG = "LoginActivity";
     public static String PREFS_NAME = "user_info";
+    public static boolean sInitFinished = false;
     private TextView mAccountTextLabel;
     private TextView mAccountTextStatus;
     private EditText mAccountEditText;
@@ -155,6 +156,10 @@ public class LoginActivity extends AppCompatActivity {
         if (account.equals("") || password.equals("")) {
             return;
         }
+        Intent intent = new Intent(this, SplashActivity.class);
+        intent.putExtra("loading_type", 1);
+        startActivity(intent);
+
         new Thread(() -> {
             User user = UserLab.getUser(account);
             UserLab.setCurrentUser(user);
@@ -182,10 +187,9 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             initUDPClient();
-
+            sInitFinished = true;
         }).start();
 //        startActivity(new Intent(LoginActivity.this, MissionAccomplishActivity.class));
-        startActivity(new Intent(this, TaskListActivity.class));
 
 //        startActivity(new Intent(LoginActivity.this, MapActivity.class));
 //        startActivity(new Intent(this, FeedbackDetailsActivity.class));
