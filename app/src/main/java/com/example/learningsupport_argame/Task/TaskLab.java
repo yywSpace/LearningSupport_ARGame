@@ -301,4 +301,8 @@ public class TaskLab {
         return getTasksWith(sql, UserLab.getCurrentUser().getId());
     }
 
+    public static List<Task> getCourseTask() {
+        return getTasksWith("select * from task where task_type = '课程'");
+    }
+
 }

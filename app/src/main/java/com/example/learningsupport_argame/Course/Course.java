@@ -21,6 +21,7 @@ public class Course implements Serializable {
     private int mEndWeek;
     private String mWeekStyle;
     private boolean isMonitor = true;
+    private String mLocation;
     // 用于显示所有节数列表，List<CourseTime> mTimes 用于记录此课所有节数
     private CourseTime mCourseTime;
 
@@ -38,6 +39,7 @@ public class Course implements Serializable {
         mEndWeek = course.getEndWeek();
         mWeekStyle = course.getWeekStyle();
         isMonitor = course.isMonitor();
+        mLocation = course.getLocation();
     }
 
     public Course(int userId, String name, String classroom, List<CourseTime> courseTimes, String teacher, int startWeek, int endWeek, String weekStyle) {
@@ -60,6 +62,7 @@ public class Course implements Serializable {
         mEndWeek = course.getEndWeek();
         mWeekStyle = course.getWeekStyle();
         isMonitor = course.isMonitor();
+        mLocation = course.getLocation();
     }
 
     public int getId() {
@@ -149,5 +152,13 @@ public class Course implements Serializable {
 
     public void setCourseTime(CourseTime courseTime) {
         mCourseTime = courseTime;
+    }
+
+    public String getLocation() {
+        return mLocation;
+    }
+
+    public void setLocation(String location) {
+        mLocation = location;
     }
 }

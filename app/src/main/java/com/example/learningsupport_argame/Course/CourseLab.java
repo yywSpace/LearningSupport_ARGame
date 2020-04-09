@@ -29,6 +29,7 @@ public class CourseLab {
                 course.setEndWeek(resultSet.getInt("end_week"));
                 course.setWeekStyle(resultSet.getString("week_style"));
                 course.setMonitor(resultSet.getBoolean("is_monitor"));
+                course.setLocation(resultSet.getString("location"));
                 String times = resultSet.getString("times");
                 Log.d(TAG, "times: " + times);
                 String[] timesArray = times.substring(1, times.length() - 1).split(",");
@@ -99,8 +100,8 @@ public class CourseLab {
 
     public static void insertCourse(Course course) {
         DbUtils.update(null,
-                "INSERT INTO course (`user_id`,`name`, `classroom`, `times`, `teacher`, `start_week`, `end_week`, `week_style`, `is_monitor`)"
-                        + " VALUES (?,?,?,?,?,?,?,?,?);",
+                "INSERT INTO course (`user_id`,`name`, `classroom`, `times`, `teacher`, `start_week`, `end_week`, `week_style`, `is_monitor`,`location`)"
+                        + " VALUES (?,?,?,?,?,?,?,?,?,?);",
                 course.getUserId(),
                 course.getName(),
                 course.getClassroom(),
@@ -109,11 +110,12 @@ public class CourseLab {
                 course.getStartWeek(),
                 course.getEndWeek(),
                 course.getWeekStyle(),
-                course.isMonitor());
+                course.isMonitor(),
+                course.getLocation());
     }
 
     public static void updateCourse(Course course) {
-        String sql = "update course set name = ?,classroom = ?,times= ?,teacher= ?,start_week= ?,end_week= ?,week_style= ?,is_monitor= ? " +
+        String sql = "update course set name = ?,classroom = ?,times= ?,teacher= ?,start_week= ?,end_week= ?,week_style= ?,is_monitor= ?, location = ? " +
                 "where id = ?";
         DbUtils.update(null,
                 sql,
@@ -125,6 +127,7 @@ public class CourseLab {
                 course.getEndWeek(),
                 course.getWeekStyle(),
                 course.isMonitor(),
+                course.getLocation(),
                 course.getId());
     }
 

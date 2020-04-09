@@ -47,6 +47,10 @@ public class MonitorTaskStatusService extends Service {
     private Intent mMonitorIntent;
     // 假设一次只能有一个任务开始
     public static boolean alreadyBegan = false;
+    private List<Task> mCourseTask = new ArrayList<>();
+    private List<Task> mMonitoredTask = new ArrayList<>();
+    private String[] weekArray = {"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public void onCreate() {
@@ -55,6 +59,73 @@ public class MonitorTaskStatusService extends Service {
             while (UserLab.getCurrentUser() == null) ;
             // 或如所接受的任务列表
             TaskLab.getAcceptedTask(UserLab.getCurrentUser().getId() + "");
+            // 获取今天的年月日
+            String today = df.format(new Date());
+
+            // 获取已经加入task数据库的course
+            boolean hasInsertCourseTask = false;
+            List<Task> oldCourseTask = TaskLab.getCourseTask();
+            for (Task task : oldCourseTask) {
+                // 如果CorseTask中包含今天日期，则已经插入过
+                if (task.getTaskCreateTime().contains(today)) {
+                    hasInsertCourseTask = true;
+                    break;
+                }
+            }
+            // 如果已经插入过，直接返回
+            if (hasInsertCourseTask) {
+                return;
+            }
+            // 获取课程列表,并转换为任务
+            CourseLab.getCourseSetting();
+            int currentWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+            int schoolWeek = getCurrentWeek();
+            CourseLab.getAllCourse(UserLab.getCurrentUser().getId());
+            Log.d(TAG, "size: " + CourseLab.sCourseList.size());
+            Log.d(TAG, "currentWeek: " + currentWeek);
+            Log.d(TAG, "schoolWeek: " + schoolWeek);
+
+            CourseLab.sCourseList.stream()
+                    .filter(course ->
+                            course.getStartWeek() <= schoolWeek && course.getEndWeek() >= schoolWeek)
+                    .forEach(course -> {
+                        for (CourseTime ct : course.getTimes()) {
+                            if (course.isMonitor()) {
+                                if (ct.getWeek().equals(weekArray[currentWeek])) {
+                                    Task task = new Task();
+                                    task.setTaskName(course.getName());
+                                    task.setTaskType("课程");
+                                    task.setAccomplishTaskLocation(course.getLocation());
+                                    task.setTaskStatus("未开始");
+                                    task.setUserId(course.getUserId());
+                                    task.setTaskContent(String.format("教师：%s \n教室：%s", course.getTeacher(),
+                                            course.getClassroom()));
+                                    String startHour = CourseSetting.ALL_COURSE_START_TIME.get(ct.getStartTime());
+                                    String endHour = CourseSetting.ALL_COURSE_START_TIME.get(ct.getEndTime()).split(":")[0] + ":" + CourseSetting.COURSE_TIME_SPAN;
+
+                                    String startTime = today + " " + startHour;
+                                    String endTime = today + " " + endHour;
+                                    task.setTaskCreateTime(startTime);
+                                    task.setTaskStartAt(startTime);
+                                    task.setTaskEndIn(endTime);
+                                    Log.d(TAG, "startTime: " + startTime);
+                                    Log.d(TAG, "endTime: " + endTime);
+                                    TaskLab.insertTask(task);
+                                    // 将构造的CourseTask加入Task数据库并接受
+                                    TaskLab.acceptTask(task);
+                                }
+                            }
+                        }
+                    });
+
+            // 此处获取task_id，防止第一次加入是id为空导致的错误
+            oldCourseTask = TaskLab.getCourseTask();
+            for (Task task : oldCourseTask) {
+                // 如果CorseTask中包含今天日期，则已经插入过
+                if (task.getTaskCreateTime().contains(today)) {
+                    mCourseTask.add(task);
+                }
+            }
         }).start();
         mTaskStatusThread = new Thread(() -> {
             Thread currentThread = Thread.currentThread();
@@ -62,6 +133,9 @@ public class MonitorTaskStatusService extends Service {
                 if (TaskLab.mAcceptedTaskList == null) {
                     continue;
                 }
+                mMonitoredTask.clear();
+                mMonitoredTask.addAll(TaskLab.mAcceptedTaskList);
+                mMonitoredTask.addAll(mCourseTask);
                 // 10秒检测一次, 减轻开销
                 try {
                     Thread.sleep(10000);
@@ -69,9 +143,9 @@ public class MonitorTaskStatusService extends Service {
                     e.printStackTrace();
                 }
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                for (int i = 0; i < TaskLab.mAcceptedTaskList.size(); i++) {
+                for (int i = 0; i < mMonitoredTask.size(); i++) {
                     boolean isTaskSuccess;
-                    Task task = TaskLab.mAcceptedTaskList.get(i);
+                    Task task = mMonitoredTask.get(i);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -92,7 +166,7 @@ public class MonitorTaskStatusService extends Service {
                             if (monitorInfo == null) {
                                 // 查询本地是否存有此任务监督信息
                                 SharedPreferences infoPref = getSharedPreferences(MonitorInfo.MONITOR_INFO_PREFS_NAME, MODE_PRIVATE);
-                                int task_id = infoPref.getInt(MonitorInfo.MONITOR_TASK_ID, 0);
+                                int task_id = infoPref.getInt(MonitorInfo.MONITOR_TASK_ID, -1);
                                 if (task_id == task.getTaskId()) {
                                     monitorInfo = new MonitorInfo();
                                     monitorInfo.setTaskBeginTime(task.getTaskStartAt());
@@ -163,7 +237,8 @@ public class MonitorTaskStatusService extends Service {
                                 createNotification(task.getTaskId(),
                                         "任务成功", "任务" + task.getTaskName() + "执行成功，点击查看详细信息", monitorInfo);
                             }
-                            TaskLab.mAcceptedTaskList.remove(task);
+                            TaskLab.mAcceptedTaskList.removeIf(task1 -> task1.getTaskName().equals(task.getTaskName()));
+                            mCourseTask.removeIf(task1 -> task1.getTaskName().equals(task.getTaskName()));
                         }
 
                         // 如果begin--now--end(now在begin之后end之前)，任务开始
@@ -258,4 +333,38 @@ public class MonitorTaskStatusService extends Service {
         mNotificationManager.notify(notificationId, builder.build());
     }
 
+    int getCurrentWeek() {
+        String schoolOpenDate = CourseSetting.SCHOOL_OPEN_DATE;
+        if (schoolOpenDate == null) {
+            return -1;
+        } else {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            Date schoolOpensDate = null;
+            try {
+                schoolOpensDate = dateFormat.parse(schoolOpenDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            Calendar currentDate = Calendar.getInstance();
+            long currentTime = currentDate.getTime().getTime();
+            long schoolOpensTime = schoolOpensDate.getTime();
+
+            int currentWeek = currentDate.get(Calendar.DAY_OF_WEEK);
+
+            int num = (currentWeek == 1 ? 7 : currentWeek - 1);
+            long time = currentTime - schoolOpensTime;
+            int day = (int) (time / 1000 / 60 / 60 / 24);
+            if (time < 0)
+                return -1; // 假期
+            else {
+                int k = (day - (7 - num + 1));
+                if (k >= 1) {
+                    return ((k / 7) + 2);
+                } else {
+                    return 1;
+                }
+            }
+        }
+    }
 }

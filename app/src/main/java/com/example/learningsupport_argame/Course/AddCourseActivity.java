@@ -33,7 +33,9 @@ import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.example.learningsupport_argame.Course.list.CourseListActivity;
 import com.example.learningsupport_argame.Course.PopupWindow.PromptAdapter;
+import com.example.learningsupport_argame.Navi.Activity.SelectLocationPopWindow;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.google.gson.Gson;
 
@@ -60,6 +62,7 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
     private TextView mCourseTimeTV;
     private EditText mCourseTeacherEditText;
     private TextView mCourseWeekStyleTV;
+    private TextView mCourseLocationTV;
     private RadioGroup mWeekStyleRadioGroup;
     private RadioButton mWeekStyleRadioSingle;
     private RadioButton mWeekStyleRadioBiweekly;
@@ -75,7 +78,7 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
 
     String edittext_zhou;
 
-    private String mCourseName, mClassroom, mCourseTeacher, mCourseWeekStyle;
+    private String mCourseName, mClassroom, mCourseTeacher, mCourseWeekStyle, mCourseFullAddress;
     int mCourseStartWeek, mCourseEndWeek;
     List<CourseTime> mCourseTimeList = new ArrayList<>();
     private Course mCourse;
@@ -118,6 +121,7 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
     }
 
     void initView() {
+        mCourseLocationTV = findViewById(R.id.course_location_text_view);
         mCourseAddSubmit = findViewById(R.id.course_add_commit);
         mCourseAddReturn = findViewById(R.id.course_add_return);
         mCourseAddNextBtn = findViewById(R.id.course_add_next);
@@ -143,7 +147,9 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
             mCourseStartWeek = mCourse.getStartWeek();
             mCourseEndWeek = mCourse.getEndWeek();
             mCourseWeekStyle = mCourse.getWeekStyle();
-
+            mCourseFullAddress = mCourse.getLocation();
+            if (mCourseFullAddress != null)
+                mCourseLocationTV.setText(mCourseFullAddress.split(",")[0]);
             mCourseNameEditText.setText(mCourse.getName());
             mClassroomEditText.setText(mCourse.getClassroom());
             mCourseTeacherEditText.setText(mCourse.getTeacher());
@@ -184,11 +190,23 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
 
     void initEvent() {
         mCourseAddReturn.setOnClickListener(v -> finish());
-
+        mCourseLocationTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SelectLocationPopWindow slpw = new SelectLocationPopWindow(AddCourseActivity.this);
+                slpw.setOnMarkerSet((address, latLng) -> {
+                    mCourseLocationTV.setText(address);
+                    mCourseFullAddress = String.format("%s,%f,%f", address, latLng.latitude, latLng.longitude);
+                    Toast.makeText(AddCourseActivity.this, address, Toast.LENGTH_SHORT).show();
+                });
+                slpw.showMapDialog();
+            }
+        });
         mCourseAddSubmit.setOnClickListener(v -> {
             if (isInfoCompleted()) {
                 Course currentCourse = new Course(UserLab.getCurrentUser().getId(), mCourseName, mClassroom,
                         mCourseTimeList, mCourseTeacher, mCourseStartWeek, mCourseEndWeek, mCourseWeekStyle);
+                currentCourse.setLocation(mCourseFullAddress);
                 currentCourse.setMonitor(mMonitorCheckBox.isChecked());
                 new Thread(() -> {
                     List<Course> allCourses = CourseLab.getAllCourse(currentCourse.getUserId());
@@ -576,12 +594,11 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
                     str2 = opt2tx.substring(2, 3);
                 }
 
-
-                if (edittext_zhou == "(单周)")
+                if (edittext_zhou.equals("(单周)"))
                     mCourseWeekStyle = "单周";
-                else if (edittext_zhou == "(双周)")
+                else if (edittext_zhou.equals("(双周)"))
                     mCourseWeekStyle = "双周";
-                else if (edittext_zhou == "")
+                else if (edittext_zhou.equals(""))
                     mCourseWeekStyle = "单双周";
                 String str_zhou = str1 + "－" + str2 + " " + mCourseWeekStyle;
 
@@ -680,6 +697,10 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
         // 找到列表中未赋值的TextView
         Optional<CourseTime> timeOptional = mCourseTimeList.stream().filter(courseTime -> courseTime.getTimeTextView().getText().toString().equals(""))
                 .findFirst();
+        if (mCourseLocationTV.getText().equals("点击选点")) {
+            Toast.makeText(AddCourseActivity.this, "请选择地点", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         // 如果有未赋值的其他课程时间或者有信息未填写则返回false
         if (timeOptional.isPresent() || mCourseName.equals("") || mClassroom.equals("") ||
                 mCourseWeekStyleTV.getText().toString().equals("") || mCourseTeacher.equals("")) {

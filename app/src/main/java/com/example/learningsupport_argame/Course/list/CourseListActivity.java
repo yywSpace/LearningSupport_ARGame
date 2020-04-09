@@ -30,7 +30,6 @@ import com.example.learningsupport_argame.Course.CourseTime;
 import com.example.learningsupport_argame.Course.Course;
 import com.example.learningsupport_argame.Course.PopupWindow.PromptAdapter;
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.text.DateFormat;
@@ -40,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 // TODO: 20-4-9 适配监督 
