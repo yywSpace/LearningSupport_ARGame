@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="课程">
+        <menu>
+            <group>
+                <item
+                    android:id="@+id/course_list_all_course"
+                    android:title="所有课程" />
+                <item
+                    android:id="@+id/course_list_valid_course"
+                    android:title="有效课程" />
+                <item
+                    android:id="@+id/course_list_monitored_course"
+                    android:title="监督课程" />
+                <item
+                    android:id="@+id/course_list_today_course"
+                    android:title="当前课程" />
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/course_list_clear_all"
+        android:title="删除全部" />
+
+</menu>

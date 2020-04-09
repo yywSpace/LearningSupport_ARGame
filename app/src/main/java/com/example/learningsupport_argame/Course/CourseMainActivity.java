@@ -29,14 +29,13 @@ import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 
-import com.example.learningsupport_argame.Course.ListView.ListViewActivity;
+import com.example.learningsupport_argame.Course.list.CourseListActivity;
 import com.example.learningsupport_argame.Course.PopupWindow.PopupMenuActionItem;
 import com.example.learningsupport_argame.Course.PopupWindow.PopupMenuAdapter;
 import com.example.learningsupport_argame.Course.PopupWindow.PromptAdapter;
 import com.example.learningsupport_argame.MonitorModel.MonitorActivity;
 import com.example.learningsupport_argame.NavigationController;
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.text.DateFormat;
@@ -52,7 +51,7 @@ import java.util.Random;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 public class CourseMainActivity extends AppCompatActivity {
-    public static final String CURRENT_EDIT_COURSE = "curent_edit_course";
+    public static final String CURRENT_EDIT_COURSE_NAME = "curent_edit_course";
     private final static String TAG = "CourseMainActivity";
     public static final int COURSE_TIME_REQUEST_CODE = 100;
     public static final int COURSE_ADD_REQUEST_CODE = 101;
@@ -67,6 +66,7 @@ public class CourseMainActivity extends AppCompatActivity {
     private LinearLayout mWeekListLayout;
     private GridLayout mCourseListLayout;
     // 定义标题栏上的按钮
+    private ImageButton mNavigationButton;
     private ImageButton mMenuMoreButton;
     private ImageButton mCourseAddButton;
     private TextView mCurrentWeekTV;
@@ -89,7 +89,11 @@ public class CourseMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.course_table_navigation_layout);
         // 添加侧边栏
-        mNavigationController = new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.COURSE);
+        // mNavigationController = new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.COURSE);
+        // 改为返回键
+        mNavigationButton = findViewById(R.id.navigation_button);
+        mNavigationButton.setBackgroundResource(R.drawable.course_ic_return);
+        mNavigationButton.setOnClickListener(v -> finish());
 
         week_current = Integer.parseInt(getDate()[1]);
         mHandler = new Handler();
@@ -124,6 +128,12 @@ public class CourseMainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (CourseLab.sCourseList != null) {
+            initCourseTable(CourseSetting.COURSE_NUMBER);
+            setCurrentWeek();
+            clearTable();
+            initTableData(CourseLab.sCourseList);
+        }
         if (mNavigationController != null)
             mNavigationController.refresh();
     }
@@ -218,7 +228,7 @@ public class CourseMainActivity extends AppCompatActivity {
                     if (CourseLab.sCourseList.size() == 0) {
                         Toast.makeText(CourseMainActivity.this, "还未添加课程", Toast.LENGTH_SHORT).show();
                     } else {
-                        Intent intent = new Intent(CourseMainActivity.this, ListViewActivity.class);
+                        Intent intent = new Intent(CourseMainActivity.this, CourseListActivity.class);
                         intent.putExtra("flag", "CourseMainActivity");
                         startActivity(intent);
                     }
@@ -295,9 +305,13 @@ public class CourseMainActivity extends AppCompatActivity {
             int endWeek = course.getEndWeek();
             String weekStyle = course.getWeekStyle();
             String teacher = course.getTeacher();
-
+            Log.d(TAG, "initTableData: " + courseName);
             List<CourseTime> courseTimeList = course.getTimes();
             for (CourseTime courseTime : courseTimeList) {
+                if (courseTime.getWeek() == null){
+                    Log.d(TAG, "initTableData: "+course.getName());
+                    Log.d(TAG, "initTableData: "+course.getTimes());
+                }
                 String weekStr = courseTime.getWeek().trim();
                 int startTime = courseTime.getStartTime();
                 int endTime = courseTime.getEndTime();
@@ -553,10 +567,11 @@ public class CourseMainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(CourseMainActivity.this, AddCourseActivity.class);
-                courseOptional.ifPresent(course -> intent.putExtra(CURRENT_EDIT_COURSE, course));
+                courseOptional.ifPresent(course -> intent.putExtra(CURRENT_EDIT_COURSE_NAME, course.getName()));
                 startActivity(intent);
             }
         });
+
         course_classroom.setText(classroom);
         course_number.setText(weekStr + " " + start_time + "－" + end_time + "节");
         course_teacher.setText(teacher);

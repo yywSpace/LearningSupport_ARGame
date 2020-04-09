@@ -47,13 +47,15 @@ public class ClientLab {
                             .setContentTitle("接收到" + name + "发来的信息")
                             .setContentText(String.format("%s:%s", name, content))
                             .setAutoCancel(true);
-                    Intent resultIntent = new Intent(context, FriendListActivity.class);
-                    resultIntent.setAction(Intent.ACTION_MAIN);
-                    resultIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                    resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    //building the notification
-                    builder.setContentIntent(resultPendingIntent);
+                    if (!FriendListActivity.IN_CHAT_ROOM) {
+                        Intent resultIntent = new Intent(context, FriendListActivity.class);
+                        resultIntent.setAction(Intent.ACTION_MAIN);
+                        resultIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                        resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        //building the notification
+                        builder.setContentIntent(resultPendingIntent);
+                    }
                     mNotificationManager.notify(notificationId, builder.build());
                 });
             } catch (SocketException | UnknownHostException e) {

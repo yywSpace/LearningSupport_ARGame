@@ -13,6 +13,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
             android:background="@drawable/navigation_shop_icon" />
 
         <TextView

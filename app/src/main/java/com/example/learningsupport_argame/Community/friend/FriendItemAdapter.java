@@ -77,18 +77,8 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             User user = mOperationList.get(position);
 
             holder.itemView.setOnClickListener(v -> {
-                if (user.getOnlineStatus() == 0) {
-                    Toast.makeText(mContext, "当前用户不在线，请稍后重试", Toast.LENGTH_SHORT).show();
-                } else {
-                    Intent intent = new Intent(mContext, MainActivity.class);
-                    intent.putExtra("scene", "chat_room");
-                    //message:otherName,userName,modName
-                    intent.putExtra("scene_args",
-                            user.getName() + "," + UserLab.getCurrentUser().getName() + "," + user.getModName().trim());
-                    mContext.startActivity(intent);
-                    Toast.makeText(mContext, user.getName() + "," + UserLab.getCurrentUser().getName() + "," + user.getModName(), Toast.LENGTH_SHORT).show();
-                    ((Activity) mContext).finish();
-                }
+                if (mOnRecycleViewItemClick != null)
+                    mOnRecycleViewItemClick.onRecycleViewItemClick(v, user, position);
             });
             holder.itemView.setOnLongClickListener(v -> {
                 PopupMenu popupMenu = new PopupMenu(mContext, holder.itemView);
@@ -224,7 +214,7 @@ public class FriendItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public interface OnRecycleViewItemClick {
-        void onRecycleViewItemClick(View view, int position);
+        void onRecycleViewItemClick(View view, User user, int position);
     }
 
     public interface OnRecycleViewItemLongClick {

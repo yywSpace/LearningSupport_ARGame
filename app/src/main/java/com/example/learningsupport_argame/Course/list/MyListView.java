@@ -1,4 +1,4 @@
-package com.example.learningsupport_argame.Course.ListView;
+package com.example.learningsupport_argame.Course.list;
 
 import android.content.Context;
 import android.util.AttributeSet;

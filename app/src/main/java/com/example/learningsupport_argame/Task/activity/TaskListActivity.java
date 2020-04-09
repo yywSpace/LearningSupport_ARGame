@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -63,6 +64,7 @@ public class TaskListActivity extends AppCompatActivity {
     private VpAdapter mVpAdapter;
     private List<Fragment> mFragmentList;
     private ViewPager mViewPager;
+    private ImageButton mNavigationButton;
     private TextView mNavigationTitle;
     private FloatingActionButton mFloatingActionButton;
     private FloatingActionButton mFloatingActionSearchButton;
@@ -76,8 +78,18 @@ public class TaskListActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tasklist_navigation_layout);
-        // 初始化导航栏信息
-        mNavigationController = new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.TASK);
+        mNavigationButton = findViewById(R.id.navigation_button);
+        int taskType = getIntent().getIntExtra("task_list_activity_type", 1);
+        if (taskType == 1) {
+            // 初始化导航栏信息
+            mNavigationController = new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.TASK);
+        } else {
+            mNavigationButton.setBackgroundResource(R.drawable.course_ic_return);
+            mNavigationButton.setOnClickListener(v -> {
+                finish();
+            });
+        }
+
 //        mReturnButton = findViewById(R.id.navigation_button);
 //        mReturnButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -137,7 +149,7 @@ public class TaskListActivity extends AppCompatActivity {
                         mNavigationTitle.setText("执行中");
                         item.setIcon(R.drawable.task_list_icon_running_sellected);
                         mFloatingActionSearchButton.setVisibility(View.INVISIBLE);
-                         break;
+                        break;
                     case R.id.menu_task_accepted:
                         mFloatingActionSearchButton.setVisibility(View.VISIBLE);
                         mNavigationTitle.setText("已接受的任务");

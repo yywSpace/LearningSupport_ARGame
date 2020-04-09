@@ -1,5 +1,6 @@
 package com.example.learningsupport_argame.Course;
 
+import android.graphics.Paint;
 import android.util.Log;
 
 import com.example.learningsupport_argame.DbUtils;
@@ -27,6 +28,7 @@ public class CourseLab {
                 course.setStartWeek(resultSet.getInt("start_week"));
                 course.setEndWeek(resultSet.getInt("end_week"));
                 course.setWeekStyle(resultSet.getString("week_style"));
+                course.setMonitor(resultSet.getBoolean("is_monitor"));
                 String times = resultSet.getString("times");
                 Log.d(TAG, "times: " + times);
                 String[] timesArray = times.substring(1, times.length() - 1).split(",");
@@ -97,8 +99,8 @@ public class CourseLab {
 
     public static void insertCourse(Course course) {
         DbUtils.update(null,
-                "INSERT INTO course (`user_id`,`name`, `classroom`, `times`, `teacher`, `start_week`, `end_week`, `week_style`)"
-                        + " VALUES (?,?,?,?,?,?,?,?);",
+                "INSERT INTO course (`user_id`,`name`, `classroom`, `times`, `teacher`, `start_week`, `end_week`, `week_style`, `is_monitor`)"
+                        + " VALUES (?,?,?,?,?,?,?,?,?);",
                 course.getUserId(),
                 course.getName(),
                 course.getClassroom(),
@@ -106,6 +108,32 @@ public class CourseLab {
                 course.getTeacher(),
                 course.getStartWeek(),
                 course.getEndWeek(),
-                course.getWeekStyle());
+                course.getWeekStyle(),
+                course.isMonitor());
+    }
+
+    public static void updateCourse(Course course) {
+        String sql = "update course set name = ?,classroom = ?,times= ?,teacher= ?,start_week= ?,end_week= ?,week_style= ?,is_monitor= ? " +
+                "where id = ?";
+        DbUtils.update(null,
+                sql,
+                course.getName(),
+                course.getClassroom(),
+                course.getTimes().toString(),
+                course.getTeacher(),
+                course.getStartWeek(),
+                course.getEndWeek(),
+                course.getWeekStyle(),
+                course.isMonitor(),
+                course.getId());
+    }
+
+
+    public static Course getCourseByName(String name) {
+        List<Course> courses = getCourseWith("SELECT * FROM course WHERE name = ?", name);
+        if (courses.size() <= 0) {
+            return null;
+        }
+        return courses.get(0);
     }
 }

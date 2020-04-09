@@ -52,6 +52,7 @@ public class NavigationController {
                 UserLab.setCurrentUser(UserLab.getUserById(id+""));
             }
             context.runOnUiThread(() -> {
+                LoginActivity.sInitFinished = true;
                 hasInitView = true;
                 initView(view, context);
             });
@@ -102,6 +103,7 @@ public class NavigationController {
             if (item.getItemId() == R.id.navigation_menu_friend && mNavigationItem != NavigationItem.FRIEND) {
 //                FriendListDialog fld = new FriendListDialog(context, UserLab.getCurrentUser().getId() + "", null);
                 Intent intent = new Intent(context, FriendListActivity.class);
+                intent.putExtra(FriendListActivity.IN_CHAT_ROOM_LABEL, false);
                 intent.putExtra(User.CURRENT_USER_ID, String.valueOf(UserLab.getCurrentUser().getId()));
                 context.startActivity(intent);
             }

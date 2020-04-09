@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".Course.ListView.ListViewActivity">
+    tools:context=".Course.list.CourseListActivity">
 
 
     <include layout="@layout/course_listview_content" />

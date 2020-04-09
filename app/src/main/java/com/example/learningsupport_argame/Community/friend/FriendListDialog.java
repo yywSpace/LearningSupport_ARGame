@@ -71,11 +71,11 @@ public class FriendListDialog {
             mFriendList = new ArrayList<>();
 
         mItemAdapter = new FriendItemAdapter(context, mFriendList, null);
-        mItemAdapter.setOnRecycleViewItemClick((view, position) -> {
-            if (mOnRecycleViewItemClick != null) {
-                mOnRecycleViewItemClick.onRecycleViewItemClick(view, position);
-            }
-        });
+//        mItemAdapter.setOnRecycleViewItemClick((view, position) -> {
+//            if (mOnRecycleViewItemClick != null) {
+//                mOnRecycleViewItemClick.onRecycleViewItemClick(view, position);
+//            }
+//        });
         View view = LayoutInflater.from(context).inflate(R.layout.friend_list_pop_window_layout, null, false);
         mFriendsRecyclerView = view.findViewById(R.id.friend_list_recycler_view);
         mFriendsSearch = view.findViewById(R.id.friend_list_search);

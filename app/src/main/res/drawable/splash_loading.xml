@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@android:color/white" />
-    <item
-        android:drawable="@drawable/recycler_view_empty_item_ring"
-        android:width="50dp"
-        android:gravity="center">
+    <item>
+        <color android:color="#fafafa" />
     </item>
+    <item
+        android:width="50dp"
+        android:drawable="@drawable/recycler_view_empty_item_ring"
+        android:gravity="center"/>
 </layer-list>

@@ -157,7 +157,6 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         Intent intent = new Intent(this, SplashActivity.class);
-        intent.putExtra("loading_type", 1);
         startActivity(intent);
 
         new Thread(() -> {
@@ -179,6 +178,7 @@ public class LoginActivity extends AppCompatActivity {
                     // 如果当前日期比之前的日期多一天则可签到，并设置登录时间及登录次数
                     if (nowDate.getTime() - oldDate.getTime() >= 1000 * 3600 * 24) {
                         user.setLastLoginTime(df.format(nowDate));
+                        user.setHp(User.BASIC_HP + user.getLevel());
                         user.setLoginCount(user.getLoginCount() + 1);
                         UserLab.updateUser(user);
                     }

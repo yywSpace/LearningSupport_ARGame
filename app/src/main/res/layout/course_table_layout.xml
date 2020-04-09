@@ -45,7 +45,7 @@
                     android:layout_width="26dp"
                     android:layout_height="26dp"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/course_menu_more_button"
+                    android:layout_toStartOf="@+id/course_menu_more_button"
                     android:background="@drawable/course_menu_plus" />
                 <ImageButton
                     android:id="@+id/course_menu_more_button"

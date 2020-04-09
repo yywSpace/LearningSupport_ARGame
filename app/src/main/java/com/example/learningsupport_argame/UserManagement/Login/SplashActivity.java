@@ -12,19 +12,17 @@ import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 
 public class SplashActivity extends AppCompatActivity {
     private String TAG = "SplashActivity";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler_view_loading_item);
-        int type = getIntent().getIntExtra("loading_type", -1);
         new Thread(() -> {
             while (true) {
-                Log.d(TAG, "onCreate: " + LoginActivity.sInitFinished);
                 if (LoginActivity.sInitFinished) {
-
-                    if (type == 1) {
-                        startActivity(new Intent(this, TaskListActivity.class));
-                    }
+                    Intent intent = new Intent(this, TaskListActivity.class);
+                    intent.putExtra("task_list_activity_type", 1);
+                    startActivity(intent);
                     LoginActivity.sInitFinished = false;
                     finish();
                     break;

@@ -10,6 +10,7 @@
 
         <ImageView
             android:id="@+id/bag_item_image"
+            android:layout_marginStart="10dp"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerVertical="true"

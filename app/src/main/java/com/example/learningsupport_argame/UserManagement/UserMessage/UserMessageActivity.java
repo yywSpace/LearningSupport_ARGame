@@ -12,6 +12,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.Layout;
 import android.util.Log;
@@ -52,11 +54,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 public class UserMessageActivity extends Activity {
@@ -85,7 +92,7 @@ public class UserMessageActivity extends Activity {
                 Arrays.asList(
                         new MessageItem("头像", BitmapFactory.decodeResource(getResources(), R.drawable.user_management_avatar), ItemType.AVATAR_ITEM),
                         new MessageItem("等级", "等级", ItemType.NORMAL_ITEM),
-                        new MessageItem("血量", "血量", ItemType.NORMAL_ITEM),
+                        new MessageItem("血量", "血量", ItemType.BLOOD_ITEM),
                         new MessageItem("经验", "经验", ItemType.NORMAL_ITEM),
                         new MessageItem("用户名", "用户名", ItemType.NORMAL_ITEM),
                         new MessageItem("标签", "标签", ItemType.NORMAL_ITEM),
@@ -148,6 +155,14 @@ public class UserMessageActivity extends Activity {
             if (viewType == ItemType.LOGOUT_ITEM.ordinal()) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_management_message_logout_item, parent, false);
                 return new LogoutItemViewHolder(view);
+            }
+            if (viewType == ItemType.BLOOD_ITEM.ordinal()) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_management_message_blood_item, parent, false);
+                try {
+                    return new BloodItemViewHolder(view);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
             return null;
         }
@@ -282,13 +297,54 @@ public class UserMessageActivity extends Activity {
             }
         }
 
+        public class BloodItemViewHolder extends RecyclerView.ViewHolder {
+            public TextView label;
+            public TextView content;
+            public TextView bloodResetTime;
+
+            public BloodItemViewHolder(@NonNull View itemView) throws ParseException {
+                super(itemView);
+                label = itemView.findViewById(R.id.user_management_message_label);
+                bloodResetTime = itemView.findViewById(R.id.user_management_blood_reset_time);
+                content = itemView.findViewById(R.id.user_management_message_content);
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                Date nowDate = new Date();
+                User user = UserLab.getCurrentUser();
+                Date lastLogin = df.parse(user.getLastLoginTime());
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(lastLogin);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                Date resetTime = calendar.getTime();
+                new Timer().schedule(new TimerTask() {
+                    long resetDuration = (resetTime.getTime() - nowDate.getTime()) / 1000;
+
+                    @Override
+                    public void run() {
+                        resetDuration--;
+                        long hour = (resetDuration / 60 / 60) % 60;
+                        long minute = (resetDuration / 60) % 60;
+                        long second = resetDuration % 60;
+                        bloodResetTime.post(() -> bloodResetTime.setText(String.format("%02d:%02d:%02d", hour, minute, second)));
+                        if (resetDuration <= 0) {
+                            new Thread(() -> {
+                                user.setHp(User.BASIC_HP + user.getLevel());
+                                user.setLastLoginTime(df.format(nowDate));
+                                UserLab.updateUser(user);
+                            }).start();
+                            cancel();
+                        }
+                    }
+                }, 0,1000);
+            }
+        }
     }
 
     public enum ItemType {
         IMAGE_ITEM,
         NORMAL_ITEM,
         AVATAR_ITEM,
-        LOGOUT_ITEM
+        LOGOUT_ITEM,
+        BLOOD_ITEM
     }
 
     static class MyItemDecoration extends RecyclerView.ItemDecoration {

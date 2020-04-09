@@ -23,10 +23,10 @@
             <group>
                 <item
                     android:id="@+id/natural_order"
-                    android:title="正序" />
+                    android:title="数量正序" />
                 <item
                     android:id="@+id/reverse_order"
-                    android:title="倒序" />
+                    android:title="数量倒序" />
             </group>
         </menu>
     </item>

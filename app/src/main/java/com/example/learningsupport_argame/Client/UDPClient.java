@@ -93,11 +93,10 @@ public class UDPClient {
                     DatagramPacket packet = new DatagramPacket(data, data.length);
                     socket.receive(packet);
                     String message = new String(data, 0, packet.getLength());
-                    Log.d(TAG, "receive: " + message);
                     MessageData messageData = new Gson().fromJson(message, MessageData.class);
                     if (messageData == null)
                         continue;
-                    Log.d(TAG, "receive: " + message);
+                    //Log.d(TAG, "receive: " + message);
 
                     switch (messageData.MessageType) {
                         case 6://MessageList
@@ -114,6 +113,7 @@ public class UDPClient {
                         case 4://UserList
                             String userListStr = messageData.Message;
                             mOnlineUserList = userListStr;
+                            Log.d(TAG, "receive: " + mOnlineUserList);
                             if (mOnReceiveUserList != null)
                                 mOnReceiveUserList.onReceiveUserList(userListStr);
                             break;
@@ -132,8 +132,6 @@ public class UDPClient {
                             }
                             break;
                     }
-
-
                 }
             } catch (IOException e) {
                 e.printStackTrace();

@@ -33,13 +33,11 @@ public class MainActivity extends UnityPlayerOperationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FriendListActivity.IN_CHAT_ROOM = true;
         SendMessage("Canvas", "LoadIpEndPoint", ClientLab.sIp + "," + "3002");
         mOnUnityExit = new OnUnityExit() {
             @Override
             public void onUnityExit() {
-//                Intent intent = new Intent(MainActivity.this, SplashActivity.class);
-//                intent.putExtra("loading_type", 2);
-//                startActivity(intent);
                 Log.d(TAG, "onDestroy: LocationService" + LocationService.mLocationServiceIntent);
                 Log.d(TAG, "onDestroy: MonitorTaskStatusService" + MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
 //                startActivity(new Intent(MainActivity.this, TaskListActivity.class));
@@ -53,13 +51,15 @@ public class MainActivity extends UnityPlayerOperationActivity {
 
     public void startFriendActivity() {
         Toast.makeText(this, "startFriendActivity", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, FriendListActivity.class));
+        Intent intent = new Intent(this, FriendListActivity.class);
+        intent.putExtra(FriendListActivity.IN_CHAT_ROOM_LABEL, true);
+        startActivity(intent);
     }
 
     public void startTaskActivity() {
         Intent intent = new Intent(this, TaskListActivity.class);
-        intent.putExtra(User.CURRENT_USER_ID, UserLab.getCurrentUser().getId() + "");
-        startActivityForResult(intent, TASK_ACTIVITY);
+        intent.putExtra("task_list_activity_type", 2);
+        startActivity(intent);
         Toast.makeText(this, "startTaskActivity", Toast.LENGTH_SHORT).show();
     }
 

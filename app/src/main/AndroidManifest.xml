@@ -82,7 +82,9 @@
         <activity android:name=".Course.CourseMainActivity" />
         <activity android:name=".Course.AddCourseActivity" />
         <activity android:name=".Course.CourseTimeActivity" />
-        <activity android:name=".Course.ListView.ListViewActivity" />
+        <activity
+            android:name=".Course.list.CourseListActivity"
+            android:parentActivityName=".Course.CourseMainActivity" />
 
         <activity android:name=".Navi.Activity.YoudaoActivity" />
         <activity android:name=".Navi.Activity.MapActivity" />

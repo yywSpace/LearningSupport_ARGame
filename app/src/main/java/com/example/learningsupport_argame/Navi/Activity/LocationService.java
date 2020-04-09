@@ -67,10 +67,10 @@ public class LocationService extends Service {
             if (UserLab.getCurrentUser() == null) {
                 SharedPreferences userInfo = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
                 int id = userInfo.getInt("id", 0);
-              UserLab.setCurrentUser(UserLab.getUserById(id+""));
+                UserLab.setCurrentUser(UserLab.getUserById(id + ""));
             }
             Log.d(TAG, "onCreate: " + UserLab.getCurrentUser());
-            mUDPClient = ClientLab.getInstance(this,ClientLab.sPort, ClientLab.sIp, UserLab.getCurrentUser().getName());
+            mUDPClient = ClientLab.getInstance(this, ClientLab.sPort, ClientLab.sIp, UserLab.getCurrentUser().getName());
 
             mUDPClient.Login();
 
@@ -91,6 +91,7 @@ public class LocationService extends Service {
                         // 发送当前信息
                         mUDPClient.Location((float) bdLocation.getLatitude(), (float) bdLocation.getLongitude());
                         mUDPClient.UserList();
+                        Log.d(TAG, "onReceiveLocation: " + bdLocation);
                         // 检测是否到达目标点
 
                     }).start();

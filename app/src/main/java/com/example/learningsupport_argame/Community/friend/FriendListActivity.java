@@ -1,12 +1,16 @@
 package com.example.learningsupport_argame.Community.friend;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.learningsupport_argame.Client.ClientLab;
 import com.example.learningsupport_argame.Client.UDPClient;
 import com.example.learningsupport_argame.Community.FriendLab;
+import com.example.learningsupport_argame.MainActivity;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
@@ -30,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 
 public class FriendListActivity extends AppCompatActivity {
+    public static final String IN_CHAT_ROOM_LABEL = "in chat room";
+    public static Boolean IN_CHAT_ROOM = false;
     private static final String TAG = "FriendListActivity";
     private String mCurrentUserID;
     private ImageButton mSearchButton;
@@ -42,13 +49,33 @@ public class FriendListActivity extends AppCompatActivity {
     private RecyclerView mFriendsRecyclerView;
     private boolean isSearchList;
     private UDPClient mUDPClient;
-
+    private Boolean inChatRoom;
+    private FriendItemAdapter.OnRecycleViewItemClick mOnRecycleViewItemClick;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.friend_list_activity_layout);
-        Log.d(TAG, "onCreate: ");
+        inChatRoom = getIntent().getBooleanExtra(FriendListActivity.IN_CHAT_ROOM_LABEL, false);
+        mOnRecycleViewItemClick = (view, user, position) -> {
+            Log.d(TAG, "mOnRecycleViewItemClick: " + inChatRoom);
+            if (inChatRoom) {
+                Toast.makeText(FriendListActivity.this, "您已经在聊天室中", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (user.getOnlineStatus() == 0) {
+                Toast.makeText(FriendListActivity.this, "当前用户不在线，请稍后重试", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(FriendListActivity.this, MainActivity.class);
+                intent.putExtra("scene", "chat_room");
+                //message:otherName,userName,modName
+                intent.putExtra("scene_args",
+                        user.getName() + "," + UserLab.getCurrentUser().getName() + "," + user.getModName().trim());
+                startActivity(intent);
+                Toast.makeText(FriendListActivity.this, user.getName() + "," + UserLab.getCurrentUser().getName() + "," + user.getModName(), Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        };
         if (UserLab.getCurrentUser() != null) {
             mCurrentUserID = String.valueOf(UserLab.getCurrentUser().getId());
         } else {
@@ -73,6 +100,7 @@ public class FriendListActivity extends AppCompatActivity {
                 isSearchList = false;
                 mSearchButton.setBackgroundResource(R.drawable.sousuo);
                 mItemAdapter = new FriendItemAdapter(this, mFriendList, null);
+                mItemAdapter.setOnRecycleViewItemClick(mOnRecycleViewItemClick);
                 mFriendsRecyclerView.setAdapter(mItemAdapter);
             } else {
                 String name = mSearchBox.getText().toString();
@@ -83,6 +111,7 @@ public class FriendListActivity extends AppCompatActivity {
                     Log.d(TAG, "onCreate: " + mSearchList.size());
                     runOnUiThread(() -> {
                         mItemAdapter = new FriendItemAdapter(this, mFriendList, mSearchList);
+                        mItemAdapter.setOnRecycleViewItemClick(mOnRecycleViewItemClick);
                         mFriendsRecyclerView.setAdapter(mItemAdapter);
                         mSearchButton.setBackgroundResource(R.drawable.friend_list_pop_window_cross);
                     });
@@ -90,6 +119,7 @@ public class FriendListActivity extends AppCompatActivity {
             }
         });
         mItemAdapter = new FriendItemAdapter(this, mFriendList, null);
+        mItemAdapter.setOnRecycleViewItemClick(mOnRecycleViewItemClick);
         mFriendsRecyclerView = findViewById(R.id.friend_list_recycler_view);
         mRefreshLayout = findViewById(R.id.friend_list_refresh_layout);
         mSearchBox = findViewById(R.id.friend_search_box);
