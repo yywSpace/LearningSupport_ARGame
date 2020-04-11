@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.learningsupport_argame.R;
@@ -107,10 +109,14 @@ public class ClubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
 
             if (club.getCoverBitmap() != null) {
-                mClubImage.setImageBitmap(club.getCoverBitmap());
+                RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), club.getCoverBitmap());
+                drawable.setCornerRadius(25);
+                mClubImage.setImageDrawable(drawable);
             } else {
                 Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.img_avatar_04);
-                mClubImage.setImageBitmap(bitmap);
+                RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), bitmap);
+                drawable.setCornerRadius(25);
+                mClubImage.setImageDrawable(drawable);
             }
             if (mOnSettingClickListener != null)
                 mClubSetting.setOnClickListener(v ->

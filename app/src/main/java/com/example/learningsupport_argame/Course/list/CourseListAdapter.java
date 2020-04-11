@@ -1,6 +1,7 @@
 package com.example.learningsupport_argame.Course.list;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,15 @@ import com.example.learningsupport_argame.Course.CourseLab;
 import com.example.learningsupport_argame.Course.CourseTime;
 import com.example.learningsupport_argame.R;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class CourseListAdapter extends BaseAdapter {
     private List<Course> mCourseList;
     private Context mContext;
+    private int[] background = new int[]{R.drawable.course_course1, R.drawable.course_course2,
+            R.drawable.course_course3, R.drawable.course_course4, R.drawable.course_course5, R.drawable.course_course6,
+            R.drawable.course_course7};
 
     public CourseListAdapter(List<Course> data, Context mContext) {
         this.mCourseList = data;
@@ -66,6 +71,32 @@ public class CourseListAdapter extends BaseAdapter {
         CourseTime courseTime = course.getCourseTime();
         holder.courseTime.setText(courseTime.getWeek() + " " + courseTime.getStartTime() + "-" + courseTime.getEndTime() + "节");
         holder.courseClassroom.setText(course.getClassroom());
+        int weekNum = 1;
+        switch (courseTime.getWeek()) {
+            case "周一":
+                weekNum = 1;
+                break;
+            case "周二":
+                weekNum = 2;
+                break;
+            case "周三":
+                weekNum = 3;
+                break;
+            case "周四":
+                weekNum = 4;
+                break;
+            case "周五":
+                weekNum = 5;
+                break;
+            case "周六":
+                weekNum = 6;
+                break;
+            case "周日":
+                weekNum = 7;
+                break;
+        }
+        contentView.setBackgroundResource(background[weekNum - 1]);
+
         if (course.isMonitor())
             holder.courseMonitorIcon.setVisibility(View.VISIBLE);
         else

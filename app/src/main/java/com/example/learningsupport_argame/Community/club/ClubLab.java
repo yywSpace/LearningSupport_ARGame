@@ -13,6 +13,8 @@ import java.util.List;
 public class ClubLab {
     private static String TAG = "ClubLab";
     public static List<Club> sCreatedClubList;
+    public static List<Club> sParticipateClubList;
+    public static List<Club> sOtherClubList;
 
     public static List<Club> getCreatedClubList() {
         sCreatedClubList = getClubWith("" +
@@ -22,10 +24,11 @@ public class ClubLab {
     }
 
     public static List<Club> getOtherClubs() {
-        return getClubWith("select c.*, (select count(*) from club_members where club_id = c.id) as current_num " +
+        sOtherClubList = getClubWith("select c.*, (select count(*) from club_members where club_id = c.id) as current_num " +
                         "from club c where club_manager != ? and id not in (select club_id from club_members where user_id = ?)",
                 UserLab.getCurrentUser().getId(),
                 UserLab.getCurrentUser().getId());
+        return sOtherClubList;
     }
 
     private static List<Club> getClubWith(String sql, Object... args) {
@@ -74,6 +77,9 @@ public class ClubLab {
 
     public static void delete(Club club) {
         DbUtils.update(null, "" +
+                        "delete from club_members where club_id = ?",
+                club.getId());
+        DbUtils.update(null, "" +
                         "delete from club where id = ?",
                 club.getId());
     }
@@ -83,6 +89,17 @@ public class ClubLab {
                 "select c.*, (select count(*) from club_members where club_id = c.id) as current_num " +
                 "   from club c where id = ?;";
         List<Club> clubs = getClubWith(sql, id);
+        if (clubs.size() <= 0) {
+            return null;
+        } else {
+            return clubs.get(0);
+        }
+    }
+    public static Club getClubByName(String name) {
+        String sql = "" +
+                "select c.*, (select count(*) from club_members where club_id = c.id) as current_num " +
+                "   from club c where club_name = ?;";
+        List<Club> clubs = getClubWith(sql, name);
         if (clubs.size() <= 0) {
             return null;
         } else {
@@ -106,10 +123,11 @@ public class ClubLab {
     }
 
     public static List<Club> getParticipateClubList() {
-        return getClubWith("" +
+        sParticipateClubList = getClubWith("" +
                         "select c.*, (select count(*) from club_members where club_id = c.id) as current_num " +
                         "   from club c where id in (select club_id from club_members where user_id = ?)",
                 UserLab.getCurrentUser().getId());
+        return sParticipateClubList;
     }
 
     public static List<User> getClubMemberList(int club_id) {

@@ -3,6 +3,7 @@ package com.example.learningsupport_argame.FeedbackModel;
 import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,8 +75,8 @@ public class LineChartFragment extends Fragment {
         description.setEnabled(false);
         daySetting();
 
-        new Thread(()->{
-            while(UserLab.getCurrentUser() == null);
+        new Thread(() -> {
+            while (UserLab.getCurrentUser() == null) ;
             MonitorInfoLab.getAllMonitorInfo(UserLab.getCurrentUser().getId());
             mMonitorInfosDay = mMonitorInfoLab.getMonitorInfoListDay(today);
             mMonitorInfosWeek = mMonitorInfoLab.getMonitorInfoListWeek(today);
@@ -165,6 +166,7 @@ public class LineChartFragment extends Fragment {
         }
         for (int j = 0; j < monitorInfos.size(); j++) {
             MonitorInfo monitorInfo = monitorInfos.get(j);
+            Log.d(TAG, "setDayData: " + monitorInfo.getId());
             String beginTime = monitorInfo.getTaskBeginTime().substring(11);
             String endTime = monitorInfo.getTaskEndTime().substring(11);
             int hourBegin = Integer.parseInt(beginTime.split(":")[0]);

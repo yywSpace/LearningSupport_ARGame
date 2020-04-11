@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
@@ -35,7 +35,6 @@ import com.example.learningsupport_argame.Course.list.CourseListActivity;
 import com.example.learningsupport_argame.Course.PopupWindow.PromptAdapter;
 import com.example.learningsupport_argame.Navi.Activity.SelectLocationPopWindow;
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.google.gson.Gson;
 
@@ -126,7 +125,7 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
         mCourseAddReturn = findViewById(R.id.course_add_return);
         mCourseAddNextBtn = findViewById(R.id.course_add_next);
         if (mCourse != null) {
-            mCourseAddNextBtn.setVisibility(View.INVISIBLE);
+            mCourseAddNextBtn.setText("删除");
             mCourseAddSubmit.setText("修改");
         }
         mCourseAddOtherTime = findViewById(R.id.course_button_add_other_time);
@@ -271,47 +270,66 @@ public class AddCourseActivity extends AppCompatActivity implements RadioButton.
             courseTime.setTimeTextView(otherTime);
             mCourseTimeList.add(courseTime);
         });
-        mCourseAddNextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isInfoCompleted()) {
-                    final PromptAdapter.Builder builder = new PromptAdapter.Builder(AddCourseActivity.this);
-                    builder.setTitle("提示");
-                    builder.setContent("是否保存当前添加的课程");
-                    builder.setRight("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            Course currentCourse = new Course(UserLab.getCurrentUser().getId(), mCourseName, mClassroom,
-                                    new ArrayList<>(mCourseTimeList), mCourseTeacher, mCourseStartWeek, mCourseEndWeek, mCourseWeekStyle);
-                            currentCourse.setMonitor(mMonitorCheckBox.isChecked());
-
-                            new Thread(() -> {
-                                List<Course> allCourses = CourseLab.getAllCourse(currentCourse.getUserId());
-                                boolean isMixed = judgeMixCourse(currentCourse, allCourses);
-                                if (!isMixed) {
-                                    CourseLab.sCourseList.add(currentCourse);
-                                    CourseLab.insertCourse(currentCourse);
-                                    setResult(RESULT_OK);
-                                    Looper.prepare();
-                                    Toast.makeText(AddCourseActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
-                                    mHandler.post(AddCourseActivity.this::clearContent);
-                                    Looper.loop();
-                                }
-                            }).start();
-                        }
-                    });
-                    builder.setLeft("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            clearContent();
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.create().show();
+        if (mCourse != null)
+            mCourseAddNextBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(AddCourseActivity.this)
+                            .setTitle("删除课程["+mCourse.getName()+"]")
+                            .setMessage("确定要删除此课程？")
+                            .setPositiveButton("确定", (dialog, which) -> {
+                                new Thread(() -> {
+                                    CourseLab.sCourseList.removeIf(course -> mCourse.getName().equals(course.getName()));
+                                    finish();
+                                    CourseLab.deleteCourseFromName(mCourse.getName());
+                                }).start();
+                            })
+                            .setNegativeButton("取消", null)
+                            .show();
                 }
-            }
-        });
+            });
+        else
+            mCourseAddNextBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isInfoCompleted()) {
+                        final PromptAdapter.Builder builder = new PromptAdapter.Builder(AddCourseActivity.this);
+                        builder.setTitle("提示");
+                        builder.setContent("是否保存当前添加的课程");
+                        builder.setRight("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                Course currentCourse = new Course(UserLab.getCurrentUser().getId(), mCourseName, mClassroom,
+                                        new ArrayList<>(mCourseTimeList), mCourseTeacher, mCourseStartWeek, mCourseEndWeek, mCourseWeekStyle);
+                                currentCourse.setMonitor(mMonitorCheckBox.isChecked());
+
+                                new Thread(() -> {
+                                    List<Course> allCourses = CourseLab.getAllCourse(currentCourse.getUserId());
+                                    boolean isMixed = judgeMixCourse(currentCourse, allCourses);
+                                    if (!isMixed) {
+                                        CourseLab.sCourseList.add(currentCourse);
+                                        CourseLab.insertCourse(currentCourse);
+                                        setResult(RESULT_OK);
+                                        Looper.prepare();
+                                        Toast.makeText(AddCourseActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
+                                        mHandler.post(AddCourseActivity.this::clearContent);
+                                        Looper.loop();
+                                    }
+                                }).start();
+                            }
+                        });
+                        builder.setLeft("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                clearContent();
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.create().show();
+                    }
+                }
+            });
 
         mCourseTimeTV.setOnClickListener(new View.OnClickListener() {
             @Override

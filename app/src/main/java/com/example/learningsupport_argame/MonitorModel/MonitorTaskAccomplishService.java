@@ -25,6 +25,7 @@ import com.example.learningsupport_argame.Navi.Activity.LocationService;
 import com.example.learningsupport_argame.Navi.Utils.MapUtils;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.Task.Task;
+import com.example.learningsupport_argame.Task.TaskLab;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.util.Timer;
@@ -45,7 +46,7 @@ public class MonitorTaskAccomplishService extends Service {
     private int mPhoneUseCount;
     private boolean mIsOutOfRange = false;
     private int mOutOfRangeTime = 0;
-    private int mRemainingTime = -1;
+    public static int mRemainingTime = -1;
     private int mTaskDelayTime = 0;
     private String CHANNEL_ID = "change notification";
     private static final int NOTIFICATION_FOREGROUND_ID = 1;
@@ -136,6 +137,7 @@ public class MonitorTaskAccomplishService extends Service {
                         SharedPreferences.Editor editor = miSp.edit();//获取Editor
                         editor.clear();
                         editor.commit();
+                        TaskLab.mAcceptedTaskList.removeIf(task -> task.getTaskId() == mTask.getTaskId());
                         mTimer.cancel();
                         MonitorTaskStatusService.alreadyBegan = false;
                         stopSelf();

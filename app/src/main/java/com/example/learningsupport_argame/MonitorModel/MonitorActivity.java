@@ -1,9 +1,12 @@
 package com.example.learningsupport_argame.MonitorModel;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.learningsupport_argame.FeedbackModel.MissionAccomplishActivity;
@@ -139,6 +143,24 @@ public class MonitorActivity extends AppCompatActivity {
         mPhoneUseCount = findViewById(R.id.monitor_phone_use_count);
         mRemainingTime = findViewById(R.id.monitor_task_remaining_time);
         mCountDownView = findViewById(R.id.monitor_count_down_view);
+        mCountDownView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mCountDownView.setInnerCircleColor(Color.RED);
+                new AlertDialog.Builder(MonitorActivity.this)
+                        .setTitle("是否结束此任务？")
+                        .setMessage(Html.fromHtml("" +
+                                "任务提前结束后您将<font color='#ff0000'><big>无法获取</big></font>任何奖励," +
+                                "甚至得到部分<font color='#ff0000'><big>惩罚</big></font>。\n确定要退出任务吗？", Html.FROM_HTML_MODE_LEGACY))
+                        .setPositiveButton("确认", (dialog, which) -> {
+                            MonitorTaskAccomplishService.mRemainingTime = 0;
+                        })
+                        .setNegativeButton("取消", (dialog, which) ->
+                                mCountDownView.setInnerCircleColor(Color.GRAY))
+                        .show();
+                return false;
+            }
+        });
         mCountDownView.setRadius(270);
         mTextSwitcherLeft = findViewById(R.id.monitor_poetry_switcher_left);
         mTextSwitcherRight = findViewById(R.id.monitor_poetry_switcher_right);

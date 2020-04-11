@@ -2,6 +2,7 @@ package com.example.learningsupport_argame;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -10,12 +11,14 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 
 
 public class CircleImageView extends AppCompatImageView {
+    private String TAG = "CircleImageView";
     private float width;
     private float height;
     private float radius;
@@ -51,12 +54,9 @@ public class CircleImageView extends AppCompatImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         Drawable drawable = getDrawable();
-        if (drawable == null) {
-            super.onDraw(canvas);
-            return;
-        }
         if (drawable instanceof BitmapDrawable) {
             BitmapShader bitmapShader = initBitmapShader((BitmapDrawable) drawable);
+            Log.d(TAG, "bitmapShader" + bitmapShader);
             if (bitmapShader == null)
                 return;
             paint.setShader(bitmapShader);//将着色器设置给画笔
@@ -71,6 +71,7 @@ public class CircleImageView extends AppCompatImageView {
      */
     private BitmapShader initBitmapShader(BitmapDrawable drawable) {
         Bitmap bitmap = drawable.getBitmap();
+        Log.d(TAG, "bitmap" + bitmap);
         if (bitmap == null)
             return null;
         BitmapShader bitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);

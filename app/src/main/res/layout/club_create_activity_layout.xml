@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -51,110 +54,122 @@
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 
-
-    <ImageView
-        android:id="@+id/club_cover_page"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_below="@+id/toolbar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/club_add_cover_image_icon"
-        android:contentDescription="点击添加社团封面" />
-
-    <TextView
-        android:id="@+id/club_cover_page_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/club_cover_page"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="20dp"
-        android:text="点击添加封面"
-        android:textSize="15sp" />
-
-    <TextView
-        android:id="@+id/club_name_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/club_cover_page_label"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:text="社团名称："
-        android:textSize="15sp" />
-
-    <EditText
-        android:id="@+id/club_name_edit_text"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/club_name_label"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="60dp"
-        android:layout_marginEnd="60dp"
-        android:hint="请输入社团名称"
-        android:inputType="text" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/club_type_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/club_name_edit_text"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:text="社团类型："
-        android:textSize="15sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/club_type_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/club_type_label"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="60dp"
-        android:layout_marginEnd="60dp"
-        android:hint="少于10字，否则不显示"
-        android:inputType="text" />
 
-    <TextView
-        android:id="@+id/club_desc_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/club_type_edit_text"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:text="社团描述："
-        android:textSize="15sp" />
+            <ImageView
+                android:id="@+id/club_cover_page"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/club_add_cover_image_icon"
+                android:contentDescription="点击添加社团封面" />
 
-    <EditText
-        android:id="@+id/club_desc_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/club_desc_label"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="60dp"
-        android:layout_marginEnd="60dp"
-        android:gravity="top"
-        android:hint="请输入社团描述"
-        android:inputType="textMultiLine"
-        android:minLines="2" />
+            <TextView
+                android:id="@+id/club_cover_page_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_cover_page"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="点击添加封面"
+                android:textSize="15sp" />
 
-    <TextView
-        android:id="@+id/club_max_member_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/club_desc_edit_text"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:text="社团人数："
-        android:textSize="15sp" />
+            <TextView
+                android:id="@+id/club_name_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_cover_page_label"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:text="社团名称："
+                android:textSize="15sp" />
 
-    <TextView
-        android:id="@+id/club_max_member"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/club_max_member_label"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="20dp"
-        android:text="10人"
-        android:textSize="20sp" />
-</RelativeLayout>
+            <EditText
+                android:id="@+id/club_name_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_name_label"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="60dp"
+                android:hint="请输入社团名称"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/club_type_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_name_edit_text"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:text="社团类型："
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/club_type_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_type_label"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="60dp"
+                android:hint="少于10字，否则不显示"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/club_desc_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_type_edit_text"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:text="社团描述："
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/club_desc_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_desc_label"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="60dp"
+                android:gravity="top"
+                android:hint="请输入社团描述"
+                android:inputType="textMultiLine"
+                android:minLines="2" />
+
+            <TextView
+                android:id="@+id/club_max_member_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_desc_edit_text"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:text="社团人数："
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/club_max_member"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/club_max_member_label"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="20dp"
+                android:text="10人"
+                android:textSize="20sp" />
+        </RelativeLayout>
+    </ScrollView>
+
+</LinearLayout>
+

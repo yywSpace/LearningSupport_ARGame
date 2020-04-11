@@ -22,6 +22,7 @@ import androidx.cardview.widget.CardView;
 import com.example.learningsupport_argame.Community.club.Club;
 import com.example.learningsupport_argame.Community.club.ClubLab;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 
 import java.io.ByteArrayOutputStream;
 
@@ -44,6 +45,7 @@ public class ClubSettingActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.club_setting_activity_layout);
+        ActivityUtil.addActivity(this);
         mClub = Club.sCurrentClub;
         mViewMemberCardView = findViewById(R.id.view_club_members);
         mViewMemberCardView.setOnClickListener(v -> {
@@ -60,6 +62,14 @@ public class ClubSettingActivity extends Activity {
                     .setPositiveButton("确定", (dialog, which) -> {
                         new Thread(() -> {
                             finish();
+                            if (mClub.getId() == 0) {
+                                Club club = ClubLab.getClubByName(mClub.getClubName());
+                                mClub.setId(club == null ? 0 : club.getId());
+                            }
+                            if (ClubLab.sCreatedClubList != null)
+                                ClubLab.sCreatedClubList.removeIf(club -> club.getId() == mClub.getId());
+                            if (ClubLab.sParticipateClubList != null)
+                                ClubLab.sParticipateClubList.removeIf(club -> club.getId() == mClub.getId());
                             ClubLab.delete(mClub);
                         }).start();
                     }).setNegativeButton("取消", null)
@@ -141,6 +151,12 @@ public class ClubSettingActivity extends Activity {
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityUtil.removeActivity(this);
     }
 
     void initData(Club club) {

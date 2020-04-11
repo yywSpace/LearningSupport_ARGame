@@ -41,11 +41,6 @@
         <activity android:name=".UserManagement.ranking.RankingActivity" />
 
         <activity android:name=".Community.friend.FriendListActivity" />
-        <activity android:name=".Task.activity.TaskListActivity">
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value=".Task.activity.TaskSearchActivity" />
-        </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".ARModel.ScanModelActivity" />
         <activity android:name=".ARModel.PutModelActivity" />
@@ -82,13 +77,11 @@
         <activity android:name=".Course.CourseMainActivity" />
         <activity android:name=".Course.AddCourseActivity" />
         <activity android:name=".Course.CourseTimeActivity" />
-        <activity
-            android:name=".Course.list.CourseListActivity"
-            android:parentActivityName=".Course.CourseMainActivity" />
+        <activity android:name=".Course.list.CourseListActivity" />
 
         <activity android:name=".Navi.Activity.YoudaoActivity" />
         <activity android:name=".Navi.Activity.MapActivity" />
-        <activity android:name=".Community.club.activity.ClubListActivity" />
+
         <activity android:name=".Community.club.activity.ClubCreateActivity" />
         <activity android:name=".Community.club.activity.ClubSettingActivity" />
         <activity android:name=".Community.club.activity.ClubInfoActivity" />
@@ -98,7 +91,7 @@
         <activity
             android:name=".Task.activity.TaskSearchActivity"
             android:launchMode="singleTop"
-            android:parentActivityName="com.example.learningsupport_argame.Task.activity.TaskListActivity">
+            android:parentActivityName="com.example.learningsupport_argame.Task.activity.TaskListFragmentActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -110,6 +103,9 @@
         <activity
             android:name=".UserManagement.Login.SplashActivity"
             android:theme="@style/splashLoadingScreenTheme" />
+        <activity android:name=".Task.activity.TaskListFragmentActivity" />
+        <activity android:name=".Community.club.activity.ClubListFragmentActivity" />
+        <activity android:name=".NavigationActivity" />
 
         <provider
             android:name=".Task.activity.TaskSearchSuggestionProvider"

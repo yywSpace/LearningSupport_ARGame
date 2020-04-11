@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CountDownView extends View {
+    private int innerCircleColor;
     // 半径
     private float radius = 300;
     // 内外圈间隔
@@ -45,6 +46,7 @@ public class CountDownView extends View {
 
     public CountDownView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        innerCircleColor = Color.GRAY;
         timeProcessTable = new ArrayList<>();
         for (int i = 0; i < processItemCount; i++)
             timeProcessTable.add(-i * 360 / processItemCount);
@@ -98,7 +100,7 @@ public class CountDownView extends View {
         // 绘制内圆
         Paint innerCirclePaint = new Paint();
         innerCirclePaint.setAntiAlias(true);
-        innerCirclePaint.setColor(Color.GRAY);
+        innerCirclePaint.setColor(innerCircleColor);
         innerCirclePaint.setStyle(Paint.Style.STROKE);
         innerCirclePaint.setStrokeWidth(innerStrokeWidth);
         drawCircle(canvas, radius - gapOfInnerOuter, innerCirclePaint);
@@ -231,5 +233,9 @@ public class CountDownView extends View {
         timeProcessTable = new ArrayList<>();
         for (int i = 0; i < processItemCount; i++)
             timeProcessTable.add(-i * 360 / processItemCount);
+    }
+
+    public void setInnerCircleColor(int innerCircleColor) {
+        this.innerCircleColor = innerCircleColor;
     }
 }

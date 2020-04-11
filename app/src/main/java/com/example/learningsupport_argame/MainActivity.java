@@ -1,34 +1,25 @@
 package com.example.learningsupport_argame;
 
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.learningsupport_argame.Client.ClientLab;
-import com.example.learningsupport_argame.Client.UDPClient;
 import com.example.learningsupport_argame.MonitorModel.MonitorTaskStatusService;
 import com.example.learningsupport_argame.Navi.Activity.LocationService;
-import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
-import com.example.learningsupport_argame.UserManagement.Login.SplashActivity;
-import com.example.learningsupport_argame.UserManagement.User;
-import com.example.learningsupport_argame.UserManagement.UserLab;
+import com.example.learningsupport_argame.Task.activity.TaskListFragmentActivity;
+import com.example.learningsupport_argame.Task.fragment.TaskListFragment;
 import com.example.learningsupport_argame.UserManagement.UserMessage.UserMessageActivity;
 import com.example.learningsupport_argame.Community.friend.FriendListActivity;
-import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 import com.example.learningsupport_argame.UserManagement.bag.UserBagActivity;
 import com.example.learningsupport_argame.UserManagement.ranking.RankingActivity;
 import com.unity3d.player.OnUnityExit;
 import com.unity3d.player.UnityPlayerOperationActivity;
 
-
 public class MainActivity extends UnityPlayerOperationActivity {
     private static String TAG = "MainActivity";
-    public final static int TASK_ACTIVITY = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +40,10 @@ public class MainActivity extends UnityPlayerOperationActivity {
         };
     }
 
+    public void startAnnouncementActivity() {
+        Toast.makeText(this, "startAnnouncementActivity", Toast.LENGTH_SHORT).show();
+
+    }
     public void startFriendActivity() {
         Toast.makeText(this, "startFriendActivity", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, FriendListActivity.class);
@@ -57,7 +52,7 @@ public class MainActivity extends UnityPlayerOperationActivity {
     }
 
     public void startTaskActivity() {
-        Intent intent = new Intent(this, TaskListActivity.class);
+        Intent intent = new Intent(this, TaskListFragmentActivity.class);
         intent.putExtra("task_list_activity_type", 2);
         startActivity(intent);
         Toast.makeText(this, "startTaskActivity", Toast.LENGTH_SHORT).show();

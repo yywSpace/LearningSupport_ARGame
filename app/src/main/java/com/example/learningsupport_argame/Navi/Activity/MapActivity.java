@@ -49,6 +49,7 @@ import com.example.learningsupport_argame.ARModel.Utils.ARUtils;
 import com.example.learningsupport_argame.Navi.Utils.LocationListener;
 import com.example.learningsupport_argame.R;
 import com.example.learningsupport_argame.UserManagement.User;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.FriendMessageActivity;
 import com.example.learningsupport_argame.Client.ClientLab;
 import com.example.learningsupport_argame.Client.MessageData;
@@ -112,7 +113,7 @@ public class MapActivity extends AppCompatActivity {
                     // 根据用户名查询用户信息
                     if (mBaiduMap != null) {
                         // 如果不为自身
-                        if (!ClientLab.sUserName.equals(userName)) {
+                        if (!UserLab.getCurrentUser().getName().equals(userName)) {
                             OverlayOptions overlayOptions = createOverlay(new LatLng(latitude, longitude), R.drawable.map_character_other, "user_name", userName);
                             optionsList.add(overlayOptions);
                         }
@@ -211,9 +212,7 @@ public class MapActivity extends AppCompatActivity {
         initViews();
         initEvent();
         initARTask();
-
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -260,7 +259,6 @@ public class MapActivity extends AppCompatActivity {
         mLocationClient.start();
         goToARBtn = findViewById(R.id.map_goto_ar);
         switchMapModeBtn = findViewById(R.id.map_switch_mode);
-
     }
 
     void initEvent() {
@@ -357,11 +355,8 @@ public class MapActivity extends AppCompatActivity {
      */
     private void requestPermission() {
         if (Build.VERSION.SDK_INT >= 23 && !isPermissionRequested) {
-
             isPermissionRequested = true;
-
             ArrayList<String> permissionsList = new ArrayList<>();
-
             String[] permissions = {
                     Manifest.permission.RECORD_AUDIO,
                     Manifest.permission.ACCESS_NETWORK_STATE,
@@ -384,10 +379,7 @@ public class MapActivity extends AppCompatActivity {
                     // 进入到这里代表没有权限.
                 }
             }
-
-            if (permissionsList.isEmpty()) {
-                return;
-            } else {
+            if (!permissionsList.isEmpty()) {
                 requestPermissions(permissionsList.toArray(new String[permissionsList.size()]), 0);
             }
         }

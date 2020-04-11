@@ -1,9 +1,5 @@
 package com.example.learningsupport_argame.UserManagement.Login;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -18,29 +14,18 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 
 import com.example.learningsupport_argame.Client.ClientLab;
-import com.example.learningsupport_argame.Client.OnReceiveUserChat;
 import com.example.learningsupport_argame.Client.UDPClient;
-import com.example.learningsupport_argame.Community.friend.FriendListActivity;
-import com.example.learningsupport_argame.Course.CourseMainActivity;
-import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
-import com.example.learningsupport_argame.FeedbackModel.MissionAccomplishActivity;
-import com.example.learningsupport_argame.MonitorModel.MonitorActivity;
 import com.example.learningsupport_argame.MonitorModel.MonitorTaskStatusService;
 import com.example.learningsupport_argame.Navi.Activity.LocationService;
+import com.example.learningsupport_argame.NavigationActivity;
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
-import com.example.learningsupport_argame.UserManagement.ranking.RankingAccomplishCountFragment;
-import com.example.learningsupport_argame.UserManagement.ranking.RankingLevelFragment;
-import com.example.learningsupport_argame.UserManagement.ranking.RankingReleaseCountFragment;
 
 import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -110,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                         startService(MonitorTaskStatusService.mMonitorTaskStatusServiceIntent);
 
 //                        startActivity(new Intent(LoginActivity.this, MissionAccomplishActivity.class));
-                        startActivity(new Intent(this, TaskListActivity.class));
+                        startActivity(new Intent(this, NavigationActivity.class));
 //                        startActivity(new Intent(LoginActivity.this, MapActivity.class));
 //                        startActivity(new Intent(this, FeedbackDetailsActivity.class));
 //                        startActivity(new Intent(this, CourseMainActivity.class));

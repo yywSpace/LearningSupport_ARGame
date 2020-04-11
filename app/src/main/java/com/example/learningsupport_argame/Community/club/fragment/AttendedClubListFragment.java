@@ -1,67 +1,46 @@
 package com.example.learningsupport_argame.Community.club.fragment;
 
-import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.learningsupport_argame.Community.club.Club;
 import com.example.learningsupport_argame.Community.club.activity.ClubInfoActivity;
 import com.example.learningsupport_argame.Community.club.ClubLab;
 import com.example.learningsupport_argame.Community.club.ClubListAdapter;
-import com.example.learningsupport_argame.Community.club.activity.ClubListActivity;
 import com.example.learningsupport_argame.Community.club.activity.ClubSettingActivity;
 import com.example.learningsupport_argame.MainActivity;
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.TestActivity;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class AttendedClubListFragment extends Fragment {
+public class AttendedClubListFragment extends BasicClubListFragment {
     private String TAG = "AttendedClubListFragment";
-    private Activity mActivity;
-    private RecyclerView mRecyclerView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ClubListAdapter mClubListAdapter;
-    private List<Club> mClubList = new ArrayList<>();
-    private List<Club> mSearchList = new ArrayList<>();
-    private EditText mSearchBox;
-    private ImageButton mSearchButton;
 
-    private boolean isSearchList;
 
     public static AttendedClubListFragment newInstance() {
         return new AttendedClubListFragment();
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mActivity = getActivity();
-        mSearchButton = ((ClubListActivity) mActivity).getSearchButton();
-        mSearchBox = ((ClubListActivity) mActivity).getSearchBox();
-    }
 
     @Override
     public void onResume() {
         super.onResume();
-        initSearchLayout();
-        if (!isSearchList)
+        //initSearchLayout();
+        if (!isSearchList) {
+            if (ClubLab.sParticipateClubList != null) {
+                mClubList.clear();
+                mClubList.addAll(ClubLab.sParticipateClubList);
+                mClubListAdapter.notifyDataSetChanged();
+                return;
+            }
             if (mClubList.size() <= 0)
                 new Thread(() -> {
                     List<Club> clubs = ClubLab.getParticipateClubList();
@@ -71,23 +50,31 @@ public class AttendedClubListFragment extends Fragment {
                         mClubListAdapter.notifyDataSetChanged();
                     });
                 }).start();
+        }
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.club_my_created_fragment, container, false);
         mClubListAdapter = new ClubListAdapter(mClubList, getContext());
         mClubListAdapter.setOnClubClickListener((v, club) -> {
-            User user = UserLab.getCurrentUser();
-            Intent intent = new Intent(mActivity, MainActivity.class);
-            intent.putExtra("scene", "club");
-            // message:clubName,userName,modName
-            intent.putExtra("scene_args", String.format("%s,%s,%s", club.getClubName(), user.getName(), user.getModName()));
-            startActivity(intent);
-            mActivity.finish();
+            new AlertDialog.Builder(mActivity)
+                    .setTitle("进入社团[" + club.getClubName() + "]")
+                    .setMessage("是否要进入社团?")
+                    .setPositiveButton("确认", (dialog, which) -> {
+                        User user = UserLab.getCurrentUser();
+                        Intent intent = new Intent(mActivity, MainActivity.class);
+                        intent.putExtra("scene", "club");
+                        // message:clubName,userName,modName
+                        intent.putExtra("scene_args", String.format("%s,%s,%s", club.getClubName(), user.getName(), user.getModName()));
+                        startActivity(intent);
+                        mActivity.finish();
+                    })
+                    .setNegativeButton("取消",null)
+                    .show();
+
         });
         mClubListAdapter.setOnSettingClickListener((club, v) -> {
             Club.sCurrentClub = club;
@@ -116,29 +103,5 @@ public class AttendedClubListFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mClubListAdapter);
         return view;
-    }
-
-    private void initSearchLayout() {
-        mSearchBox.setHint("我参加的社团");
-        mSearchBox.setText("");
-        mSearchButton.setBackgroundResource(R.drawable.sousuo);
-        mSearchButton.setOnClickListener(v -> {
-            if (isSearchList) {
-                isSearchList = false;
-                mSearchButton.setBackgroundResource(R.drawable.sousuo);
-                mClubListAdapter = new ClubListAdapter(mClubList, mActivity);
-                mRecyclerView.setAdapter(mClubListAdapter);
-            } else {
-                String name = mSearchBox.getText().toString();
-                isSearchList = true;
-                mSearchList = mClubList.stream()
-                        .filter(club -> club.getClubName().contains(name))
-                        .collect(Collectors.toList());
-                Log.d(TAG, "onClick: " + mSearchList.size());
-                mClubListAdapter = new ClubListAdapter(mSearchList, mActivity);
-                mRecyclerView.setAdapter(mClubListAdapter);
-                mSearchButton.setBackgroundResource(R.drawable.friend_list_pop_window_cross);
-            }
-        });
     }
 }

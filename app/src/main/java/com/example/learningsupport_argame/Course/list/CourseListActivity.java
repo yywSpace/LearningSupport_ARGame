@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -41,15 +42,49 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// TODO: 20-4-9 适配监督 
 public class CourseListActivity extends AppCompatActivity {
     private List<Course> mCourseList = new ArrayList<>();
     private List<Course> mAllCourseList = new ArrayList<>();
     private Toolbar mToolbar;
     private MyListView myListView;
+    private TextView mTitleTextView;
+    private ImageView mReturnImageView;
+    private String[] weekArray = {"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
+
     private CourseListAdapter mCourseListAdapter;
     private int mCurrentWeek;
     private int mSchoolWeek;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (CourseLab.sCourseList != null) {
+            List<Course> courseList = new ArrayList<>();
+            for (Course course : CourseLab.sCourseList) {
+                for (CourseTime time : course.getTimes()) {
+                    Course eCourse = new Course(course);
+                    eCourse.setCourseTime(time);
+                    courseList.add(eCourse);
+                }
+            }
+            List<Course> sortedCourse = new ArrayList<>();
+            for (String week : weekArray) {
+                List<Course> dayCourse = new ArrayList<>();
+                for (Course course : courseList) {
+                    if (course.getCourseTime().getWeek().equals(week)) {
+                        dayCourse.add(course);
+                    }
+                }
+                dayCourse.sort((course1, course2) -> Integer.compare(course1.getCourseTime().getStartTime(), course2.getCourseTime().getStartTime()));
+                sortedCourse.addAll(dayCourse);
+            }
+            mCourseList.clear();
+            mCourseList.addAll(sortedCourse);
+            Log.d("13", "onResume: " + mCourseList.size());
+            mAllCourseList = new ArrayList<>(mCourseList);
+            mCourseListAdapter.notifyDataSetChanged();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +94,18 @@ public class CourseListActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.course_list_toolbar);
         setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setTitle("课程列表");
-        ab.setDisplayHomeAsUpEnabled(true);
-
+        ab.setTitle("");
         mCurrentWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        mCurrentWeek = mCurrentWeek == 1 ? 6 : mCurrentWeek - 1;
         mSchoolWeek = getCurrentSchoolWeek();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             setTranslucentStatus(true);
         }
         initData();
+        mReturnImageView = findViewById(R.id.course_list_return);
+        mTitleTextView = findViewById(R.id.course_list_title);
+        mReturnImageView.setOnClickListener(v -> finish());
         myListView = findViewById(R.id.my_list);
         mCourseListAdapter = new CourseListAdapter(mCourseList, this);
         myListView.setAdapter(mCourseListAdapter);
@@ -111,20 +148,20 @@ public class CourseListActivity extends AppCompatActivity {
                 removeAllCourseLDialog();
                 return true;
             case R.id.course_list_all_course:
-                getSupportActionBar().setTitle("课程列表");
+                mTitleTextView.setText("课程列表");
                 mCourseList.clear();
                 mCourseList.addAll(mAllCourseList);
                 mCourseListAdapter.notifyDataSetChanged();
                 return true;
             case R.id.course_list_valid_course:
-                getSupportActionBar().setTitle("有效课程");
+                mTitleTextView.setText("有效课程");
                 List<Course> mValidCourse = getValidCourses(mAllCourseList);
                 mCourseList.clear();
                 mCourseList.addAll(mValidCourse);
                 mCourseListAdapter.notifyDataSetChanged();
                 return true;
             case R.id.course_list_monitored_course:
-                getSupportActionBar().setTitle("监督课程");
+                mTitleTextView.setText("监督课程");
                 List<Course> validCourse = getValidCourses(mAllCourseList);
                 List<Course> courses = validCourse.stream().filter(Course::isMonitor).collect(Collectors.toList());
                 mCourseList.clear();
@@ -132,8 +169,7 @@ public class CourseListActivity extends AppCompatActivity {
                 mCourseListAdapter.notifyDataSetChanged();
                 return true;
             case R.id.course_list_today_course:
-                getSupportActionBar().setTitle("当前课程");
-                String[] weekArray = {"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
+                mTitleTextView.setText("当前课程");
                 List<Course> mTodayCourse = new ArrayList<>();
                 // 获取课程列表
                 mAllCourseList.stream()
@@ -152,8 +188,73 @@ public class CourseListActivity extends AppCompatActivity {
                 mCourseList.addAll(mTodayCourse);
                 mCourseListAdapter.notifyDataSetChanged();
                 return true;
+            case R.id.natural_order:
+                List<Course> naturalSortedCourse = new ArrayList<>();
+                for (String week : weekArray) {
+                    List<Course> dayCourse = new ArrayList<>();
+                    for (Course course : mCourseList) {
+                        if (course.getCourseTime().getWeek().equals(week)) {
+                            dayCourse.add(course);
+                        }
+                    }
+                    dayCourse.sort((course1, course2) -> Integer.compare(course1.getCourseTime().getStartTime(), course2.getCourseTime().getStartTime()));
+                    naturalSortedCourse.addAll(dayCourse);
+                }
+                mCourseList.clear();
+                mCourseList.addAll(naturalSortedCourse);
+                mCourseListAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.reverse_order:
+                List<Course> reverseSortedCourse = new ArrayList<>();
+                for (int i = weekArray.length - 1; i >= 0; i--) {
+                    List<Course> dayCourse = new ArrayList<>();
+                    for (Course course : mCourseList) {
+                        if (course.getCourseTime().getWeek().equals(weekArray[i])) {
+                            dayCourse.add(course);
+                        }
+                    }
+                    dayCourse.sort((course1, course2) -> -Integer.compare(course1.getCourseTime().getStartTime(), course2.getCourseTime().getStartTime()));
+                    reverseSortedCourse.addAll(dayCourse);
+                }
+                mCourseList.clear();
+                mCourseList.addAll(reverseSortedCourse);
+                mCourseListAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.week_1:
+                filterWeekList(0);
+                return true;
+            case R.id.week_2:
+                filterWeekList(1);
+                return true;
+            case R.id.week_3:
+                filterWeekList(2);
+                return true;
+            case R.id.week_4:
+                filterWeekList(3);
+                return true;
+            case R.id.week_5:
+                filterWeekList(4);
+                return true;
+            case R.id.week_6:
+                filterWeekList(5);
+                return true;
+            case R.id.week_7:
+                filterWeekList(6);
+                return true;
+
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    void filterWeekList(int week) {
+        List<Course> dayCourse = mAllCourseList
+                .stream()
+                .filter(course -> course.getCourseTime().getWeek().equals(weekArray[week]))
+                .collect(Collectors.toList());
+        mCourseList.clear();
+        mCourseList.addAll(dayCourse);
+        mCourseListAdapter.notifyDataSetChanged();
     }
 
     @TargetApi(19)
@@ -180,6 +281,19 @@ public class CourseListActivity extends AppCompatActivity {
                     mCourseList.add(eCourse);
                 }
             }
+            List<Course> sortedCourse = new ArrayList<>();
+            for (String week : weekArray) {
+                List<Course> dayCourse = new ArrayList<>();
+                for (Course course : mCourseList) {
+                    if (course.getCourseTime().getWeek().equals(week)) {
+                        dayCourse.add(course);
+                    }
+                }
+                dayCourse.sort((course1, course2) -> Integer.compare(course1.getCourseTime().getStartTime(), course2.getCourseTime().getStartTime()));
+                sortedCourse.addAll(dayCourse);
+            }
+            mCourseList.clear();
+            mCourseList.addAll(sortedCourse);
             mAllCourseList = new ArrayList<>(mCourseList);
             runOnUiThread(() -> mCourseListAdapter.notifyDataSetChanged());
         }).start();

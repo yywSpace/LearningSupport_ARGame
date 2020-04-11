@@ -51,6 +51,7 @@ public class MonitorTaskStatusService extends Service {
     private List<Task> mMonitoredTask = new ArrayList<>();
     private String[] weekArray = {"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    int currentWeek;
 
     @Override
     public void onCreate() {
@@ -78,7 +79,11 @@ public class MonitorTaskStatusService extends Service {
             }
             // 获取课程列表,并转换为任务
             CourseLab.getCourseSetting();
-            int currentWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+            currentWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+            if (currentWeek == 1)
+                currentWeek = 6;
+            else
+                currentWeek = currentWeek - 2;
             int schoolWeek = getCurrentWeek();
             CourseLab.getAllCourse(UserLab.getCurrentUser().getId());
             Log.d(TAG, "size: " + CourseLab.sCourseList.size());
@@ -103,8 +108,8 @@ public class MonitorTaskStatusService extends Service {
                                     String startHour = CourseSetting.ALL_COURSE_START_TIME.get(ct.getStartTime());
                                     String endHour = CourseSetting.ALL_COURSE_START_TIME.get(ct.getEndTime()).split(":")[0] + ":" + CourseSetting.COURSE_TIME_SPAN;
 
-                                    String startTime = today + " " + startHour;
-                                    String endTime = today + " " + endHour;
+                                    String startTime = today + " " + startHour.trim();
+                                    String endTime = today + " " + endHour.trim();
                                     task.setTaskCreateTime(startTime);
                                     task.setTaskStartAt(startTime);
                                     task.setTaskEndIn(endTime);
@@ -232,10 +237,10 @@ public class MonitorTaskStatusService extends Service {
                             }
                             if (!isTaskSuccess) {
                                 createNotification(task.getTaskId(),
-                                        "任务失败", "任务" + task.getTaskName() + "执行失败，点击查看详细信息", monitorInfo);
+                                        "任务失败", "任务" + task.getTaskName() + "执行结束，点击查看详细信息", monitorInfo);
                             } else {
                                 createNotification(task.getTaskId(),
-                                        "任务成功", "任务" + task.getTaskName() + "执行成功，点击查看详细信息", monitorInfo);
+                                        "任务成功", "任务" + task.getTaskName() + "执行结束，点击查看详细信息", monitorInfo);
                             }
                             TaskLab.mAcceptedTaskList.removeIf(task1 -> task1.getTaskName().equals(task.getTaskName()));
                             mCourseTask.removeIf(task1 -> task1.getTaskName().equals(task.getTaskName()));

@@ -2,6 +2,8 @@ package com.example.learningsupport_argame.UserManagement.bag;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -71,25 +75,28 @@ public class UserBagActivity extends Activity {
         mToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.bag_ar:
-                    mTypeItemList.clear();
-                    mTypeItemList.addAll(mItemList
+                    List<Item> modelItem = mItemList
                             .stream()
                             .filter(item1 -> item1 instanceof ModelItem)
-                            .collect(Collectors.toList()));
+                            .collect(Collectors.toList());
+                    mTypeItemList.clear();
+                    mTypeItemList.addAll(modelItem);
                     break;
                 case R.id.bag_unity:
-                    mTypeItemList.clear();
-                    mTypeItemList.addAll(mItemList
+                    List<Item> unityItem = mItemList
                             .stream()
                             .filter(item1 -> item1 instanceof UnityItem)
-                            .collect(Collectors.toList()));
+                            .collect(Collectors.toList());
+                    mTypeItemList.clear();
+                    mTypeItemList.addAll(unityItem);
                     break;
                 case R.id.bag_item:
-                    mTypeItemList.clear();
-                    mTypeItemList.addAll(mItemList
+                    List<Item> rewardItem = mItemList
                             .stream()
                             .filter(item1 -> item1 instanceof RewardItem)
-                            .collect(Collectors.toList()));
+                            .collect(Collectors.toList());
+                    mTypeItemList.clear();
+                    mTypeItemList.addAll(rewardItem);
                     break;
                 case R.id.bag_all:
                     mTypeItemList.clear();
@@ -248,7 +255,10 @@ public class UserBagActivity extends Activity {
                             notifyDataSetChanged();
                         });
                     }
-                    mItemImage.setBackgroundResource(unityItem.getImgRec());
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(),unityItem.getImgRec());
+                    RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(getResources(),bitmap );
+                    drawable.setCornerRadius(30);
+                    mItemImage.setImageDrawable(drawable);
                 }
             }
         }

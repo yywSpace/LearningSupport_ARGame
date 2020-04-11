@@ -2,13 +2,12 @@ package com.example.learningsupport_argame.UserManagement.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.learningsupport_argame.NavigationActivity;
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.Task.activity.TaskListActivity;
 
 public class SplashActivity extends AppCompatActivity {
     private String TAG = "SplashActivity";
@@ -20,7 +19,7 @@ public class SplashActivity extends AppCompatActivity {
         new Thread(() -> {
             while (true) {
                 if (LoginActivity.sInitFinished) {
-                    Intent intent = new Intent(this, TaskListActivity.class);
+                    Intent intent = new Intent(this, NavigationActivity.class);
                     intent.putExtra("task_list_activity_type", 1);
                     startActivity(intent);
                     LoginActivity.sInitFinished = false;

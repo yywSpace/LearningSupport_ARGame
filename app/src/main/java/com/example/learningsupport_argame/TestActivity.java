@@ -3,17 +3,22 @@ package com.example.learningsupport_argame;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.learningsupport_argame.Client.ClientLab;
 import com.example.learningsupport_argame.Client.OnReceiveMessageList;
 import com.example.learningsupport_argame.Client.UDPClient;
+import com.example.learningsupport_argame.Community.club.activity.ClubListFragmentActivity;
+import com.example.learningsupport_argame.MonitorModel.MonitorActivity;
 import com.example.learningsupport_argame.Navi.Activity.SendLocationExample;
+import com.example.learningsupport_argame.Task.activity.TaskListFragmentActivity;
 import com.unity3d.player.UnityPlayerOperationActivity;
 
 import java.io.IOException;
@@ -100,12 +105,12 @@ public class TestActivity extends AppCompatActivity {
             }).start();
         });
 
+        Button button = findViewById(R.id.test);
+        button.setOnClickListener(v -> {
+            TextView textView = new TextView(this);
 
-        Button button = findViewById(R.id.search_test);
-        button.setOnClickListener(v -> onSearchRequested());
-
-
-    }
+        });
+}
 
     void initUnity() {
         mChatButton = findViewById(R.id.call_chatroom_button);

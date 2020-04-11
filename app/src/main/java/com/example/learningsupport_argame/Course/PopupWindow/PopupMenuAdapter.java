@@ -90,7 +90,6 @@ public class PopupMenuAdapter extends PopupWindow {
 		if(mIsDirty){
 			populateActions();
 		}
-
 		showAtLocation(view, popupGravity, mScreenWidth - LIST_PADDING - (getWidth()/2), mRect.bottom);
 	}
 

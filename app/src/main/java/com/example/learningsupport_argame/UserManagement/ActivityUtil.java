@@ -13,6 +13,9 @@ public class ActivityUtil {
     public static void addActivity(Activity activity) {
         sActivityList.add(activity);
     }
+    public static void removeActivity(Activity activity) {
+        sActivityList.remove(activity);
+    }
     // 销毁所有，退出程序
     public static void destroyAll() {
         for (Activity activity : sActivityList) {

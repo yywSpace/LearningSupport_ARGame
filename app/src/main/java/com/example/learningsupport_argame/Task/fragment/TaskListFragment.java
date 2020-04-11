@@ -1,23 +1,26 @@
-package com.example.learningsupport_argame.Task.activity;
+package com.example.learningsupport_argame.Task.fragment;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,26 +29,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.learningsupport_argame.ARModel.PutModelActivity;
-import com.example.learningsupport_argame.Client.ClientLab;
 import com.example.learningsupport_argame.Community.club.Club;
 import com.example.learningsupport_argame.Community.club.ClubLab;
 import com.example.learningsupport_argame.Navi.Activity.SelectLocationPopWindow;
-import com.example.learningsupport_argame.NavigationController;
+import com.example.learningsupport_argame.NavigationActivity;
 import com.example.learningsupport_argame.R;
-import com.example.learningsupport_argame.UserManagement.ActivityUtil;
-import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.TaskLab;
-import com.example.learningsupport_argame.Task.MultiSelectionSpinner;
-import com.example.learningsupport_argame.Task.fragment.TaskAcceptedListFragment;
-import com.example.learningsupport_argame.Task.fragment.TaskCanAcceptListFragment;
-import com.example.learningsupport_argame.Task.fragment.CurrentTaskFragment;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -55,57 +53,73 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
 
-public class TaskListActivity extends AppCompatActivity {
+public class TaskListFragment extends Fragment {
+    private AppCompatActivity mActivity;
     public static String sCurrentListType;
-    private NavigationController mNavigationController;
-    private static String TAG = "TaskListActivity";
+    private static String TAG = "TaskListFragment";
     private static final int PUT_MODEL_ACCOMPLISH = 1;
     private VpAdapter mVpAdapter;
     private List<Fragment> mFragmentList;
     private ViewPager mViewPager;
-    private ImageButton mNavigationButton;
-    private TextView mNavigationTitle;
+    private Toolbar mToolbar;
     private FloatingActionButton mFloatingActionButton;
     private FloatingActionButton mFloatingActionSearchButton;
     private BottomNavigationViewEx mNavigationView;
     private AlertDialog mCreateTaskDialog;
     // 第一次为insert如果用户返回则应修改信息
     private boolean hasInsertTask = false;
-//    private ImageButton mReturnButton;
+    private boolean isPermissionRequested = false;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mActivity = (AppCompatActivity) getActivity();
+    }
+
+    public static TaskListFragment getInstance(int activityType) {
+        TaskListFragment fragment = new TaskListFragment();
+        Bundle args = new Bundle();
+        args.putInt("task_list_activity_type", activityType);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.tasklist_navigation_layout);
-        mNavigationButton = findViewById(R.id.navigation_button);
-        int taskType = getIntent().getIntExtra("task_list_activity_type", 1);
-        if (taskType == 1) {
-            // 初始化导航栏信息
-            mNavigationController = new NavigationController(this, getWindow().getDecorView(), NavigationController.NavigationItem.TASK);
-        } else {
-            mNavigationButton.setBackgroundResource(R.drawable.course_ic_return);
-            mNavigationButton.setOnClickListener(v -> {
-                finish();
-            });
+        requestPermission();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: ");
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.tasklist_layout, container, false);
+        mToolbar = view.findViewById(R.id.task_list_toolbar);
+        mToolbar.setTitle("执行中");
+
+        if (getArguments() != null) {
+            int taskType = getArguments().getInt("task_list_activity_type", 1);
+            if (taskType == 1) {
+                mToolbar.setNavigationOnClickListener(v -> {
+                    ((NavigationActivity) mActivity).openNavigation();
+                });
+            } else {
+                mToolbar.setNavigationIcon(R.drawable.course_ic_return);
+                mToolbar.setNavigationOnClickListener(v -> {
+                    mActivity.finish();
+                });
+            }
         }
 
-//        mReturnButton = findViewById(R.id.navigation_button);
-//        mReturnButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                finish();
-//            }
-//        });
-        mNavigationTitle = findViewById(R.id.navigation_title);
-        mNavigationTitle.setText("执行中");
+        mNavigationView = view.findViewById(R.id.task_list_navigation_view);
 
-        mNavigationView = findViewById(R.id.task_list_navigation_view);
-
-        mFloatingActionButton = findViewById(R.id.task_list_add_task);
-        mFloatingActionSearchButton = findViewById(R.id.task_list_search);
-        mFloatingActionSearchButton.setOnClickListener((v) -> onSearchRequested());
-        mViewPager = findViewById(R.id.task_list_vp_content);
+        mFloatingActionButton = view.findViewById(R.id.task_list_add_task);
+        mFloatingActionSearchButton = view.findViewById(R.id.task_list_search);
+        mFloatingActionSearchButton.setOnClickListener((v) -> mActivity.onSearchRequested());
+        mViewPager = view.findViewById(R.id.task_list_vp_content);
         mFragmentList = new ArrayList<>(Arrays.asList(
                 CurrentTaskFragment.getInstance(),
                 TaskAcceptedListFragment.getInstance(),
@@ -114,18 +128,43 @@ public class TaskListActivity extends AppCompatActivity {
         mFloatingActionSearchButton.setVisibility(View.INVISIBLE);
 
         mViewPager.setCurrentItem(0);
-        mVpAdapter = new VpAdapter(getSupportFragmentManager(), mFragmentList);
+        mVpAdapter = new VpAdapter(getChildFragmentManager(), mFragmentList);
         mViewPager.setAdapter(mVpAdapter);
-        ActivityUtil.addActivity(this);
         initBNVE();
         initEvent();
+        return view;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mNavigationController != null)
-            mNavigationController.refresh();
+    private void requestPermission() {
+        if (!isPermissionRequested) {
+            isPermissionRequested = true;
+            ArrayList<String> permissionsList = new ArrayList<>();
+            String[] permissions = {
+                    Manifest.permission.RECORD_AUDIO,
+                    Manifest.permission.ACCESS_NETWORK_STATE,
+                    Manifest.permission.INTERNET,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.MODIFY_AUDIO_SETTINGS,
+                    Manifest.permission.WRITE_SETTINGS,
+                    Manifest.permission.ACCESS_WIFI_STATE,
+                    Manifest.permission.CHANGE_WIFI_STATE,
+                    Manifest.permission.CHANGE_WIFI_MULTICAST_STATE,
+                    Manifest.permission.VIBRATE
+            };
+
+            for (String perm : permissions) {
+                if (PackageManager.PERMISSION_GRANTED != mActivity.checkSelfPermission(perm)) {
+                    permissionsList.add(perm);
+                    // 进入到这里代表没有权限.
+                }
+            }
+            if (!permissionsList.isEmpty()) {
+                requestPermissions(permissionsList.toArray(new String[permissionsList.size()]), 0);
+            }
+        }
     }
 
     /**
@@ -146,20 +185,20 @@ public class TaskListActivity extends AppCompatActivity {
                 int position = -1;
                 switch (item.getItemId()) {
                     case R.id.menu_task_running:
-                        mNavigationTitle.setText("执行中");
+                        mToolbar.setTitle("执行中");
                         item.setIcon(R.drawable.task_list_icon_running_sellected);
                         mFloatingActionSearchButton.setVisibility(View.INVISIBLE);
                         break;
                     case R.id.menu_task_accepted:
                         mFloatingActionSearchButton.setVisibility(View.VISIBLE);
-                        mNavigationTitle.setText("已接受的任务");
+                        mToolbar.setTitle("已接受的任务");
                         sCurrentListType = "已接受的任务";
                         position = 1;
                         item.setIcon(R.drawable.navigation_task);
                         break;
                     case R.id.menu_task_can_accept: {
                         mFloatingActionSearchButton.setVisibility(View.VISIBLE);
-                        mNavigationTitle.setText("任务列表");
+                        mToolbar.setTitle("任务列表");
                         sCurrentListType = "任务列表";
                         position = 2;
                         item.setIcon(R.drawable.task_list_icon_all_sellected);
@@ -210,7 +249,7 @@ public class TaskListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (UserLab.getCurrentUser().getHp() <= 0) {
-                    new AlertDialog.Builder(TaskListActivity.this)
+                    new AlertDialog.Builder(mActivity)
                             .setTitle("血量过少")
                             .setMessage("当前血量过少，无法接受任务。\n您可以使用血量道具或等待血量恢复")
                             .setPositiveButton("确定", null)
@@ -222,7 +261,7 @@ public class TaskListActivity extends AppCompatActivity {
                 LayoutInflater inflater = getLayoutInflater();
                 View layout = inflater.inflate(R.layout.task_create_layout, null);//获取自定义布局
                 CreateTaskViewAdapter taskViewAdapter = new CreateTaskViewAdapter(layout);
-                mCreateTaskDialog = new AlertDialog.Builder(TaskListActivity.this)
+                mCreateTaskDialog = new AlertDialog.Builder(mActivity)
                         .setView(taskViewAdapter.getView())
                         .setTitle("创建任务")
                         .setIcon(R.drawable.ziji)
@@ -258,23 +297,23 @@ public class TaskListActivity extends AppCompatActivity {
 
                     Log.d(TAG, "onClick: " + taskViewAdapter.getClub());
                     if (taskType == 2 && taskViewAdapter.getClub() == null) {
-                        Toast.makeText(TaskListActivity.this, "请选择要发布的社团", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, "请选择要发布的社团", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if (task.getTaskName().equals("")) {
-                        Toast.makeText(TaskListActivity.this, "请输入任务名称", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, "请输入任务名称", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if (taskStartTimeArray[0] == null || taskStartTimeArray[1] == null || taskEndTimeArray[0] == null || taskEndTimeArray[1] == null) {
-                        Toast.makeText(TaskListActivity.this, "请输入任务日期和时间", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, "请输入任务日期和时间", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if (task.getAccomplishTaskLocation().equals("")) {
-                        Toast.makeText(TaskListActivity.this, "请输入任务完成地点", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, "请输入任务完成地点", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if (task.getTaskContent().equals("")) {
-                        Toast.makeText(TaskListActivity.this, "请输入任务描述", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, "请输入任务描述", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -295,7 +334,7 @@ public class TaskListActivity extends AppCompatActivity {
 
                     // 如果为用AR发布，放置模型
                     if (taskViewAdapter.mChooseTaskAR.isChecked()) {
-                        Intent intent = new Intent(TaskListActivity.this, PutModelActivity.class);
+                        Intent intent = new Intent(mActivity, PutModelActivity.class);
                         intent.putExtra("task", task);
                         startActivityForResult(intent, PUT_MODEL_ACCOMPLISH);
                     } else {
@@ -308,7 +347,7 @@ public class TaskListActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PUT_MODEL_ACCOMPLISH)
             if (resultCode == RESULT_OK) {
@@ -403,14 +442,14 @@ public class TaskListActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     mRadioButtonList = new ArrayList<>();
-                    mSelectClubView = LayoutInflater.from(TaskListActivity.this).inflate(R.layout.task_release_select_club_layout, null, false);
+                    mSelectClubView = LayoutInflater.from(mActivity).inflate(R.layout.task_release_select_club_layout, null, false);
                     LinearLayout linearLayout = mSelectClubView.findViewById(R.id.club_select_linear_layout);
                     new Thread(() -> {
                         if (mClubList == null)
                             mClubList = ClubLab.getParticipateClubList();
-                        runOnUiThread(() -> {
+                        mActivity.runOnUiThread(() -> {
                             for (Club club : mClubList) {
-                                View itemView = LayoutInflater.from(TaskListActivity.this).inflate(R.layout.task_releas_club_select_item, null, false);
+                                View itemView = LayoutInflater.from(mActivity).inflate(R.layout.task_releas_club_select_item, null, false);
                                 ImageView avatar = itemView.findViewById(R.id.club_image);
                                 TextView name = itemView.findViewById(R.id.club_name);
                                 TextView memberNum = itemView.findViewById(R.id.club_member_number);
@@ -432,7 +471,7 @@ public class TaskListActivity extends AppCompatActivity {
                                 memberNum.setText(club.getCurrentMemberNum() + "/" + club.getClubMaxMember());
                                 linearLayout.addView(itemView);
                             }
-                            new AlertDialog.Builder(TaskListActivity.this)
+                            new AlertDialog.Builder(mActivity)
                                     .setTitle("选择要发布的社团")
                                     .setView(mSelectClubView)
                                     .setPositiveButton("确认", null)
@@ -493,11 +532,11 @@ public class TaskListActivity extends AppCompatActivity {
             });
 
             mChooseLocation.setOnClickListener(v -> {
-                SelectLocationPopWindow slpw = new SelectLocationPopWindow(TaskListActivity.this);
+                SelectLocationPopWindow slpw = new SelectLocationPopWindow(mActivity);
                 slpw.setOnMarkerSet((address, latLng) -> {
                     mTaskLocation.setText(address);
                     mTaskAccomplishFullAddress = String.format("%s,%f,%f", address, latLng.latitude, latLng.longitude);
-                    Toast.makeText(TaskListActivity.this, address, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, address, Toast.LENGTH_SHORT).show();
                 });
                 slpw.showMapDialog();
             });
@@ -505,7 +544,7 @@ public class TaskListActivity extends AppCompatActivity {
             mChooseTaskStartDate.setOnClickListener(v -> {
                 //设置DateDialog为当前时间
                 DatePickerDialog date = new DatePickerDialog(
-                        TaskListActivity.this, (view, year, month, dayOfMonth) -> {
+                        mActivity, (view, year, month, dayOfMonth) -> {
                     mStartTimes[0] = String.format("%d-%02d-%02d", year, (month + 1), dayOfMonth);
                     mTaskStartTime.setText(mStartTimes[0] + " " + (mStartTimes[1] == null ? "" : mStartTimes[1]));
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
@@ -515,7 +554,7 @@ public class TaskListActivity extends AppCompatActivity {
 
             mChooseTaskStartTime.setOnClickListener(v -> {
                 TimePickerDialog timePicker = new TimePickerDialog(
-                        TaskListActivity.this,
+                        mActivity,
                         (view, hourOfDay, minute) -> {
                             mStartTimes[1] = String.format("%02d:%02d", hourOfDay, minute);
                             mTaskStartTime.setText((mStartTimes[0] == null ? "" : mStartTimes[0]) + " " + mStartTimes[1]);
@@ -530,10 +569,10 @@ public class TaskListActivity extends AppCompatActivity {
             mChooseTaskEndDate.setOnClickListener(v -> {
                 //设置DateDialog为当前时间
                 DatePickerDialog datePicker = new DatePickerDialog(
-                        TaskListActivity.this,
+                        mActivity,
                         (view, year, month, dayOfMonth) -> {
                             mEndTimes[0] = String.format("%d-%02d-%02d", year, (month + 1), dayOfMonth);
-                            Toast.makeText(TaskListActivity.this, mEndTimes[0], Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, mEndTimes[0], Toast.LENGTH_SHORT).show();
                             mTaskEndTime.setText(mEndTimes[0] + " " + (mEndTimes[1] == null ? "" : mEndTimes[1]));
                         },
                         calendar.get(Calendar.YEAR),
@@ -544,7 +583,7 @@ public class TaskListActivity extends AppCompatActivity {
             });
             mChooseTaskEndTime.setOnClickListener(v -> {
                 TimePickerDialog timePicker = new TimePickerDialog(
-                        TaskListActivity.this,
+                        mActivity,
                         (view, hourOfDay, minute) -> {
                             mEndTimes[1] = String.format("%02d:%02d", hourOfDay, minute);
                             mTaskEndTime.setText((mEndTimes[0] == null ? "" : mEndTimes[0]) + " " + mEndTimes[1]);
@@ -567,6 +606,4 @@ public class TaskListActivity extends AppCompatActivity {
         }
     }
 
-
 }
-

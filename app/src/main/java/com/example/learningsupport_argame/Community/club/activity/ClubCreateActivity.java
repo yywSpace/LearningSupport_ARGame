@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.example.learningsupport_argame.Community.club.Club;
 import com.example.learningsupport_argame.Community.club.ClubLab;
@@ -99,9 +102,16 @@ public class ClubCreateActivity extends Activity {
                     .setTitle("提交")
                     .setMessage("确认要创建社团？")
                     .setPositiveButton("确认", (dialog, which) -> {
-                        ClubLab.sCreatedClubList.add(mClub);
-                        finish();
                         new Thread(() -> {
+                            Club club = ClubLab.getClubByName(mClub.getClubName());
+                            if (club != null) {
+                                Looper.prepare();
+                                Toast.makeText(this, "社团名称已存在", Toast.LENGTH_SHORT).show();
+                                Looper.loop();
+                                return;
+                            }
+                            ClubLab.sCreatedClubList.add(mClub);
+                            runOnUiThread(this::finish);
                             ClubLab.insert(mClub);
                             ClubLab.attendClub(mClub);
                         }).start();
@@ -133,7 +143,9 @@ public class ClubCreateActivity extends Activity {
                     image.compress(Bitmap.CompressFormat.PNG, 100, baos);
                     byte[] bytes = baos.toByteArray();
                     Bitmap compressedImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    mClubCoverImage.setImageBitmap(compressedImage);
+                    RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(getResources(), compressedImage);
+                    drawable.setCornerRadius(30);
+                    mClubCoverImage.setImageDrawable(drawable);
                     mClub.setCoverBitmap(compressedImage);
                     mClubCoverImageLabel.setText("封面设置完毕");
                 }

@@ -83,7 +83,7 @@ public class CourseTimeActivity extends AppCompatActivity {
         for (int i = 0; i < CourseSetting.ALL_COURSE_START_TIME.size(); i++) {
             // 在这里执行你要想的操作 比如直接在这里更新ui或者调用回调在 在回调中更新ui
             mCourseStartTimes[i] = new TextView(CourseTimeActivity.this);
-            mCourseStartTimes[i].setText(CourseSetting.ALL_COURSE_START_TIME.get(i));
+            mCourseStartTimes[i].setText(CourseSetting.ALL_COURSE_START_TIME.get(i).trim());
             mCourseStartTimes[i].setTextColor(getResources().getColor(R.color.colorBlack));
             mCourseStartTimes[i].setTextSize(18);
             mCourseStartTimes[i].setOnClickListener(this::showTimePicker);
@@ -97,23 +97,21 @@ public class CourseTimeActivity extends AppCompatActivity {
     }
 
     void initEvent() {
-        mSchoolOpenDateTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 获取当前时间
-                Calendar cTime = Calendar.getInstance();
-                //主题在这里！后边三个参数为显示dialog时默认的日期，月份从0开始，0-11对应1-12个月
-                DatePickerDialog dialog = new DatePickerDialog(CourseTimeActivity.this,
-                        DatePickerDialog.BUTTON_POSITIVE,
-                        (arg0, year, month, day) -> {
-                            CourseSetting.SCHOOL_OPEN_DATE = year + "/" + (month + 1) + "/" + day;
-                            setResult(SCHOOL_OPEN_DATE_RESULT_CODE);
-                        }, cTime.get(Calendar.YEAR), cTime.get(Calendar.MONTH), cTime.get(Calendar.DAY_OF_MONTH));
+        mSchoolOpenDateTV.setOnClickListener(v -> {
+            // 获取当前时间
+            Calendar cTime = Calendar.getInstance();
+            //主题在这里！后边三个参数为显示dialog时默认的日期，月份从0开始，0-11对应1-12个月
+            DatePickerDialog dialog = new DatePickerDialog(CourseTimeActivity.this,
+                    DatePickerDialog.BUTTON_POSITIVE,
+                    (arg0, year, month, day) -> {
+                        CourseSetting.SCHOOL_OPEN_DATE = year + "/" + (month + 1) + "/" + day;
+                        setResult(SCHOOL_OPEN_DATE_RESULT_CODE);
+                        mSchoolOpenDateTV.setText(CourseSetting.SCHOOL_OPEN_DATE);
+                    }, cTime.get(Calendar.YEAR), cTime.get(Calendar.MONTH), cTime.get(Calendar.DAY_OF_MONTH));
 
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.setTitle("");
-                dialog.show();
-            }
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.setTitle("");
+            dialog.show();
         });
         mCourseSettingSubmit.setOnClickListener(v -> {
             for (int i = 0; i < mCourseNum; i++) {
@@ -127,10 +125,11 @@ public class CourseTimeActivity extends AppCompatActivity {
                 Toast.makeText(CourseTimeActivity.this, "请填写完整信息", Toast.LENGTH_SHORT).show();
                 return;
             }
-            CourseSetting.ALL_COURSE_START_TIME.clear();
-            CourseSetting.COURSE_NUMBER = mCourseNum;
-            CourseSetting.COURSE_TIME_SPAN = Integer.parseInt(mCourseTimeSpanTV.getText().toString());
+
+            int courseSpan = Integer.parseInt(mCourseTimeSpanTV.getText().toString());
+            List<String> startTimes = new ArrayList<>();
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+
             List<Date> dateList = new ArrayList<>();
             for (int i = 0; i < mCourseNum; i++) {
                 String time = mCourseStartTimes[i].getText().toString();
@@ -139,17 +138,21 @@ public class CourseTimeActivity extends AppCompatActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                CourseSetting.ALL_COURSE_START_TIME.add(i, time);
+                startTimes.add(i, time.trim());
             }
             for (int i = 1; i < mCourseNum; i++) {
                 int m = (int) ((dateList.get(i).getTime() - dateList.get(i - 1).getTime()) / 1000 / 60);
-                if (m < CourseSetting.COURSE_TIME_SPAN) {
+                if (m < courseSpan) {
                     Toast.makeText(CourseTimeActivity.this,
                             String.format("第%d,%d节课上课时间间隔小于所设置间隔", i, i + 1),
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
+            CourseSetting.ALL_COURSE_START_TIME.clear();
+            CourseSetting.ALL_COURSE_START_TIME.addAll(startTimes);
+            CourseSetting.COURSE_NUMBER = mCourseNum;
+            CourseSetting.COURSE_TIME_SPAN = courseSpan;
             new Thread(CourseLab::insertCourseSetting).start();
             Toast.makeText(CourseTimeActivity.this, "时间设置成功", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
@@ -163,55 +166,52 @@ public class CourseTimeActivity extends AppCompatActivity {
         });
         mCourseTimeReturn.setOnClickListener(v -> finish());
 
-        mCourseTimeSpanTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 要展示的数据
-                final List<String> timeSpanList = new ArrayList<>();
-                for (int i = 1; i <= 60; i++) {
-                    timeSpanList.add(String.valueOf(i));
-                }
-                // 监听选中
-                final OptionsPickerView pvOptions = new OptionsPickerBuilder(CourseTimeActivity.this, new OnOptionsSelectListener() {
-                    @Override
-                    public void onOptionsSelect(int options1, int option2, int options3, View v) {
-                        // 返回的是选中位置
-                        // 展示选中数据
-                        mCourseTimeSpanTV.setText(timeSpanList.get(options1));
-                    }
-                }).setLayoutRes(R.layout.course_pickerview_stair_layout, new CustomListener() {
-                    @Override
-                    public void customLayout(View v) {
-                        TextView textView = v.findViewById(R.id.course_picker_title);
-                        textView.setText("每节课的时间跨度(分)");
-                        mCourseTimeSpanCancel = v.findViewById(R.id.course_picker_view_cancel_button);
-                        mCourseTimeSpanCommit = v.findViewById(R.id.course_picker_view_commit_button);
-                    }
-                }).setDividerColor(Color.BLACK)
-                        .setContentTextSize(18)
-                        .setCyclic(true, true, true)
-                        .setTextColorCenter(Color.rgb(205, 104, 57))
-                        .setDividerColor(Color.alpha(Color.BLACK))
-                        .build();//创建
-
-                mCourseTimeSpanCommit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pvOptions.returnData();
-                        pvOptions.dismiss();
-                    }
-                });
-                mCourseTimeSpanCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pvOptions.dismiss();
-                    }
-                });
-                // 把数据绑定到控件上面
-                pvOptions.setPicker(timeSpanList);
-                // 展示
-                pvOptions.show();
+        mCourseTimeSpanTV.setOnClickListener(v -> {
+            // 要展示的数据
+            final List<String> timeSpanList = new ArrayList<>();
+            for (int i = 1; i <= 60; i++) {
+                timeSpanList.add(String.valueOf(i));
             }
+            // 监听选中
+            final OptionsPickerView pvOptions = new OptionsPickerBuilder(CourseTimeActivity.this, new OnOptionsSelectListener() {
+                @Override
+                public void onOptionsSelect(int options1, int option2, int options3, View v) {
+                    // 返回的是选中位置
+                    // 展示选中数据
+                    mCourseTimeSpanTV.setText(timeSpanList.get(options1));
+                }
+            }).setLayoutRes(R.layout.course_pickerview_stair_layout, new CustomListener() {
+                @Override
+                public void customLayout(View v) {
+                    TextView textView = v.findViewById(R.id.course_picker_title);
+                    textView.setText("每节课的时间跨度(分)");
+                    mCourseTimeSpanCancel = v.findViewById(R.id.course_picker_view_cancel_button);
+                    mCourseTimeSpanCommit = v.findViewById(R.id.course_picker_view_commit_button);
+                }
+            }).setDividerColor(Color.BLACK)
+                    .setContentTextSize(18)
+                    .setCyclic(true, true, true)
+                    .setTextColorCenter(Color.rgb(205, 104, 57))
+                    .setDividerColor(Color.alpha(Color.BLACK))
+                    .build();//创建
+
+            mCourseTimeSpanCommit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pvOptions.returnData();
+                    pvOptions.dismiss();
+                }
+            });
+            mCourseTimeSpanCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pvOptions.dismiss();
+                }
+            });
+            // 把数据绑定到控件上面
+            pvOptions.setPicker(timeSpanList);
+            // 展示
+            pvOptions.show();
         });
     }
 
@@ -350,7 +350,7 @@ public class CourseTimeActivity extends AppCompatActivity {
                 // 返回的是选中位置
                 // 展示选中数据
                 TextView textView = (TextView) view;
-                textView.setText(listStartMinute.get(options1) + ":" + listStartSecond.get(option2));
+                textView.setText(listStartMinute.get(options1).trim() + ":" + listStartSecond.get(option2).trim());
             }
         })
                 .setLayoutRes(R.layout.course_pickerview_stair_layout, new CustomListener() {

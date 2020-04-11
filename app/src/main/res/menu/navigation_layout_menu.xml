@@ -1,36 +1,44 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/navigation_menu_friend"
-        android:icon="@drawable/navigation_friend"
-        android:title="我的好友" />
-    <item
-        android:id="@+id/navigation_menu_club"
-        android:icon="@drawable/navigation_club"
-        android:title="我的社团" />
-    <item
-        android:id="@+id/navigation_menu_task"
-        android:icon="@drawable/navigation_task"
-        android:title="我的任务" />
-    <item
-        android:id="@+id/navigation_menu_bag"
-        android:icon="@drawable/navigation_bag_icon"
-        android:title="我的背包" />
-    <item
-        android:id="@+id/navigation_menu_course"
-        android:icon="@drawable/navigation_course"
-        android:title="我的课程" />
-    <item
-        android:id="@+id/navigation_menu_feedback"
-        android:icon="@drawable/navigation_feedback"
-        android:title="学习反馈" />
-    <item
-        android:id="@+id/navigation_menu_square"
-        android:icon="@drawable/navigation_unity"
-        android:title="广场" />
-    <item
-        android:id="@+id/navigation_menu_map"
-        android:icon="@drawable/navigation_map"
-        android:title="地图" />
+    <group android:id="@+id/group1">
+        <item
+            android:id="@+id/navigation_menu_club"
+            android:icon="@drawable/navigation_club"
+            android:title="我的社团" />
+        <item
+            android:id="@+id/navigation_menu_task"
+            android:icon="@drawable/navigation_task"
+            android:title="我的任务" />
+
+        <item
+            android:id="@+id/navigation_menu_course"
+            android:icon="@drawable/navigation_course"
+            android:title="我的课程" />
+    </group>
+    <group android:id="@+id/group2">
+        <item
+            android:id="@+id/navigation_menu_friend"
+            android:icon="@drawable/navigation_friend"
+            android:title="我的好友" />
+
+        <item
+            android:id="@+id/navigation_menu_bag"
+            android:icon="@drawable/navigation_bag_icon"
+            android:title="我的背包" />
+
+        <item
+            android:id="@+id/navigation_menu_feedback"
+            android:icon="@drawable/navigation_feedback"
+            android:title="学习反馈" />
+        <item
+            android:id="@+id/navigation_menu_square"
+            android:icon="@drawable/navigation_unity"
+            android:title="广场" />
+        <item
+            android:id="@+id/navigation_menu_map"
+            android:icon="@drawable/navigation_map"
+            android:title="地图" />
+    </group>
+
     <item
         android:id="@+id/navigation_menu_test"
         android:title="测试" />

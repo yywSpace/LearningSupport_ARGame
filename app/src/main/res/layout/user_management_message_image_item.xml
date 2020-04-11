@@ -9,18 +9,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:text="进入"
-        android:textSize="15dp"
+        android:textSize="15sp"
         android:textStyle="bold" />
 
-    <com.example.learningsupport_argame.CircleImageView
+    <ImageView
         android:id="@+id/user_management_message_image"
-
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_gravity="right|center"
-        android:layout_marginRight="20dp"
+        android:layout_gravity="end|center"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/user_management_avatar" />
 
 </androidx.cardview.widget.CardView>

@@ -105,6 +105,7 @@ public class ScanModelActivity extends AppCompatActivity {
         mPutModelButton = findViewById(R.id.armodel_refresh_model);
         mTaskAcceptButton = findViewById(R.id.armodel_task_accept);
         mMessageTextView = findViewById(R.id.armodel_node_message);
+        mMessageTextView.setVisibility(View.INVISIBLE);
         // 不检测平面
         mArSceneView.getPlaneRenderer().setEnabled(false);
         mTaskAcceptButton.setOnClickListener(v -> {

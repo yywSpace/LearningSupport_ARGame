@@ -96,12 +96,12 @@ public class UserLab {
                 String rewardItemsStr = resultSet.getString("user_reward_items");
                 List<RewardItem> rewardItems = new ArrayList<>(4);
                 RewardItemLab rewardItemLab = RewardItemLab.get();
-                if (rewardItemsStr == null || rewardItemsStr.equals("")) {
+                if (rewardItemsStr == null || rewardItemsStr.equals("") || rewardItemsStr.equals("[]")) {
                     rewardItems.addAll(Arrays.asList(
-                            rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_HEALING_POTION, 0),
-                            rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_EXP_POTION, 0),
-                            rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_SPEED_POTION, 0),
-                            rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_GOLD_POTION, 0)));
+                            rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_HEALING_POTION, 1),
+                            rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_EXP_POTION, 1),
+                            rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_SPEED_POTION, 1),
+                            rewardItemLab.getRewardItemByType(RewardItem.RewardItemType.ITEM_GOLD_POTION, 1)));
                     user.setRewardItems(rewardItems);
                 } else {
                     //[ITEM_HEALING_POTION-0, ITEM_EXP_POTION-0, ITEM_SPEED_POTION-0]
@@ -121,38 +121,39 @@ public class UserLab {
                     }
                     Log.d(TAG, "rewardItems: " + rewardItems.toString());
                     user.setRewardItems(rewardItems);
-
-                    // 模型列表
-                    String modelItemsStr = resultSet.getString("user_model_items");
-                    List<ModelItem> modelItems = new ArrayList<>();
-                    if (modelItemsStr == null || modelItemsStr.equals("")) {
-                        modelItems.add(ModelItemsLab.get().getItemList().get(0));
-                        modelItems.add(ModelItemsLab.get().getItemList().get(1));
-                    } else {
-                        String[] modelItemsArray = modelItemsStr.substring(1, modelItemsStr.length() - 1).split(",");
-                        for (String id : modelItemsArray){
-                            if (id.equals(""))
-                                continue;
-                            modelItems.add(ModelItemsLab.get().getItemList().get(Integer.parseInt(id.trim())));
-                        }
-                    }
-                    user.setModelItems(modelItems);
-                    // unity模型列表
-                    String unityModelsStr = resultSet.getString("user_unity_models");
-                    List<UnityItem> unityModels = new ArrayList<>();
-                    if (unityModelsStr == null || unityModelsStr.equals("")) {
-                        unityModels.add(UnityItemLab.get().getUnityItemList().get(0));
-                    } else {
-                        String[] modelItemsArray = unityModelsStr.substring(1, unityModelsStr.length() - 1).split(",");
-                        for (String id : modelItemsArray) {
-                            if (id.equals("")) {
-                                continue;
-                            }
-                            unityModels.add(UnityItemLab.get().getUnityItemList().get(Integer.parseInt(id.trim())));
-                        }
-                    }
-                    user.setUnityItems(unityModels);
                 }
+
+                // 模型列表
+                String modelItemsStr = resultSet.getString("user_model_items");
+                List<ModelItem> modelItems = new ArrayList<>();
+                if (modelItemsStr == null || modelItemsStr.equals("")) {
+                    modelItems.add(ModelItemsLab.get().getItemList().get(0));
+                    modelItems.add(ModelItemsLab.get().getItemList().get(1));
+                } else {
+                    String[] modelItemsArray = modelItemsStr.substring(1, modelItemsStr.length() - 1).split(",");
+                    for (String id : modelItemsArray) {
+                        if (id.equals(""))
+                            continue;
+                        modelItems.add(ModelItemsLab.get().getItemList().get(Integer.parseInt(id.trim())));
+                    }
+                }
+                Log.d(TAG, "modelItems: " + modelItems.size());
+                user.setModelItems(modelItems);
+                // unity模型列表
+                String unityModelsStr = resultSet.getString("user_unity_models");
+                List<UnityItem> unityModels = new ArrayList<>();
+                if (unityModelsStr == null || unityModelsStr.equals("")) {
+                    unityModels.add(UnityItemLab.get().getUnityItemList().get(0));
+                } else {
+                    String[] modelItemsArray = unityModelsStr.substring(1, unityModelsStr.length() - 1).split(",");
+                    for (String id : modelItemsArray) {
+                        if (id.equals("")) {
+                            continue;
+                        }
+                        unityModels.add(UnityItemLab.get().getUnityItemList().get(Integer.parseInt(id.trim())));
+                    }
+                }
+                user.setUnityItems(unityModels);
                 users.add(user);
             }
         }, sql, args);

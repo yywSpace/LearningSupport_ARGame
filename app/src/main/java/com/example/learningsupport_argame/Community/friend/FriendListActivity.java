@@ -1,6 +1,8 @@
 package com.example.learningsupport_argame.Community.friend;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -58,6 +60,7 @@ public class FriendListActivity extends AppCompatActivity {
         setContentView(R.layout.friend_list_activity_layout);
         inChatRoom = getIntent().getBooleanExtra(FriendListActivity.IN_CHAT_ROOM_LABEL, false);
         mOnRecycleViewItemClick = (view, user, position) -> {
+
             Log.d(TAG, "mOnRecycleViewItemClick: " + inChatRoom);
             if (inChatRoom) {
                 Toast.makeText(FriendListActivity.this, "您已经在聊天室中", Toast.LENGTH_SHORT).show();
@@ -66,14 +69,21 @@ public class FriendListActivity extends AppCompatActivity {
             if (user.getOnlineStatus() == 0) {
                 Toast.makeText(FriendListActivity.this, "当前用户不在线，请稍后重试", Toast.LENGTH_SHORT).show();
             } else {
-                Intent intent = new Intent(FriendListActivity.this, MainActivity.class);
-                intent.putExtra("scene", "chat_room");
-                //message:otherName,userName,modName
-                intent.putExtra("scene_args",
-                        user.getName() + "," + UserLab.getCurrentUser().getName() + "," + user.getModName().trim());
-                startActivity(intent);
-                Toast.makeText(FriendListActivity.this, user.getName() + "," + UserLab.getCurrentUser().getName() + "," + user.getModName(), Toast.LENGTH_SHORT).show();
-                finish();
+                new AlertDialog.Builder(FriendListActivity.this)
+                        .setTitle("进入聊天室[" + user.getName() + "]")
+                        .setMessage("是否要进入聊天室?")
+                        .setPositiveButton("确认", (dialog, which) -> {
+                            Intent intent = new Intent(FriendListActivity.this, MainActivity.class);
+                            intent.putExtra("scene", "chat_room");
+                            //message:otherName,userName,modName
+                            intent.putExtra("scene_args",
+                                    user.getName() + "," + UserLab.getCurrentUser().getName() + "," + user.getModName().trim());
+                            startActivity(intent);
+                            Toast.makeText(FriendListActivity.this, user.getName() + "," + UserLab.getCurrentUser().getName() + "," + user.getModName(), Toast.LENGTH_SHORT).show();
+                            finish();
+                        })
+                        .setNegativeButton("取消",null)
+                        .show();
             }
         };
         if (UserLab.getCurrentUser() != null) {

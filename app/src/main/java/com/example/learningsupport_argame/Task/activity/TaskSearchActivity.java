@@ -18,6 +18,7 @@ import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.TaskLab;
 import com.example.learningsupport_argame.Task.TaskShowView;
 import com.example.learningsupport_argame.Task.adapter.TaskItemAdapter;
+import com.example.learningsupport_argame.Task.fragment.TaskListFragment;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.util.ArrayList;
@@ -67,8 +68,8 @@ public class TaskSearchActivity extends AppCompatActivity {
                     TaskSearchSuggestionProvider.AUTHORITY, TaskSearchSuggestionProvider.MODE, 10);
             suggestions.saveRecentQuery(query, null);
             mQueryWord = query;
-            getSupportActionBar().setTitle(TaskListActivity.sCurrentListType + "--" + mQueryWord);
-            if (TaskListActivity.sCurrentListType.equals("已接受的任务")) {
+            getSupportActionBar().setTitle(TaskListFragment.sCurrentListType + "--" + mQueryWord);
+            if (TaskListFragment.sCurrentListType.equals("已接受的任务")) {
                 mTaskItemAdapter.setOnRecycleViewItemClick((v, position) -> {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     TaskShowView taskShowView = new TaskShowView(this);
@@ -90,7 +91,7 @@ public class TaskSearchActivity extends AppCompatActivity {
                     mSearchList.addAll(taskList);
                     runOnUiThread(() -> mTaskItemAdapter.notifyDataSetChanged());
                 }).start();
-            } else if (TaskListActivity.sCurrentListType.equals("任务列表")) {
+            } else if (TaskListFragment.sCurrentListType.equals("任务列表")) {
                 mTaskItemAdapter.setOnRecycleViewItemClick((v, position) -> {
                     TaskShowView taskShowView = new TaskShowView(this);
                     taskShowView.initData(mSearchList.get(position));

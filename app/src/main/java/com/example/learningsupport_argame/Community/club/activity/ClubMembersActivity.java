@@ -25,6 +25,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.learningsupport_argame.Community.club.ClubLab;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 import com.example.learningsupport_argame.UserManagement.UserMessage.FriendMessageActivity;
@@ -47,6 +48,8 @@ public class ClubMembersActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.club_member_list_layout);
+        ActivityUtil.addActivity(this);
+
         mSwipeRefreshLayout = findViewById(R.id.members_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             new Thread(() -> {
@@ -100,6 +103,12 @@ public class ClubMembersActivity extends Activity {
                 mMemberListAdapter.notifyDataSetChanged();
             });
         }).start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityUtil.removeActivity(this);
     }
 
     class MemberListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

@@ -334,7 +334,7 @@ public class UserMessageActivity extends Activity {
                             cancel();
                         }
                     }
-                }, 0,1000);
+                }, 0, 1000);
             }
         }
     }

@@ -26,6 +26,7 @@ import com.example.learningsupport_argame.Community.club.Club;
 import com.example.learningsupport_argame.Community.club.ClubInfoItem;
 import com.example.learningsupport_argame.Community.club.ClubLab;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.User;
 import com.example.learningsupport_argame.UserManagement.UserLab;
 
@@ -46,6 +47,7 @@ public class ClubInfoActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.club_attend_actvity_layout);
+        ActivityUtil.addActivity(this);
         mClub = Club.sCurrentClub;
         mClubStatus = getIntent().getStringExtra("status");
         mClubInfoItems = new ArrayList<>(Arrays.asList(
@@ -96,6 +98,12 @@ public class ClubInfoActivity extends Activity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mClubInfoAdapter);
         mRecyclerView.addItemDecoration(new MyItemDecoration());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityUtil.removeActivity(this);
     }
 
     class ClubInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
