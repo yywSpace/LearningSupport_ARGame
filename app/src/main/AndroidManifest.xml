@@ -106,6 +106,7 @@
         <activity android:name=".Task.activity.TaskListFragmentActivity" />
         <activity android:name=".Community.club.activity.ClubListFragmentActivity" />
         <activity android:name=".NavigationActivity" />
+        <activity android:name=".AnnouncementActivity" android:theme="@style/Transparent"  />
 
         <provider
             android:name=".Task.activity.TaskSearchSuggestionProvider"

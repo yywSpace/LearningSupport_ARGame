@@ -1,160 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linearLayout"
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <ImageView
-        android:id="@+id/monitor_return"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/course_ic_return" />
-
-    <LinearLayout
+    android:layout_height="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <TextSwitcher
-            android:id="@+id/monitor_poetry_switcher_left"
+        <ImageView
+            android:id="@+id/monitor_return"
             android:layout_width="wrap_content"
-            android:layout_height="300dp"
-            android:layout_gravity="left|bottom"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginBottom="20dp"
-            android:inAnimation="@anim/monitor_poetry_left_in"
-            android:outAnimation="@anim/monitor_poetry_left_out" />
-
+            android:layout_marginTop="16dp"
+            android:src="@drawable/course_ic_return" />
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_weight="9"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="700dp"
+            android:orientation="horizontal">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp">
-                <!-- TextView -->
+            <TextSwitcher
+                android:id="@+id/monitor_poetry_switcher_left"
+                android:layout_width="wrap_content"
+                android:layout_height="300dp"
+                android:layout_gravity="left|bottom"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="20dp"
+                android:inAnimation="@anim/monitor_poetry_left_in"
+                android:outAnimation="@anim/monitor_poetry_left_out" />
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_weight="9"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp">
+                    <!-- Clock -->
+                    <TextClock
+                        android:id="@+id/monitor_system_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:format12Hour="hh:mm"
+                        android:format24Hour="HH:mm"
+                        android:text="10:06"
+                        android:textColor="@android:color/black"
+                        android:textSize="40dp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/monitor_task_speed_up_image_view"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        android:background="@drawable/monitor_task_speed_up_icon" />
+                </RelativeLayout>
+
+
                 <TextView
-                    android:id="@+id/monitor_system_time"
+                    android:id="@+id/monitor_system_calender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:format12Hour="hh:mm"
-                    android:format24Hour="HH:mm"
-                    android:text="10:06"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:format12Hour="yyyy.MM.dd"
+                    android:format24Hour="yyyy.MM.dd"
+                    android:text="7月31日" />
+
+                <FrameLayout
+                    android:id="@+id/monitor_remaining_time_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp">
+
+                    <com.example.learningsupport_argame.MonitorModel.CountDownView
+                        android:id="@+id/monitor_count_down_view"
+                        android:layout_width="300dp"
+                        android:layout_height="300dp" />
+                </FrameLayout>
+
+
+                <TextView
+                    android:id="@+id/monitor_phone_use_time_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="手机使用时间"
                     android:textColor="@android:color/black"
-                    android:textSize="40dp"
+                    android:textSize="15dp"
                     android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/monitor_task_speed_up_image_view"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/monitor_task_speed_up_icon" />
-            </RelativeLayout>
+                <TextView
+                    android:id="@+id/monitor_phone_use_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:text="00:00:00" />
 
+                <TextView
+                    android:id="@+id/monitor_attention_time_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:text="专注时间"
+                    android:textColor="@android:color/black"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/monitor_system_calender"
+                <TextView
+                    android:id="@+id/monitor_task_attention_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:text="00:00:00" />
+
+                <TextView
+                    android:id="@+id/monitor_phone_use_count_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:text="手机使用次数"
+                    android:textColor="@android:color/black"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/monitor_phone_use_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:text="0" />
+            </LinearLayout>
+
+            <TextSwitcher
+                android:id="@+id/monitor_poetry_switcher_right"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:format12Hour="yyyy.MM.dd"
-                android:format24Hour="yyyy.MM.dd"
-                android:text="7月31日" />
-
-            <FrameLayout
-                android:id="@+id/monitor_remaining_time_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp">
-
-                <com.example.learningsupport_argame.MonitorModel.CountDownView
-                    android:id="@+id/monitor_count_down_view"
-                    android:layout_width="300dp"
-                    android:layout_height="300dp" />
-            </FrameLayout>
-
-
-            <TextView
-                android:id="@+id/monitor_phone_use_time_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="手机使用时间"
-                android:textColor="@android:color/black"
-                android:textSize="15dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/monitor_phone_use_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="00:00:00" />
-
-            <TextView
-                android:id="@+id/monitor_attention_time_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="15dp"
-                android:text="专注时间"
-                android:textColor="@android:color/black"
-                android:textSize="15dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/monitor_task_attention_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="00:00:00" />
-
-            <TextView
-                android:id="@+id/monitor_phone_use_count_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="15dp"
-                android:text="手机使用次数"
-                android:textColor="@android:color/black"
-                android:textSize="15dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/monitor_phone_use_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="0" />
+                android:layout_height="300dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:inAnimation="@anim/monitor_poetry_right_in"
+                android:outAnimation="@anim/monitor_poetry_right_out" />
         </LinearLayout>
-
-        <TextSwitcher
-            android:id="@+id/monitor_poetry_switcher_right"
-            android:layout_width="wrap_content"
-            android:layout_height="300dp"
-            android:layout_gravity="right"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:inAnimation="@anim/monitor_poetry_right_in"
-            android:outAnimation="@anim/monitor_poetry_right_out" />
     </LinearLayout>
-</LinearLayout>
 
+
+</ScrollView>

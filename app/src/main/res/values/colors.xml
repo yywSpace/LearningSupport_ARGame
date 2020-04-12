@@ -18,7 +18,7 @@
     <color name="gray">#C7C7C7</color>
     <color name="blue_semi_transparent_pressed">#74aaf0</color>
     <color name="purple">#88700ffe</color>
-    <color name="blue1" >#1e90ff</color>
+    <color name="blue1">#1e90ff</color>
     <color name="blue2">#4169e1</color>
 
     <color name="colorCourse1">#a47aff</color>
@@ -28,4 +28,7 @@
     <color name="colorCourse5">#ffc0cb</color>
 
     <color name="black_font">#000000</color>
+
+    　　
+    <color name="transparent">#9000</color>
 </resources>

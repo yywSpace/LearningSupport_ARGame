@@ -1,19 +1,27 @@
 package com.example.learningsupport_argame;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -23,6 +31,8 @@ import com.example.learningsupport_argame.Course.CourseMainActivity;
 import com.example.learningsupport_argame.Course.CourseMainFragment;
 import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.Navi.Activity.MapActivity;
+import com.example.learningsupport_argame.Task.Task;
+import com.example.learningsupport_argame.Task.TaskLab;
 import com.example.learningsupport_argame.Task.fragment.TaskListFragment;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
@@ -34,6 +44,12 @@ import com.example.learningsupport_argame.UserManagement.bag.UserBagActivity;
 import com.example.learningsupport_argame.UserManagement.ranking.RankingActivity;
 import com.example.learningsupport_argame.UserManagement.shop.ShopActivity;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class NavigationActivity extends AppCompatActivity {
     private String TAG = "NavigationActivity";
@@ -95,6 +111,11 @@ public class NavigationActivity extends AppCompatActivity {
         shopImageButton.setOnClickListener(v -> {
             Toast.makeText(this, "商店", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, ShopActivity.class));
+        });
+        ImageButton announcementImageButton = mHeaderView.findViewById(R.id.navigation_announcement);
+        announcementImageButton.setOnClickListener(v -> {
+            Toast.makeText(this, "通知", Toast.LENGTH_SHORT).show();
+            startAnnouncementDialog(this);
         });
 
         mNavigationView.setNavigationItemSelectedListener(item -> {
@@ -190,5 +211,57 @@ public class NavigationActivity extends AppCompatActivity {
         } else {
             mDrawerLayout.openDrawer(mNavigationView);
         }
+    }
+
+    public static void startAnnouncementDialog(Activity context) {
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.announcement_layout, null, false);
+        TextSwitcher switcher1 = view.findViewById(R.id.announcement_title_1);
+        TextSwitcher switcher2 = view.findViewById(R.id.announcement_title_2);
+        ViewSwitcher.ViewFactory factory = () -> {
+            TextView t = new TextView(context);
+            t.setTextColor(Color.parseColor("#333333"));
+            t.setMaxLines(1);
+            float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 8, context.getResources().getDisplayMetrics());
+            t.setTextSize(textSize);
+            return t;
+        };
+        switcher1.setFactory(factory);
+        switcher2.setFactory(factory);
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (TaskLab.sAllPeopleTaskList == null) {
+                    switcher1.setCurrentText("加载中...");
+                    switcher2.setCurrentText("加载中...");
+                    return;
+                }
+                List<Task> taskList = new ArrayList<>(TaskLab.sAllPeopleTaskList);
+                Random random = new Random(System.currentTimeMillis());
+                int ran1 = random.nextInt(taskList.size());
+                int ran2 = random.nextInt(taskList.size());
+                context.runOnUiThread(() -> {
+                    switcher1.setText(taskList.get(ran1).getTaskName());
+                    switcher2.setText(taskList.get(ran2).getTaskName());
+                });
+            }
+        }, 0, 3000);
+
+        new Thread(() -> {
+            if (TaskLab.sAllPeopleTaskList == null) {
+                TaskLab.getAllPeopleTask();
+            }
+        }).start();
+
+        AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setView(view)
+                .show();
+        ImageButton exitButton = view.findViewById(R.id.announcement_exit_button);
+        exitButton.setOnClickListener((v1) -> {
+            timer.cancel();
+            alertDialog.dismiss();
+        });
     }
 }

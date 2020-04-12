@@ -108,7 +108,7 @@
             android:id="@+id/navigation_honour"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="20dp"
             android:background="@drawable/navigation_honour_icon"
             tools:ignore="ContentDescription" />
 
@@ -116,8 +116,16 @@
             android:id="@+id/navigation_shop"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="20dp"
             android:background="@drawable/navigation_shop_icon"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/navigation_announcement"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/navigation_announcement_icon"
             tools:ignore="ContentDescription" />
 
     </LinearLayout>

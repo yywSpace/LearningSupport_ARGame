@@ -2,12 +2,22 @@ package com.example.learningsupport_argame;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,10 +28,17 @@ import com.example.learningsupport_argame.Client.UDPClient;
 import com.example.learningsupport_argame.Community.club.activity.ClubListFragmentActivity;
 import com.example.learningsupport_argame.MonitorModel.MonitorActivity;
 import com.example.learningsupport_argame.Navi.Activity.SendLocationExample;
+import com.example.learningsupport_argame.Task.Task;
+import com.example.learningsupport_argame.Task.TaskLab;
 import com.example.learningsupport_argame.Task.activity.TaskListFragmentActivity;
 import com.unity3d.player.UnityPlayerOperationActivity;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class TestActivity extends AppCompatActivity {
@@ -107,10 +124,9 @@ public class TestActivity extends AppCompatActivity {
 
         Button button = findViewById(R.id.test);
         button.setOnClickListener(v -> {
-            TextView textView = new TextView(this);
-
+            startActivity(new Intent(TestActivity.this, AnnouncementActivity.class));
         });
-}
+    }
 
     void initUnity() {
         mChatButton = findViewById(R.id.call_chatroom_button);
