@@ -59,7 +59,9 @@
                 android:id="@+id/announcement_title_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp" />
+                android:layout_marginStart="10dp"
+                android:inAnimation="@anim/announcement_in"
+                android:outAnimation="@anim/announcement_out" />
 
         </LinearLayout>
 
@@ -67,9 +69,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:gravity="center_vertical"
             android:paddingStart="30dp"
-            android:layout_marginBottom="20dp"
             android:paddingEnd="30dp">
 
             <ImageView
@@ -82,7 +84,9 @@
                 android:id="@+id/announcement_title_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp" />
+                android:layout_marginStart="10dp"
+                android:inAnimation="@anim/announcement_in"
+                android:outAnimation="@anim/announcement_out" />
 
         </LinearLayout>
     </LinearLayout>

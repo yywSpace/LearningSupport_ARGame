@@ -1,7 +1,6 @@
 package com.example.learningsupport_argame;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -12,6 +11,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -33,6 +33,7 @@ import com.example.learningsupport_argame.FeedbackModel.FeedbackDetailsActivity;
 import com.example.learningsupport_argame.Navi.Activity.MapActivity;
 import com.example.learningsupport_argame.Task.Task;
 import com.example.learningsupport_argame.Task.TaskLab;
+import com.example.learningsupport_argame.Task.TaskShowView;
 import com.example.learningsupport_argame.Task.fragment.TaskListFragment;
 import com.example.learningsupport_argame.UserManagement.ActivityUtil;
 import com.example.learningsupport_argame.UserManagement.Login.LoginActivity;
@@ -47,6 +48,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -213,11 +215,54 @@ public class NavigationActivity extends AppCompatActivity {
         }
     }
 
-    public static void startAnnouncementDialog(Activity context) {
+    public void startAnnouncementDialog(Activity context) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.announcement_layout, null, false);
         TextSwitcher switcher1 = view.findViewById(R.id.announcement_title_1);
         TextSwitcher switcher2 = view.findViewById(R.id.announcement_title_2);
+        switcher1.setOnClickListener(v -> {
+            if (TaskLab.sAllPeopleTaskList == null)
+                return;
+            Optional<Task> optionalTask = TaskLab.sAllPeopleTaskList
+                    .stream()
+                    .filter(task1 -> {
+                        TextView textView = (TextView) switcher1.getCurrentView();
+                        return task1.getTaskName().equals(textView.getText().toString());
+                    }).findFirst();
+            optionalTask.ifPresent(task -> {
+                TaskShowView taskShowView = new TaskShowView(NavigationActivity.this);
+                taskShowView.initData(task);
+                AlertDialog.Builder builder = new AlertDialog.Builder(NavigationActivity.this);
+                builder.setView(taskShowView.getView());
+                builder.setTitle("任务详情");
+                builder.setPositiveButton("确认", null);
+                builder.show();
+            });
+
+        });
+        switcher2.setOnClickListener(v -> {
+            if (TaskLab.sAllPeopleTaskList == null)
+                return;
+            Optional<Task> optionalTask = TaskLab.sAllPeopleTaskList
+                    .stream()
+                    .filter(task1 -> {
+                        TextView textView = (TextView) switcher2.getCurrentView();
+                        return task1.getTaskName().equals(textView.getText().toString());
+                    }).findFirst();
+            optionalTask.ifPresent(task -> {
+                TaskShowView taskShowView = new TaskShowView(NavigationActivity.this);
+                taskShowView.initData(task);
+                AlertDialog.Builder builder = new AlertDialog.Builder(NavigationActivity.this);
+                builder.setView(taskShowView.getView());
+                builder.setTitle("任务详情");
+                builder.setPositiveButton("确认", null);
+                builder.show();
+            });
+        });
+        switcher1.setInAnimation(AnimationUtils.loadAnimation(context, R.anim.announcement_in));
+        switcher1.setOutAnimation(AnimationUtils.loadAnimation(context, R.anim.announcement_out));
+        switcher2.setInAnimation(AnimationUtils.loadAnimation(context, R.anim.announcement_in));
+        switcher2.setOutAnimation(AnimationUtils.loadAnimation(context, R.anim.announcement_out));
         ViewSwitcher.ViewFactory factory = () -> {
             TextView t = new TextView(context);
             t.setTextColor(Color.parseColor("#333333"));

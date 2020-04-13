@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -32,6 +33,10 @@ public class AnnouncementActivity extends Activity {
         ImageButton exitButton = findViewById(R.id.announcement_exit_button);
         TextSwitcher switcher1 = findViewById(R.id.announcement_title_1);
         TextSwitcher switcher2 = findViewById(R.id.announcement_title_2);
+        switcher1.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.announcement_in));
+        switcher1.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.announcement_out));
+        switcher2.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.announcement_in));
+        switcher2.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.announcement_out));
         ViewSwitcher.ViewFactory factory = () -> {
             TextView t = new TextView(this);
             t.setTextColor(Color.parseColor("#333333"));
@@ -67,11 +72,10 @@ public class AnnouncementActivity extends Activity {
                     switcher2.setText(taskList.get(ran2).getTaskName());
                 });
             }
-        }, 0, 2000);
+        }, 0, 3000);
         exitButton.setOnClickListener((v1) -> {
             finish();
             timer.cancel();
         });
-
     }
 }

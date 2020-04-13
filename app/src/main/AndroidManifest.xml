@@ -91,7 +91,7 @@
         <activity
             android:name=".Task.activity.TaskSearchActivity"
             android:launchMode="singleTop"
-            android:parentActivityName="com.example.learningsupport_argame.Task.activity.TaskListFragmentActivity">
+            android:parentActivityName="com.example.learningsupport_argame.NavigationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -105,8 +105,15 @@
             android:theme="@style/splashLoadingScreenTheme" />
         <activity android:name=".Task.activity.TaskListFragmentActivity" />
         <activity android:name=".Community.club.activity.ClubListFragmentActivity" />
-        <activity android:name=".NavigationActivity" />
-        <activity android:name=".AnnouncementActivity" android:theme="@style/Transparent"  />
+        <activity android:name=".NavigationActivity">
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".Task.activity.TaskSearchActivity" />
+
+        </activity>
+        <activity
+            android:name=".AnnouncementActivity"
+            android:theme="@style/Transparent" />
 
         <provider
             android:name=".Task.activity.TaskSearchSuggestionProvider"
