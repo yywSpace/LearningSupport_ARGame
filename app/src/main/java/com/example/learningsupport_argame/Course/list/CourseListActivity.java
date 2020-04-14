@@ -82,6 +82,7 @@ public class CourseListActivity extends AppCompatActivity {
             mCourseList.addAll(sortedCourse);
             Log.d("13", "onResume: " + mCourseList.size());
             mAllCourseList = new ArrayList<>(mCourseList);
+            Log.d("13", "mAllCourseList: " + mAllCourseList.size());
             mCourseListAdapter.notifyDataSetChanged();
         }
     }
@@ -148,6 +149,7 @@ public class CourseListActivity extends AppCompatActivity {
                 removeAllCourseLDialog();
                 return true;
             case R.id.course_list_all_course:
+                Log.d("13", "课程列表: mAllCourseList: " + mAllCourseList.size());
                 mTitleTextView.setText("课程列表");
                 mCourseList.clear();
                 mCourseList.addAll(mAllCourseList);
@@ -272,19 +274,21 @@ public class CourseListActivity extends AppCompatActivity {
 
     private void initData() {
         new Thread(() -> {
-            CourseLab.getAllCourse(UserLab.getCurrentUser().getId());
+            if (CourseLab.sCourseList == null)
+                CourseLab.getAllCourse(UserLab.getCurrentUser().getId());
             // 根据每课的每节构造列表
+            List<Course> courseList = new ArrayList<>();
             for (Course course : CourseLab.sCourseList) {
                 for (CourseTime time : course.getTimes()) {
                     Course eCourse = new Course(course);
                     eCourse.setCourseTime(time);
-                    mCourseList.add(eCourse);
+                    courseList.add(eCourse);
                 }
             }
             List<Course> sortedCourse = new ArrayList<>();
             for (String week : weekArray) {
                 List<Course> dayCourse = new ArrayList<>();
-                for (Course course : mCourseList) {
+                for (Course course : courseList) {
                     if (course.getCourseTime().getWeek().equals(week)) {
                         dayCourse.add(course);
                     }
@@ -294,7 +298,7 @@ public class CourseListActivity extends AppCompatActivity {
             }
             mCourseList.clear();
             mCourseList.addAll(sortedCourse);
-            mAllCourseList = new ArrayList<>(mCourseList);
+            mAllCourseList = new ArrayList<>(sortedCourse);
             runOnUiThread(() -> mCourseListAdapter.notifyDataSetChanged());
         }).start();
     }
