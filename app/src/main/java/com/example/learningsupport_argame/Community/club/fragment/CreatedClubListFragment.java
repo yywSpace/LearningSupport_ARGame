@@ -40,6 +40,8 @@ public class CreatedClubListFragment extends BasicClubListFragment {
             }
             if (mClubList.size() <= 0) {
                 new Thread(() -> {
+                    while (UserLab.getCurrentUser() == null)
+                        ;
                     List<Club> clubs = ClubLab.getCreatedClubList();
                     mClubList.clear();
                     mClubList.addAll(clubs);

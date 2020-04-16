@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -20,10 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.example.learningsupport_argame.Community.club.fragment.ClubListFragment;
 import com.example.learningsupport_argame.Community.friend.FriendListActivity;
@@ -68,10 +71,31 @@ public class NavigationActivity extends AppCompatActivity {
         initView();
         // 刷新任务信息
         refresh();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_container, TaskListFragment.getInstance(1))
-                .commit();
+        if (savedInstanceState != null) {
+            Fragment fragment = getSupportFragmentManager().getFragment(savedInstanceState, "fragment");
+            if (fragment instanceof TaskListFragment) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, TaskListFragment.getInstance(1))
+                        .commit();
+            } else if (fragment instanceof ClubListFragment) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new ClubListFragment())
+                        .commit();
+            } else if (fragment instanceof CourseMainFragment) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new CourseMainFragment())
+                        .commit();
+            }
+
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_container, TaskListFragment.getInstance(1))
+                    .commit();
+        }
     }
 
     @Override
@@ -87,6 +111,18 @@ public class NavigationActivity extends AppCompatActivity {
             }).start();
         }
         refresh();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (getSupportFragmentManager().getFragments().size() >= 1) {
+            getSupportFragmentManager().putFragment(
+                    outState,
+                    "fragment",
+                    getSupportFragmentManager().getFragments().get(0));
+            Log.d(TAG, "onSaveInstanceState: ");
+        }
     }
 
     private void initView() {

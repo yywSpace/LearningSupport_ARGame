@@ -45,16 +45,17 @@ public class RankingReleaseCountFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (UserLab.sUserListWithReleaseCount != null) {
+        if (UserLab.sUserListWithReleaseCount.size() > 0) {
             mUserList.clear();
             mUserList.addAll(UserLab.sUserListWithReleaseCount);
             mRankingReleaseCountAdapter.notifyDataSetChanged();
+            return;
         }
         if (isLoadDataFinish) {
             isLoadDataFinish = false;
             new Thread(() -> {
-                mUserList.clear();
                 UserLab.getUserWithReleaseCount();
+                mUserList.clear();
                 mUserList.addAll(UserLab.sUserListWithReleaseCount);
                 sActivity.runOnUiThread(() -> {
                     mRankingReleaseCountAdapter.notifyDataSetChanged();
@@ -73,8 +74,8 @@ public class RankingReleaseCountFragment extends Fragment {
             if (isLoadDataFinish) {
                 isLoadDataFinish = false;
                 new Thread(() -> {
-                    mUserList.clear();
                     UserLab.getUserWithReleaseCount();
+                    mUserList.clear();
                     mUserList.addAll(UserLab.sUserListWithReleaseCount);
                     sActivity.runOnUiThread(() -> {
                         mRankingReleaseCountAdapter.notifyDataSetChanged();

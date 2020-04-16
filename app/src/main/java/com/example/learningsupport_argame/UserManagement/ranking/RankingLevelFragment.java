@@ -45,16 +45,17 @@ public class RankingLevelFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (UserLab.sUserListWithLevel != null) {
+        if (UserLab.sUserListWithLevel.size() > 0) {
             mUserList.clear();
             mUserList.addAll(UserLab.sUserListWithLevel);
             mRankingLevelAdapter.notifyDataSetChanged();
+            return;
         }
         if (isLoadDataFinish) {
             isLoadDataFinish = false;
             new Thread(() -> {
-                mUserList.clear();
                 UserLab.getUserListWithLevel();
+                mUserList.clear();
                 mUserList.addAll(UserLab.sUserListWithLevel);
                 sActivity.runOnUiThread(() -> {
                     mRankingLevelAdapter.notifyDataSetChanged();
@@ -74,8 +75,8 @@ public class RankingLevelFragment extends Fragment {
             if (isLoadDataFinish) {
                 isLoadDataFinish = false;
                 new Thread(() -> {
-                    mUserList.clear();
                     UserLab.getUserListWithLevel();
+                    mUserList.clear();
                     mUserList.addAll(UserLab.sUserListWithLevel);
                     sActivity.runOnUiThread(() -> {
                         mRankingLevelAdapter.notifyDataSetChanged();

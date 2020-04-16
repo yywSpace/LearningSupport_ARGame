@@ -163,6 +163,10 @@ public class ClubListFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -172,6 +176,7 @@ public class ClubListFragment extends Fragment {
         mSearchView = (SearchView) mSearchMenuItem.getActionView();
         mSearchView.setSubmitButtonEnabled(true);
         initFragmentSearchListener(0);
+        mToolbar.setTitle("我创建的社团");
     }
 
     @Override

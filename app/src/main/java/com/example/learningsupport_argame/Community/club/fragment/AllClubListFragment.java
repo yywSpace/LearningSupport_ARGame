@@ -13,6 +13,7 @@ import com.example.learningsupport_argame.Community.club.activity.ClubInfoActivi
 import com.example.learningsupport_argame.Community.club.ClubLab;
 import com.example.learningsupport_argame.Community.club.ClubListAdapter;
 import com.example.learningsupport_argame.R;
+import com.example.learningsupport_argame.UserManagement.UserLab;
 
 import java.util.List;
 
@@ -34,6 +35,8 @@ public class AllClubListFragment extends BasicClubListFragment {
             }
             if (mClubList.size() <= 0)
                 new Thread(() -> {
+                    while (UserLab.getCurrentUser() == null)
+                        ;
                     List<Club> clubs = ClubLab.getOtherClubs();
                     mClubList.clear();
                     mClubList.addAll(clubs);

@@ -46,16 +46,17 @@ public class RankingAccomplishCountFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (UserLab.sUserListWithAccomplishCount != null) {
+        if (UserLab.sUserListWithAccomplishCount.size() > 0) {
             mUserList.clear();
             mUserList.addAll(UserLab.sUserListWithAccomplishCount);
             mRankingAccomplishCountAdapter.notifyDataSetChanged();
+            return;
         }
         if (isLoadDataFinish) {
             isLoadDataFinish = false;
             new Thread(() -> {
-                mUserList.clear();
                 List<User> users = UserLab.getUsersWithAccomplishCount();
+                mUserList.clear();
                 mUserList.addAll(users);
                 sActivity.runOnUiThread(() -> {
                     mRankingAccomplishCountAdapter.notifyDataSetChanged();
@@ -74,8 +75,8 @@ public class RankingAccomplishCountFragment extends Fragment {
             if (isLoadDataFinish) {
                 isLoadDataFinish = false;
                 new Thread(() -> {
-                    mUserList.clear();
                     UserLab.getUsersWithAccomplishCount();
+                    mUserList.clear();
                     mUserList.addAll(UserLab.sUserListWithAccomplishCount);
                     sActivity.runOnUiThread(() -> {
                         mRankingAccomplishCountAdapter.notifyDataSetChanged();

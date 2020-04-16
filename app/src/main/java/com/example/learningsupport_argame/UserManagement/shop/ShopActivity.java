@@ -241,7 +241,7 @@ public class ShopActivity extends AppCompatActivity {
                     Bitmap bitmap = BitmapFactory.decodeResource(getResources(),unityItem.getImgRec());
                     RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(getResources(),bitmap );
                     drawable.setCornerRadius(30);
-                    mItemImage.setImageDrawable(drawable);
+                    mItemImage.setBackground(drawable);
                 }
             }
 

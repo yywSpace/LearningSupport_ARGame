@@ -127,15 +127,17 @@ public class UserBagActivity extends Activity {
         });
         mSwipeRefreshLayout = findViewById(R.id.bag_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
-            mItemList.clear();
-            mItemList.addAll(UserLab.getCurrentUser()
+            List<RewardItem> rewardItems = UserLab.getCurrentUser()
                     .getRewardItems()
                     .stream()
                     .filter(rewardItem -> rewardItem.getCount() != 0)
-                    .collect(Collectors.toList()));
+                    .collect(Collectors.toList());
+            mItemList.clear();
+            mItemList.addAll(rewardItems);
             mItemList.addAll(UserLab.getCurrentUser().getModelItems());
             mItemList.addAll(UserLab.getCurrentUser().getUnityItems());
-            mTypeItemList = new ArrayList<>(mItemList);
+            mTypeItemList.clear();
+            mTypeItemList.addAll(mItemList);
             mUserBagListAdapter.notifyDataSetChanged();
             mSwipeRefreshLayout.setRefreshing(false);
         });
@@ -255,10 +257,10 @@ public class UserBagActivity extends Activity {
                             notifyDataSetChanged();
                         });
                     }
-                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(),unityItem.getImgRec());
-                    RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(getResources(),bitmap );
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), unityItem.getImgRec());
+                    RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
                     drawable.setCornerRadius(30);
-                    mItemImage.setImageDrawable(drawable);
+                    mItemImage.setBackground(drawable);
                 }
             }
         }
